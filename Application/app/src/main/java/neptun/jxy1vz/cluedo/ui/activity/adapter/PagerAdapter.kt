@@ -9,6 +9,10 @@ import neptun.jxy1vz.cluedo.ui.fragment.TopMapFragment
 
 class PagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
+    companion object {
+        const val NUMBER_OF_PAGES = 3
+    }
+
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> TopMapFragment.getInstance()
@@ -18,6 +22,6 @@ class PagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     }
 
     override fun getCount(): Int {
-        return 3
+        return NUMBER_OF_PAGES
     }
 }
