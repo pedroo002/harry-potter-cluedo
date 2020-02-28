@@ -1,9 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.ortiz.touchview.TouchImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:src="@drawable/map">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-</com.ortiz.touchview.TouchImageView>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <!--data>
+        <variable
+            name="player1"
+            type="" />
+        @={player1.FIELD_NAME}
+        @{()-> player1.FUNCTION()}
+    </data-->
+
+    <!--com.ortiz.touchview.TouchImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:src="@drawable/map">
+
+    </com.ortiz.touchview.TouchImageView-->
+
+        <com.mohitdev.verticalviewpager.VerticalViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
