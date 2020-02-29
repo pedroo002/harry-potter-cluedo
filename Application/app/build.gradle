@@ -48,4 +48,5 @@ dependencies {
 
     //Vertical-Horizontal ViewPager
     implementation 'com.mohitdev:verticalviewpager:0.0.2'
+    implementation 'com.github.castorflex.verticalviewpager:library:19.0.1'
 }
