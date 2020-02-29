@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!--TODO: Játékos marginját kódból módosítani a scrollviewk alapján-->
     <!--data>
         <variable
             name="player1"
@@ -40,6 +41,15 @@
             </HorizontalScrollView>
 
         </ScrollView>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/tile_green"
+            android:layout_marginTop="288dp"
+            android:layout_marginStart="34dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
