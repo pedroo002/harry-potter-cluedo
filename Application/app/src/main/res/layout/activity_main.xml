@@ -16,22 +16,30 @@
         @{()-> player1.FUNCTION()}
     </data-->
 
-    <!--com.ortiz.touchview.TouchImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity"
-        android:src="@drawable/map">
-
-    </com.ortiz.touchview.TouchImageView-->
-
-        <fr.castorflex.android.verticalviewpager.VerticalViewPager
-            android:id="@+id/viewPager"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/map" />
+
+            </HorizontalScrollView>
+
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
