@@ -2,9 +2,9 @@ package neptun.jxy1vz.cluedo.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.mohitdev.verticalviewpager.VerticalViewPager
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.ui.activity.adapter.PagerAdapter
+import fr.castorflex.android.verticalviewpager.VerticalViewPager
 
 class MainActivity : AppCompatActivity() {
 
