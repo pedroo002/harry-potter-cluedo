@@ -24,7 +24,7 @@
 
     </com.ortiz.touchview.TouchImageView-->
 
-        <com.mohitdev.verticalviewpager.VerticalViewPager
+        <fr.castorflex.android.verticalviewpager.VerticalViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
