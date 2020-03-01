@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     dataBinding {
         enabled = true
@@ -49,4 +51,12 @@ dependencies {
     //Vertical-Horizontal ViewPager
     implementation 'com.mohitdev:verticalviewpager:0.0.2'
     implementation 'com.github.castorflex.verticalviewpager:library:19.0.1'
+
+    //DataBinding
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    kapt "com.android.databinding:compiler:$compiler_version"
+}
+
+kapt {
+    generateStubs = true
 }
