@@ -7,7 +7,7 @@
     <data>
         <variable
             name="player1"
-            type="neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel" />
+            type="neptun.jxy1vz.cluedo.ui.map.MapViewModel" />
         <!--@={player1.FIELD_NAME}
         @{()-> player1.FUNCTION()}-->
     </data>
@@ -93,7 +93,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <!--TextView
                     android:id="@+id/tvText"
                     android:layout_width="51dp"
                     android:layout_height="0dp"
@@ -101,9 +101,7 @@
                     android:layout_marginTop="156dp"
                     android:text='@={player1.coordinates}'
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
+                    app:layout_constraintTop_toTopOf="parent" /-->
             </androidx.constraintlayout.widget.ConstraintLayout>
         </HorizontalScrollView>
     </ScrollView>
