@@ -24,7 +24,7 @@ class MapViewModel(dpi: Int, greenTile: ImageView) : BaseObservable() {
     }
 
     init {
-        SCREEN_DPI = 432
+        SCREEN_DPI = dpi
     }
 
     @Bindable
