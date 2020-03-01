@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.activity.map
+package neptun.jxy1vz.cluedo.ui.map
 
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +11,7 @@ import androidx.databinding.library.baseAdapters.BR
 import neptun.jxy1vz.cluedo.model.Player
 
 class MapViewModel(dpi: Int, greenTile: ImageView) : BaseObservable() {
-    private var player1 = Player(34, 288, "34,288")
+    private var player1 = Player(34, 288)
     private var green = greenTile
 
     /*
@@ -24,16 +24,15 @@ class MapViewModel(dpi: Int, greenTile: ImageView) : BaseObservable() {
     }
 
     init {
-        SCREEN_DPI = dpi
+        SCREEN_DPI = 432
     }
 
     @Bindable
     @Dimension
     fun getPlayer1MarginX() = player1.x
 
-    fun setPlayer1MarginX(x: Int) {
+    private fun setPlayer1MarginX(x: Int) {
         player1.x = x
-        setCoordinates("${player1.x},${player1.y}")
         notifyPropertyChanged(BR.player1MarginX)
     }
 
@@ -41,41 +40,32 @@ class MapViewModel(dpi: Int, greenTile: ImageView) : BaseObservable() {
     @Dimension
     fun getPlayer1MarginY() = player1.y
 
-    fun setPlayer1MarginY(y: Int) {
+    private fun setPlayer1MarginY(y: Int) {
         player1.y = y
-        setCoordinates("${player1.x},${player1.y}")
         notifyPropertyChanged(BR.player1MarginY)
     }
 
-    @Bindable
-    fun getCoordinates() = player1.coordinates
-
-    fun setCoordinates(coord: String) {
-        player1.coordinates = coord
-        notifyPropertyChanged(BR.coordinates)
-    }
-
     fun moveDown() {
-        val newY = player1.y + TILE_HEIGHT_PX / (SCREEN_DPI!! / 160)
-        setLayoutMarginTop(green, newY.toFloat() * SCREEN_DPI!! / 160)
+        val newY = player1.y + TILE_HEIGHT_PX
+        setLayoutMarginTop(green, newY.toFloat())
         setPlayer1MarginY(newY)
     }
 
     fun moveUp() {
-        val newY = player1.y - TILE_HEIGHT_PX / (SCREEN_DPI!! / 160)
-        setLayoutMarginTop(green, newY.toFloat() * SCREEN_DPI!! / 160)
+        val newY = player1.y - TILE_HEIGHT_PX
+        setLayoutMarginTop(green, newY.toFloat())
         setPlayer1MarginY(newY)
     }
 
     fun moveLeft() {
-        val newX = player1.x - TILE_WIDTH_PX * 160 / SCREEN_DPI!!
-        setLayoutMarginStart(green, newX.toFloat() * SCREEN_DPI!! / 160)
+        val newX = player1.x - TILE_WIDTH_PX
+        setLayoutMarginStart(green, newX.toFloat())
         setPlayer1MarginX(newX)
     }
 
     fun moveRight() {
-        val newX = player1.x + TILE_WIDTH_PX * 160 / SCREEN_DPI!!
-        setLayoutMarginStart(green, newX.toFloat() * SCREEN_DPI!! / 160)
+        val newX = player1.x + TILE_WIDTH_PX
+        setLayoutMarginStart(green, newX.toFloat())
         setPlayer1MarginX(newX)
     }
 
