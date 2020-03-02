@@ -10,8 +10,8 @@ import neptun.jxy1vz.cluedo.model.Player
 import neptun.jxy1vz.cluedo.model.Position
 
 class MapViewModel(players: List<ImageView>) : BaseObservable() {
-    private var playerGreen = Player(0, Position(0, 7))
-    private var playerRed = Player(1, Position(7, 0))
+    private var playerGreen = Player(0, Position(7, 0))
+    private var playerRed = Player(1, Position(0, 7))
     private var playerYellow = Player(2, Position(24, 7))
     private var playerBlue = Player(3, Position(0, 17))
     private var playerPurple = Player(4, Position(24, 17))
