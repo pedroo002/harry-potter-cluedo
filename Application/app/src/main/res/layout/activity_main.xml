@@ -39,6 +39,14 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivStar"
+                    android:src="@drawable/star"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow2"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol8" />
+
+                <ImageView
                     android:id="@+id/ivGreenPlayer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
