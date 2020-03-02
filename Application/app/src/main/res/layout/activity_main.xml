@@ -39,12 +39,68 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
+                    android:id="@+id/ivStar1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/ivStar"
                     android:src="@drawable/star"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow2"
                     app:layout_constraintStart_toStartOf="@id/guidelineCol8" />
+
+                <ImageView
+                    android:id="@+id/ivStar2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/star"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow8"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol10" />
+
+                <ImageView
+                    android:id="@+id/ivStar3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/star"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow8"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol23" />
+
+                <ImageView
+                    android:id="@+id/ivStar4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/star"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow14"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol17" />
+
+                <ImageView
+                    android:id="@+id/ivStar5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/star"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow16"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol11" />
+
+                <ImageView
+                    android:id="@+id/ivStar6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/star"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow18"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol6" />
+
+                <ImageView
+                    android:id="@+id/ivStar7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/star"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow13"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol9" />
+
+                <ImageView
+                    android:id="@+id/ivStar8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/star"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow23"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol16" />
 
                 <ImageView
                     android:id="@+id/ivGreenPlayer"
