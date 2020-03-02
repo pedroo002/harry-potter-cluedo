@@ -7,18 +7,30 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.BindingAdapter
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.Player
+import neptun.jxy1vz.cluedo.model.Position
 
 class MapViewModel(players: List<ImageView>) : BaseObservable() {
-    private var playerGreen = Player(0, 7)
-    private var playerRed = Player(7, 0)
-    private var playerYellow = Player(24, 7)
-    private var playerBlue = Player(0, 17)
-    private var playerPurple = Player(24, 17)
-    private var playerWhite = Player(17, 24)
+    private var playerGreen = Player(0, Position(0, 7))
+    private var playerRed = Player(1, Position(7, 0))
+    private var playerYellow = Player(2, Position(24, 7))
+    private var playerBlue = Player(3, Position(0, 17))
+    private var playerPurple = Player(4, Position(24, 17))
+    private var playerWhite = Player(5, Position(17, 24))
+
+    private var starPositions = arrayOf(
+        Position(2, 8),
+        Position(8, 10),
+        Position(8, 23),
+        Position(14, 17),
+        Position(16, 11),
+        Position(18, 16),
+        Position(13, 19),
+        Position(23, 16)
+    )
 
     private var green = players[0]
 
-    var cols = arrayOf(
+    private var cols = arrayOf(
         R.id.borderLeft,
         R.id.guidelineCol1,
         R.id.guidelineCol2,
@@ -46,8 +58,7 @@ class MapViewModel(players: List<ImageView>) : BaseObservable() {
         R.id.guidelineCol24,
         R.id.borderRight
     )
-
-    var rows = arrayOf(
+    private var rows = arrayOf(
         R.id.borderTop,
         R.id.guidelineRow1,
         R.id.guidelineRow2,
@@ -82,36 +93,36 @@ class MapViewModel(players: List<ImageView>) : BaseObservable() {
     }
 
     init {
-        setLayoutConstraintStart(players[0], cols[playerGreen.col])
-        setLayoutConstraintTop(players[0], rows[playerGreen.row])
+        setLayoutConstraintStart(players[0], cols[playerGreen.pos.col])
+        setLayoutConstraintTop(players[0], rows[playerGreen.pos.row])
     }
 
     fun moveDown() {
-        if (playerGreen.row == ROWS)
+        if (playerGreen.pos.row == ROWS)
             return
-        playerGreen.row++
-        setLayoutConstraintTop(green, rows[playerGreen.row])
+        playerGreen.pos.row++
+        setLayoutConstraintTop(green, rows[playerGreen.pos.row])
     }
 
     fun moveUp() {
-        if (playerGreen.row == 0)
+        if (playerGreen.pos.row == 0)
             return
-        playerGreen.row--
-        setLayoutConstraintTop(green, rows[playerGreen.row])
+        playerGreen.pos.row--
+        setLayoutConstraintTop(green, rows[playerGreen.pos.row])
     }
 
     fun moveLeft() {
-        if (playerGreen.col == 0)
+        if (playerGreen.pos.col == 0)
             return
-        playerGreen.col--
-        setLayoutConstraintStart(green, cols[playerGreen.col])
+        playerGreen.pos.col--
+        setLayoutConstraintStart(green, cols[playerGreen.pos.col])
     }
 
     fun moveRight() {
-        if (playerGreen.col == COLS)
+        if (playerGreen.pos.col == COLS)
             return
-        playerGreen.col++
-        setLayoutConstraintStart(green, cols[playerGreen.col])
+        playerGreen.pos.col++
+        setLayoutConstraintStart(green, cols[playerGreen.pos.col])
     }
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")
