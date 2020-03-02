@@ -12,8 +12,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val activityMainBinding = setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-        val greenTile = findViewById<ImageView>(R.id.ivGreenTile)
-        activityMainBinding.player1 = MapViewModel(resources.displayMetrics.densityDpi, greenTile)
+        val playerList = listOf<ImageView>(
+            findViewById(R.id.ivGreenPlayer),
+            findViewById(R.id.ivRedPlayer),
+            findViewById(R.id.ivYellowPlayer),
+            findViewById(R.id.ivBluePlayer),
+            findViewById(R.id.ivPurplePlayer),
+            findViewById(R.id.ivWhitePlayer)
+        )
+        activityMainBinding.player1 = MapViewModel(playerList)
         activityMainBinding.executePendingBindings()
     }
 }

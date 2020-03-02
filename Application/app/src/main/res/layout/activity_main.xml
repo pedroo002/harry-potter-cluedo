@@ -39,12 +39,52 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/ivGreenTile"
+                    android:id="@+id/ivGreenPlayer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_green"
                     app:layout_constraintStart_toStartOf="@id/borderLeft"
-                    app:layout_constraintTop_toTopOf="@id/guidelineRow6" />
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow7" />
+
+                <ImageView
+                    android:id="@+id/ivRedPlayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/tile_red"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol7"
+                    app:layout_constraintTop_toTopOf="@id/borderTop" />
+
+                <ImageView
+                    android:id="@+id/ivYellowPlayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/tile_yellow"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol24"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow7" />
+
+                <ImageView
+                    android:id="@+id/ivBluePlayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/tile_blue"
+                    app:layout_constraintStart_toStartOf="@id/borderLeft"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow17" />
+
+                <ImageView
+                    android:id="@+id/ivPurplePlayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/tile_purple"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol24"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow17" />
+
+                <ImageView
+                    android:id="@+id/ivWhitePlayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/tile_white"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol17"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow24" />
 
                 <Button
                     android:id="@+id/btnRight"
