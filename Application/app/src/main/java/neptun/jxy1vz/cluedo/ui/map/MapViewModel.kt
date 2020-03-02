@@ -8,9 +8,15 @@ import androidx.databinding.BindingAdapter
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.Player
 
-class MapViewModel(dpi: Int, greenTile: ImageView) : BaseObservable() {
-    private var player1 = Player(0, 0)
-    private var green = greenTile
+class MapViewModel(players: List<ImageView>) : BaseObservable() {
+    private var playerGreen = Player(0, 7)
+    private var playerRed = Player(7, 0)
+    private var playerYellow = Player(24, 7)
+    private var playerBlue = Player(0, 17)
+    private var playerPurple = Player(24, 17)
+    private var playerWhite = Player(17, 24)
+
+    private var green = players[0]
 
     var cols = arrayOf(
         R.id.borderLeft,
@@ -76,36 +82,36 @@ class MapViewModel(dpi: Int, greenTile: ImageView) : BaseObservable() {
     }
 
     init {
-        setLayoutConstraintStart(greenTile, cols[player1.col])
-        setLayoutConstraintTop(greenTile, rows[player1.row])
+        setLayoutConstraintStart(players[0], cols[playerGreen.col])
+        setLayoutConstraintTop(players[0], rows[playerGreen.row])
     }
 
     fun moveDown() {
-        if (player1.row == ROWS)
+        if (playerGreen.row == ROWS)
             return
-        player1.row++
-        setLayoutConstraintTop(green, rows[player1.row])
+        playerGreen.row++
+        setLayoutConstraintTop(green, rows[playerGreen.row])
     }
 
     fun moveUp() {
-        if (player1.row == 0)
+        if (playerGreen.row == 0)
             return
-        player1.row--
-        setLayoutConstraintTop(green, rows[player1.row])
+        playerGreen.row--
+        setLayoutConstraintTop(green, rows[playerGreen.row])
     }
 
     fun moveLeft() {
-        if (player1.col == 0)
+        if (playerGreen.col == 0)
             return
-        player1.col--
-        setLayoutConstraintStart(green, cols[player1.col])
+        playerGreen.col--
+        setLayoutConstraintStart(green, cols[playerGreen.col])
     }
 
     fun moveRight() {
-        if (player1.col == COLS)
+        if (playerGreen.col == COLS)
             return
-        player1.col++
-        setLayoutConstraintStart(green, cols[player1.col])
+        playerGreen.col++
+        setLayoutConstraintStart(green, cols[playerGreen.col])
     }
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")
