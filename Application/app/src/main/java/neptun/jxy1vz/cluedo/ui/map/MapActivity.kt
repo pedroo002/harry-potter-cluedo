@@ -5,13 +5,13 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil.setContentView
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.databinding.ActivityMainBinding
+import neptun.jxy1vz.cluedo.databinding.ActivityMapBinding
 
-class MainActivity : AppCompatActivity() {
+class MapActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val activityMainBinding = setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+        val activityMainBinding = setContentView<ActivityMapBinding>(this, R.layout.activity_map)
         val playerList = listOf<ImageView>(
             findViewById(R.id.ivGreenPlayer),
             findViewById(R.id.ivRedPlayer),
