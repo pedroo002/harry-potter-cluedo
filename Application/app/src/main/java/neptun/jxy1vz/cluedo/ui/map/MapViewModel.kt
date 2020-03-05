@@ -1,7 +1,11 @@
 package neptun.jxy1vz.cluedo.ui.map
 
+import android.content.Context
+import android.opengl.Visibility
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import androidx.databinding.BindingAdapter
@@ -9,7 +13,9 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.Player
 import neptun.jxy1vz.cluedo.model.Position
 
-class MapViewModel(players: List<ImageView>) : BaseObservable() {
+class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObservable() {
+    private var mapLayout = layout
+
     private var playerGreen = Player(0, Position(7, 0))
     private var playerRed = Player(1, Position(0, 7))
     private var playerYellow = Player(2, Position(24, 7))
@@ -95,6 +101,17 @@ class MapViewModel(players: List<ImageView>) : BaseObservable() {
     init {
         setLayoutConstraintStart(players[0], cols[playerGreen.pos.col])
         setLayoutConstraintTop(players[0], rows[playerGreen.pos.row])
+    }
+
+    //Egyelőre csak megjelenik valahol
+    fun showMovingOptions() {
+        val selection = ImageView(mapLayout.context)
+        selection.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+        selection.setImageResource(R.drawable.field_selection)
+        selection.visibility = ImageView.VISIBLE
+        setLayoutConstraintStart(selection, cols[1])
+        setLayoutConstraintTop(selection, rows[6])
+        mapLayout.addView(selection)
     }
 
     fun moveDown() {

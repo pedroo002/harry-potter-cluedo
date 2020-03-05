@@ -3,4 +3,21 @@
     <string name="game_start">Játék indítása</string>
     <string name="rules">Szabályok</string>
     <string name="exit">Kilépés</string>
+    <string name="map_description">The map of the game</string>
+    <string name="star1">Star1</string>
+    <string name="star2">Star2</string>
+    <string name="star3">Star3</string>
+    <string name="star4">Star4</string>
+    <string name="star5">Star5</string>
+    <string name="star6">Star6</string>
+    <string name="star7">Star7</string>
+    <string name="star8">Star8</string>
+    <string name="player1">Player1</string>
+    <string name="player2">Player2</string>
+    <string name="player3">Player3</string>
+    <string name="player4">Player4</string>
+    <string name="player5">Player5</string>
+    <string name="player6">Player6</string>
+    <string name="logo_description">Logo of the game</string>
+    <string name="settings_icon">Settings icon</string>
 </resources>
