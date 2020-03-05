@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -27,6 +25,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/mapLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
@@ -36,7 +35,8 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/map"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/map_description" />
 
                 <ImageView
                     android:id="@+id/ivStar1"
@@ -44,7 +44,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/star"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow2"
-                    app:layout_constraintStart_toStartOf="@id/guidelineCol8" />
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol8"
+                    android:contentDescription="@string/star1" />
 
                 <ImageView
                     android:id="@+id/ivStar2"
@@ -52,7 +53,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/star"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow8"
-                    app:layout_constraintStart_toStartOf="@id/guidelineCol10" />
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol10"
+                    android:contentDescription="@string/star2" />
 
                 <ImageView
                     android:id="@+id/ivStar3"
@@ -60,7 +62,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/star"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow8"
-                    app:layout_constraintStart_toStartOf="@id/guidelineCol23" />
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol23"
+                    android:contentDescription="@string/star3" />
 
                 <ImageView
                     android:id="@+id/ivStar4"
@@ -68,7 +71,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/star"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow14"
-                    app:layout_constraintStart_toStartOf="@id/guidelineCol17" />
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol17"
+                    android:contentDescription="@string/star4" />
 
                 <ImageView
                     android:id="@+id/ivStar5"
@@ -76,7 +80,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/star"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow16"
-                    app:layout_constraintStart_toStartOf="@id/guidelineCol11" />
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol11"
+                    android:contentDescription="@string/star5" />
 
                 <ImageView
                     android:id="@+id/ivStar6"
@@ -84,7 +89,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/star"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow18"
-                    app:layout_constraintStart_toStartOf="@id/guidelineCol6" />
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol6"
+                    android:contentDescription="@string/star6" />
 
                 <ImageView
                     android:id="@+id/ivStar7"
@@ -92,7 +98,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/star"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow13"
-                    app:layout_constraintStart_toStartOf="@id/guidelineCol9" />
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol9"
+                    android:contentDescription="@string/star7" />
 
                 <ImageView
                     android:id="@+id/ivStar8"
@@ -100,15 +107,18 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/star"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow23"
-                    app:layout_constraintStart_toStartOf="@id/guidelineCol16" />
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol16"
+                    android:contentDescription="@string/star8" />
 
                 <ImageView
                     android:id="@+id/ivGreenPlayer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_green"
+                    android:onClick="@{()->player1.showMovingOptions()}"
                     app:layout_constraintStart_toStartOf="@id/borderLeft"
-                    app:layout_constraintTop_toTopOf="@id/guidelineRow7" />
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow7"
+                    android:contentDescription="@string/player1" />
 
                 <ImageView
                     android:id="@+id/ivRedPlayer"
@@ -116,7 +126,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_red"
                     app:layout_constraintStart_toStartOf="@id/guidelineCol7"
-                    app:layout_constraintTop_toTopOf="@id/borderTop" />
+                    app:layout_constraintTop_toTopOf="@id/borderTop"
+                    android:contentDescription="@string/player2" />
 
                 <ImageView
                     android:id="@+id/ivYellowPlayer"
@@ -124,7 +135,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_yellow"
                     app:layout_constraintStart_toStartOf="@id/guidelineCol24"
-                    app:layout_constraintTop_toTopOf="@id/guidelineRow7" />
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow7"
+                    android:contentDescription="@string/player3" />
 
                 <ImageView
                     android:id="@+id/ivBluePlayer"
@@ -132,7 +144,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_blue"
                     app:layout_constraintStart_toStartOf="@id/borderLeft"
-                    app:layout_constraintTop_toTopOf="@id/guidelineRow17" />
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow17"
+                    android:contentDescription="@string/player4" />
 
                 <ImageView
                     android:id="@+id/ivPurplePlayer"
@@ -140,7 +153,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_purple"
                     app:layout_constraintStart_toStartOf="@id/guidelineCol24"
-                    app:layout_constraintTop_toTopOf="@id/guidelineRow17" />
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow17"
+                    android:contentDescription="@string/player5" />
 
                 <ImageView
                     android:id="@+id/ivWhitePlayer"
@@ -148,7 +162,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_white"
                     app:layout_constraintStart_toStartOf="@id/guidelineCol17"
-                    app:layout_constraintTop_toTopOf="@id/guidelineRow24" />
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow24"
+                    android:contentDescription="@string/player6" />
 
                 <Button
                     android:id="@+id/btnRight"

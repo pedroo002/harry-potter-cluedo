@@ -3,6 +3,7 @@ package neptun.jxy1vz.cluedo.ui.map
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil.setContentView
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMapBinding
@@ -20,7 +21,8 @@ class MapActivity : AppCompatActivity() {
             findViewById(R.id.ivPurplePlayer),
             findViewById(R.id.ivWhitePlayer)
         )
-        activityMainBinding.player1 = MapViewModel(playerList)
+        val mapLayout = findViewById<ConstraintLayout>(R.id.mapLayout)
+        activityMainBinding.player1 = MapViewModel(playerList, mapLayout)
         activityMainBinding.executePendingBindings()
     }
 }
