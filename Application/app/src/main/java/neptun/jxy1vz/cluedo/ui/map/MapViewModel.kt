@@ -1,17 +1,18 @@
 package neptun.jxy1vz.cluedo.ui.map
 
-import android.content.Context
-import android.opengl.Visibility
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import androidx.databinding.BindingAdapter
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.model.Graph
 import neptun.jxy1vz.cluedo.model.Player
 import neptun.jxy1vz.cluedo.model.Position
+import neptun.jxy1vz.cluedo.model.Room
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.random.Random
 
 class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObservable() {
     private var mapLayout = layout
@@ -22,6 +23,19 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
     private var playerBlue = Player(3, Position(0, 17))
     private var playerPurple = Player(4, Position(24, 17))
     private var playerWhite = Player(5, Position(17, 24))
+
+    private val roomList = listOf(
+        Room(0, 0, 6, 5, 0, 42),
+        Room(1, 0, 15, 6, 9, 49),
+        Room(2, 0, 24, 6, 18, 49),
+        Room(3, 8, 6, 11, 0, 28),
+        Room(4, 10, 14, 15, 10, 30),
+        Room(5, 9, 24, 15, 18, 49),
+        Room(6, 13, 6, 16, 0, 28),
+        Room(7, 19, 6, 24, 0, 42),
+        Room(8, 18, 15, 24, 9, 49),
+        Room(9, 18, 24, 24, 18, 49)
+    )
 
     private var starPositions = arrayOf(
         Position(2, 8),
@@ -101,17 +115,69 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
     init {
         setLayoutConstraintStart(players[0], cols[playerGreen.pos.col])
         setLayoutConstraintTop(players[0], rows[playerGreen.pos.row])
+
+        val mapGraph = Graph<Position>()
+        for (x in 0..24) {
+            for (y in 0..24) {
+                val current = Position(y, x)
+                if (!stepInRoom(current)) {
+                    if (y > 0 && !stepInRoom(Position(y - 1, x)))
+                        mapGraph.addEdge(current, Position(y - 1, x))
+                    if (y < 24 && !stepInRoom(Position(y + 1, x)))
+                        mapGraph.addEdge(current, Position(y + 1, x))
+                    if (x > 0 && !stepInRoom(Position(y, x - 1)))
+                        mapGraph.addEdge(current, Position(y, x - 1))
+                    if (x < 24 &&!stepInRoom(Position(y, x + 1)))
+                        mapGraph.addEdge(current, Position(y, x + 1))
+
+                }
+            }
+        }
     }
 
-    //Egyelőre csak megjelenik valahol
+    private fun stepInRoom(pos: Position): Boolean {
+        for (room: Room in roomList) {
+            if (pos.row >= room.top && pos.row <= room.bottom && pos.col >= room.left && pos.col <= room.right)
+                return true
+        }
+        return false
+    }
+
+    private fun canStepOnIt(pos: Position, playerPos: Position, stepCount: Int): Boolean {
+        return true
+    }
+
     fun showMovingOptions() {
-        val selection = ImageView(mapLayout.context)
-        selection.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
-        selection.setImageResource(R.drawable.field_selection)
-        selection.visibility = ImageView.VISIBLE
-        setLayoutConstraintStart(selection, cols[1])
-        setLayoutConstraintTop(selection, rows[6])
-        mapLayout.addView(selection)
+        val stepCount = Random.nextInt(2, 12)
+        val minLimitX = max(playerGreen.pos.col - stepCount, 0)
+        val maxLimitX = min(playerGreen.pos.col + stepCount, 24)
+        val minLimitY = max(playerGreen.pos.row - stepCount, 0)
+        val maxLimitY = min(playerGreen.pos.row + stepCount, 24)
+
+        val selectionList: ArrayList<ImageView> = ArrayList()
+
+        for (x in minLimitX..maxLimitX) {
+            for (y in minLimitY..maxLimitY) {
+                if (canStepOnIt(Position(y, x), playerGreen.pos, stepCount)) {
+                    val selection = ImageView(mapLayout.context)
+                    selectionList.add(selection)
+                    selection.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+                    selection.setImageResource(R.drawable.field_selection)
+                    selection.visibility = ImageView.VISIBLE
+                    setLayoutConstraintStart(selection, cols[x])
+                    setLayoutConstraintTop(selection, rows[y])
+                    selection.setOnClickListener {
+                        playerGreen.pos = Position(y, x)
+                        setLayoutConstraintStart(green, cols[x])
+                        setLayoutConstraintTop(green, rows[y])
+
+                        for (sel: ImageView in selectionList)
+                            mapLayout.removeView(sel)
+                    }
+                    mapLayout.addView(selection)
+                }
+            }
+        }
     }
 
     fun moveDown() {

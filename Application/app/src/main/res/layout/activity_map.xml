@@ -165,52 +165,7 @@
                     app:layout_constraintTop_toTopOf="@id/guidelineRow24"
                     android:contentDescription="@string/player6" />
 
-                <Button
-                    android:id="@+id/btnRight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="176dp"
-                    android:layout_marginTop="60dp"
-                    android:onClick="@{()->player1.moveRight()}"
-                    android:text="D"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/btnLeft"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
-                    android:onClick="@{()->player1.moveLeft()}"
-                    android:text="A"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/btnDown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="88dp"
-                    android:layout_marginTop="60dp"
-                    android:onClick="@{()->player1.moveDown()}"
-                    android:text="S"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/btnUp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="88dp"
-                    android:layout_marginTop="16dp"
-                    android:onClick="@{()->player1.moveUp()}"
-                    android:text="W"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
                 <!--Guidelines...-->
-
 
                 <!--Cols-->
 

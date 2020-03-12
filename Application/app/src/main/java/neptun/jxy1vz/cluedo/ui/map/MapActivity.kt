@@ -12,6 +12,10 @@ class MapActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        for (x in 1..10)
+            print(x)
+
         val activityMainBinding = setContentView<ActivityMapBinding>(this, R.layout.activity_map)
         val playerList = listOf<ImageView>(
             findViewById(R.id.ivGreenPlayer),
