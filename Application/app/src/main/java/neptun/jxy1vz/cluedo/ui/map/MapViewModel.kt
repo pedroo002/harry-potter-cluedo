@@ -10,12 +10,14 @@ import neptun.jxy1vz.cluedo.model.Graph
 import neptun.jxy1vz.cluedo.model.Player
 import neptun.jxy1vz.cluedo.model.Position
 import neptun.jxy1vz.cluedo.model.Room
+import java.util.HashSet
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
 class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObservable() {
     private var mapLayout = layout
+    private var mapGraph: Graph<Position>
 
     private var playerGreen = Player(0, Position(7, 0))
     private var playerRed = Player(1, Position(0, 7))
@@ -116,9 +118,9 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         setLayoutConstraintStart(players[0], cols[playerGreen.pos.col])
         setLayoutConstraintTop(players[0], rows[playerGreen.pos.row])
 
-        val mapGraph = Graph<Position>()
-        for (x in 0..24) {
-            for (y in 0..24) {
+        mapGraph = Graph()
+        for (x in 0..COLS) {
+            for (y in 0..ROWS) {
                 val current = Position(y, x)
                 if (!stepInRoom(current)) {
                     if (y > 0 && !stepInRoom(Position(y - 1, x)))
@@ -143,22 +145,50 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         return false
     }
 
-    private fun canStepOnIt(pos: Position, playerPos: Position, stepCount: Int): Boolean {
-        return true
+    private fun Dijkstra(current: Position): HashMap<Position, Int> {
+        var distances = HashMap<Position, Int>()
+        var unvisited = HashSet<Position>()
+
+        for (field in mapGraph.adjacencyMap.keys) {
+            unvisited.add(field)
+            if (field == current)
+                distances[field] = 0
+            else
+                distances[field] = Int.MAX_VALUE
+        }
+
+        while (unvisited.isNotEmpty()) {
+            var field: Position = unvisited.elementAt(0)
+            for (pair in distances) {
+                if (unvisited.contains(pair.key) && pair.value < distances[field]!!)
+                    field = pair.key
+            }
+
+            for (neighbour in mapGraph.adjacencyMap[field]!!) {
+                if (unvisited.contains(neighbour)) {
+                    distances[neighbour] = min(distances[neighbour]!!, distances[field]!! + 1)
+                }
+            }
+            unvisited.remove(field)
+        }
+
+        return distances
     }
 
     fun showMovingOptions() {
         val stepCount = Random.nextInt(2, 12)
         val minLimitX = max(playerGreen.pos.col - stepCount, 0)
-        val maxLimitX = min(playerGreen.pos.col + stepCount, 24)
+        val maxLimitX = min(playerGreen.pos.col + stepCount, COLS)
         val minLimitY = max(playerGreen.pos.row - stepCount, 0)
-        val maxLimitY = min(playerGreen.pos.row + stepCount, 24)
+        val maxLimitY = min(playerGreen.pos.row + stepCount, ROWS)
 
         val selectionList: ArrayList<ImageView> = ArrayList()
 
+        val distances = Dijkstra(playerGreen.pos)
+
         for (x in minLimitX..maxLimitX) {
             for (y in minLimitY..maxLimitY) {
-                if (canStepOnIt(Position(y, x), playerGreen.pos, stepCount)) {
+                if (!stepInRoom(Position(y, x)) && distances[Position(y, x)]!! <= stepCount) {
                     val selection = ImageView(mapLayout.context)
                     selectionList.add(selection)
                     selection.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
@@ -178,34 +208,6 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
                 }
             }
         }
-    }
-
-    fun moveDown() {
-        if (playerGreen.pos.row == ROWS)
-            return
-        playerGreen.pos.row++
-        setLayoutConstraintTop(green, rows[playerGreen.pos.row])
-    }
-
-    fun moveUp() {
-        if (playerGreen.pos.row == 0)
-            return
-        playerGreen.pos.row--
-        setLayoutConstraintTop(green, rows[playerGreen.pos.row])
-    }
-
-    fun moveLeft() {
-        if (playerGreen.pos.col == 0)
-            return
-        playerGreen.pos.col--
-        setLayoutConstraintStart(green, cols[playerGreen.pos.col])
-    }
-
-    fun moveRight() {
-        if (playerGreen.pos.col == COLS)
-            return
-        playerGreen.pos.col++
-        setLayoutConstraintStart(green, cols[playerGreen.pos.col])
     }
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")

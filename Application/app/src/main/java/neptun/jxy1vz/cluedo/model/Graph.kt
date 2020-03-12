@@ -4,7 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 
 class Graph<T> {
-    private val adjacencyMap: HashMap<T, HashSet<T>> = HashMap()
+    val adjacencyMap: HashMap<T, HashSet<T>> = HashMap()
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun addEdge(sourceVertex: T, destinationVertex: T) {
