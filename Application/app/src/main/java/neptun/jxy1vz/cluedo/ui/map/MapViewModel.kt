@@ -19,12 +19,14 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
     private var mapLayout = layout
     private var mapGraph: Graph<Position>
 
-    private var playerGreen = Player(0, Position(7, 0))
-    private var playerRed = Player(1, Position(0, 7))
-    private var playerYellow = Player(2, Position(24, 7))
-    private var playerBlue = Player(3, Position(0, 17))
-    private var playerPurple = Player(4, Position(24, 17))
-    private var playerWhite = Player(5, Position(17, 24))
+    private val playerList = listOf(
+        Player(0, Position(7, 0)),
+        Player(1, Position(0, 7)),
+        Player(2, Position(24, 7)),
+        Player(3, Position(0, 17)),
+        Player(4, Position(24, 17)),
+        Player(5, Position(17, 24))
+    )
 
     private val roomList = listOf(
         Room(0, 0, 6, 5, 0, 42),
@@ -50,7 +52,7 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         Position(23, 16)
     )
 
-    private var green = players[0]
+    private var playerImageList = players
 
     private var cols = arrayOf(
         R.id.borderLeft,
@@ -115,8 +117,10 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
     }
 
     init {
-        setLayoutConstraintStart(players[0], cols[playerGreen.pos.col])
-        setLayoutConstraintTop(players[0], rows[playerGreen.pos.row])
+        for (i in 0..5) {
+            setLayoutConstraintStart(playerImageList[i], cols[playerList[i].pos.col])
+            setLayoutConstraintTop(playerImageList[i], rows[playerList[i].pos.row])
+        }
 
         mapGraph = Graph()
         for (x in 0..COLS) {
@@ -175,16 +179,16 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         return distances
     }
 
-    fun showMovingOptions() {
+    fun showMovingOptions(idx: Int) {
         val stepCount = Random.nextInt(2, 12)
-        val minLimitX = max(playerGreen.pos.col - stepCount, 0)
-        val maxLimitX = min(playerGreen.pos.col + stepCount, COLS)
-        val minLimitY = max(playerGreen.pos.row - stepCount, 0)
-        val maxLimitY = min(playerGreen.pos.row + stepCount, ROWS)
+        val minLimitX = max(playerList[idx].pos.col - stepCount, 0)
+        val maxLimitX = min(playerList[idx].pos.col + stepCount, COLS)
+        val minLimitY = max(playerList[idx].pos.row - stepCount, 0)
+        val maxLimitY = min(playerList[idx].pos.row + stepCount, ROWS)
 
         val selectionList: ArrayList<ImageView> = ArrayList()
 
-        val distances = Dijkstra(playerGreen.pos)
+        val distances = Dijkstra(playerList[idx].pos)
 
         for (x in minLimitX..maxLimitX) {
             for (y in minLimitY..maxLimitY) {
@@ -197,9 +201,9 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
                     setLayoutConstraintStart(selection, cols[x])
                     setLayoutConstraintTop(selection, rows[y])
                     selection.setOnClickListener {
-                        playerGreen.pos = Position(y, x)
-                        setLayoutConstraintStart(green, cols[x])
-                        setLayoutConstraintTop(green, rows[y])
+                        playerList[idx].pos = Position(y, x)
+                        setLayoutConstraintStart(playerImageList[idx], cols[x])
+                        setLayoutConstraintTop(playerImageList[idx], rows[y])
 
                         for (sel: ImageView in selectionList)
                             mapLayout.removeView(sel)
