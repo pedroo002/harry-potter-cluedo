@@ -26,7 +26,7 @@ class MapActivity : AppCompatActivity() {
             findViewById(R.id.ivWhitePlayer)
         )
         val mapLayout = findViewById<ConstraintLayout>(R.id.mapLayout)
-        activityMainBinding.player1 = MapViewModel(playerList, mapLayout)
+        activityMainBinding.mapViewModel = MapViewModel(playerList, mapLayout)
         activityMainBinding.executePendingBindings()
     }
 }
