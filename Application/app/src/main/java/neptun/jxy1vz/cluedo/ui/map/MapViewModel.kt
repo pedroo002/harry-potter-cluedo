@@ -192,7 +192,8 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
 
         for (x in minLimitX..maxLimitX) {
             for (y in minLimitY..maxLimitY) {
-                if (!stepInRoom(Position(y, x)) && distances[Position(y, x)]!! <= stepCount) {
+                val current = Position(y, x)
+                if (!stepInRoom(current) && distances[current]!! <= stepCount) {
                     val selection = ImageView(mapLayout.context)
                     selectionList.add(selection)
                     selection.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
@@ -201,7 +202,7 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
                     setLayoutConstraintStart(selection, cols[x])
                     setLayoutConstraintTop(selection, rows[y])
                     selection.setOnClickListener {
-                        playerList[idx].pos = Position(y, x)
+                        playerList[idx].pos = current
                         setLayoutConstraintStart(playerImageList[idx], cols[x])
                         setLayoutConstraintTop(playerImageList[idx], rows[y])
 
