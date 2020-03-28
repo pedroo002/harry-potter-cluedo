@@ -186,6 +186,14 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         return -1
     }
 
+    private fun isFieldOccupied(pos: Position): Boolean {
+        for (player in playerList) {
+            if (player.pos == pos)
+                return true
+        }
+        return false
+    }
+
     private fun Dijkstra(current: Position): HashMap<Position, Int> {
         var distances = HashMap<Position, Int>()
         var unvisited = HashSet<Position>()
@@ -252,7 +260,7 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         for (x in 0..COLS) {
             for (y in 0..ROWS) {
                 val current = Position(y, x)
-                if (stepInRoom(current) == -1 && distances!![current]!! <= stepCount) {
+                if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances!![current]!! <= stepCount) {
                     drawSelection(R.drawable.field_selection, y, x, idx)
                 }
             }
