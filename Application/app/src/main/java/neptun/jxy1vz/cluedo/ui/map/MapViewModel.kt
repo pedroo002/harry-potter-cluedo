@@ -2,19 +2,28 @@ package neptun.jxy1vz.cluedo.ui.map
 
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import androidx.databinding.BindingAdapter
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.*
-import java.util.HashSet
-import kotlin.math.max
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.elementAt
+import kotlin.collections.isNotEmpty
+import kotlin.collections.iterator
+import kotlin.collections.listOf
+import kotlin.collections.set
 import kotlin.math.min
 import kotlin.random.Random
 
 class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObservable() {
     private var mapLayout = layout
     private var mapGraph: Graph<Position>
+    private lateinit var selectionList: ArrayList<ImageView>
 
     private val playerList = listOf(
         Player(0, Position(7, 0)),
@@ -26,42 +35,42 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
     )
 
     private val roomList = listOf(
-        Room(0, 0, 6, 5, 0, 42),
-        Room(1, 0, 15, 6, 9, 49),
-        Room(2, 0, 24, 6, 18, 49),
-        Room(3, 8, 6, 11, 0, 28),
-        Room(4, 10, 14, 15, 10, 30),
-        Room(5, 9, 24, 15, 18, 49),
-        Room(6, 13, 6, 16, 0, 28),
-        Room(7, 19, 6, 24, 0, 42),
-        Room(8, 18, 15, 24, 9, 49),
-        Room(9, 18, 24, 24, 18, 49)
+        Room(0, 0, 6, 5, 0, 42, R.drawable.selection_room_sotet_varazslatok_kivedese),
+        Room(1, 0, 15, 6, 9, 49, R.drawable.selection_room_nagyterem),
+        Room(2, 0, 24, 6, 18, 49, R.drawable.selection_room_gyengelkedo),
+        Room(3, 8, 6, 11, 0, 28, R.drawable.selection_room_konyvtar),
+        Room(4, 10, 14, 15, 10, 30, R.drawable.selection_room_dumbledore),
+        Room(5, 9, 24, 15, 18, 49, R.drawable.selection_room_szukseg_szobaja),
+        Room(6, 13, 6, 16, 0, 28, R.drawable.selection_room_bagolyhaz),
+        Room(7, 19, 6, 24, 0, 42, R.drawable.selection_room_joslastan_terem),
+        Room(8, 18, 15, 24, 9, 49, R.drawable.selection_room_serleg_terem),
+        Room(9, 18, 24, 24, 18, 49, R.drawable.selection_room_bajitaltan_terem)
     )
 
     private val doorList = listOf(
-        Door(Position(1, 6), roomList[0]),
-        Door(Position(5, 1), roomList[0]),
-        Door(Position(5, 9), roomList[1]),
-        Door(Position(6, 12), roomList[1]),
-        Door(Position(5, 15), roomList[1]),
-        Door(Position(1, 18), roomList[2]),
-        Door(Position(6, 23), roomList[2]),
-        Door(Position(8, 6), roomList[3]),
-        Door(Position(11, 2), roomList[3]),
-        Door(Position(11, 10), roomList[4]),
-        Door(Position(14, 10), roomList[4]),
-        Door(Position(13, 14), roomList[4]),
-        Door(Position(9, 19), roomList[5]),
-        Door(Position(15, 19), roomList[5]),
-        Door(Position(13, 4), roomList[6]),
-        Door(Position(16, 6), roomList[6]),
-        Door(Position(19, 2), roomList[7]),
-        Door(Position(22, 6), roomList[7]),
-        Door(Position(18, 12), roomList[8]),
-        Door(Position(19, 9), roomList[8]),
-        Door(Position(19, 15), roomList[8]),
-        Door(Position(18, 22), roomList[9]),
-        Door(Position(21, 18), roomList[9])
+        Door(Position(1, 7), roomList[0]),
+        Door(Position(6, 1), roomList[0]),
+        Door(Position(5, 8), roomList[1]),
+        Door(Position(7, 12), roomList[1]),
+        Door(Position(5, 16), roomList[1]),
+        Door(Position(1, 17), roomList[2]),
+        Door(Position(7, 23), roomList[2]),
+        Door(Position(8, 7), roomList[3]),
+        Door(Position(12, 2), roomList[3]),
+        Door(Position(11, 9), roomList[4]),
+        Door(Position(14, 9), roomList[4]),
+        Door(Position(13, 15), roomList[4]),
+        Door(Position(8, 19), roomList[5]),
+        Door(Position(16, 19), roomList[5]),
+        Door(Position(12, 4), roomList[6]),
+        Door(Position(16, 7), roomList[6]),
+        Door(Position(18, 2), roomList[7]),
+        Door(Position(22, 7), roomList[7]),
+        Door(Position(17, 12), roomList[8]),
+        Door(Position(19, 8), roomList[8]),
+        Door(Position(19, 16), roomList[8]),
+        Door(Position(17, 22), roomList[9]),
+        Door(Position(21, 17), roomList[9])
     )
 
     private var starPositions = arrayOf(
@@ -146,30 +155,35 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         }
 
         mapGraph = Graph()
+
         for (x in 0..COLS) {
             for (y in 0..ROWS) {
                 val current = Position(y, x)
-                if (!stepInRoom(current)) {
-                    if (y > 0 && !stepInRoom(Position(y - 1, x)))
+                if (stepInRoom(current) == -1) {
+                    if (y > 0 && stepInRoom(Position(y - 1, x)) == -1)
                         mapGraph.addEdge(current, Position(y - 1, x))
-                    if (y < 24 && !stepInRoom(Position(y + 1, x)))
+                    if (y < 24 && stepInRoom(Position(y + 1, x)) == -1)
                         mapGraph.addEdge(current, Position(y + 1, x))
-                    if (x > 0 && !stepInRoom(Position(y, x - 1)))
+                    if (x > 0 && stepInRoom(Position(y, x - 1)) == -1)
                         mapGraph.addEdge(current, Position(y, x - 1))
-                    if (x < 24 &&!stepInRoom(Position(y, x + 1)))
+                    if (x < 24 &&stepInRoom(Position(y, x + 1)) == -1)
                         mapGraph.addEdge(current, Position(y, x + 1))
 
                 }
             }
         }
+
+        for (door: Door in doorList) {
+            mapGraph.addEdge(Position(door.room.top, door.room.left), door.position)
+        }
     }
 
-    private fun stepInRoom(pos: Position): Boolean {
+    private fun stepInRoom(pos: Position): Int {
         for (room: Room in roomList) {
             if (pos.row >= room.top && pos.row <= room.bottom && pos.col >= room.left && pos.col <= room.right)
-                return true
+                return room.id
         }
-        return false
+        return -1
     }
 
     private fun Dijkstra(current: Position): HashMap<Position, Int> {
@@ -202,40 +216,74 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         return distances
     }
 
+    private fun mergeDistances(map1: HashMap<Position, Int>, map2: HashMap<Position, Int>? = null): HashMap<Position, Int> {
+        val intersection: HashMap<Position, Int> = HashMap()
+        for (pos in map1.keys) {
+            intersection[pos] = map1[pos]!!
+        }
+        if (map2 != null) {
+            for (pos in map2.keys) {
+                if (intersection.containsKey(pos))
+                    intersection[pos] = min(map1[pos]!!, map2[pos]!!)
+                else
+                    intersection[pos] = map2[pos]!!
+            }
+        }
+        return intersection
+    }
+
     fun showMovingOptions(idx: Int) {
         val stepCount = Random.nextInt(2, 12)
-        val minLimitX = max(playerList[idx].pos.col - stepCount, 0)
-        val maxLimitX = min(playerList[idx].pos.col + stepCount, COLS)
-        val minLimitY = max(playerList[idx].pos.row - stepCount, 0)
-        val maxLimitY = min(playerList[idx].pos.row + stepCount, ROWS)
 
-        val selectionList: ArrayList<ImageView> = ArrayList()
+        selectionList = ArrayList()
 
-        val distances = Dijkstra(playerList[idx].pos)
-
-        for (x in minLimitX..maxLimitX) {
-            for (y in minLimitY..maxLimitY) {
-                val current = Position(y, x)
-                if (!stepInRoom(current) && distances[current]!! <= stepCount) {
-                    val selection = ImageView(mapLayout.context)
-                    selectionList.add(selection)
-                    selection.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
-                    selection.setImageResource(R.drawable.field_selection)
-                    selection.visibility = ImageView.VISIBLE
-                    setLayoutConstraintStart(selection, cols[x])
-                    setLayoutConstraintTop(selection, rows[y])
-                    selection.setOnClickListener {
-                        playerList[idx].pos = current
-                        setLayoutConstraintStart(playerImageList[idx], cols[x])
-                        setLayoutConstraintTop(playerImageList[idx], rows[y])
-
-                        for (sel: ImageView in selectionList)
-                            mapLayout.removeView(sel)
-                    }
-                    mapLayout.addView(selection)
+        var distances: HashMap<Position, Int>? = null
+        if (stepInRoom(playerList[idx].pos) == -1)
+            distances = Dijkstra(playerList[idx].pos)
+        else {
+            val roomId = stepInRoom(playerList[idx].pos)
+            for (door in doorList) {
+                if (door.room.id == roomId) {
+                    distances = mergeDistances(Dijkstra(Position(door.room.top, door.room.left)), distances)
                 }
             }
         }
+
+        for (x in 0..COLS) {
+            for (y in 0..ROWS) {
+                val current = Position(y, x)
+                if (stepInRoom(current) == -1 && distances!![current]!! <= stepCount) {
+                    drawSelection(R.drawable.field_selection, y, x, idx)
+                }
+            }
+        }
+
+        if (stepInRoom(playerList[idx].pos) == -1) {
+            for (door in doorList) {
+                if (distances!![door.position]!! <= stepCount - 1) {
+                    drawSelection(door.room.selection, door.room.top, door.room.left, idx)
+                }
+            }
+        }
+    }
+
+    private fun drawSelection(@DrawableRes selRes: Int, row: Int, col: Int, playerId: Int) {
+        val selection = ImageView(mapLayout.context)
+        selectionList.add(selection)
+        selection.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+        selection.setImageResource(selRes)
+        selection.visibility = ImageView.VISIBLE
+        setLayoutConstraintStart(selection, cols[col])
+        setLayoutConstraintTop(selection, rows[row])
+        selection.setOnClickListener {
+            playerList[playerId].pos = Position(row, col)
+            setLayoutConstraintStart(playerImageList[playerId], cols[playerList[playerId].pos.col])
+            setLayoutConstraintTop(playerImageList[playerId], rows[playerList[playerId].pos.row])
+
+            for (sel in selectionList)
+                mapLayout.removeView(sel)
+        }
+        mapLayout.addView(selection)
     }
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")
