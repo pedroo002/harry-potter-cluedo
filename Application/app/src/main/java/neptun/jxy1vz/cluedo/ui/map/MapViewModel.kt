@@ -6,10 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import androidx.databinding.BindingAdapter
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.model.Graph
-import neptun.jxy1vz.cluedo.model.Player
-import neptun.jxy1vz.cluedo.model.Position
-import neptun.jxy1vz.cluedo.model.Room
+import neptun.jxy1vz.cluedo.model.*
 import java.util.HashSet
 import kotlin.math.max
 import kotlin.math.min
@@ -39,6 +36,32 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         Room(7, 19, 6, 24, 0, 42),
         Room(8, 18, 15, 24, 9, 49),
         Room(9, 18, 24, 24, 18, 49)
+    )
+
+    private val doorList = listOf(
+        Door(Position(1, 6), roomList[0]),
+        Door(Position(5, 1), roomList[0]),
+        Door(Position(5, 9), roomList[1]),
+        Door(Position(6, 12), roomList[1]),
+        Door(Position(5, 15), roomList[1]),
+        Door(Position(1, 18), roomList[2]),
+        Door(Position(6, 23), roomList[2]),
+        Door(Position(8, 6), roomList[3]),
+        Door(Position(11, 2), roomList[3]),
+        Door(Position(11, 10), roomList[4]),
+        Door(Position(14, 10), roomList[4]),
+        Door(Position(13, 14), roomList[4]),
+        Door(Position(9, 19), roomList[5]),
+        Door(Position(15, 19), roomList[5]),
+        Door(Position(13, 4), roomList[6]),
+        Door(Position(16, 6), roomList[6]),
+        Door(Position(19, 2), roomList[7]),
+        Door(Position(22, 6), roomList[7]),
+        Door(Position(18, 12), roomList[8]),
+        Door(Position(19, 9), roomList[8]),
+        Door(Position(19, 15), roomList[8]),
+        Door(Position(18, 22), roomList[9]),
+        Door(Position(21, 18), roomList[9])
     )
 
     private var starPositions = arrayOf(
