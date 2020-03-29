@@ -23,7 +23,7 @@ import kotlin.random.Random
 class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObservable() {
     private var mapLayout = layout
     private var mapGraph: Graph<Position>
-    private lateinit var selectionList: ArrayList<ImageView>
+    private var selectionList: ArrayList<ImageView> = ArrayList()
 
     private val playerList = listOf(
         Player(0, Position(7, 0)),
@@ -243,8 +243,6 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
     fun showMovingOptions(idx: Int) {
         val stepCount = Random.nextInt(2, 12)
 
-        selectionList = ArrayList()
-
         var distances: HashMap<Position, Int>? = null
         if (stepInRoom(playerList[idx].pos) == -1)
             distances = Dijkstra(playerList[idx].pos)
@@ -290,6 +288,7 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
 
             for (sel in selectionList)
                 mapLayout.removeView(sel)
+            selectionList = ArrayList()
         }
         mapLayout.addView(selection)
     }
