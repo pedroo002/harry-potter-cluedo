@@ -175,6 +175,7 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
 
         for (door: Door in doorList) {
             mapGraph.addEdge(Position(door.room.top, door.room.left), door.position)
+            mapGraph.addEdge(door.position, Position(door.room.top, door.room.left))
         }
     }
 
@@ -194,7 +195,15 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         return false
     }
 
-    private fun Dijkstra(current: Position): HashMap<Position, Int> {
+    private fun isDoor(pos: Position): Boolean {
+        for (door in doorList) {
+            if (door.position == pos)
+                return true
+        }
+        return false
+    }
+
+    private fun dijkstra(current: Position): HashMap<Position, Int> {
         var distances = HashMap<Position, Int>()
         var unvisited = HashSet<Position>()
 
@@ -215,7 +224,8 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
 
             for (neighbour in mapGraph.adjacencyMap[field]!!) {
                 if (unvisited.contains(neighbour)) {
-                    distances[neighbour] = min(distances[neighbour]!!, distances[field]!! + 1)
+                    if (stepInRoom(field) == -1 || !isDoor(neighbour))
+                        distances[neighbour] = min(distances[neighbour]!!, distances[field]!! + 1)
                 }
             }
             unvisited.remove(field)
@@ -245,12 +255,12 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
 
         var distances: HashMap<Position, Int>? = null
         if (stepInRoom(playerList[idx].pos) == -1)
-            distances = Dijkstra(playerList[idx].pos)
+            distances = dijkstra(playerList[idx].pos)
         else {
             val roomId = stepInRoom(playerList[idx].pos)
             for (door in doorList) {
                 if (door.room.id == roomId) {
-                    distances = mergeDistances(Dijkstra(Position(door.room.top, door.room.left)), distances)
+                    distances = mergeDistances(dijkstra(Position(door.room.top, door.room.left)), distances)
                 }
             }
         }
