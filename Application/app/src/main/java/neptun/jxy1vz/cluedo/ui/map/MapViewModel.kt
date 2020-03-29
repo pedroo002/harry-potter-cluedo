@@ -251,6 +251,8 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
     }
 
     fun showMovingOptions(idx: Int) {
+        emptySelectionList()
+
         val stepCount = Random.nextInt(2, 12)
 
         var distances: HashMap<Position, Int>? = null
@@ -296,11 +298,15 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
             setLayoutConstraintStart(playerImageList[playerId], cols[playerList[playerId].pos.col])
             setLayoutConstraintTop(playerImageList[playerId], rows[playerList[playerId].pos.row])
 
-            for (sel in selectionList)
-                mapLayout.removeView(sel)
-            selectionList = ArrayList()
+            emptySelectionList()
         }
         mapLayout.addView(selection)
+    }
+
+    private fun emptySelectionList() {
+        for (sel in selectionList)
+            mapLayout.removeView(sel)
+        selectionList = ArrayList()
     }
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")
