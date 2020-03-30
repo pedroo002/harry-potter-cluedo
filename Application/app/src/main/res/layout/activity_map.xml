@@ -176,14 +176,14 @@
 
                 <!--Guidelines...-->
 
-                <!--Cols-->
+                <!--Borders-->
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/borderLeft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_begin="34dp" />
+                    app:layout_constraintGuide_begin="31dp" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/borderRight"
@@ -197,14 +197,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    app:layout_constraintGuide_begin="31dp" />
+                    app:layout_constraintGuide_begin="29dp" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/borderBottom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    app:layout_constraintGuide_begin="1114dp" />
+                    app:layout_constraintGuide_begin="1112dp" />
+
+                <!--Cols-->
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guidelineCol1"
@@ -330,7 +332,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_begin="815dp" />
+                    app:layout_constraintGuide_begin="811dp" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guidelineCol19"
@@ -509,7 +511,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    app:layout_constraintGuide_begin="852dp" />
+                    app:layout_constraintGuide_begin="849dp" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guidelineRow20"
