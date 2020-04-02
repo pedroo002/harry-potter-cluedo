@@ -9,6 +9,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapActivity
 class MenuViewModel(private val context: Context, private val fragmentManager: FragmentManager) : BaseObservable() {
     fun openMap() {
         val mapIntent = Intent(context, MapActivity::class.java)
+        mapIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(mapIntent)
     }
 }
