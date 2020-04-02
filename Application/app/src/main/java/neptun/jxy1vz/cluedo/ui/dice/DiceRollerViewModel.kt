@@ -43,7 +43,7 @@ class DiceRollerViewModel(private val listener: DiceViewModelInterface, private 
             3 -> R.drawable.slytherin
             4 -> R.drawable.hufflepuff
             5 -> R.drawable.ravenclaw
-            else -> R.drawable.dark_sign_black_gold
+            else -> R.drawable.dark_mark
         }
     }
 
