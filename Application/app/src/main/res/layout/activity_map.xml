@@ -10,11 +10,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -119,7 +115,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_green"
-                    android:onClick="@{()->mapViewModel.showMovingOptions(0)}"
+                    android:onClick="@{()->mapViewModel.showDialog(0)}"
                     app:layout_constraintStart_toStartOf="@id/borderLeft"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow7"
                     android:contentDescription="@string/player1" />
@@ -129,7 +125,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_red"
-                    android:onClick="@{()->mapViewModel.showMovingOptions(1)}"
+                    android:onClick="@{()->mapViewModel.showDialog(1)}"
                     app:layout_constraintStart_toStartOf="@id/guidelineCol7"
                     app:layout_constraintTop_toTopOf="@id/borderTop"
                     android:contentDescription="@string/player2" />
@@ -139,7 +135,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_yellow"
-                    android:onClick="@{()->mapViewModel.showMovingOptions(2)}"
+                    android:onClick="@{()->mapViewModel.showDialog(2)}"
                     app:layout_constraintStart_toStartOf="@id/guidelineCol24"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow7"
                     android:contentDescription="@string/player3" />
@@ -149,7 +145,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_blue"
-                    android:onClick="@{()->mapViewModel.showMovingOptions(3)}"
+                    android:onClick="@{()->mapViewModel.showDialog(3)}"
                     app:layout_constraintStart_toStartOf="@id/borderLeft"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow17"
                     android:contentDescription="@string/player4" />
@@ -159,7 +155,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_purple"
-                    android:onClick="@{()->mapViewModel.showMovingOptions(4)}"
+                    android:onClick="@{()->mapViewModel.showDialog(4)}"
                     app:layout_constraintStart_toStartOf="@id/guidelineCol24"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow17"
                     android:contentDescription="@string/player5" />
@@ -169,7 +165,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_white"
-                    android:onClick="@{()->mapViewModel.showMovingOptions(5)}"
+                    android:onClick="@{()->mapViewModel.showDialog(5)}"
                     app:layout_constraintStart_toStartOf="@id/guidelineCol17"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow24"
                     android:contentDescription="@string/player6" />

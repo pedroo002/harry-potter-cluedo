@@ -20,4 +20,5 @@
     <string name="player6">Player6</string>
     <string name="logo_description">Logo of the game</string>
     <string name="settings_icon">Settings icon</string>
+    <string name="dob">Dobás</string>
 </resources>

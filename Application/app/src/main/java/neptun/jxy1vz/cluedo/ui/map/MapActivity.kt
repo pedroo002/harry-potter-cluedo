@@ -13,7 +13,7 @@ class MapActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val activityMainBinding = setContentView<ActivityMapBinding>(this, R.layout.activity_map)
+        val activityMapBinding = setContentView<ActivityMapBinding>(this, R.layout.activity_map)
         val playerList = listOf<ImageView>(
             findViewById(R.id.ivGreenPlayer),
             findViewById(R.id.ivRedPlayer),
@@ -23,7 +23,7 @@ class MapActivity : AppCompatActivity() {
             findViewById(R.id.ivWhitePlayer)
         )
         val mapLayout = findViewById<ConstraintLayout>(R.id.mapLayout)
-        activityMainBinding.mapViewModel = MapViewModel(playerList, mapLayout)
-        activityMainBinding.executePendingBindings()
+        activityMapBinding.mapViewModel = MapViewModel(playerList, mapLayout, supportFragmentManager)
+        activityMapBinding.executePendingBindings()
     }
 }

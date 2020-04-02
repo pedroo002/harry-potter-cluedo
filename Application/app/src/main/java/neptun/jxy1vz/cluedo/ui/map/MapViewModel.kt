@@ -6,8 +6,10 @@ import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import androidx.databinding.BindingAdapter
+import androidx.fragment.app.FragmentManager
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.*
+import neptun.jxy1vz.cluedo.ui.dice.DiceRollerDialog
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -20,10 +22,12 @@ import kotlin.collections.set
 import kotlin.math.min
 import kotlin.random.Random
 
-class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObservable() {
+class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: FragmentManager) : BaseObservable(),
+    DiceRollerDialog.DiceResultInterface {
     private var mapLayout = layout
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
+    private val fm: FragmentManager = fm
 
     private val playerList = listOf(
         Player(0, Position(7, 0)),
@@ -250,16 +254,18 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         return intersection
     }
 
-    fun showMovingOptions(idx: Int) {
+    fun showDialog(playerId: Int) {
+        DiceRollerDialog(this, playerId).show(fm, "DIALOG_DICE")
+    }
+
+    private fun showMovingOptions(playerId: Int, stepCount: Int) {
         emptySelectionList()
 
-        val stepCount = Random.nextInt(2, 12)
-
         var distances: HashMap<Position, Int>? = null
-        if (stepInRoom(playerList[idx].pos) == -1)
-            distances = dijkstra(playerList[idx].pos)
+        if (stepInRoom(playerList[playerId].pos) == -1)
+            distances = dijkstra(playerList[playerId].pos)
         else {
-            val roomId = stepInRoom(playerList[idx].pos)
+            val roomId = stepInRoom(playerList[playerId].pos)
             for (door in doorList) {
                 if (door.room.id == roomId) {
                     distances = mergeDistances(dijkstra(Position(door.room.top, door.room.left)), distances)
@@ -271,15 +277,15 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
             for (y in 0..ROWS) {
                 val current = Position(y, x)
                 if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances!![current]!! <= stepCount) {
-                    drawSelection(R.drawable.field_selection, y, x, idx)
+                    drawSelection(R.drawable.field_selection, y, x, playerId)
                 }
             }
         }
 
-        if (stepInRoom(playerList[idx].pos) == -1) {
+        if (stepInRoom(playerList[playerId].pos) == -1) {
             for (door in doorList) {
                 if (distances!![door.position]!! <= stepCount - 1) {
-                    drawSelection(door.room.selection, door.room.top, door.room.left, idx)
+                    drawSelection(door.room.selection, door.room.top, door.room.left, playerId)
                 }
             }
         }
@@ -321,5 +327,9 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout) : BaseObs
         val layoutParams: ConstraintLayout.LayoutParams = view.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.startToStart = col
         view.layoutParams = layoutParams
+    }
+
+    override fun onDiceRoll(player: Int, sum: Int, other: Int) {
+        showMovingOptions(player, sum)
     }
 }
