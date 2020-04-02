@@ -2,20 +2,80 @@ package neptun.jxy1vz.cluedo.ui.map
 
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import androidx.databinding.BindingAdapter
+import androidx.fragment.app.FragmentManager
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.model.Player
-import neptun.jxy1vz.cluedo.model.Position
+import neptun.jxy1vz.cluedo.model.*
+import neptun.jxy1vz.cluedo.ui.dice.DiceRollerDialog
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.elementAt
+import kotlin.collections.isNotEmpty
+import kotlin.collections.iterator
+import kotlin.collections.listOf
+import kotlin.collections.set
+import kotlin.math.min
+import kotlin.random.Random
 
-class MapViewModel(players: List<ImageView>) : BaseObservable() {
-    private var playerGreen = Player(0, Position(7, 0))
-    private var playerRed = Player(1, Position(0, 7))
-    private var playerYellow = Player(2, Position(24, 7))
-    private var playerBlue = Player(3, Position(0, 17))
-    private var playerPurple = Player(4, Position(24, 17))
-    private var playerWhite = Player(5, Position(17, 24))
+class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: FragmentManager) : BaseObservable(),
+    DiceRollerDialog.DiceResultInterface {
+    private var mapLayout = layout
+    private var mapGraph: Graph<Position>
+    private var selectionList: ArrayList<ImageView> = ArrayList()
+    private val fm: FragmentManager = fm
+
+    private val playerList = listOf(
+        Player(0, Position(7, 0)),
+        Player(1, Position(0, 7)),
+        Player(2, Position(24, 7)),
+        Player(3, Position(0, 17)),
+        Player(4, Position(24, 17)),
+        Player(5, Position(17, 24))
+    )
+
+    private val roomList = listOf(
+        Room(0, 0, 6, 5, 0, 42, R.drawable.selection_room_sotet_varazslatok_kivedese),
+        Room(1, 0, 15, 6, 9, 49, R.drawable.selection_room_nagyterem),
+        Room(2, 0, 24, 6, 18, 49, R.drawable.selection_room_gyengelkedo),
+        Room(3, 8, 6, 11, 0, 28, R.drawable.selection_room_konyvtar),
+        Room(4, 10, 14, 15, 10, 30, R.drawable.selection_room_dumbledore),
+        Room(5, 9, 24, 15, 18, 49, R.drawable.selection_room_szukseg_szobaja),
+        Room(6, 13, 6, 16, 0, 28, R.drawable.selection_room_bagolyhaz),
+        Room(7, 19, 6, 24, 0, 42, R.drawable.selection_room_joslastan_terem),
+        Room(8, 18, 15, 24, 9, 49, R.drawable.selection_room_serleg_terem),
+        Room(9, 18, 24, 24, 18, 49, R.drawable.selection_room_bajitaltan_terem)
+    )
+
+    private val doorList = listOf(
+        Door(Position(1, 7), roomList[0]),
+        Door(Position(6, 1), roomList[0]),
+        Door(Position(5, 8), roomList[1]),
+        Door(Position(7, 12), roomList[1]),
+        Door(Position(5, 16), roomList[1]),
+        Door(Position(1, 17), roomList[2]),
+        Door(Position(7, 23), roomList[2]),
+        Door(Position(8, 7), roomList[3]),
+        Door(Position(12, 2), roomList[3]),
+        Door(Position(11, 9), roomList[4]),
+        Door(Position(14, 9), roomList[4]),
+        Door(Position(13, 15), roomList[4]),
+        Door(Position(8, 19), roomList[5]),
+        Door(Position(16, 19), roomList[5]),
+        Door(Position(12, 4), roomList[6]),
+        Door(Position(16, 7), roomList[6]),
+        Door(Position(18, 2), roomList[7]),
+        Door(Position(22, 7), roomList[7]),
+        Door(Position(17, 12), roomList[8]),
+        Door(Position(19, 8), roomList[8]),
+        Door(Position(19, 16), roomList[8]),
+        Door(Position(17, 22), roomList[9]),
+        Door(Position(21, 17), roomList[9])
+    )
 
     private var starPositions = arrayOf(
         Position(2, 8),
@@ -28,7 +88,7 @@ class MapViewModel(players: List<ImageView>) : BaseObservable() {
         Position(23, 16)
     )
 
-    private var green = players[0]
+    private var playerImageList = players
 
     private var cols = arrayOf(
         R.id.borderLeft,
@@ -93,36 +153,166 @@ class MapViewModel(players: List<ImageView>) : BaseObservable() {
     }
 
     init {
-        setLayoutConstraintStart(players[0], cols[playerGreen.pos.col])
-        setLayoutConstraintTop(players[0], rows[playerGreen.pos.row])
+        for (i in 0..5) {
+            setLayoutConstraintStart(playerImageList[i], cols[playerList[i].pos.col])
+            setLayoutConstraintTop(playerImageList[i], rows[playerList[i].pos.row])
+        }
+
+        mapGraph = Graph()
+
+        for (x in 0..COLS) {
+            for (y in 0..ROWS) {
+                val current = Position(y, x)
+                if (stepInRoom(current) == -1) {
+                    if (y > 0 && stepInRoom(Position(y - 1, x)) == -1)
+                        mapGraph.addEdge(current, Position(y - 1, x))
+                    if (y < 24 && stepInRoom(Position(y + 1, x)) == -1)
+                        mapGraph.addEdge(current, Position(y + 1, x))
+                    if (x > 0 && stepInRoom(Position(y, x - 1)) == -1)
+                        mapGraph.addEdge(current, Position(y, x - 1))
+                    if (x < 24 &&stepInRoom(Position(y, x + 1)) == -1)
+                        mapGraph.addEdge(current, Position(y, x + 1))
+
+                }
+            }
+        }
+
+        for (door: Door in doorList) {
+            mapGraph.addEdge(Position(door.room.top, door.room.left), door.position)
+            mapGraph.addEdge(door.position, Position(door.room.top, door.room.left))
+        }
     }
 
-    fun moveDown() {
-        if (playerGreen.pos.row == ROWS)
-            return
-        playerGreen.pos.row++
-        setLayoutConstraintTop(green, rows[playerGreen.pos.row])
+    private fun stepInRoom(pos: Position): Int {
+        for (room: Room in roomList) {
+            if (pos.row >= room.top && pos.row <= room.bottom && pos.col >= room.left && pos.col <= room.right)
+                return room.id
+        }
+        return -1
     }
 
-    fun moveUp() {
-        if (playerGreen.pos.row == 0)
-            return
-        playerGreen.pos.row--
-        setLayoutConstraintTop(green, rows[playerGreen.pos.row])
+    private fun isFieldOccupied(pos: Position): Boolean {
+        for (player in playerList) {
+            if (player.pos == pos)
+                return true
+        }
+        return false
     }
 
-    fun moveLeft() {
-        if (playerGreen.pos.col == 0)
-            return
-        playerGreen.pos.col--
-        setLayoutConstraintStart(green, cols[playerGreen.pos.col])
+    private fun isDoor(pos: Position): Boolean {
+        for (door in doorList) {
+            if (door.position == pos)
+                return true
+        }
+        return false
     }
 
-    fun moveRight() {
-        if (playerGreen.pos.col == COLS)
-            return
-        playerGreen.pos.col++
-        setLayoutConstraintStart(green, cols[playerGreen.pos.col])
+    private fun dijkstra(current: Position): HashMap<Position, Int> {
+        var distances = HashMap<Position, Int>()
+        var unvisited = HashSet<Position>()
+
+        for (field in mapGraph.adjacencyMap.keys) {
+            unvisited.add(field)
+            if (field == current)
+                distances[field] = 0
+            else
+                distances[field] = Int.MAX_VALUE
+        }
+
+        while (unvisited.isNotEmpty()) {
+            var field: Position = unvisited.elementAt(0)
+            for (pair in distances) {
+                if (unvisited.contains(pair.key) && pair.value < distances[field]!!)
+                    field = pair.key
+            }
+
+            for (neighbour in mapGraph.adjacencyMap[field]!!) {
+                if (unvisited.contains(neighbour)) {
+                    if (stepInRoom(field) == -1 || !isDoor(neighbour))
+                        distances[neighbour] = min(distances[neighbour]!!, distances[field]!! + 1)
+                }
+            }
+            unvisited.remove(field)
+        }
+
+        return distances
+    }
+
+    private fun mergeDistances(map1: HashMap<Position, Int>, map2: HashMap<Position, Int>? = null): HashMap<Position, Int> {
+        val intersection: HashMap<Position, Int> = HashMap()
+        for (pos in map1.keys) {
+            intersection[pos] = map1[pos]!!
+        }
+        if (map2 != null) {
+            for (pos in map2.keys) {
+                if (intersection.containsKey(pos))
+                    intersection[pos] = min(map1[pos]!!, map2[pos]!!)
+                else
+                    intersection[pos] = map2[pos]!!
+            }
+        }
+        return intersection
+    }
+
+    fun showDialog(playerId: Int) {
+        DiceRollerDialog(this, playerId).show(fm, "DIALOG_DICE")
+    }
+
+    private fun showMovingOptions(playerId: Int, stepCount: Int) {
+        emptySelectionList()
+
+        var distances: HashMap<Position, Int>? = null
+        if (stepInRoom(playerList[playerId].pos) == -1)
+            distances = dijkstra(playerList[playerId].pos)
+        else {
+            val roomId = stepInRoom(playerList[playerId].pos)
+            for (door in doorList) {
+                if (door.room.id == roomId) {
+                    distances = mergeDistances(dijkstra(Position(door.room.top, door.room.left)), distances)
+                }
+            }
+        }
+
+        for (x in 0..COLS) {
+            for (y in 0..ROWS) {
+                val current = Position(y, x)
+                if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances!![current]!! <= stepCount) {
+                    drawSelection(R.drawable.field_selection, y, x, playerId)
+                }
+            }
+        }
+
+        if (stepInRoom(playerList[playerId].pos) == -1) {
+            for (door in doorList) {
+                if (distances!![door.position]!! <= stepCount - 1) {
+                    drawSelection(door.room.selection, door.room.top, door.room.left, playerId)
+                }
+            }
+        }
+    }
+
+    private fun drawSelection(@DrawableRes selRes: Int, row: Int, col: Int, playerId: Int) {
+        val selection = ImageView(mapLayout.context)
+        selectionList.add(selection)
+        selection.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+        selection.setImageResource(selRes)
+        selection.visibility = ImageView.VISIBLE
+        setLayoutConstraintStart(selection, cols[col])
+        setLayoutConstraintTop(selection, rows[row])
+        selection.setOnClickListener {
+            playerList[playerId].pos = Position(row, col)
+            setLayoutConstraintStart(playerImageList[playerId], cols[playerList[playerId].pos.col])
+            setLayoutConstraintTop(playerImageList[playerId], rows[playerList[playerId].pos.row])
+
+            emptySelectionList()
+        }
+        mapLayout.addView(selection)
+    }
+
+    private fun emptySelectionList() {
+        for (sel in selectionList)
+            mapLayout.removeView(sel)
+        selectionList = ArrayList()
     }
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")
@@ -137,5 +327,9 @@ class MapViewModel(players: List<ImageView>) : BaseObservable() {
         val layoutParams: ConstraintLayout.LayoutParams = view.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.startToStart = col
         view.layoutParams = layoutParams
+    }
+
+    override fun onDiceRoll(player: Int, sum: Int, other: Int) {
+        showMovingOptions(player, sum)
     }
 }
