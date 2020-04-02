@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="menu"
+            type="neptun.jxy1vz.cluedo.ui.menu.MenuViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/hogwarts">
 
     <ImageView
         android:id="@+id/ivLogo"
@@ -12,19 +23,17 @@
         android:src="@drawable/game_logo"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/logo_description" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/ivSettings"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginStart="15dp"
-        android:src="@drawable/ic_settings_black_24dp"
+        android:src="@drawable/ic_settings_white_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/btnExit"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnExit"
-        android:contentDescription="@string/settings_icon" />
+        app:layout_constraintTop_toTopOf="@+id/btnExit" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineLeft"
@@ -41,7 +50,8 @@
         app:layout_constraintBottom_toTopOf="@+id/guidelineButtonsBottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guidelineButtonsUpper" />
+        app:layout_constraintTop_toTopOf="@+id/guidelineButtonsUpper"
+        android:onClick="@{()->menu.openMap()}"/>
 
     <Button
         android:id="@+id/btnRules"
@@ -51,7 +61,7 @@
         app:layout_constraintBottom_toTopOf="@+id/guidelineButtonsBottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnStart" />
+        app:layout_constraintTop_toBottomOf="@+id/btnStart"/>
 
     <Button
         android:id="@+id/btnExit"
@@ -84,4 +94,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.6" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
