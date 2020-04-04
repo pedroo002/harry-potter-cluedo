@@ -40,12 +40,12 @@ class CharacterSelectorDialog : DialogFragment(), AdapterView.OnItemSelectedList
 
         dialogCharacterSelectorBinding.dialogViewModel = CharacterSelectorViewModel(context!!)
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Dialog)
-            .setView(dialogCharacterSelectorBinding.root).setTitle("Válaszd ki a karaktered")
+            .setView(dialogCharacterSelectorBinding.root).setTitle(resources.getString(R.string.dialog_character_title))
             .create()
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-
+        dialogCharacterSelectorBinding.ivCharacterCard.setImageResource(R.drawable.szereplo_hatlap)
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

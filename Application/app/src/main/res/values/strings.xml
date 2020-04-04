@@ -23,6 +23,7 @@
     <string name="dob">Dobás</string>
     <string name="choose_a_character">Válassz karaktert magadnak!</string>
     <string name="start">Start</string>
+    <string name="dialog_character_title">Válaszd ki a karaktered</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
