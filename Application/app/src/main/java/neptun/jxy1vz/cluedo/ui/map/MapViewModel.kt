@@ -13,14 +13,8 @@ import neptun.jxy1vz.cluedo.ui.dice.DiceRollerDialog
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.elementAt
-import kotlin.collections.isNotEmpty
-import kotlin.collections.iterator
-import kotlin.collections.listOf
 import kotlin.collections.set
 import kotlin.math.min
-import kotlin.random.Random
 
 class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: FragmentManager) : BaseObservable(),
     DiceRollerDialog.DiceResultInterface {

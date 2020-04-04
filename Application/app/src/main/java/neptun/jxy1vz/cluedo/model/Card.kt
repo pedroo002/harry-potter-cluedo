@@ -1,19 +1,17 @@
 package neptun.jxy1vz.cluedo.model
 
-import androidx.annotation.DrawableRes
-
 interface Card {
     val id: Int
     val name: String
-    val imageRes: DrawableRes
-    val verso: DrawableRes
+    val imageRes: Int
+    val verso: Int
 }
 
 data class HelperCard(
     val id: Int,
     val name: String,
-    val imageRes: DrawableRes,
-    val verso: DrawableRes,
+    val imageRes: Int,
+    val verso: Int,
     val type: HelperType,
     val count: Int = 1,
     val extra: String? = null
@@ -22,27 +20,27 @@ data class HelperCard(
 data class MysteryCard(
     val id: Int,
     val name: String,
-    val imageRes: DrawableRes,
-    val verso: DrawableRes,
+    val imageRes: Int,
+    val verso: Int,
     val type: MysteryType
 )
 
 data class DarkCard(
     val id: Int,
     val name: String,
-    val imageRes: DrawableRes,
-    val verso: DrawableRes,
+    val imageRes: Int,
+    val verso: Int,
     val type: DarkType,
     val lossType: LossType,
     val hpLoss: Int,
-    val helper: List<HelperCard>? = null
+    val helperIds: List<Int>? = null
 )
 
 data class PlayerCard(
     val id: Int,
     val name: String,
-    val imageRes: DrawableRes,
-    val verso: DrawableRes,
+    val imageRes: Int,
+    val verso: Int,
     val sex: Sex,
     val color: PlayerColor
 )
