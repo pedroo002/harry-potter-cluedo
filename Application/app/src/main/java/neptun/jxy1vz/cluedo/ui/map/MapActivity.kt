@@ -14,16 +14,16 @@ class MapActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val activityMapBinding = setContentView<ActivityMapBinding>(this, R.layout.activity_map)
-        val playerList = listOf<ImageView>(
-            findViewById(R.id.ivGreenPlayer),
-            findViewById(R.id.ivRedPlayer),
-            findViewById(R.id.ivYellowPlayer),
+        val playerImageList = listOf<ImageView>(
             findViewById(R.id.ivBluePlayer),
             findViewById(R.id.ivPurplePlayer),
-            findViewById(R.id.ivWhitePlayer)
+            findViewById(R.id.ivRedPlayer),
+            findViewById(R.id.ivYellowPlayer),
+            findViewById(R.id.ivWhitePlayer),
+            findViewById(R.id.ivGreenPlayer)
         )
         val mapLayout = findViewById<ConstraintLayout>(R.id.mapLayout)
-        activityMapBinding.mapViewModel = MapViewModel(playerList, mapLayout, supportFragmentManager)
+        activityMapBinding.mapViewModel = MapViewModel(intent.getIntExtra("Player ID", 0), playerImageList, mapLayout, supportFragmentManager)
         activityMapBinding.executePendingBindings()
     }
 }

@@ -17,14 +17,14 @@ import kotlin.collections.HashMap
 import kotlin.collections.set
 import kotlin.math.min
 
-class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: FragmentManager) : BaseObservable(),
+class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, private var mapLayout: ConstraintLayout, private val fm: FragmentManager)
+    : BaseObservable(),
     DiceRollerDialog.DiceResultInterface {
 
-    private var mapLayout = layout
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
-    private val fm: FragmentManager = fm
-    private var playerImageList = players
+
+    private var player = playerList[playerId]
 
     companion object {
         const val ROWS = 24
@@ -134,6 +134,8 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: Fragm
     }
 
     fun showDialog(playerId: Int) {
+        if (player.id != playerId)
+            return
         DiceRollerDialog(this, playerId).show(fm, "DIALOG_DICE")
     }
 

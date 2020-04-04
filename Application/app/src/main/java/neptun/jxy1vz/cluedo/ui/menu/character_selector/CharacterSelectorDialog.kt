@@ -54,7 +54,7 @@ class CharacterSelectorDialog : DialogFragment(), AdapterView.OnItemSelectedList
             setTarget(dialogCharacterSelectorBinding.ivCharacterCard)
             start()
             doOnEnd {
-                dialogCharacterSelectorBinding.dialogViewModel.setPlayer(position)
+                dialogCharacterSelectorBinding.dialogViewModel!!.setPlayer(position)
 
                 @DrawableRes val img = when (position) {
                     0 -> R.drawable.szereplo_ginny

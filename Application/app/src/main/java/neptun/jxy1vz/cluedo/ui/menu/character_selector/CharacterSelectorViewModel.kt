@@ -13,6 +13,7 @@ class CharacterSelectorViewModel(private val context: Context) : BaseObservable(
 
     fun startGame() {
         val mapIntent = Intent(context, MapActivity::class.java)
+        mapIntent.putExtra("Player ID", player.id)
         mapIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(mapIntent)
     }

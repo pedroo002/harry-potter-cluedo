@@ -6,7 +6,7 @@ import neptun.jxy1vz.cluedo.model.Player
 import neptun.jxy1vz.cluedo.model.Position
 import neptun.jxy1vz.cluedo.model.Room
 
-val playerList = listOf(
+var playerList = listOf(
     Player(0, Position(0, 17)),
     Player(1, Position(24, 17)),
     Player(2, Position(0, 7)),
