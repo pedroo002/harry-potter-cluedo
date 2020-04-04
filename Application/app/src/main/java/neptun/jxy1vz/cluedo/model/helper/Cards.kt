@@ -1,6 +1,7 @@
-package neptun.jxy1vz.cluedo.model
+package neptun.jxy1vz.cluedo.model.helper
 
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.model.*
 
 val playerCards = listOf(
     PlayerCard(
@@ -54,8 +55,20 @@ val playerCards = listOf(
 )
 
 val helperCards = listOf(
-    HelperCard(0, "Bezoár", R.drawable.mento_bezoar, R.drawable.mento_hatlap, HelperType.TOOL),
-    HelperCard(1, "Seprű", R.drawable.mento_sepru, R.drawable.mento_hatlap, HelperType.TOOL),
+    HelperCard(
+        0,
+        "Bezoár",
+        R.drawable.mento_bezoar,
+        R.drawable.mento_hatlap,
+        HelperType.TOOL
+    ),
+    HelperCard(
+        1,
+        "Seprű",
+        R.drawable.mento_sepru,
+        R.drawable.mento_hatlap,
+        HelperType.TOOL
+    ),
     HelperCard(
         2,
         "Álságdetektor",
@@ -63,7 +76,13 @@ val helperCards = listOf(
         R.drawable.mento_hatlap,
         HelperType.TOOL
     ),
-    HelperCard(3, "Önoltó", R.drawable.mento_onolto, R.drawable.mento_hatlap, HelperType.TOOL),
+    HelperCard(
+        3,
+        "Önoltó",
+        R.drawable.mento_onolto,
+        R.drawable.mento_hatlap,
+        HelperType.TOOL
+    ),
     HelperCard(
         4,
         "Varangydudva",
@@ -115,8 +134,20 @@ val helperCards = listOf(
         R.drawable.mento_hatlap,
         HelperType.ALLY
     ),
-    HelperCard(11, "Dobby", R.drawable.mento_dobby, R.drawable.mento_hatlap, HelperType.ALLY),
-    HelperCard(12, "Fawkes", R.drawable.mento_fawkes, R.drawable.mento_hatlap, HelperType.ALLY),
+    HelperCard(
+        11,
+        "Dobby",
+        R.drawable.mento_dobby,
+        R.drawable.mento_hatlap,
+        HelperType.ALLY
+    ),
+    HelperCard(
+        12,
+        "Fawkes",
+        R.drawable.mento_fawkes,
+        R.drawable.mento_hatlap,
+        HelperType.ALLY
+    ),
     HelperCard(
         13,
         "Madam Pomfrey",
@@ -166,7 +197,13 @@ val helperCards = listOf(
         R.drawable.mento_hatlap,
         HelperType.SPELL
     ),
-    HelperCard(20, "Lumos", R.drawable.mento_lumos, R.drawable.mento_hatlap, HelperType.SPELL),
+    HelperCard(
+        20,
+        "Lumos",
+        R.drawable.mento_lumos,
+        R.drawable.mento_hatlap,
+        HelperType.SPELL
+    ),
     HelperCard(
         21,
         "Petrificus Totalus",
@@ -174,7 +211,13 @@ val helperCards = listOf(
         R.drawable.mento_hatlap,
         HelperType.SPELL
     ),
-    HelperCard(22, "Protego", R.drawable.mento_protego, R.drawable.mento_hatlap, HelperType.SPELL),
+    HelperCard(
+        22,
+        "Protego",
+        R.drawable.mento_protego,
+        R.drawable.mento_hatlap,
+        HelperType.SPELL
+    ),
     HelperCard(
         23,
         "Commikulissimus",
@@ -182,7 +225,13 @@ val helperCards = listOf(
         R.drawable.mento_hatlap,
         HelperType.SPELL
     ),
-    HelperCard(24, "Stupor", R.drawable.mento_stupor, R.drawable.mento_hatlap, HelperType.SPELL),
+    HelperCard(
+        24,
+        "Stupor",
+        R.drawable.mento_stupor,
+        R.drawable.mento_hatlap,
+        HelperType.SPELL
+    ),
     HelperCard(
         25,
         "Vingardium Leviosa",

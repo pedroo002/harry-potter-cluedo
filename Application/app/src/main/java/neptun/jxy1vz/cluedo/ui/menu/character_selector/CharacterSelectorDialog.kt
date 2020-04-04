@@ -1,6 +1,5 @@
 package neptun.jxy1vz.cluedo.ui.menu.character_selector
 
-import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.app.Dialog
@@ -18,6 +17,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogCharacterSelectorBinding
 
 class CharacterSelectorDialog : DialogFragment(), AdapterView.OnItemSelectedListener {
+
     private lateinit var dialogCharacterSelectorBinding: DialogCharacterSelectorBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -54,6 +54,8 @@ class CharacterSelectorDialog : DialogFragment(), AdapterView.OnItemSelectedList
             setTarget(dialogCharacterSelectorBinding.ivCharacterCard)
             start()
             doOnEnd {
+                dialogCharacterSelectorBinding.dialogViewModel.setPlayer(position)
+
                 @DrawableRes val img = when (position) {
                     0 -> R.drawable.szereplo_ginny
                     1 -> R.drawable.szereplo_harry
