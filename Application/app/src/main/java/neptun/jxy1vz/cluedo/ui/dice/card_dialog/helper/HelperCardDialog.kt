@@ -12,8 +12,8 @@ class HelperCardDialog(private val cardResource: Int) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): AlertDialog {
         val dialogHelperCardBinding = DataBindingUtil.inflate<DialogHelperCardBinding>(LayoutInflater.from(context), R.layout.dialog_helper_card, null, false)
-        dialogHelperCardBinding.dialogViewModel = HelperCardViewModel()
-        dialogHelperCardBinding.ivCard.setImageResource(cardResource)
+        dialogHelperCardBinding.helperCardDialogViewModel = HelperCardViewModel()
+        dialogHelperCardBinding.ivHelperCard.setImageResource(cardResource)
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_DialogWhenLarge).setTitle(resources.getString(R.string.got_helper_card)).setNeutralButton(resources.getString(R.string.ok)
         ) { dialog, _ ->

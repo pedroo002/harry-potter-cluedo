@@ -146,10 +146,10 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
         emptySelectionList()
 
         var distances: HashMap<Position, Int>? = null
-        if (stepInRoom(playerList[playerId].pos) == -1)
-            distances = dijkstra(playerList[playerId].pos)
+        if (stepInRoom(player.pos) == -1)
+            distances = dijkstra(player.pos)
         else {
-            val roomId = stepInRoom(playerList[playerId].pos)
+            val roomId = stepInRoom(player.pos)
             for (door in doorList) {
                 if (door.room.id == roomId) {
                     distances = mergeDistances(dijkstra(Position(door.room.top, door.room.left)), distances)
@@ -166,7 +166,7 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
             }
         }
 
-        if (stepInRoom(playerList[playerId].pos) == -1) {
+        if (stepInRoom(player.pos) == -1) {
             for (door in doorList) {
                 if (distances!![door.position]!! <= stepCount - 1) {
                     drawSelection(door.room.selection, door.room.top, door.room.left, playerId)
@@ -184,9 +184,16 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
         setLayoutConstraintStart(selection, cols[col])
         setLayoutConstraintTop(selection, rows[row])
         selection.setOnClickListener {
-            playerList[playerId].pos = Position(row, col)
-            setLayoutConstraintStart(playerImageList[playerId], cols[playerList[playerId].pos.col])
-            setLayoutConstraintTop(playerImageList[playerId], rows[playerList[playerId].pos.row])
+            player.pos = Position(row, col)
+
+            for (star in starList) {
+                if (player.pos == star) {
+                    showCard(DiceRollerDialog.CardType.HELPER)
+                }
+            }
+
+            setLayoutConstraintStart(playerImageList[playerId], cols[player.pos.col])
+            setLayoutConstraintTop(playerImageList[playerId], rows[player.pos.row])
 
             emptySelectionList()
         }

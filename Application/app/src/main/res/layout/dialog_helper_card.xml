@@ -3,9 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
-            name="dialogViewModel"
+            name="helperCardDialogViewModel"
             type="neptun.jxy1vz.cluedo.ui.dice.card_dialog.helper.HelperCardViewModel" />
     </data>
 
@@ -19,7 +18,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/ivCard"
+                android:id="@+id/ivHelperCard"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="20dp"

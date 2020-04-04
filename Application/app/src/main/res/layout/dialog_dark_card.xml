@@ -4,7 +4,7 @@
 
     <data>
         <variable
-            name="dialogViewModel"
+            name="darkCardDialogViewModel"
             type="neptun.jxy1vz.cluedo.ui.dice.card_dialog.dark_mark.DarkCardViewModel" />
     </data>
 
@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/ivCard"
+            android:id="@+id/ivDarkCard"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:src="@drawable/sotet_pakli_hatlap"
@@ -29,7 +29,7 @@
             android:text="Ó JAJ"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivCard"
+            app:layout_constraintStart_toEndOf="@+id/ivDarkCard"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,8 +13,8 @@ class DarkCardDialog(private val cardResource: Int) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialogDarkCardBinding = DataBindingUtil.inflate<DialogDarkCardBinding>(LayoutInflater.from(context), R.layout.dialog_dark_card, null, false)
-        dialogDarkCardBinding.dialogViewModel = DarkCardViewModel()
-        dialogDarkCardBinding.ivCard.setImageResource(cardResource)
+        dialogDarkCardBinding.darkCardDialogViewModel = DarkCardViewModel()
+        dialogDarkCardBinding.ivDarkCard.setImageResource(cardResource)
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_DialogWhenLarge).setTitle(resources.getString(R.string.sotet_jegy)).setNeutralButton(resources.getString(R.string.ok)
         ){ dialog, _ ->
