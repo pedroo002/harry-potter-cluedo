@@ -8,29 +8,35 @@
             type="neptun.jxy1vz.cluedo.ui.dice.card_dialog.dark_mark.DarkCardViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
 
-        <ImageView
-            android:id="@+id/ivDarkCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/sotet_pakli_hatlap"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.3"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
 
-        <Button
-            android:id="@+id/btnVmi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ó JAJ"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivDarkCard"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/ivDarkCard"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/sotet_pakli_hatlap"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.3"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                android:id="@+id/btnVmi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ó JAJ"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivDarkCard"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>
