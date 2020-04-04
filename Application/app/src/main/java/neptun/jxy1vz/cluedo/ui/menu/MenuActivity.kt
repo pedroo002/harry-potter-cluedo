@@ -15,7 +15,7 @@ class MenuActivity : AppCompatActivity() {
         val activityMenuBinding = DataBindingUtil.setContentView<ActivityMenuBinding>(this, R.layout.activity_menu)
 
         val fm = supportFragmentManager
-        activityMenuBinding.menu = MenuViewModel(applicationContext, fm)
+        activityMenuBinding.menuViewModel = MenuViewModel(applicationContext, fm)
 
         val btnExit = findViewById<Button>(R.id.btnExit)
         btnExit.setOnClickListener {

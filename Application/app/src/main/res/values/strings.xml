@@ -21,4 +21,15 @@
     <string name="logo_description">Logo of the game</string>
     <string name="settings_icon">Settings icon</string>
     <string name="dob">Dobás</string>
+    <string name="choose_a_character">Válassz karaktert magadnak!</string>
+    <string name="start">Start</string>
+
+    <string-array name="characters">
+        <item>Ginny Weasley</item>
+        <item>Harry Potter</item>
+        <item>Hermione Granger</item>
+        <item>Ron Weasley</item>
+        <item>Luna Lovegood</item>
+        <item>Neville Longbottom</item>
+    </string-array>
 </resources>

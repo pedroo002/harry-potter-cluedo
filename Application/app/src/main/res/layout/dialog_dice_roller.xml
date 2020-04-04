@@ -4,7 +4,7 @@
 
     <data>
         <variable
-            name="vm"
+            name="dialogViewModel"
             type="neptun.jxy1vz.cluedo.ui.dice.DiceRollerViewModel" />
     </data>
 
@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:onClick="@{()->vm.rollDice()}"
+                android:onClick="@{()->dialogViewModel.rollDice()}"
                 android:text="@string/dob"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

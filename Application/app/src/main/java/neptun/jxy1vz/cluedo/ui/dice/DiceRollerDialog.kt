@@ -26,7 +26,7 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
             dialogDiceRollerBinding.ivDice2,
             dialogDiceRollerBinding.ivDice3
         )
-        dialogDiceRollerBinding.vm = DiceRollerViewModel(this, context!!, diceImageList)
+        dialogDiceRollerBinding.dialogViewModel = DiceRollerViewModel(this, context!!, diceImageList)
         dialogDiceRollerBinding.executePendingBindings()
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_DialogWhenLarge).setView(dialogDiceRollerBinding.root).setTitle("Dobj a kockákkal").setNeutralButton("OK"
