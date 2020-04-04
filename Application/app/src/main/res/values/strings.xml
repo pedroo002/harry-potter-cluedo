@@ -23,7 +23,11 @@
     <string name="dob">Dobás</string>
     <string name="choose_a_character">Válassz karaktert magadnak!</string>
     <string name="start">Start</string>
+    <string name="dobj">Dobj a kockákkal!</string>
     <string name="dialog_character_title">Válaszd ki a karaktered</string>
+    <string name="got_helper_card">Segítő kártyát kaptál</string>
+    <string name="sotet_jegy">A sötét jegy feltűnt az égen!</string>
+    <string name="ok">OK</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>

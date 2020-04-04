@@ -39,6 +39,7 @@ class CharacterSelectorDialog : DialogFragment(), AdapterView.OnItemSelectedList
         dialogCharacterSelectorBinding.ivCharacterCard.cameraDistance = 8000 * scale
 
         dialogCharacterSelectorBinding.dialogViewModel = CharacterSelectorViewModel(context!!)
+
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
             .setView(dialogCharacterSelectorBinding.root).setTitle(resources.getString(R.string.dialog_character_title))
             .create()
@@ -56,7 +57,7 @@ class CharacterSelectorDialog : DialogFragment(), AdapterView.OnItemSelectedList
             doOnEnd {
                 dialogCharacterSelectorBinding.dialogViewModel!!.setPlayer(position)
 
-                @DrawableRes val img = when (position) {
+                val img = when (position) {
                     0 -> R.drawable.szereplo_ginny
                     1 -> R.drawable.szereplo_harry
                     2 -> R.drawable.szereplo_hermione

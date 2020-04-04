@@ -11,11 +11,14 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.*
 import neptun.jxy1vz.cluedo.model.helper.*
 import neptun.jxy1vz.cluedo.ui.dice.DiceRollerDialog
+import neptun.jxy1vz.cluedo.ui.dice.card_dialog.dark_mark.DarkCardDialog
+import neptun.jxy1vz.cluedo.ui.dice.card_dialog.helper.HelperCardDialog
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.set
 import kotlin.math.min
+import kotlin.random.Random
 
 class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, private var mapLayout: ConstraintLayout, private val fm: FragmentManager)
     : BaseObservable(),
@@ -210,7 +213,27 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
         view.layoutParams = layoutParams
     }
 
+    private fun getRandomCard(type: DiceRollerDialog.CardType): Int {
+        return when (type) {
+            DiceRollerDialog.CardType.HELPER -> Random.nextInt(0, helperCards.size)
+            else -> Random.nextInt(0, darkCards.size)
+        }
+    }
+
     override fun onDiceRoll(player: Int, sum: Int, other: Int) {
         showMovingOptions(player, sum)
+    }
+
+    override fun showCard(type: DiceRollerDialog.CardType) {
+        when (type) {
+            DiceRollerDialog.CardType.HELPER -> {
+                val card = helperCards[getRandomCard(type)]
+                HelperCardDialog(card.imageRes).show(fm, "DIALOG_HELPER")
+            }
+            else -> {
+                val card = darkCards[getRandomCard(type)]
+                DarkCardDialog(card.imageRes).show(fm, "DIALOG_DARK")
+            }
+        }
     }
 }
