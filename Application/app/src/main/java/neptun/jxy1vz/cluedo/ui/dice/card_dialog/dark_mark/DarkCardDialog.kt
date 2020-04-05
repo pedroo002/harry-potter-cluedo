@@ -15,7 +15,12 @@ import neptun.jxy1vz.cluedo.databinding.DialogDarkCardBinding
 class DarkCardDialog(private val cardResource: Int) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialogDarkCardBinding = DataBindingUtil.inflate<DialogDarkCardBinding>(LayoutInflater.from(context), R.layout.dialog_dark_card, null, false)
+        val dialogDarkCardBinding = DataBindingUtil.inflate<DialogDarkCardBinding>(
+            LayoutInflater.from(context),
+            R.layout.dialog_dark_card,
+            null,
+            false
+        )
         dialogDarkCardBinding.darkCardDialogViewModel = DarkCardViewModel()
 
         (AnimatorInflater.loadAnimator(context, R.animator.card_flip) as AnimatorSet).apply {
@@ -26,8 +31,11 @@ class DarkCardDialog(private val cardResource: Int) : DialogFragment() {
             }
         }
 
-        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Dialog).setTitle(resources.getString(R.string.sotet_jegy)).setNeutralButton(resources.getString(R.string.ok)
-        ){ dialog, _ ->
+        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_DialogWhenLarge)
+            .setView(dialogDarkCardBinding.root)
+            .setTitle(resources.getString(R.string.sotet_jegy)).setNeutralButton(
+            resources.getString(R.string.ok)
+        ) { dialog, _ ->
             dialog.dismiss()
         }.create()
     }

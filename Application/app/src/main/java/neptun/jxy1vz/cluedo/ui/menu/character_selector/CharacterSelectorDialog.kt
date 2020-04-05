@@ -40,7 +40,8 @@ class CharacterSelectorDialog : DialogFragment(), AdapterView.OnItemSelectedList
         dialogCharacterSelectorBinding.dialogViewModel = CharacterSelectorViewModel(context!!)
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
-            .setView(dialogCharacterSelectorBinding.root).setTitle(resources.getString(R.string.dialog_character_title))
+            .setView(dialogCharacterSelectorBinding.root)
+            .setTitle(resources.getString(R.string.dialog_character_title))
             .create()
     }
 
