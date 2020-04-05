@@ -23,6 +23,9 @@ class DarkCardDialog(private val cardResource: Int) : DialogFragment() {
         )
         dialogDarkCardBinding.darkCardDialogViewModel = DarkCardViewModel()
 
+        val scale = resources.displayMetrics.density
+        dialogDarkCardBinding.ivDarkCard.cameraDistance = 8000 * scale
+
         (AnimatorInflater.loadAnimator(context, R.animator.card_flip) as AnimatorSet).apply {
             setTarget(dialogDarkCardBinding.ivDarkCard)
             start()

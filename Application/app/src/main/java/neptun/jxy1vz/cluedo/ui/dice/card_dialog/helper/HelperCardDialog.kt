@@ -25,6 +25,9 @@ class HelperCardDialog(private val cardResource: Int) : DialogFragment() {
         )
         dialogHelperCardBinding.helperCardDialogViewModel = HelperCardViewModel()
 
+        val scale = resources.displayMetrics.density
+        dialogHelperCardBinding.ivHelperCard.cameraDistance = 8000 * scale
+
         (AnimatorInflater.loadAnimator(context, R.animator.card_flip) as AnimatorSet).apply {
             setTarget(dialogHelperCardBinding.ivHelperCard)
             start()
@@ -33,7 +36,7 @@ class HelperCardDialog(private val cardResource: Int) : DialogFragment() {
             }
         }
 
-        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_DialogWhenLarge)
+        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Dialog)
             .setView(dialogHelperCardBinding.root)
             .setTitle(resources.getString(R.string.got_helper_card)).setNeutralButton(
             resources.getString(R.string.ok)
