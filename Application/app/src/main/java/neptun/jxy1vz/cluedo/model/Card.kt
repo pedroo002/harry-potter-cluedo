@@ -13,7 +13,7 @@ data class HelperCard(
     val imageRes: Int,
     val verso: Int,
     val type: HelperType,
-    val count: Int = 1,
+    var count: Int = 1,
     val extra: String? = null
 )
 

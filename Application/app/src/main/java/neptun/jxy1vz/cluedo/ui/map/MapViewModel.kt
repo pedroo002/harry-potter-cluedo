@@ -220,7 +220,7 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
         view.layoutParams = layoutParams
     }
 
-    private fun getRandomCard(type: DiceRollerDialog.CardType): Int {
+    private fun getRandomCardId(type: DiceRollerDialog.CardType): Int {
         return when (type) {
             DiceRollerDialog.CardType.HELPER -> Random.nextInt(0, helperCards.size)
             else -> Random.nextInt(0, darkCards.size)
@@ -232,13 +232,25 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
     }
 
     override fun showCard(type: DiceRollerDialog.CardType) {
+        val randomCard: Int = getRandomCardId(type)
         when (type) {
             DiceRollerDialog.CardType.HELPER -> {
-                val card = helperCards[getRandomCard(type)]
+                val card = helperCards[randomCard]
+                if (player.helperCards.isNullOrEmpty()) {
+                    player.helperCards = ArrayList()
+                }
+                player.helperCards!!.add(card)
+
+                if (card.count > 1)
+                    helperCards[randomCard].count--
+                else
+                    helperCards.remove(card)
+
                 HelperCardDialog(card.imageRes).show(fm, "DIALOG_HELPER")
             }
             else -> {
-                val card = darkCards[getRandomCard(type)]
+                val card = darkCards[randomCard]
+                darkCards.remove(card)
                 DarkCardDialog(card.imageRes).show(fm, "DIALOG_DARK")
             }
         }

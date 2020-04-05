@@ -54,7 +54,7 @@ val playerCards = listOf(
     )
 )
 
-val helperCards = listOf(
+var helperCards: MutableList<HelperCard> = listOf(
     HelperCard(
         0,
         "Bezoár",
@@ -248,7 +248,7 @@ val helperCards = listOf(
         5,
         "Zárt ajtón bemenni"
     )
-)
+).toMutableList()
 
 val mysteryCards = listOf(
     MysteryCard(
@@ -400,7 +400,7 @@ val mysteryCards = listOf(
     )
 )
 
-val darkCards = listOf(
+var darkCards: MutableList<DarkCard> = listOf(
     DarkCard(
         0,
         "Különös csomagot kapsz: a tartalmát megátkozták.",
@@ -727,4 +727,4 @@ val darkCards = listOf(
         20,
         listOf(15, 1)
     )
-)
+).toMutableList()
