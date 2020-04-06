@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.dice.card_dialog.helper
+package neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet

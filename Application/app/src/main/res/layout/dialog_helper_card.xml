@@ -6,7 +6,7 @@
 
         <variable
             name="helperCardDialogViewModel"
-            type="neptun.jxy1vz.cluedo.ui.dice.card_dialog.helper.HelperCardViewModel" />
+            type="neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

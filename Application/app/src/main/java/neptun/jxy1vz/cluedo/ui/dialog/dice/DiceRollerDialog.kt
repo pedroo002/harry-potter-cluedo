@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.dice
+package neptun.jxy1vz.cluedo.ui.dialog.dice
 
 import android.app.Dialog
 import android.os.Bundle

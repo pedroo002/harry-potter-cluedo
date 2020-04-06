@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.menu.character_selector
+package neptun.jxy1vz.cluedo.ui.dialog.character_selector
 
 import android.content.Context
 import android.content.Intent

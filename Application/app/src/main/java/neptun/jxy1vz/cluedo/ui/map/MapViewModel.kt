@@ -10,9 +10,9 @@ import androidx.fragment.app.FragmentManager
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.*
 import neptun.jxy1vz.cluedo.model.helper.*
-import neptun.jxy1vz.cluedo.ui.dice.DiceRollerDialog
-import neptun.jxy1vz.cluedo.ui.dice.card_dialog.dark_mark.DarkCardDialog
-import neptun.jxy1vz.cluedo.ui.dice.card_dialog.helper.HelperCardDialog
+import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
+import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
+import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap

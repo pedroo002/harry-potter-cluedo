@@ -6,7 +6,7 @@
     <data>
         <variable
             name="darkCardDialogViewModel"
-            type="neptun.jxy1vz.cluedo.ui.dice.card_dialog.dark_mark.DarkCardViewModel" />
+            type="neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardViewModel" />
     </data>
 
         <androidx.constraintlayout.widget.ConstraintLayout
