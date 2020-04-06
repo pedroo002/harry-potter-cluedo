@@ -28,6 +28,10 @@
     <string name="got_helper_card">Segítő kártyát kaptál</string>
     <string name="sotet_jegy">A sötét jegy feltűnt az égen!</string>
     <string name="ok">OK</string>
+    <string name="helper_cards_tools">Eszközeid</string>
+    <string name="helper_cards_spells">Varázslataid</string>
+    <string name="helper_cards_allys">Szövetségeseid</string>
+    <string name="helper_cards_against_this_dark_card">Mentőkártyáid ez ellen a lap ellen:</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>

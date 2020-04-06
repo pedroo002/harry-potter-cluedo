@@ -22,7 +22,7 @@ import kotlin.random.Random
 
 class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, private var mapLayout: ConstraintLayout, private val fm: FragmentManager)
     : BaseObservable(),
-    DiceRollerDialog.DiceResultInterface {
+    DiceRollerDialog.DiceResultInterface, DarkCardDialog.DarkCardDialogListener {
 
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
@@ -251,7 +251,28 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
             else -> {
                 val card = darkCards[randomCard]
                 darkCards.remove(card)
-                DarkCardDialog(card.imageRes).show(fm, "DIALOG_DARK")
+                DarkCardDialog(player, card, this).show(fm, "DIALOG_DARK")
+            }
+        }
+    }
+
+    override fun getLoss(card: DarkCard?) {
+        if (card == null)
+            //TODO: Dialog - megmenekült
+
+        when (card?.lossType) {
+            LossType.HP -> {
+                player.hp -= card.hpLoss
+                //TODO: Dialog
+            }
+            LossType.TOOL -> {
+                //TODO: Dialog
+            }
+            LossType.SPELL -> {
+                //TODO: Dialog
+            }
+            LossType.ALLY -> {
+                //TODO: Dialog
             }
         }
     }
