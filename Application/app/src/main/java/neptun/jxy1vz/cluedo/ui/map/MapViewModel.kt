@@ -284,7 +284,7 @@ class MapViewModel(
             when (card.lossType) {
                 LossType.HP -> {
                     player.hp -= card.hpLoss
-                    HpLossDialog(card.hpLoss).show(fm, "DIALOG_HP_LOSS")
+                    HpLossDialog(card.hpLoss, player.hp).show(fm, "DIALOG_HP_LOSS")
                 }
                 else -> {
                     if (player.helperCards != null) {

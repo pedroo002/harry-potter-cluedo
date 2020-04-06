@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogHpLossBinding
 
-class HpLossDialog(private val hp_loss: Int) : DialogFragment() {
+class HpLossDialog(private val hp_loss: Int, private val hp: Int) : DialogFragment() {
 
     private lateinit var dialogHPLossBinding: DialogHpLossBinding
 
@@ -20,7 +20,7 @@ class HpLossDialog(private val hp_loss: Int) : DialogFragment() {
             null,
             false
         )
-        dialogHPLossBinding.dialogHpLossViewModel = HpLossViewModel(hp_loss)
+        dialogHPLossBinding.dialogHpLossViewModel = HpLossViewModel(hp_loss, hp)
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
             .setView(dialogHPLossBinding.root).setTitle(R.string.hp_loss)

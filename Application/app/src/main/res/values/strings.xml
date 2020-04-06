@@ -40,6 +40,7 @@
     <string name="throw_card">Eldobás</string>
     <string name="rescued">Megmenekültél!</string>
     <string name="your_card_helped_you">A mentőkártyád segítségedre volt a sötét erőkkel szemben.</string>
+    <string name="remaining_hp">Megmaradt házpontjaid:</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
