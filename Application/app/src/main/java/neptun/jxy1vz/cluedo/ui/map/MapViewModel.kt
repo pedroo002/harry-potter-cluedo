@@ -20,8 +20,12 @@ import kotlin.collections.set
 import kotlin.math.min
 import kotlin.random.Random
 
-class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, private var mapLayout: ConstraintLayout, private val fm: FragmentManager)
-    : BaseObservable(),
+class MapViewModel(
+    playerId: Int,
+    private var playerImageList: List<ImageView>,
+    private var mapLayout: ConstraintLayout,
+    private val fm: FragmentManager
+) : BaseObservable(),
     DiceRollerDialog.DiceResultInterface, DarkCardDialog.DarkCardDialogListener {
 
     private var mapGraph: Graph<Position>
@@ -52,7 +56,7 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
                         mapGraph.addEdge(current, Position(y + 1, x))
                     if (x > 0 && stepInRoom(Position(y, x - 1)) == -1)
                         mapGraph.addEdge(current, Position(y, x - 1))
-                    if (x < 24 &&stepInRoom(Position(y, x + 1)) == -1)
+                    if (x < 24 && stepInRoom(Position(y, x + 1)) == -1)
                         mapGraph.addEdge(current, Position(y, x + 1))
 
                 }
@@ -120,7 +124,10 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
         return distances
     }
 
-    private fun mergeDistances(map1: HashMap<Position, Int>, map2: HashMap<Position, Int>? = null): HashMap<Position, Int> {
+    private fun mergeDistances(
+        map1: HashMap<Position, Int>,
+        map2: HashMap<Position, Int>? = null
+    ): HashMap<Position, Int> {
         val intersection: HashMap<Position, Int> = HashMap()
         for (pos in map1.keys) {
             intersection[pos] = map1[pos]!!
@@ -152,7 +159,8 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
             val roomId = stepInRoom(player.pos)
             for (door in doorList) {
                 if (door.room.id == roomId) {
-                    distances = mergeDistances(dijkstra(Position(door.room.top, door.room.left)), distances)
+                    distances =
+                        mergeDistances(dijkstra(Position(door.room.top, door.room.left)), distances)
                 }
             }
         }
@@ -178,7 +186,10 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
     private fun drawSelection(@DrawableRes selRes: Int, row: Int, col: Int, playerId: Int) {
         val selection = ImageView(mapLayout.context)
         selectionList.add(selection)
-        selection.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+        selection.layoutParams = ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT
+        )
         selection.setImageResource(selRes)
         selection.visibility = ImageView.VISIBLE
         setLayoutConstraintStart(selection, cols[col])
@@ -208,14 +219,16 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")
     fun setLayoutConstraintTop(view: View, row: Int) {
-        val layoutParams: ConstraintLayout.LayoutParams = view.layoutParams as ConstraintLayout.LayoutParams
+        val layoutParams: ConstraintLayout.LayoutParams =
+            view.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.topToTop = row
         view.layoutParams = layoutParams
     }
 
     @BindingAdapter("app:layout_constraintStart_toStartOf")
     fun setLayoutConstraintStart(view: View, col: Int) {
-        val layoutParams: ConstraintLayout.LayoutParams = view.layoutParams as ConstraintLayout.LayoutParams
+        val layoutParams: ConstraintLayout.LayoutParams =
+            view.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.startToStart = col
         view.layoutParams = layoutParams
     }
@@ -257,22 +270,24 @@ class MapViewModel(playerId: Int, private var playerImageList: List<ImageView>, 
     }
 
     override fun getLoss(card: DarkCard?) {
-        if (card == null)
+        if (card == null) {
             //TODO: Dialog - megmenekült
-
-        when (card?.lossType) {
-            LossType.HP -> {
-                player.hp -= card.hpLoss
-                //TODO: Dialog
-            }
-            LossType.TOOL -> {
-                //TODO: Dialog
-            }
-            LossType.SPELL -> {
-                //TODO: Dialog
-            }
-            LossType.ALLY -> {
-                //TODO: Dialog
+        }
+        else {
+            when (card.lossType) {
+                LossType.HP -> {
+                    player.hp -= card.hpLoss
+                    //TODO: Dialog
+                }
+                LossType.TOOL -> {
+                    //TODO: Dialog
+                }
+                LossType.SPELL -> {
+                    //TODO: Dialog
+                }
+                LossType.ALLY -> {
+                    //TODO: Dialog
+                }
             }
         }
     }
