@@ -13,6 +13,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import kotlinx.android.synthetic.main.dialog_dark_card.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDarkCardBinding
 import neptun.jxy1vz.cluedo.model.DarkCard
@@ -38,7 +39,13 @@ class DarkCardDialog(
     private var spells: ArrayList<String> = ArrayList()
     private var allys: ArrayList<String> = ArrayList()
 
+    private var hatlap: Int = R.drawable.mento_hatlap
+
     init {
+        tools.add("")
+        spells.add("")
+        allys.add("")
+
         if (!player.helperCards.isNullOrEmpty())
             for (helperCard in player.helperCards!!) {
                 if (!darkCard.helperIds.isNullOrEmpty() && darkCard.helperIds.contains(helperCard.id))
@@ -48,6 +55,8 @@ class DarkCardDialog(
                         HelperType.ALLY -> addHelperToArray(helperCard.name, allys)
                     }
             }
+        if (tools.size == 1 && spells.size == 1 && allys.size == 1)
+            hatlap = R.drawable.no_mento_hatlap
     }
 
     private fun addHelperToArray(name: String, array: ArrayList<String>) {
@@ -63,7 +72,7 @@ class DarkCardDialog(
         )
         dialogDarkCardBinding.darkCardDialogViewModel = DarkCardViewModel()
 
-        dialogDarkCardBinding.ivHelperAgainstDarkCard.isVisible = false
+        dialogDarkCardBinding.ivHelperAgainstDarkCard.setImageResource(hatlap)
 
         val scale = resources.displayMetrics.density
         dialogDarkCardBinding.ivDarkCard.cameraDistance = 8000 * scale
@@ -82,6 +91,7 @@ class DarkCardDialog(
             tools
         )
         dialogDarkCardBinding.spinnerTools.onItemSelectedListener = this
+        dialogDarkCardBinding.spinnerTools.setSelection(0)
 
         dialogDarkCardBinding.spinnerSpells.adapter = ArrayAdapter<String>(
             context!!,
@@ -89,6 +99,7 @@ class DarkCardDialog(
             spells
         )
         dialogDarkCardBinding.spinnerSpells.onItemSelectedListener = this
+        dialogDarkCardBinding.spinnerSpells.setSelection(0)
 
         dialogDarkCardBinding.spinnerAllys.adapter = ArrayAdapter<String>(
             context!!,
@@ -96,13 +107,14 @@ class DarkCardDialog(
             allys
         )
         dialogDarkCardBinding.spinnerAllys.onItemSelectedListener = this
+        dialogDarkCardBinding.spinnerAllys.setSelection(0)
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_DialogWhenLarge)
             .setView(dialogDarkCardBinding.root)
             .setTitle(resources.getString(R.string.sotet_jegy)).setNeutralButton(
                 resources.getString(R.string.ok)
             ) { dialog, _ ->
-                if (tools.isNotEmpty() || spells.isNotEmpty() || allys.isNotEmpty())
+                if (tools.size > 1 || spells.size > 1 || allys.size > 1)
                     listener.getLoss(null)
                 else
                     listener.getLoss(darkCard)
@@ -110,18 +122,22 @@ class DarkCardDialog(
             }.create()
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        dialogDarkCardBinding.ivHelperAgainstDarkCard.isVisible = false
-    }
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val name = parent!!.selectedItem
-        dialogDarkCardBinding.ivHelperAgainstDarkCard.isVisible = true
+
+        if (dialogDarkCardBinding.spinnerTools != parent && dialogDarkCardBinding.spinnerTools.selectedItemId != 0L)
+            dialogDarkCardBinding.spinnerTools.setSelection(0)
+        if (dialogDarkCardBinding.spinnerSpells != parent && dialogDarkCardBinding.spinnerSpells.selectedItemId != 0L)
+            dialogDarkCardBinding.spinnerSpells.setSelection(0)
+        if (dialogDarkCardBinding.spinnerAllys != parent && dialogDarkCardBinding.spinnerAllys.selectedItemId != 0L)
+            dialogDarkCardBinding.spinnerAllys.setSelection(0)
 
         if (!player.helperCards.isNullOrEmpty())
             for (card in player.helperCards!!) {
                 if (card.name == name) {
-                    dialogDarkCardBinding.ivHelperAgainstDarkCard.setImageResource(R.drawable.mento_hatlap)
+                    dialogDarkCardBinding.ivHelperAgainstDarkCard.setImageResource(hatlap)
                     (AnimatorInflater.loadAnimator(
                         context,
                         R.animator.card_flip
