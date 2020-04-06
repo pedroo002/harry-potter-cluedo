@@ -44,6 +44,9 @@
     <string name="mystery_cards">Rejtélykártyák sorsolása</string>
     <string name="your_mystery_cards">A te rejtély kártyáid:</string>
     <string name="go_forward">Tovább</string>
+    <string name="game_mode">Válaszd ki a játék paramétereit!</string>
+    <string name="player_mode">Játékos mód:</string>
+    <string name="player_count">Játékosok száma:</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
@@ -52,5 +55,10 @@
         <item>Ron Weasley</item>
         <item>Luna Lovegood</item>
         <item>Neville Longbottom</item>
+    </string-array>
+
+    <string-array name="playmodes">
+        <item>Egyjátékos mód</item>
+        <item>Többjátékos mód</item>
     </string-array>
 </resources>
