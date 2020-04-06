@@ -36,7 +36,7 @@ class HelperCardDialog(private val cardResource: Int) : DialogFragment() {
             }
         }
 
-        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Dialog)
+        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
             .setView(dialogHelperCardBinding.root)
             .setTitle(resources.getString(R.string.got_helper_card)).setNeutralButton(
             resources.getString(R.string.ok)

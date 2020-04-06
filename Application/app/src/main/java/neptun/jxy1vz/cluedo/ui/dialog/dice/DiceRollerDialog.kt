@@ -44,7 +44,7 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
             DiceRollerViewModel(this, context!!, diceImageList)
         dialogDiceRollerBinding.executePendingBindings()
 
-        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_DialogWhenLarge)
+        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_DialogWhenLarge)
             .setView(dialogDiceRollerBinding.root).setTitle(resources.getString(R.string.dobj))
             .setNeutralButton(
                 resources.getString(R.string.ok)
