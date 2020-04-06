@@ -28,7 +28,8 @@ class MapViewModel(
     private var mapLayout: ConstraintLayout,
     private val fm: FragmentManager
 ) : BaseObservable(),
-    DiceRollerDialog.DiceResultInterface, DarkCardDialog.DarkCardDialogListener {
+    DiceRollerDialog.DiceResultInterface, DarkCardDialog.DarkCardDialogListener,
+    CardLossDialog.CardLossDialogListener {
 
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
@@ -294,10 +295,14 @@ class MapViewModel(
                         }
 
                         if (properHelperCards.isNotEmpty())
-                            CardLossDialog(properHelperCards, card.lossType).show(fm, "DIALOG_CARD_LOSS")
+                            CardLossDialog(properHelperCards, card.lossType, this).show(fm, "DIALOG_CARD_LOSS")
                     }
                 }
             }
         }
+    }
+
+    override fun throwCard(card: HelperCard) {
+        player.helperCards!!.remove(card)
     }
 }

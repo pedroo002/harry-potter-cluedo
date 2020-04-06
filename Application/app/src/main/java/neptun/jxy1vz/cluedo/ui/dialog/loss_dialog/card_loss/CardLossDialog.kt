@@ -15,7 +15,11 @@ import neptun.jxy1vz.cluedo.model.LossType
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.adapter.CardPagerAdapter
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.fragment.CardFragment
 
-class CardLossDialog(private val helperCards: List<HelperCard>, private val loss_type: LossType) : DialogFragment() {
+class CardLossDialog(private val helperCards: List<HelperCard>, private val loss_type: LossType, private val listener: CardLossDialogListener) : DialogFragment() {
+
+    interface CardLossDialogListener {
+        fun throwCard(card: HelperCard)
+    }
 
     private lateinit var dialogCardLossBinding: DialogCardLossBinding
     private lateinit var fragmentList: MutableList<CardFragment>
@@ -52,6 +56,7 @@ class CardLossDialog(private val helperCards: List<HelperCard>, private val loss
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
             .setView(dialogCardLossBinding.root).setTitle(title)
             .setNeutralButton(R.string.throw_card) { dialog, _ ->
+                listener.throwCard(helperCards[dialogCardLossBinding.vpCards.currentItem])
                 dialog.dismiss()
             }.create()
     }
