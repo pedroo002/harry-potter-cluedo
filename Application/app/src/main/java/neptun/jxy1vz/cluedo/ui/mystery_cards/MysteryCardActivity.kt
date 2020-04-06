@@ -36,6 +36,13 @@ class MysteryCardActivity : AppCompatActivity() {
 
         activityMysteryCardBinding = DataBindingUtil.setContentView(this, R.layout.activity_mystery_card)
         activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(applicationContext, playerList[playerId])
+
+        val solution: MutableList<MysteryCard> = ArrayList()
+        solution.add(getRandomMysteryCard(MysteryType.TOOL))
+        solution.add(getRandomMysteryCard(MysteryType.SUSPECT))
+        solution.add(getRandomMysteryCard(MysteryType.VENUE))
+
+        activityMysteryCardBinding.mysteryCardViewModel.setSolution(solution)
     }
 
     override fun onResume() {
