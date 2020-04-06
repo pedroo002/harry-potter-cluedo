@@ -10,9 +10,10 @@ import androidx.fragment.app.FragmentManager
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.*
 import neptun.jxy1vz.cluedo.model.helper.*
-import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
+import neptun.jxy1vz.cluedo.ui.dialog.RescuedFromDarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
+import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
 import java.util.*
@@ -278,9 +279,8 @@ class MapViewModel(
 
     override fun getLoss(card: DarkCard?) {
         if (card == null) {
-            //TODO: Dialog - megmenekült
-        }
-        else {
+            RescuedFromDarkCardDialog().show(fm, "DIALOG_RESCUED")
+        } else {
             when (card.lossType) {
                 LossType.HP -> {
                     player.hp -= card.hpLoss
@@ -295,7 +295,10 @@ class MapViewModel(
                         }
 
                         if (properHelperCards.isNotEmpty())
-                            CardLossDialog(properHelperCards, card.lossType, this).show(fm, "DIALOG_CARD_LOSS")
+                            CardLossDialog(properHelperCards, card.lossType, this).show(
+                                fm,
+                                "DIALOG_CARD_LOSS"
+                            )
                     }
                 }
             }

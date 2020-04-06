@@ -38,6 +38,8 @@
     <string name="spell_loss">El kell dobnod egy varázsige kártyát!</string>
     <string name="ally_loss">El kell dobnod egy szövetséges kártyát!</string>
     <string name="throw_card">Eldobás</string>
+    <string name="rescued">Megmenekültél!</string>
+    <string name="your_card_helped_you">A mentőkártyád segítségedre volt a sötét erőkkel szemben.</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>

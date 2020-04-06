@@ -32,14 +32,6 @@ class DarkCardDialog(
         fun getLoss(card: DarkCard?)
     }
 
-    fun getDarkCardByLossType(lossType: LossType): DarkCard? {
-        for (card in darkCards) {
-            if (card.lossType == lossType)
-                return card
-        }
-        return null
-    }
-
     private lateinit var dialogDarkCardBinding: DialogDarkCardBinding
 
     private var tools: ArrayList<String> = ArrayList()
