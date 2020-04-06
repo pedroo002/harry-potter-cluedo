@@ -17,7 +17,9 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDarkCardBinding
 import neptun.jxy1vz.cluedo.model.DarkCard
 import neptun.jxy1vz.cluedo.model.HelperType
+import neptun.jxy1vz.cluedo.model.LossType
 import neptun.jxy1vz.cluedo.model.Player
+import neptun.jxy1vz.cluedo.model.helper.darkCards
 
 class DarkCardDialog(
     private val player: Player,
@@ -28,6 +30,14 @@ class DarkCardDialog(
 
     interface DarkCardDialogListener {
         fun getLoss(card: DarkCard?)
+    }
+
+    fun getDarkCardByLossType(lossType: LossType): DarkCard? {
+        for (card in darkCards) {
+            if (card.lossType == lossType)
+                return card
+        }
+        return null
     }
 
     private lateinit var dialogDarkCardBinding: DialogDarkCardBinding
@@ -100,10 +110,11 @@ class DarkCardDialog(
             .setTitle(resources.getString(R.string.sotet_jegy)).setNeutralButton(
                 resources.getString(R.string.ok)
             ) { dialog, _ ->
-                if (tools.isNullOrEmpty() || spells.isNotEmpty() || allys.isNotEmpty())
+                /*if (tools.isNotEmpty() || spells.isNotEmpty() || allys.isNotEmpty())
                     listener.getLoss(null)
                 else
-                    listener.getLoss(darkCard)
+                    listener.getLoss(darkCard)*/
+                listener.getLoss(getDarkCardByLossType(LossType.TOOL))
                 dialog.dismiss()
             }.create()
     }

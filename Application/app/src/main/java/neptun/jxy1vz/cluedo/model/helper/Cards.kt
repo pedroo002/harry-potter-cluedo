@@ -549,7 +549,7 @@ var darkCards: MutableList<DarkCard> = listOf(
         DarkType.ROOM,
         LossType.HP,
         15,
-        listOf(1, 13)
+        listOf(0, 13)
     ),
     DarkCard(
         15,

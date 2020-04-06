@@ -29,9 +29,15 @@
     <string name="sotet_jegy">A sötét jegy feltűnt az égen!</string>
     <string name="ok">OK</string>
     <string name="helper_cards_tools">Eszközeid</string>
-    <string name="helper_cards_spells">Varázslataid</string>
+    <string name="helper_cards_spells">Varázsigéid</string>
     <string name="helper_cards_allys">Szövetségeseid</string>
     <string name="helper_cards_against_this_dark_card">Mentőkártyáid ez ellen a lap ellen:</string>
+    <string name="hp_loss">Házpontokat vesztettél!</string>
+    <string name="hp_loss_amount">Veszített mennyiség:</string>
+    <string name="tool_loss">El kell dobnod egy eszköz kártyát!</string>
+    <string name="spell_loss">El kell dobnod egy varázsige kártyát!</string>
+    <string name="ally_loss">El kell dobnod egy szövetséges kártyát!</string>
+    <string name="throw_card">Eldobás</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>

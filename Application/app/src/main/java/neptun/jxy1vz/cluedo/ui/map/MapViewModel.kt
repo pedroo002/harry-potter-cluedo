@@ -13,6 +13,8 @@ import neptun.jxy1vz.cluedo.model.helper.*
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
+import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
+import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -248,23 +250,27 @@ class MapViewModel(
         val randomCard: Int = getRandomCardId(type)
         when (type) {
             DiceRollerDialog.CardType.HELPER -> {
-                val card = helperCards[randomCard]
-                if (player.helperCards.isNullOrEmpty()) {
-                    player.helperCards = ArrayList()
+                if (helperCards.size > 0) {
+                    val card = helperCards[randomCard]
+                    if (player.helperCards.isNullOrEmpty()) {
+                        player.helperCards = ArrayList()
+                    }
+                    player.helperCards!!.add(card)
+
+                    if (card.count > 1)
+                        helperCards[randomCard].count--
+                    else
+                        helperCards.remove(card)
+
+                    HelperCardDialog(card.imageRes).show(fm, "DIALOG_HELPER")
                 }
-                player.helperCards!!.add(card)
-
-                if (card.count > 1)
-                    helperCards[randomCard].count--
-                else
-                    helperCards.remove(card)
-
-                HelperCardDialog(card.imageRes).show(fm, "DIALOG_HELPER")
             }
             else -> {
-                val card = darkCards[randomCard]
-                darkCards.remove(card)
-                DarkCardDialog(player, card, this).show(fm, "DIALOG_DARK")
+                if (darkCards.size > 0) {
+                    val card = darkCards[randomCard]
+                    darkCards.remove(card)
+                    DarkCardDialog(player, card, this).show(fm, "DIALOG_DARK")
+                }
             }
         }
     }
@@ -277,16 +283,19 @@ class MapViewModel(
             when (card.lossType) {
                 LossType.HP -> {
                     player.hp -= card.hpLoss
-                    //TODO: Dialog
+                    HpLossDialog(card.hpLoss).show(fm, "DIALOG_HP_LOSS")
                 }
-                LossType.TOOL -> {
-                    //TODO: Dialog
-                }
-                LossType.SPELL -> {
-                    //TODO: Dialog
-                }
-                LossType.ALLY -> {
-                    //TODO: Dialog
+                else -> {
+                    if (player.helperCards != null) {
+                        var properHelperCards: ArrayList<HelperCard> = ArrayList()
+                        for (helperCard in player.helperCards!!) {
+                            if (helperCard.type.compareTo(card.lossType))
+                                properHelperCards.add(helperCard)
+                        }
+
+                        if (properHelperCards.isNotEmpty())
+                            CardLossDialog(properHelperCards, card.lossType).show(fm, "DIALOG_CARD_LOSS")
+                    }
                 }
             }
         }
