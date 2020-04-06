@@ -13,7 +13,7 @@ var playerList = listOf(
     Player(3, Position(24, 7)),
     Player(4, Position(17, 24)),
     Player(5, Position(7, 0))
-)
+).toMutableList()
 
 val roomList = listOf(
     Room(0, 0, 6, 5, 0, 42, R.drawable.selection_room_sotet_varazslatok_kivedese),

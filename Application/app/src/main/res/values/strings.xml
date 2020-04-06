@@ -41,6 +41,9 @@
     <string name="rescued">Megmenekültél!</string>
     <string name="your_card_helped_you">A mentő kártyád segítségedre volt a sötét erőkkel szemben.</string>
     <string name="remaining_hp">Megmaradt házpontjaid:</string>
+    <string name="mystery_cards">Rejtélykártyák sorsolása</string>
+    <string name="your_mystery_cards">A te rejtély kártyáid:</string>
+    <string name="go_forward">Tovább</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>

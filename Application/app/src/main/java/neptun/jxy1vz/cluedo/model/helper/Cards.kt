@@ -54,7 +54,7 @@ val playerCards = listOf(
     )
 )
 
-var helperCards: MutableList<HelperCard> = listOf(
+var helperCards = listOf(
     HelperCard(
         0,
         "Bezoár",
@@ -250,7 +250,7 @@ var helperCards: MutableList<HelperCard> = listOf(
     )
 ).toMutableList()
 
-val mysteryCards = listOf(
+var mysteryCards = listOf(
     MysteryCard(
         0,
         "Altatóital",
@@ -398,9 +398,9 @@ val mysteryCards = listOf(
         R.drawable.rejtely_hatlap,
         MysteryType.VENUE
     )
-)
+).toMutableList()
 
-var darkCards: MutableList<DarkCard> = listOf(
+var darkCards = listOf(
     DarkCard(
         0,
         "Különös csomagot kapsz: a tartalmát megátkozták.",

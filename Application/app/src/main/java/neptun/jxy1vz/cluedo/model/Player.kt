@@ -4,5 +4,6 @@ data class Player(
     var id: Int,
     var pos: Position,
     var hp: Int = 70,
-    var helperCards: ArrayList<HelperCard>? = null
+    var mysteryCards: MutableList<MysteryCard> = ArrayList(),
+    var helperCards: MutableList<HelperCard>? = null
 )

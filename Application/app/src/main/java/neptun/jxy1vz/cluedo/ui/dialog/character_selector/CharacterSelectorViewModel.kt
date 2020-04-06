@@ -6,19 +6,20 @@ import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.model.Player
 import neptun.jxy1vz.cluedo.model.helper.playerList
 import neptun.jxy1vz.cluedo.ui.map.MapActivity
+import neptun.jxy1vz.cluedo.ui.mystery_cards.MysteryCardActivity
 
 class CharacterSelectorViewModel(private val context: Context) : BaseObservable() {
 
-    private lateinit var player: Player
+    private var playerId: Int = 0
 
     fun startGame() {
-        val mapIntent = Intent(context, MapActivity::class.java)
-        mapIntent.putExtra("Player ID", player.id)
-        mapIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context.startActivity(mapIntent)
+        val mysteryCardIntent = Intent(context, MysteryCardActivity::class.java)
+        mysteryCardIntent.putExtra("Player ID", playerId)
+        mysteryCardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(mysteryCardIntent)
     }
 
     fun setPlayer(id: Int) {
-        player = playerList[id]
+        playerId = id
     }
 }

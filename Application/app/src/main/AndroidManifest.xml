@@ -12,6 +12,9 @@
         <activity android:name="neptun.jxy1vz.cluedo.ui.map.MapActivity"
             android:screenOrientation="landscape">
         </activity>
+        <activity android:name=".ui.mystery_cards.MysteryCardActivity"
+            android:screenOrientation="landscape">
+        </activity>
         <activity android:name=".ui.menu.MenuActivity"
             android:screenOrientation="portrait">
             <intent-filter>

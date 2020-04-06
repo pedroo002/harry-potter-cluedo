@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="mysteryCardViewModel"
+            type="neptun.jxy1vz.cluedo.ui.mystery_cards.MysteryCardViewModel" />
+    </data>
+
+    <!--HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/scrollViewImages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvLabelMysteryCards"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="@string/your_mystery_cards"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btnGo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="@string/go_forward"
+                app:layout_constraintBottom_toTopOf="@+id/ivMysteryCardVenue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:onClick="@{()->mysteryCardViewModel.startGame()}"/>
+
+            <ImageView
+                android:id="@+id/ivMysteryCardTool"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/rejtely_hatlap"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="40dp"
+                app:layout_constraintWidth_percent="0.3"
+                app:layout_constraintHeight_percent="0.85"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivMysteryCardSuspect"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/rejtely_hatlap"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivMysteryCardVenue"
+                app:layout_constraintHeight_percent="0.85"
+                app:layout_constraintStart_toEndOf="@id/ivMysteryCardTool"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.3" />
+
+            <ImageView
+                android:id="@+id/ivMysteryCardVenue"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/rejtely_hatlap"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.85"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--/HorizontalScrollView-->
+
+</layout>
