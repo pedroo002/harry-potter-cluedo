@@ -110,11 +110,10 @@ class DarkCardDialog(
             .setTitle(resources.getString(R.string.sotet_jegy)).setNeutralButton(
                 resources.getString(R.string.ok)
             ) { dialog, _ ->
-                /*if (tools.isNotEmpty() || spells.isNotEmpty() || allys.isNotEmpty())
+                if (tools.isNotEmpty() || spells.isNotEmpty() || allys.isNotEmpty())
                     listener.getLoss(null)
                 else
-                    listener.getLoss(darkCard)*/
-                listener.getLoss(getDarkCardByLossType(LossType.TOOL))
+                    listener.getLoss(darkCard)
                 dialog.dismiss()
             }.create()
     }
