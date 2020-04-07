@@ -8,10 +8,6 @@
             type="neptun.jxy1vz.cluedo.ui.mystery_cards.MysteryCardViewModel" />
     </data>
 
-    <!--HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"-->
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/scrollViewImages"
             android:layout_width="match_parent"
@@ -54,7 +50,8 @@
                 app:layout_constraintHeight_percent="0.85"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/card_tool" />
 
             <ImageView
                 android:id="@+id/ivMysteryCardSuspect"
@@ -69,7 +66,8 @@
                 app:layout_constraintHeight_percent="0.85"
                 app:layout_constraintStart_toEndOf="@id/ivMysteryCardTool"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.3" />
+                app:layout_constraintWidth_percent="0.3"
+                android:contentDescription="@string/card_suspect" />
 
             <ImageView
                 android:id="@+id/ivMysteryCardVenue"
@@ -83,10 +81,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent="0.85"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.3" />
+                app:layout_constraintWidth_percent="0.3"
+                android:contentDescription="@string/card_venue" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!--/HorizontalScrollView-->
-
 </layout>

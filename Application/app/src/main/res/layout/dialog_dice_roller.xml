@@ -26,7 +26,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/ivDice3"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.3" />
+                app:layout_constraintWidth_percent="0.3"
+                android:contentDescription="@string/dice1" />
 
             <ImageView
                 android:id="@+id/ivDice2"
@@ -37,7 +38,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivDice3"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.3" />
+                app:layout_constraintWidth_percent="0.3"
+                android:contentDescription="@string/dice2" />
 
             <ImageView
                 android:id="@+id/ivDice3"
@@ -48,7 +50,8 @@
                 app:layout_constraintEnd_toStartOf="@id/ivDice2"
                 app:layout_constraintStart_toEndOf="@id/ivDice1"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.3" />
+                app:layout_constraintWidth_percent="0.3"
+                android:contentDescription="@string/dice3" />
 
             <Button
                 android:id="@+id/btnRoll"

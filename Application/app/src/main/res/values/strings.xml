@@ -19,7 +19,6 @@
     <string name="player5">Luna Lovegood</string>
     <string name="player6">Neville Longbottom</string>
     <string name="logo_description">Logo of the game</string>
-    <string name="settings_icon">Settings icon</string>
     <string name="dob">Dobás</string>
     <string name="choose_a_character">Válassz karaktert magadnak!</string>
     <string name="start">Start</string>
@@ -47,6 +46,17 @@
     <string name="game_mode">Válaszd ki a játék paramétereit!</string>
     <string name="player_mode">Játékos mód:</string>
     <string name="player_count">Játékosok száma:</string>
+    <string name="game_logo">Game logo</string>
+    <string name="settings_icon">Settings icon</string>
+    <string name="card_tool">Mystery card tool</string>
+    <string name="card_suspect">Mystery card suspect</string>
+    <string name="card_venue">Mystery card venue</string>
+    <string name="card_character">Character card</string>
+    <string name="card_dark">Dark card</string>
+    <string name="card_helper">Helper card</string>
+    <string name="dice1">Dice 1</string>
+    <string name="dice2">Dice 2</string>
+    <string name="dice3">Dice3</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>

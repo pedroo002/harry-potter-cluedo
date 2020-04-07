@@ -31,7 +31,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.7"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinnerCharacter" />
+            app:layout_constraintTop_toBottomOf="@+id/spinnerCharacter"
+            android:contentDescription="@string/card_character" />
 
         <Button
             android:id="@+id/btnStart"
