@@ -68,8 +68,8 @@ val starList = arrayOf(
     Position(8, 23),
     Position(14, 17),
     Position(16, 11),
-    Position(18, 16),
-    Position(13, 19),
+    Position(18, 6),
+    Position(13, 9),
     Position(23, 16)
 )
 
