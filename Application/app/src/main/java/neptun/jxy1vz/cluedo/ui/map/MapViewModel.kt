@@ -288,7 +288,7 @@ class MapViewModel(
                 }
                 else -> {
                     if (player.helperCards != null) {
-                        var properHelperCards: ArrayList<HelperCard> = ArrayList()
+                        val properHelperCards: ArrayList<HelperCard> = ArrayList()
                         for (helperCard in player.helperCards!!) {
                             if (helperCard.type.compareTo(card.lossType))
                                 properHelperCards.add(helperCard)

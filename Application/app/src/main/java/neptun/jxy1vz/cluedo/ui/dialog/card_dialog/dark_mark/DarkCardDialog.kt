@@ -10,17 +10,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.animation.doOnEnd
-import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.dialog_dark_card.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDarkCardBinding
 import neptun.jxy1vz.cluedo.model.DarkCard
 import neptun.jxy1vz.cluedo.model.HelperType
-import neptun.jxy1vz.cluedo.model.LossType
 import neptun.jxy1vz.cluedo.model.Player
-import neptun.jxy1vz.cluedo.model.helper.darkCards
 
 class DarkCardDialog(
     private val player: Player,

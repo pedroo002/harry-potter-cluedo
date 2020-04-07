@@ -3,9 +3,6 @@ package neptun.jxy1vz.cluedo.ui.dialog.character_selector
 import android.content.Context
 import android.content.Intent
 import androidx.databinding.BaseObservable
-import neptun.jxy1vz.cluedo.model.Player
-import neptun.jxy1vz.cluedo.model.helper.playerList
-import neptun.jxy1vz.cluedo.ui.map.MapActivity
 import neptun.jxy1vz.cluedo.ui.mystery_cards.MysteryCardActivity
 
 class CharacterSelectorViewModel(private val context: Context) : BaseObservable() {

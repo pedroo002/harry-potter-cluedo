@@ -1,11 +1,11 @@
 package neptun.jxy1vz.cluedo.model
 
-interface Card {
+/*interface Card {
     val id: Int
     val name: String
     val imageRes: Int
     val verso: Int
-}
+}*/
 
 data class HelperCard(
     val id: Int,
