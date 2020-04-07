@@ -43,7 +43,7 @@ class MapViewModel(
     }
 
     init {
-        for (i in 0..5) {
+        for (i in 0 until playerList.size) {
             setLayoutConstraintStart(playerImageList[i], cols[playerList[i].pos.col])
             setLayoutConstraintTop(playerImageList[i], rows[playerList[i].pos.row])
         }

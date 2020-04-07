@@ -21,5 +21,9 @@ class CharacterSelectorViewModel(private val context: Context) : BaseObservable(
 
     fun setPlayer(id: Int) {
         playerId = id
+        val pref = context.getSharedPreferences("Game params", Context.MODE_PRIVATE)
+        val editor = pref.edit()
+        editor.putInt("player_id", id)
+        editor.apply()
     }
 }

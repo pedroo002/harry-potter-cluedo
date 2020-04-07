@@ -1,33 +1,17 @@
 package neptun.jxy1vz.cluedo.ui.mystery_cards
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.animation.doOnEnd
 import androidx.databinding.DataBindingUtil
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
-import neptun.jxy1vz.cluedo.model.MysteryCard
 import neptun.jxy1vz.cluedo.model.MysteryType
-import neptun.jxy1vz.cluedo.model.helper.mysteryCards
 import neptun.jxy1vz.cluedo.model.helper.playerList
-import kotlin.random.Random
 
 class MysteryCardActivity : AppCompatActivity() {
 
     private lateinit var activityMysteryCardBinding: ActivityMysteryCardBinding
     private var playerId: Int = 0
-
-    private fun getRandomMysteryCard(type: MysteryType): MysteryCard {
-        var card: MysteryCard
-        do {
-            card = mysteryCards[Random.nextInt(0, mysteryCards.size)]
-        } while (card.type != type)
-        mysteryCards.remove(card)
-
-        return card
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,46 +20,16 @@ class MysteryCardActivity : AppCompatActivity() {
 
         activityMysteryCardBinding = DataBindingUtil.setContentView(this, R.layout.activity_mystery_card)
         activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(applicationContext, playerList[playerId])
-
-        val solution: MutableList<MysteryCard> = ArrayList()
-        solution.add(getRandomMysteryCard(MysteryType.TOOL))
-        solution.add(getRandomMysteryCard(MysteryType.SUSPECT))
-        solution.add(getRandomMysteryCard(MysteryType.VENUE))
-
-        activityMysteryCardBinding.mysteryCardViewModel.setSolution(solution)
+        activityMysteryCardBinding.executePendingBindings()
     }
 
     override fun onResume() {
         super.onResume()
 
-        (AnimatorInflater.loadAnimator(applicationContext, R.animator.card_flip) as AnimatorSet).apply {
-            setTarget(activityMysteryCardBinding.ivMysteryCardTool)
-            start()
-            doOnEnd {
-                val tool = getRandomMysteryCard(MysteryType.TOOL)
-                playerList[playerId].mysteryCards.add(tool)
-                activityMysteryCardBinding.ivMysteryCardTool.setImageResource(tool.imageRes)
-            }
-        }
+        activityMysteryCardBinding.mysteryCardViewModel!!.getMysteryCard(MysteryType.TOOL, activityMysteryCardBinding.ivMysteryCardTool)
+        activityMysteryCardBinding.mysteryCardViewModel!!.getMysteryCard(MysteryType.SUSPECT, activityMysteryCardBinding.ivMysteryCardSuspect)
+        activityMysteryCardBinding.mysteryCardViewModel!!.getMysteryCard(MysteryType.VENUE, activityMysteryCardBinding.ivMysteryCardVenue)
 
-        (AnimatorInflater.loadAnimator(applicationContext, R.animator.card_flip) as AnimatorSet).apply {
-            setTarget(activityMysteryCardBinding.ivMysteryCardSuspect)
-            start()
-            doOnEnd {
-                val suspect = getRandomMysteryCard(MysteryType.SUSPECT)
-                playerList[playerId].mysteryCards.add(suspect)
-                activityMysteryCardBinding.ivMysteryCardSuspect.setImageResource(suspect.imageRes)
-            }
-        }
-
-        (AnimatorInflater.loadAnimator(applicationContext, R.animator.card_flip) as AnimatorSet).apply {
-            setTarget(activityMysteryCardBinding.ivMysteryCardVenue)
-            start()
-            doOnEnd {
-                val venue = getRandomMysteryCard(MysteryType.VENUE)
-                playerList[playerId].mysteryCards.add(venue)
-                activityMysteryCardBinding.ivMysteryCardVenue.setImageResource(venue.imageRes)
-            }
-        }
+        activityMysteryCardBinding.mysteryCardViewModel!!.setSolution()
     }
 }

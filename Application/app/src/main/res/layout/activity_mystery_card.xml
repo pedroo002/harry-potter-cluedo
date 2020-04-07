@@ -40,7 +40,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/ivMysteryCardVenue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:onClick="@{()->mysteryCardViewModel.startGame()}"/>
+                android:onClick="@{()->mysteryCardViewModel.openHogwarts()}"/>
 
             <ImageView
                 android:id="@+id/ivMysteryCardTool"

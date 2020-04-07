@@ -7,12 +7,21 @@ import neptun.jxy1vz.cluedo.model.Position
 import neptun.jxy1vz.cluedo.model.Room
 
 var playerList = listOf(
-    Player(0, Position(0, 17)),
-    Player(1, Position(24, 17)),
-    Player(2, Position(0, 7)),
-    Player(3, Position(24, 7)),
-    Player(4, Position(17, 24)),
-    Player(5, Position(7, 0))
+    Player(0, Position(0, 17), R.id.ivBluePlayer),
+    Player(1, Position(24, 17), R.id.ivPurplePlayer),
+    Player(2, Position(0, 7), R.id.ivRedPlayer),
+    Player(3, Position(24, 7), R.id.ivYellowPlayer),
+    Player(4, Position(17, 24), R.id.ivWhitePlayer),
+    Player(5, Position(7, 0), R.id.ivGreenPlayer)
+).toMutableList()
+
+val playerImageIdList = listOf(
+    R.id.ivBluePlayer,
+    R.id.ivPurplePlayer,
+    R.id.ivRedPlayer,
+    R.id.ivYellowPlayer,
+    R.id.ivWhitePlayer,
+    R.id.ivGreenPlayer
 ).toMutableList()
 
 val roomList = listOf(
