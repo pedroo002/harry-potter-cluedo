@@ -220,7 +220,8 @@ class MapViewModel(
 
             for (star in starList) {
                 if (player.pos == star) {
-                    showCard(CardType.HELPER)
+                    if (helperCards.size > 0)
+                        showCard(CardType.HELPER)
                 }
             }
 
