@@ -1,13 +1,12 @@
 package neptun.jxy1vz.cluedo.ui.menu
 
 import android.os.Bundle
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMenuBinding
 
-class MenuActivity : AppCompatActivity() {
+class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,11 +14,10 @@ class MenuActivity : AppCompatActivity() {
         val activityMenuBinding = DataBindingUtil.setContentView<ActivityMenuBinding>(this, R.layout.activity_menu)
 
         val fm = supportFragmentManager
-        activityMenuBinding.menuViewModel = MenuViewModel(fm)
+        activityMenuBinding.menuViewModel = MenuViewModel(fm, this)
+    }
 
-        val btnExit = findViewById<Button>(R.id.btnExit)
-        btnExit.setOnClickListener {
-            finish()
-        }
+    override fun exitGame() {
+        finish()
     }
 }

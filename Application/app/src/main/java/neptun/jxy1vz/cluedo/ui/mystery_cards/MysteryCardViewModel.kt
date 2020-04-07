@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.model.MysteryCard
 import neptun.jxy1vz.cluedo.model.MysteryType
 import neptun.jxy1vz.cluedo.model.Player
@@ -17,9 +18,17 @@ import neptun.jxy1vz.cluedo.model.helper.playerList
 import neptun.jxy1vz.cluedo.ui.map.MapActivity
 import kotlin.random.Random
 
-class MysteryCardViewModel(private val context: Context, private val player: Player) : BaseObservable() {
+class MysteryCardViewModel(private val context: Context, private val player: Player, bind: ActivityMysteryCardBinding) : BaseObservable() {
 
     private lateinit var solution: MutableList<MysteryCard>
+
+    init {
+        getMysteryCard(MysteryType.TOOL, bind.ivMysteryCardTool)
+        getMysteryCard(MysteryType.SUSPECT, bind.ivMysteryCardSuspect)
+        getMysteryCard(MysteryType.VENUE, bind.ivMysteryCardVenue)
+
+        setSolution()
+    }
 
     private fun getRandomMysteryCard(type: MysteryType): MysteryCard {
         var card: MysteryCard

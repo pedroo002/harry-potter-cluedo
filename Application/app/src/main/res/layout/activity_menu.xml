@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -23,7 +21,8 @@
         android:src="@drawable/game_logo"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/game_logo" />
 
     <ImageView
         android:id="@+id/ivSettings"
@@ -33,7 +32,8 @@
         android:src="@drawable/ic_settings_white_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/btnExit"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnExit" />
+        app:layout_constraintTop_toTopOf="@+id/btnExit"
+        android:contentDescription="@string/settings_icon" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineLeft"
@@ -71,7 +71,8 @@
         android:text="@string/exit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="@{()->menuViewModel.exit()}"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineRight"
