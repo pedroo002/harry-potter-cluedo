@@ -7,19 +7,40 @@ import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.databinding.DialogDiceRollerBinding
 import kotlin.random.Random
 
-class DiceRollerViewModel(private val listener: DiceViewModelInterface, private val context: Context, private val imageList: List<ImageView>) : BaseObservable(),
+class DiceRollerViewModel(
+    private val bind: DialogDiceRollerBinding,
+    private val context: Context,
+    private val diceResultListener: DiceRollerDialog.DiceResultInterface,
+    private val playerId: Int
+) : BaseObservable(),
     Animation.AnimationListener {
 
-    interface DiceViewModelInterface {
-        fun onDiceResult(dice1: Int, dice2: Int, dice3: Int)
-        fun disableButton()
+    enum class CardType {
+        HELPER,
+        DARK
     }
 
-    @DrawableRes var diceValue1: Int = R.drawable.dice1
-    @DrawableRes var diceValue2: Int = R.drawable.dice4
-    @DrawableRes var diceValue3: Int = R.drawable.helper_card
+    private var cardType: CardType? = null
+
+    fun getCardType(): CardType? {
+        return cardType
+    }
+
+    private val diceImageList = listOf<ImageView>(
+        bind.ivDice1,
+        bind.ivDice2,
+        bind.ivDice3
+    )
+
+    @DrawableRes
+    var diceValue1: Int = R.drawable.dice1
+    @DrawableRes
+    var diceValue2: Int = R.drawable.dice4
+    @DrawableRes
+    var diceValue3: Int = R.drawable.helper_card
 
     private var num1 = 0
     private var num2 = 0
@@ -50,10 +71,10 @@ class DiceRollerViewModel(private val listener: DiceViewModelInterface, private 
     fun rollDice() {
         val anim = AnimationUtils.loadAnimation(context, R.anim.shake)
         anim.setAnimationListener(this)
-        for (dice in imageList) {
+        for (dice in diceImageList) {
             dice.startAnimation(anim)
         }
-        listener.disableButton()
+        disableButton()
     }
 
     override fun onAnimationRepeat(animation: Animation?) {
@@ -65,16 +86,28 @@ class DiceRollerViewModel(private val listener: DiceViewModelInterface, private 
         diceValue2 = getNumericDiceResource(num2)
         diceValue3 = getGraphicalDiceResource(num3)
 
-        imageList[0].setImageResource(diceValue1)
-        imageList[1].setImageResource(diceValue2)
-        imageList[2].setImageResource(diceValue3)
+        diceImageList[0].setImageResource(diceValue1)
+        diceImageList[1].setImageResource(diceValue2)
+        diceImageList[2].setImageResource(diceValue3)
 
-        listener.onDiceResult(num1, num2, num3)
+        onDiceResult(num1, num2, num3)
     }
 
     override fun onAnimationStart(animation: Animation?) {
         num1 = Random.nextInt(1, 7)
         num2 = Random.nextInt(1, 7)
         num3 = Random.nextInt(1, 7)
+    }
+
+    private fun onDiceResult(dice1: Int, dice2: Int, dice3: Int) {
+        diceResultListener.onDiceRoll(playerId, dice1 + dice2, dice3)
+        when (dice3) {
+            1 -> cardType = CardType.HELPER
+            6 -> cardType = CardType.DARK
+        }
+    }
+
+    private fun disableButton() {
+        bind.btnRoll.isEnabled = false
     }
 }

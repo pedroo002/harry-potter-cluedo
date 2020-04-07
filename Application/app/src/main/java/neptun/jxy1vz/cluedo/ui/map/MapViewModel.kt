@@ -14,6 +14,7 @@ import neptun.jxy1vz.cluedo.ui.dialog.RescuedFromDarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
+import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel.CardType
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
 import java.util.*
@@ -25,7 +26,7 @@ import kotlin.random.Random
 
 class MapViewModel(
     playerId: Int,
-    private var playerImageList: List<ImageView>,
+    private var playerImagePairs: List<Pair<Player, ImageView>>,
     private var mapLayout: ConstraintLayout,
     private val fm: FragmentManager
 ) : BaseObservable(),
@@ -35,7 +36,23 @@ class MapViewModel(
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
 
-    private var player = playerList[playerId]
+    private fun getPlayerById(id: Int): Player {
+        for (player in playerList) {
+            if (player.id == id)
+                return player
+        }
+        return playerList[0]
+    }
+
+    private fun getPairById(id: Int): Pair<Player, ImageView> {
+        for (pair in playerImagePairs) {
+            if (pair.first.id == id)
+                return pair
+        }
+        return playerImagePairs[0]
+    }
+
+    private var player = getPlayerById(playerId)
 
     companion object {
         const val ROWS = 24
@@ -43,9 +60,9 @@ class MapViewModel(
     }
 
     init {
-        for (i in 0 until playerList.size) {
-            setLayoutConstraintStart(playerImageList[i], cols[playerList[i].pos.col])
-            setLayoutConstraintTop(playerImageList[i], rows[playerList[i].pos.row])
+        for (pair in playerImagePairs) {
+            setLayoutConstraintStart(pair.second, cols[pair.first.pos.col])
+            setLayoutConstraintTop(pair.second, rows[pair.first.pos.row])
         }
 
         mapGraph = Graph()
@@ -203,12 +220,13 @@ class MapViewModel(
 
             for (star in starList) {
                 if (player.pos == star) {
-                    showCard(DiceRollerDialog.CardType.HELPER)
+                    showCard(CardType.HELPER)
                 }
             }
 
-            setLayoutConstraintStart(playerImageList[playerId], cols[player.pos.col])
-            setLayoutConstraintTop(playerImageList[playerId], rows[player.pos.row])
+            val pair = getPairById(playerId)
+            setLayoutConstraintStart(pair.second, cols[player.pos.col])
+            setLayoutConstraintTop(pair.second, rows[player.pos.row])
 
             emptySelectionList()
         }
@@ -237,9 +255,9 @@ class MapViewModel(
         view.layoutParams = layoutParams
     }
 
-    private fun getRandomCardId(type: DiceRollerDialog.CardType): Int {
+    private fun getRandomCardId(type: CardType): Int {
         return when (type) {
-            DiceRollerDialog.CardType.HELPER -> Random.nextInt(0, helperCards.size)
+            CardType.HELPER -> Random.nextInt(0, helperCards.size)
             else -> Random.nextInt(0, darkCards.size)
         }
     }
@@ -248,10 +266,12 @@ class MapViewModel(
         showMovingOptions(player, sum)
     }
 
-    override fun showCard(type: DiceRollerDialog.CardType) {
+    override fun showCard(type: CardType?) {
+        if (type == null)
+            return
         val randomCard: Int = getRandomCardId(type)
         when (type) {
-            DiceRollerDialog.CardType.HELPER -> {
+            CardType.HELPER -> {
                 if (helperCards.size > 0) {
                     val card = helperCards[randomCard]
                     if (player.helperCards.isNullOrEmpty()) {

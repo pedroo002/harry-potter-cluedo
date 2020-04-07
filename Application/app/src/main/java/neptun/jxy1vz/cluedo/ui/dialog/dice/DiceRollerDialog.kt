@@ -3,7 +3,6 @@ package neptun.jxy1vz.cluedo.ui.dialog.dice
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
@@ -11,19 +10,12 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDiceRollerBinding
 
 class DiceRollerDialog(private val listener: DiceResultInterface, private val playerId: Int) :
-    DialogFragment(), DiceRollerViewModel.DiceViewModelInterface {
+    DialogFragment() {
 
     interface DiceResultInterface {
         fun onDiceRoll(player: Int, sum: Int, other: Int)
-        fun showCard(type: CardType)
+        fun showCard(type: DiceRollerViewModel.CardType?)
     }
-
-    enum class CardType {
-        HELPER,
-        DARK
-    }
-
-    private var cardType: CardType? = null
 
     private lateinit var dialogDiceRollerBinding: DialogDiceRollerBinding
 
@@ -35,13 +27,8 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
             false
         )
 
-        val diceImageList = listOf<ImageView>(
-            dialogDiceRollerBinding.ivDice1,
-            dialogDiceRollerBinding.ivDice2,
-            dialogDiceRollerBinding.ivDice3
-        )
         dialogDiceRollerBinding.dialogViewModel =
-            DiceRollerViewModel(this, context!!, diceImageList)
+            DiceRollerViewModel(dialogDiceRollerBinding, context!!, listener, playerId)
         dialogDiceRollerBinding.executePendingBindings()
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_DialogWhenLarge)
@@ -49,22 +36,8 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
             .setNeutralButton(
                 resources.getString(R.string.ok)
             ) { dialog, _ ->
-                cardType?.let {
-                    listener.showCard(it)
-                }
+                listener.showCard(dialogDiceRollerBinding.dialogViewModel!!.getCardType())
                 dialog.dismiss()
             }.create()
-    }
-
-    override fun onDiceResult(dice1: Int, dice2: Int, dice3: Int) {
-        listener.onDiceRoll(playerId, dice1 + dice2, dice3)
-        when (dice3) {
-            1 -> cardType = CardType.HELPER
-            6 -> cardType = CardType.DARK
-        }
-    }
-
-    override fun disableButton() {
-        dialogDiceRollerBinding.btnRoll.isEnabled = false
     }
 }

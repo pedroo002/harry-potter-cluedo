@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
-import neptun.jxy1vz.cluedo.model.MysteryType
 import neptun.jxy1vz.cluedo.model.helper.playerList
 
 class MysteryCardActivity : AppCompatActivity() {
@@ -19,17 +18,7 @@ class MysteryCardActivity : AppCompatActivity() {
         playerId = intent.getIntExtra("Player ID", 0)
 
         activityMysteryCardBinding = DataBindingUtil.setContentView(this, R.layout.activity_mystery_card)
-        activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(applicationContext, playerList[playerId])
+        activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(applicationContext, playerList[playerId], activityMysteryCardBinding)
         activityMysteryCardBinding.executePendingBindings()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        activityMysteryCardBinding.mysteryCardViewModel!!.getMysteryCard(MysteryType.TOOL, activityMysteryCardBinding.ivMysteryCardTool)
-        activityMysteryCardBinding.mysteryCardViewModel!!.getMysteryCard(MysteryType.SUSPECT, activityMysteryCardBinding.ivMysteryCardSuspect)
-        activityMysteryCardBinding.mysteryCardViewModel!!.getMysteryCard(MysteryType.VENUE, activityMysteryCardBinding.ivMysteryCardVenue)
-
-        activityMysteryCardBinding.mysteryCardViewModel!!.setSolution()
     }
 }
