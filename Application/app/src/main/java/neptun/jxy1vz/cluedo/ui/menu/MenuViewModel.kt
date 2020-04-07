@@ -1,15 +1,11 @@
 package neptun.jxy1vz.cluedo.ui.menu
 
-import android.content.Context
-import android.content.Intent
 import androidx.databinding.BaseObservable
 import androidx.fragment.app.FragmentManager
-import neptun.jxy1vz.cluedo.ui.map.MapActivity
+import neptun.jxy1vz.cluedo.ui.dialog.game_mode.GameModeDialog
 
-class MenuViewModel(private val context: Context, private val fragmentManager: FragmentManager) : BaseObservable() {
-    fun openMap() {
-        val mapIntent = Intent(context, MapActivity::class.java)
-        mapIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context.startActivity(mapIntent)
+class MenuViewModel(private val fragmentManager: FragmentManager) : BaseObservable() {
+    fun openGameModeDialog() {
+        GameModeDialog().show(fragmentManager, "DIALOG_GAME_MODE")
     }
 }

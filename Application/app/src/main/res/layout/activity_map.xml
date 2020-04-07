@@ -111,63 +111,63 @@
                 <!--Players-->
 
                 <ImageView
-                    android:id="@+id/ivGreenPlayer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/tile_green"
-                    android:onClick="@{()->mapViewModel.showDialog(0)}"
-                    app:layout_constraintStart_toStartOf="@id/borderLeft"
-                    app:layout_constraintTop_toTopOf="@id/guidelineRow7"
-                    android:contentDescription="@string/player1" />
-
-                <ImageView
-                    android:id="@+id/ivRedPlayer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/tile_red"
-                    android:onClick="@{()->mapViewModel.showDialog(1)}"
-                    app:layout_constraintStart_toStartOf="@id/guidelineCol7"
-                    app:layout_constraintTop_toTopOf="@id/borderTop"
-                    android:contentDescription="@string/player2" />
-
-                <ImageView
-                    android:id="@+id/ivYellowPlayer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/tile_yellow"
-                    android:onClick="@{()->mapViewModel.showDialog(2)}"
-                    app:layout_constraintStart_toStartOf="@id/guidelineCol24"
-                    app:layout_constraintTop_toTopOf="@id/guidelineRow7"
-                    android:contentDescription="@string/player3" />
-
-                <ImageView
                     android:id="@+id/ivBluePlayer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_blue"
-                    android:onClick="@{()->mapViewModel.showDialog(3)}"
+                    android:onClick="@{()->mapViewModel.showDialog(0)}"
                     app:layout_constraintStart_toStartOf="@id/borderLeft"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow17"
-                    android:contentDescription="@string/player4" />
+                    android:contentDescription="@string/player1" />
 
                 <ImageView
                     android:id="@+id/ivPurplePlayer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_purple"
-                    android:onClick="@{()->mapViewModel.showDialog(4)}"
+                    android:onClick="@{()->mapViewModel.showDialog(1)}"
                     app:layout_constraintStart_toStartOf="@id/guidelineCol24"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow17"
-                    android:contentDescription="@string/player5" />
+                    android:contentDescription="@string/player2" />
+
+                <ImageView
+                    android:id="@+id/ivRedPlayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/tile_red"
+                    android:onClick="@{()->mapViewModel.showDialog(2)}"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol7"
+                    app:layout_constraintTop_toTopOf="@id/borderTop"
+                    android:contentDescription="@string/player3" />
+
+                <ImageView
+                    android:id="@+id/ivYellowPlayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/tile_yellow"
+                    android:onClick="@{()->mapViewModel.showDialog(3)}"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol24"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow7"
+                    android:contentDescription="@string/player4" />
 
                 <ImageView
                     android:id="@+id/ivWhitePlayer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/tile_white"
-                    android:onClick="@{()->mapViewModel.showDialog(5)}"
+                    android:onClick="@{()->mapViewModel.showDialog(4)}"
                     app:layout_constraintStart_toStartOf="@id/guidelineCol17"
                     app:layout_constraintTop_toTopOf="@id/guidelineRow24"
+                    android:contentDescription="@string/player5" />
+
+                <ImageView
+                    android:id="@+id/ivGreenPlayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/tile_green"
+                    android:onClick="@{()->mapViewModel.showDialog(5)}"
+                    app:layout_constraintStart_toStartOf="@id/borderLeft"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow7"
                     android:contentDescription="@string/player6" />
 
                 <!--Guidelines...-->

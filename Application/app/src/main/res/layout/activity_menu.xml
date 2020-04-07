@@ -6,7 +6,7 @@
 
     <data>
         <variable
-            name="menu"
+            name="menuViewModel"
             type="neptun.jxy1vz.cluedo.ui.menu.MenuViewModel" />
     </data>
 
@@ -51,7 +51,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guidelineButtonsUpper"
-        android:onClick="@{()->menu.openMap()}"/>
+        android:onClick="@{()->menuViewModel.openGameModeDialog()}"/>
 
     <Button
         android:id="@+id/btnRules"

@@ -9,143 +9,33 @@ import androidx.databinding.BindingAdapter
 import androidx.fragment.app.FragmentManager
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.*
-import neptun.jxy1vz.cluedo.ui.dice.DiceRollerDialog
+import neptun.jxy1vz.cluedo.model.helper.*
+import neptun.jxy1vz.cluedo.ui.dialog.RescuedFromDarkCardDialog
+import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
+import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
+import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
+import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
+import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.elementAt
-import kotlin.collections.isNotEmpty
-import kotlin.collections.iterator
-import kotlin.collections.listOf
 import kotlin.collections.set
 import kotlin.math.min
 import kotlin.random.Random
 
-class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: FragmentManager) : BaseObservable(),
-    DiceRollerDialog.DiceResultInterface {
-    private var mapLayout = layout
+class MapViewModel(
+    playerId: Int,
+    private var playerImageList: List<ImageView>,
+    private var mapLayout: ConstraintLayout,
+    private val fm: FragmentManager
+) : BaseObservable(),
+    DiceRollerDialog.DiceResultInterface, DarkCardDialog.DarkCardDialogListener,
+    CardLossDialog.CardLossDialogListener {
+
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
-    private val fm: FragmentManager = fm
 
-    private val playerList = listOf(
-        Player(0, Position(7, 0)),
-        Player(1, Position(0, 7)),
-        Player(2, Position(24, 7)),
-        Player(3, Position(0, 17)),
-        Player(4, Position(24, 17)),
-        Player(5, Position(17, 24))
-    )
-
-    private val roomList = listOf(
-        Room(0, 0, 6, 5, 0, 42, R.drawable.selection_room_sotet_varazslatok_kivedese),
-        Room(1, 0, 15, 6, 9, 49, R.drawable.selection_room_nagyterem),
-        Room(2, 0, 24, 6, 18, 49, R.drawable.selection_room_gyengelkedo),
-        Room(3, 8, 6, 11, 0, 28, R.drawable.selection_room_konyvtar),
-        Room(4, 10, 14, 15, 10, 30, R.drawable.selection_room_dumbledore),
-        Room(5, 9, 24, 15, 18, 49, R.drawable.selection_room_szukseg_szobaja),
-        Room(6, 13, 6, 16, 0, 28, R.drawable.selection_room_bagolyhaz),
-        Room(7, 19, 6, 24, 0, 42, R.drawable.selection_room_joslastan_terem),
-        Room(8, 18, 15, 24, 9, 49, R.drawable.selection_room_serleg_terem),
-        Room(9, 18, 24, 24, 18, 49, R.drawable.selection_room_bajitaltan_terem)
-    )
-
-    private val doorList = listOf(
-        Door(Position(1, 7), roomList[0]),
-        Door(Position(6, 1), roomList[0]),
-        Door(Position(5, 8), roomList[1]),
-        Door(Position(7, 12), roomList[1]),
-        Door(Position(5, 16), roomList[1]),
-        Door(Position(1, 17), roomList[2]),
-        Door(Position(7, 23), roomList[2]),
-        Door(Position(8, 7), roomList[3]),
-        Door(Position(12, 2), roomList[3]),
-        Door(Position(11, 9), roomList[4]),
-        Door(Position(14, 9), roomList[4]),
-        Door(Position(13, 15), roomList[4]),
-        Door(Position(8, 19), roomList[5]),
-        Door(Position(16, 19), roomList[5]),
-        Door(Position(12, 4), roomList[6]),
-        Door(Position(16, 7), roomList[6]),
-        Door(Position(18, 2), roomList[7]),
-        Door(Position(22, 7), roomList[7]),
-        Door(Position(17, 12), roomList[8]),
-        Door(Position(19, 8), roomList[8]),
-        Door(Position(19, 16), roomList[8]),
-        Door(Position(17, 22), roomList[9]),
-        Door(Position(21, 17), roomList[9])
-    )
-
-    private var starPositions = arrayOf(
-        Position(2, 8),
-        Position(8, 10),
-        Position(8, 23),
-        Position(14, 17),
-        Position(16, 11),
-        Position(18, 16),
-        Position(13, 19),
-        Position(23, 16)
-    )
-
-    private var playerImageList = players
-
-    private var cols = arrayOf(
-        R.id.borderLeft,
-        R.id.guidelineCol1,
-        R.id.guidelineCol2,
-        R.id.guidelineCol3,
-        R.id.guidelineCol4,
-        R.id.guidelineCol5,
-        R.id.guidelineCol6,
-        R.id.guidelineCol7,
-        R.id.guidelineCol8,
-        R.id.guidelineCol9,
-        R.id.guidelineCol10,
-        R.id.guidelineCol11,
-        R.id.guidelineCol12,
-        R.id.guidelineCol13,
-        R.id.guidelineCol14,
-        R.id.guidelineCol15,
-        R.id.guidelineCol16,
-        R.id.guidelineCol17,
-        R.id.guidelineCol18,
-        R.id.guidelineCol19,
-        R.id.guidelineCol20,
-        R.id.guidelineCol21,
-        R.id.guidelineCol22,
-        R.id.guidelineCol23,
-        R.id.guidelineCol24,
-        R.id.borderRight
-    )
-    private var rows = arrayOf(
-        R.id.borderTop,
-        R.id.guidelineRow1,
-        R.id.guidelineRow2,
-        R.id.guidelineRow3,
-        R.id.guidelineRow4,
-        R.id.guidelineRow5,
-        R.id.guidelineRow6,
-        R.id.guidelineRow7,
-        R.id.guidelineRow8,
-        R.id.guidelineRow9,
-        R.id.guidelineRow10,
-        R.id.guidelineRow11,
-        R.id.guidelineRow12,
-        R.id.guidelineRow13,
-        R.id.guidelineRow14,
-        R.id.guidelineRow15,
-        R.id.guidelineRow16,
-        R.id.guidelineRow17,
-        R.id.guidelineRow18,
-        R.id.guidelineRow19,
-        R.id.guidelineRow20,
-        R.id.guidelineRow21,
-        R.id.guidelineRow22,
-        R.id.guidelineRow23,
-        R.id.guidelineRow24,
-        R.id.borderBottom
-    )
+    private var player = playerList[playerId]
 
     companion object {
         const val ROWS = 24
@@ -153,7 +43,7 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: Fragm
     }
 
     init {
-        for (i in 0..5) {
+        for (i in 0 until playerList.size) {
             setLayoutConstraintStart(playerImageList[i], cols[playerList[i].pos.col])
             setLayoutConstraintTop(playerImageList[i], rows[playerList[i].pos.row])
         }
@@ -170,7 +60,7 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: Fragm
                         mapGraph.addEdge(current, Position(y + 1, x))
                     if (x > 0 && stepInRoom(Position(y, x - 1)) == -1)
                         mapGraph.addEdge(current, Position(y, x - 1))
-                    if (x < 24 &&stepInRoom(Position(y, x + 1)) == -1)
+                    if (x < 24 && stepInRoom(Position(y, x + 1)) == -1)
                         mapGraph.addEdge(current, Position(y, x + 1))
 
                 }
@@ -238,7 +128,10 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: Fragm
         return distances
     }
 
-    private fun mergeDistances(map1: HashMap<Position, Int>, map2: HashMap<Position, Int>? = null): HashMap<Position, Int> {
+    private fun mergeDistances(
+        map1: HashMap<Position, Int>,
+        map2: HashMap<Position, Int>? = null
+    ): HashMap<Position, Int> {
         val intersection: HashMap<Position, Int> = HashMap()
         for (pos in map1.keys) {
             intersection[pos] = map1[pos]!!
@@ -255,6 +148,8 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: Fragm
     }
 
     fun showDialog(playerId: Int) {
+        if (player.id != playerId)
+            return
         DiceRollerDialog(this, playerId).show(fm, "DIALOG_DICE")
     }
 
@@ -262,13 +157,14 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: Fragm
         emptySelectionList()
 
         var distances: HashMap<Position, Int>? = null
-        if (stepInRoom(playerList[playerId].pos) == -1)
-            distances = dijkstra(playerList[playerId].pos)
+        if (stepInRoom(player.pos) == -1)
+            distances = dijkstra(player.pos)
         else {
-            val roomId = stepInRoom(playerList[playerId].pos)
+            val roomId = stepInRoom(player.pos)
             for (door in doorList) {
                 if (door.room.id == roomId) {
-                    distances = mergeDistances(dijkstra(Position(door.room.top, door.room.left)), distances)
+                    distances =
+                        mergeDistances(dijkstra(Position(door.room.top, door.room.left)), distances)
                 }
             }
         }
@@ -282,7 +178,7 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: Fragm
             }
         }
 
-        if (stepInRoom(playerList[playerId].pos) == -1) {
+        if (stepInRoom(player.pos) == -1) {
             for (door in doorList) {
                 if (distances!![door.position]!! <= stepCount - 1) {
                     drawSelection(door.room.selection, door.room.top, door.room.left, playerId)
@@ -294,15 +190,25 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: Fragm
     private fun drawSelection(@DrawableRes selRes: Int, row: Int, col: Int, playerId: Int) {
         val selection = ImageView(mapLayout.context)
         selectionList.add(selection)
-        selection.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+        selection.layoutParams = ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT
+        )
         selection.setImageResource(selRes)
         selection.visibility = ImageView.VISIBLE
         setLayoutConstraintStart(selection, cols[col])
         setLayoutConstraintTop(selection, rows[row])
         selection.setOnClickListener {
-            playerList[playerId].pos = Position(row, col)
-            setLayoutConstraintStart(playerImageList[playerId], cols[playerList[playerId].pos.col])
-            setLayoutConstraintTop(playerImageList[playerId], rows[playerList[playerId].pos.row])
+            player.pos = Position(row, col)
+
+            for (star in starList) {
+                if (player.pos == star) {
+                    showCard(DiceRollerDialog.CardType.HELPER)
+                }
+            }
+
+            setLayoutConstraintStart(playerImageList[playerId], cols[player.pos.col])
+            setLayoutConstraintTop(playerImageList[playerId], rows[player.pos.row])
 
             emptySelectionList()
         }
@@ -317,19 +223,89 @@ class MapViewModel(players: List<ImageView>, layout: ConstraintLayout, fm: Fragm
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")
     fun setLayoutConstraintTop(view: View, row: Int) {
-        val layoutParams: ConstraintLayout.LayoutParams = view.layoutParams as ConstraintLayout.LayoutParams
+        val layoutParams: ConstraintLayout.LayoutParams =
+            view.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.topToTop = row
         view.layoutParams = layoutParams
     }
 
     @BindingAdapter("app:layout_constraintStart_toStartOf")
     fun setLayoutConstraintStart(view: View, col: Int) {
-        val layoutParams: ConstraintLayout.LayoutParams = view.layoutParams as ConstraintLayout.LayoutParams
+        val layoutParams: ConstraintLayout.LayoutParams =
+            view.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.startToStart = col
         view.layoutParams = layoutParams
     }
 
+    private fun getRandomCardId(type: DiceRollerDialog.CardType): Int {
+        return when (type) {
+            DiceRollerDialog.CardType.HELPER -> Random.nextInt(0, helperCards.size)
+            else -> Random.nextInt(0, darkCards.size)
+        }
+    }
+
     override fun onDiceRoll(player: Int, sum: Int, other: Int) {
         showMovingOptions(player, sum)
+    }
+
+    override fun showCard(type: DiceRollerDialog.CardType) {
+        val randomCard: Int = getRandomCardId(type)
+        when (type) {
+            DiceRollerDialog.CardType.HELPER -> {
+                if (helperCards.size > 0) {
+                    val card = helperCards[randomCard]
+                    if (player.helperCards.isNullOrEmpty()) {
+                        player.helperCards = ArrayList()
+                    }
+                    player.helperCards!!.add(card)
+
+                    if (card.count > 1)
+                        helperCards[randomCard].count--
+                    else
+                        helperCards.remove(card)
+
+                    HelperCardDialog(card.imageRes).show(fm, "DIALOG_HELPER")
+                }
+            }
+            else -> {
+                if (darkCards.size > 0) {
+                    val card = darkCards[randomCard]
+                    darkCards.remove(card)
+                    DarkCardDialog(player, card, this).show(fm, "DIALOG_DARK")
+                }
+            }
+        }
+    }
+
+    override fun getLoss(card: DarkCard?) {
+        if (card == null) {
+            RescuedFromDarkCardDialog().show(fm, "DIALOG_RESCUED")
+        } else {
+            when (card.lossType) {
+                LossType.HP -> {
+                    player.hp -= card.hpLoss
+                    HpLossDialog(card.hpLoss, player.hp).show(fm, "DIALOG_HP_LOSS")
+                }
+                else -> {
+                    if (player.helperCards != null) {
+                        val properHelperCards: ArrayList<HelperCard> = ArrayList()
+                        for (helperCard in player.helperCards!!) {
+                            if (helperCard.type.compareTo(card.lossType))
+                                properHelperCards.add(helperCard)
+                        }
+
+                        if (properHelperCards.isNotEmpty())
+                            CardLossDialog(properHelperCards, card.lossType, this).show(
+                                fm,
+                                "DIALOG_CARD_LOSS"
+                            )
+                    }
+                }
+            }
+        }
+    }
+
+    override fun throwCard(card: HelperCard) {
+        player.helperCards!!.remove(card)
     }
 }
