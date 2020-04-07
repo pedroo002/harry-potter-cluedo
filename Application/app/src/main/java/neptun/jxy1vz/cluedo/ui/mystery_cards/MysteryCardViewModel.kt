@@ -11,6 +11,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.MysteryCard
 import neptun.jxy1vz.cluedo.model.MysteryType
 import neptun.jxy1vz.cluedo.model.Player
+import neptun.jxy1vz.cluedo.model.helper.gameSolution
 import neptun.jxy1vz.cluedo.model.helper.mysteryCards
 import neptun.jxy1vz.cluedo.model.helper.playerList
 import neptun.jxy1vz.cluedo.ui.map.MapActivity
@@ -54,6 +55,8 @@ class MysteryCardViewModel(private val context: Context, private val player: Pla
         solution.add(getRandomMysteryCard(MysteryType.TOOL))
         solution.add(getRandomMysteryCard(MysteryType.SUSPECT))
         solution.add(getRandomMysteryCard(MysteryType.VENUE))
+
+        gameSolution = solution
 
         handOutCardsToOtherPlayers()
     }

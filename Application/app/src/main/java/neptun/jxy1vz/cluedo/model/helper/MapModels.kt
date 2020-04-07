@@ -1,10 +1,9 @@
 package neptun.jxy1vz.cluedo.model.helper
 
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.model.Door
-import neptun.jxy1vz.cluedo.model.Player
-import neptun.jxy1vz.cluedo.model.Position
-import neptun.jxy1vz.cluedo.model.Room
+import neptun.jxy1vz.cluedo.model.*
+
+var gameSolution: List<MysteryCard> = ArrayList()
 
 var playerList = listOf(
     Player(0, Position(0, 17), R.id.ivBluePlayer),
