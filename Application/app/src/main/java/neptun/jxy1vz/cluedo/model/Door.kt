@@ -4,6 +4,7 @@ data class Door(
     val id: Int,
     val position: Position,
     val room: Room,
+    val closedDoor: Int? = null,
     val state: DoorState = DoorState.OPENED
 )
 
