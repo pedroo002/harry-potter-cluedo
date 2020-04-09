@@ -13,8 +13,8 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
     DialogFragment() {
 
     interface DiceResultInterface {
-        fun onDiceRoll(player: Int, sum: Int, other: Int)
-        fun showCard(type: DiceRollerViewModel.CardType?)
+        fun onDiceRoll(playerId: Int, sum: Int, other: Int)
+        fun showCard(playerId: Int, type: DiceRollerViewModel.CardType?)
     }
 
     private lateinit var dialogDiceRollerBinding: DialogDiceRollerBinding
@@ -36,7 +36,7 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
             .setNeutralButton(
                 resources.getString(R.string.ok)
             ) { dialog, _ ->
-                listener.showCard(dialogDiceRollerBinding.dialogViewModel!!.getCardType())
+                listener.showCard(playerId, dialogDiceRollerBinding.dialogViewModel!!.getCardType())
                 dialog.dismiss()
             }.create()
     }

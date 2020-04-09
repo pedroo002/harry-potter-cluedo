@@ -39,7 +39,7 @@ class DarkCardViewModel(private val bind: DialogDarkCardBinding, private val con
         spells.add("")
         allys.add("")
 
-        if (!player.helperCards.isNullOrEmpty())
+        if (!player.helperCards.isNullOrEmpty()) {
             for (helperCard in player.helperCards!!) {
                 if (!darkCard.helperIds.isNullOrEmpty() && darkCard.helperIds.contains(helperCard.id))
                     when (helperCard.type) {
@@ -48,6 +48,8 @@ class DarkCardViewModel(private val bind: DialogDarkCardBinding, private val con
                         HelperType.ALLY -> addHelperToArray(helperCard.name, allys)
                     }
             }
+        }
+
         if (tools.size == 1 && spells.size == 1 && allys.size == 1)
             hatlap = R.drawable.no_mento_hatlap
 
