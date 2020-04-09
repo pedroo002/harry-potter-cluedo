@@ -85,8 +85,10 @@ class MapViewModel(
         }
 
         for (door: Door in doorList) {
-            mapGraph.addEdge(Position(door.room.top, door.room.left), door.position)
-            mapGraph.addEdge(door.position, Position(door.room.top, door.room.left))
+            for (i in 0..6) {
+                mapGraph.addEdge(Position(door.room.top, door.room.left + i), door.position)
+                mapGraph.addEdge(door.position, Position(door.room.top, door.room.left + i))
+            }
         }
     }
 
@@ -174,10 +176,10 @@ class MapViewModel(
         emptySelectionList()
 
         var distances: HashMap<Position, Int>? = null
-        if (stepInRoom(player.pos) == -1)
-            distances = dijkstra(player.pos)
+        if (stepInRoom(playerList[playerId].pos) == -1)
+            distances = dijkstra(playerList[playerId].pos)
         else {
-            val roomId = stepInRoom(player.pos)
+            val roomId = stepInRoom(playerList[playerId].pos)
             for (door in doorList) {
                 if (door.room.id == roomId) {
                     distances =
@@ -195,7 +197,7 @@ class MapViewModel(
             }
         }
 
-        if (stepInRoom(player.pos) == -1) {
+        if (stepInRoom(playerList[playerId].pos) == -1) {
             for (door in doorList) {
                 if (distances!![door.position]!! <= stepCount - 1) {
                     drawSelection(door.room.selection, door.room.top, door.room.left, playerId)
@@ -205,6 +207,8 @@ class MapViewModel(
     }
 
     private fun drawSelection(@DrawableRes selRes: Int, row: Int, col: Int, playerId: Int) {
+        val targetPosition = Position(row, col)
+
         val selection = ImageView(mapLayout.context)
         selectionList.add(selection)
         selection.layoutParams = ConstraintLayout.LayoutParams(
@@ -216,18 +220,20 @@ class MapViewModel(
         setLayoutConstraintStart(selection, cols[col])
         setLayoutConstraintTop(selection, rows[row])
         selection.setOnClickListener {
-            player.pos = Position(row, col)
+            while (stepInRoom(targetPosition) != -1 && isFieldOccupied(targetPosition))
+                targetPosition.col++
+            playerList[playerId].pos = targetPosition
 
             for (star in starList) {
-                if (player.pos == star) {
+                if (playerList[playerId].pos == star) {
                     if (helperCards.size > 0)
                         showCard(CardType.HELPER)
                 }
             }
 
             val pair = getPairById(playerId)
-            setLayoutConstraintStart(pair.second, cols[player.pos.col])
-            setLayoutConstraintTop(pair.second, rows[player.pos.row])
+            setLayoutConstraintStart(pair.second, cols[playerList[playerId].pos.col])
+            setLayoutConstraintTop(pair.second, rows[playerList[playerId].pos.row])
 
             emptySelectionList()
         }
