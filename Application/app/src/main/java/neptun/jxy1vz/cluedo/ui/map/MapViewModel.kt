@@ -85,7 +85,7 @@ class MapViewModel(
         }
 
         for (door: Door in doorList) {
-            for (i in 0..6) {
+            for (i in 0..4) {
                 mapGraph.addEdge(Position(door.room.top, door.room.left + i), door.position)
                 mapGraph.addEdge(door.position, Position(door.room.top, door.room.left + i))
             }
@@ -176,10 +176,10 @@ class MapViewModel(
         emptySelectionList()
 
         var distances: HashMap<Position, Int>? = null
-        if (stepInRoom(playerList[playerId].pos) == -1)
-            distances = dijkstra(playerList[playerId].pos)
+        if (stepInRoom(getPlayerById(playerId).pos) == -1)
+            distances = dijkstra(getPlayerById(playerId).pos)
         else {
-            val roomId = stepInRoom(playerList[playerId].pos)
+            val roomId = stepInRoom(getPlayerById(playerId).pos)
             for (door in doorList) {
                 if (door.room.id == roomId) {
                     distances =
@@ -197,7 +197,7 @@ class MapViewModel(
             }
         }
 
-        if (stepInRoom(playerList[playerId].pos) == -1) {
+        if (stepInRoom(getPlayerById(playerId).pos) == -1) {
             for (door in doorList) {
                 if (distances!![door.position]!! <= stepCount - 1) {
                     drawSelection(door.room.selection, door.room.top, door.room.left, playerId)
@@ -222,18 +222,18 @@ class MapViewModel(
         selection.setOnClickListener {
             while (stepInRoom(targetPosition) != -1 && isFieldOccupied(targetPosition))
                 targetPosition.col++
-            playerList[playerId].pos = targetPosition
+            getPlayerById(playerId).pos = targetPosition
 
             for (star in starList) {
-                if (playerList[playerId].pos == star) {
+                if (getPlayerById(playerId).pos == star) {
                     if (helperCards.size > 0)
                         showCard(playerId, CardType.HELPER)
                 }
             }
 
             val pair = getPairById(playerId)
-            setLayoutConstraintStart(pair.second, cols[playerList[playerId].pos.col])
-            setLayoutConstraintTop(pair.second, rows[playerList[playerId].pos.row])
+            setLayoutConstraintStart(pair.second, cols[getPlayerById(playerId).pos.col])
+            setLayoutConstraintTop(pair.second, rows[getPlayerById(playerId).pos.row])
 
             emptySelectionList()
         }
@@ -281,10 +281,10 @@ class MapViewModel(
             CardType.HELPER -> {
                 if (helperCards.size > 0) {
                     val card = helperCards[randomCard]
-                    if (playerList[playerId].helperCards.isNullOrEmpty()) {
-                        playerList[playerId].helperCards = ArrayList()
+                    if (getPlayerById(playerId).helperCards.isNullOrEmpty()) {
+                        getPlayerById(playerId).helperCards = ArrayList()
                     }
-                    playerList[playerId].helperCards!!.add(card)
+                    getPlayerById(playerId).helperCards!!.add(card)
 
                     if (card.count > 1)
                         helperCards[randomCard].count--
@@ -306,7 +306,7 @@ class MapViewModel(
                         val spells: ArrayList<String> = ArrayList()
                         val allys: ArrayList<String> = ArrayList()
 
-                        getHelperObjects(playerList[playerId], card, tools, spells, allys)
+                        getHelperObjects(getPlayerById(playerId), card, tools, spells, allys)
 
                         if (tools.size == 1 && spells.size == 1 && allys.size == 1)
                             getLoss(playerId, card)
@@ -323,14 +323,14 @@ class MapViewModel(
         } else {
             when (card.lossType) {
                 LossType.HP -> {
-                    playerList[playerId].hp -= card.hpLoss
+                    getPlayerById(playerId).hp -= card.hpLoss
                     if (playerId == player.id)
                         HpLossDialog(card.hpLoss, player.hp).show(fm, "DIALOG_HP_LOSS")
                 }
                 else -> {
-                    if (playerList[playerId].helperCards != null) {
+                    if (getPlayerById(playerId).helperCards != null) {
                         val properHelperCards: ArrayList<HelperCard> = ArrayList()
-                        for (helperCard in playerList[playerId].helperCards!!) {
+                        for (helperCard in getPlayerById(playerId).helperCards!!) {
                             if (helperCard.type.compareTo(card.lossType))
                                 properHelperCards.add(helperCard)
                         }
@@ -356,6 +356,6 @@ class MapViewModel(
     }
 
     override fun throwCard(playerId: Int, card: HelperCard) {
-        playerList[playerId].helperCards!!.remove(card)
+        getPlayerById(playerId).helperCards!!.remove(card)
     }
 }
