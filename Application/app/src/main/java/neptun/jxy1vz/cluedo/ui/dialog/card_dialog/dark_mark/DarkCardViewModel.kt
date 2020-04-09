@@ -13,19 +13,16 @@ import neptun.jxy1vz.cluedo.databinding.DialogDarkCardBinding
 import neptun.jxy1vz.cluedo.model.DarkCard
 import neptun.jxy1vz.cluedo.model.HelperType
 import neptun.jxy1vz.cluedo.model.Player
+import neptun.jxy1vz.cluedo.model.helper.getHelperObjects
 
 class DarkCardViewModel(private val bind: DialogDarkCardBinding, private val context: Context, private val player: Player, private val darkCard: DarkCard) : BaseObservable(),
     AdapterView.OnItemSelectedListener {
 
-    private var tools: ArrayList<String> = ArrayList()
-    private var spells: ArrayList<String> = ArrayList()
-    private var allys: ArrayList<String> = ArrayList()
+    private val tools: ArrayList<String> = ArrayList()
+    private val spells: ArrayList<String> = ArrayList()
+    private val allys: ArrayList<String> = ArrayList()
 
     private var hatlap: Int = R.drawable.mento_hatlap
-
-    private fun addHelperToArray(name: String, array: ArrayList<String>) {
-        array.add(name)
-    }
 
     fun getLoss(): DarkCard? {
         return if (tools.size > 1 || spells.size > 1 || allys.size > 1)
@@ -35,20 +32,7 @@ class DarkCardViewModel(private val bind: DialogDarkCardBinding, private val con
     }
 
     init {
-        tools.add("")
-        spells.add("")
-        allys.add("")
-
-        if (!player.helperCards.isNullOrEmpty()) {
-            for (helperCard in player.helperCards!!) {
-                if (!darkCard.helperIds.isNullOrEmpty() && darkCard.helperIds.contains(helperCard.id))
-                    when (helperCard.type) {
-                        HelperType.TOOL -> addHelperToArray(helperCard.name, tools)
-                        HelperType.SPELL -> addHelperToArray(helperCard.name, spells)
-                        HelperType.ALLY -> addHelperToArray(helperCard.name, allys)
-                    }
-            }
-        }
+        getHelperObjects(player, darkCard, tools, spells, allys)
 
         if (tools.size == 1 && spells.size == 1 && allys.size == 1)
             hatlap = R.drawable.no_mento_hatlap

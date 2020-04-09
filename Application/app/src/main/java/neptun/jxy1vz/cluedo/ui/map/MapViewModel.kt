@@ -310,16 +310,7 @@ class MapViewModel(
                         spells.add("")
                         allys.add("")
 
-                        if (!playerList[playerId].helperCards.isNullOrEmpty()) {
-                            for (helperCard in playerList[playerId].helperCards!!) {
-                                if (!card.helperIds.isNullOrEmpty() && card.helperIds.contains(helperCard.id))
-                                    when (helperCard.type) {
-                                        HelperType.TOOL -> addHelperToArray(helperCard.name, tools)
-                                        HelperType.SPELL -> addHelperToArray(helperCard.name, spells)
-                                        HelperType.ALLY -> addHelperToArray(helperCard.name, allys)
-                                    }
-                            }
-                        }
+                        getHelperObjects(playerList[playerId], card, tools, spells, allys)
 
                         if (tools.size == 1 && spells.size == 1 && allys.size == 1)
                             getLoss(playerId, card)
@@ -327,10 +318,6 @@ class MapViewModel(
                 }
             }
         }
-    }
-
-    private fun addHelperToArray(name: String, array: ArrayList<String>) {
-        array.add(name)
     }
 
     override fun getLoss(playerId: Int, card: DarkCard?) {
