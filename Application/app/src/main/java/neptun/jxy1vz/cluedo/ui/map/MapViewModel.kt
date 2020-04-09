@@ -167,8 +167,8 @@ class MapViewModel(
     }
 
     fun showDialog(playerId: Int) {
-        if (player.id != playerId)
-            return
+        /*if (player.id != playerId)
+            return*/
         DiceRollerDialog(this, playerId).show(fm, "DIALOG_DICE")
     }
 
@@ -305,10 +305,6 @@ class MapViewModel(
                         val tools: ArrayList<String> = ArrayList()
                         val spells: ArrayList<String> = ArrayList()
                         val allys: ArrayList<String> = ArrayList()
-
-                        tools.add("")
-                        spells.add("")
-                        allys.add("")
 
                         getHelperObjects(playerList[playerId], card, tools, spells, allys)
 
