@@ -8,6 +8,7 @@ import androidx.annotation.DrawableRes
 import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDiceRollerBinding
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import kotlin.random.Random
 
 class DiceRollerViewModel(
@@ -24,6 +25,7 @@ class DiceRollerViewModel(
     }
 
     private var cardType: CardType? = null
+    private var house: MapViewModel.HogwartsHouse? = null
 
     fun getCardType(): CardType? {
         return cardType
@@ -100,11 +102,15 @@ class DiceRollerViewModel(
     }
 
     private fun onDiceResult(dice1: Int, dice2: Int, dice3: Int) {
-        diceResultListener.onDiceRoll(playerId, dice1 + dice2, dice3)
         when (dice3) {
             1 -> cardType = CardType.HELPER
+            2 -> house = MapViewModel.HogwartsHouse.GRYFFINDOR
+            3 -> house = MapViewModel.HogwartsHouse.SLYTHERIN
+            4 -> house = MapViewModel.HogwartsHouse.HUFFLEPUFF
+            5 -> house = MapViewModel.HogwartsHouse.RAVENCLAW
             6 -> cardType = CardType.DARK
         }
+        diceResultListener.onDiceRoll(playerId, dice1 + dice2, house)
     }
 
     private fun disableButton() {

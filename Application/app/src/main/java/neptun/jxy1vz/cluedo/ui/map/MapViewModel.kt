@@ -5,8 +5,11 @@ import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
+import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
+import androidx.databinding.ObservableBoolean
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.activity_map.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.*
 import neptun.jxy1vz.cluedo.model.helper.*
@@ -36,6 +39,76 @@ class MapViewModel(
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
 
+    private var slytherinState = 0
+    private var ravenclawState = 0
+    private var gryffindorState = 0
+    private var hufflepuffState = 0
+
+    enum class HogwartsHouse {
+        SLYTHERIN,
+        RAVENCLAW,
+        GRYFFINDOR,
+        HUFFLEPUFF
+    }
+
+    private fun setState(house: HogwartsHouse) {
+        when (house) {
+            HogwartsHouse.SLYTHERIN -> {
+                setChanges(slytherinStates, slytherinState)
+                slytherinState++
+                if (slytherinState == 16)
+                    slytherinState = 0
+            }
+            HogwartsHouse.RAVENCLAW -> {
+                setChanges(ravencalwStates, ravenclawState)
+                ravenclawState++
+                if (ravenclawState == 16)
+                    ravenclawState = 0
+            }
+            HogwartsHouse.GRYFFINDOR -> {
+                setChanges(gryffindorStates, gryffindorState)
+                gryffindorState++
+                if (gryffindorState == 16)
+                    gryffindorState = 0
+            }
+            HogwartsHouse.HUFFLEPUFF -> {
+                setChanges(hufflepuffStates, hufflepuffState)
+                hufflepuffState++
+                if (hufflepuffState == 16)
+                    hufflepuffState = 0
+            }
+        }
+    }
+
+    private fun setChanges(stateList: List<State>, state: Int) {
+        for (s in stateList) {
+            if (s.serialNum == state) {
+                doorList[s.doorId].state = s.doorState
+                when (s.doorId) {
+                    0 -> { setDoorVisibility(mapLayout.ivDoor0, s.doorState.boolean()) }
+                    2 -> { setDoorVisibility(mapLayout.ivDoor2, s.doorState.boolean()) }
+                    4 -> { setDoorVisibility(mapLayout.ivDoor4, s.doorState.boolean()) }
+                    6 -> { setDoorVisibility(mapLayout.ivDoor6, s.doorState.boolean()) }
+                    7 -> { setDoorVisibility(mapLayout.ivDoor7, s.doorState.boolean()) }
+                    12 -> { setDoorVisibility(mapLayout.ivDoor12, s.doorState.boolean()) }
+                    13 -> { setDoorVisibility(mapLayout.ivDoor13, s.doorState.boolean()) }
+                    15 -> { setDoorVisibility(mapLayout.ivDoor15, s.doorState.boolean()) }
+                    17 -> { setDoorVisibility(mapLayout.ivDoor17, s.doorState.boolean()) }
+                    19 -> { setDoorVisibility(mapLayout.ivDoor19, s.doorState.boolean()) }
+                    20 -> { setDoorVisibility(mapLayout.ivDoor20, s.doorState.boolean()) }
+                    21 -> { setDoorVisibility(mapLayout.ivDoor21, s.doorState.boolean()) }
+                }
+            }
+        }
+    }
+
+    private fun setDoorVisibility(imageView: ImageView, visible: Boolean) {
+        if (visible)
+            imageView.visibility = View.VISIBLE
+        else
+            imageView.visibility = View.GONE
+    }
+
     private fun getPlayerById(id: Int): Player {
         for (player in playerList) {
             if (player.id == id)
@@ -60,6 +133,11 @@ class MapViewModel(
     }
 
     init {
+        setState(HogwartsHouse.SLYTHERIN)
+        setState(HogwartsHouse.RAVENCLAW)
+        setState(HogwartsHouse.GRYFFINDOR)
+        setState(HogwartsHouse.HUFFLEPUFF)
+
         for (pair in playerImagePairs) {
             setLayoutConstraintStart(pair.second, cols[pair.first.pos.col])
             setLayoutConstraintTop(pair.second, rows[pair.first.pos.row])
@@ -199,7 +277,7 @@ class MapViewModel(
 
         if (stepInRoom(getPlayerById(playerId).pos) == -1) {
             for (door in doorList) {
-                if (distances!![door.position]!! <= stepCount - 1) {
+                if (distances!![door.position]!! <= stepCount - 1 && door.state == DoorState.OPENED) {
                     drawSelection(door.room.selection, door.room.top, door.room.left, playerId)
                 }
             }
@@ -269,8 +347,11 @@ class MapViewModel(
         }
     }
 
-    override fun onDiceRoll(playerId: Int, sum: Int, other: Int) {
+    override fun onDiceRoll(playerId: Int, sum: Int, house: HogwartsHouse?) {
         showMovingOptions(playerId, sum)
+        house?.let {
+            setState(it)
+        }
     }
 
     override fun showCard(playerId: Int, type: CardType?) {

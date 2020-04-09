@@ -170,6 +170,105 @@
                     app:layout_constraintTop_toTopOf="@id/guidelineRow7"
                     android:contentDescription="@string/player6" />
 
+                <!--Closed doors-->
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor0"
+                    android:src="@drawable/door_left"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol7"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow1"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor2"
+                    android:src="@drawable/door_right"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol8"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow5" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor4"
+                    android:src="@drawable/door_left"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol16"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow5" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor6"
+                    android:src="@drawable/door_top"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol23"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow7" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor7"
+                    android:src="@drawable/door_left"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol7"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow8" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor12"
+                    android:src="@drawable/door_bottom"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol19"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow8" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor13"
+                    android:src="@drawable/door_top"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol19"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow16" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor15"
+                    android:src="@drawable/door_left"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol7"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow16" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor17"
+                    android:src="@drawable/door_left"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol7"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow22" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor19"
+                    android:src="@drawable/door_right"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol8"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow19" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor20"
+                    android:src="@drawable/door_left"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol16"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow19" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ivDoor21"
+                    android:src="@drawable/door_bottom"
+                    app:layout_constraintStart_toStartOf="@id/guidelineCol22"
+                    app:layout_constraintTop_toTopOf="@id/guidelineRow17" />
+
                 <!--Guidelines...-->
 
                 <!--Borders-->
