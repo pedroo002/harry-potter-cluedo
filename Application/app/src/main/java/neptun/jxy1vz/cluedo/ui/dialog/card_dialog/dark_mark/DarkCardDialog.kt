@@ -18,7 +18,7 @@ class DarkCardDialog(
 ) : DialogFragment() {
 
     interface DarkCardDialogListener {
-        fun getLoss(card: DarkCard?)
+        fun getLoss(playerId: Int, card: DarkCard?)
     }
 
     private lateinit var dialogDarkCardBinding: DialogDarkCardBinding
@@ -37,7 +37,7 @@ class DarkCardDialog(
             .setTitle(resources.getString(R.string.sotet_jegy)).setNeutralButton(
                 resources.getString(R.string.ok)
             ) { dialog, _ ->
-                listener.getLoss(dialogDarkCardBinding.darkCardDialogViewModel!!.getLoss())
+                listener.getLoss(player.id, dialogDarkCardBinding.darkCardDialogViewModel!!.getLoss())
                 dialog.dismiss()
             }.create()
     }

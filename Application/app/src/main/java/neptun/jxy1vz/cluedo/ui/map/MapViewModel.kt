@@ -167,8 +167,8 @@ class MapViewModel(
     }
 
     fun showDialog(playerId: Int) {
-        if (player.id != playerId)
-            return
+        /*if (player.id != playerId)
+            return*/
         DiceRollerDialog(this, playerId).show(fm, "DIALOG_DICE")
     }
 
@@ -227,7 +227,7 @@ class MapViewModel(
             for (star in starList) {
                 if (playerList[playerId].pos == star) {
                     if (helperCards.size > 0)
-                        showCard(CardType.HELPER)
+                        showCard(playerId, CardType.HELPER)
                 }
             }
 
@@ -269,11 +269,11 @@ class MapViewModel(
         }
     }
 
-    override fun onDiceRoll(player: Int, sum: Int, other: Int) {
-        showMovingOptions(player, sum)
+    override fun onDiceRoll(playerId: Int, sum: Int, other: Int) {
+        showMovingOptions(playerId, sum)
     }
 
-    override fun showCard(type: CardType?) {
+    override fun showCard(playerId: Int, type: CardType?) {
         if (type == null)
             return
         val randomCard: Int = getRandomCardId(type)
@@ -281,58 +281,81 @@ class MapViewModel(
             CardType.HELPER -> {
                 if (helperCards.size > 0) {
                     val card = helperCards[randomCard]
-                    if (player.helperCards.isNullOrEmpty()) {
-                        player.helperCards = ArrayList()
+                    if (playerList[playerId].helperCards.isNullOrEmpty()) {
+                        playerList[playerId].helperCards = ArrayList()
                     }
-                    player.helperCards!!.add(card)
+                    playerList[playerId].helperCards!!.add(card)
 
                     if (card.count > 1)
                         helperCards[randomCard].count--
                     else
                         helperCards.remove(card)
 
-                    HelperCardDialog(card.imageRes).show(fm, "DIALOG_HELPER")
+                    if (playerId == player.id)
+                        HelperCardDialog(card.imageRes).show(fm, "DIALOG_HELPER")
                 }
             }
             else -> {
                 if (darkCards.size > 0) {
                     val card = darkCards[randomCard]
                     darkCards.remove(card)
-                    DarkCardDialog(player, card, this).show(fm, "DIALOG_DARK")
-                }
-            }
-        }
-    }
+                    if (playerId == player.id)
+                        DarkCardDialog(player, card, this).show(fm, "DIALOG_DARK")
+                    else {
+                        val tools: ArrayList<String> = ArrayList()
+                        val spells: ArrayList<String> = ArrayList()
+                        val allys: ArrayList<String> = ArrayList()
 
-    override fun getLoss(card: DarkCard?) {
-        if (card == null) {
-            RescuedFromDarkCardDialog().show(fm, "DIALOG_RESCUED")
-        } else {
-            when (card.lossType) {
-                LossType.HP -> {
-                    player.hp -= card.hpLoss
-                    HpLossDialog(card.hpLoss, player.hp).show(fm, "DIALOG_HP_LOSS")
-                }
-                else -> {
-                    if (player.helperCards != null) {
-                        val properHelperCards: ArrayList<HelperCard> = ArrayList()
-                        for (helperCard in player.helperCards!!) {
-                            if (helperCard.type.compareTo(card.lossType))
-                                properHelperCards.add(helperCard)
-                        }
+                        getHelperObjects(playerList[playerId], card, tools, spells, allys)
 
-                        if (properHelperCards.isNotEmpty())
-                            CardLossDialog(properHelperCards, card.lossType, this).show(
-                                fm,
-                                "DIALOG_CARD_LOSS"
-                            )
+                        if (tools.size == 1 && spells.size == 1 && allys.size == 1)
+                            getLoss(playerId, card)
                     }
                 }
             }
         }
     }
 
-    override fun throwCard(card: HelperCard) {
-        player.helperCards!!.remove(card)
+    override fun getLoss(playerId: Int, card: DarkCard?) {
+        if (card == null) {
+            if (playerId == player.id)
+                RescuedFromDarkCardDialog().show(fm, "DIALOG_RESCUED")
+        } else {
+            when (card.lossType) {
+                LossType.HP -> {
+                    playerList[playerId].hp -= card.hpLoss
+                    if (playerId == player.id)
+                        HpLossDialog(card.hpLoss, player.hp).show(fm, "DIALOG_HP_LOSS")
+                }
+                else -> {
+                    if (playerList[playerId].helperCards != null) {
+                        val properHelperCards: ArrayList<HelperCard> = ArrayList()
+                        for (helperCard in playerList[playerId].helperCards!!) {
+                            if (helperCard.type.compareTo(card.lossType))
+                                properHelperCards.add(helperCard)
+                        }
+
+                        if (properHelperCards.isNotEmpty()) {
+                            if (playerId == player.id)
+                                CardLossDialog(
+                                    playerId,
+                                    properHelperCards,
+                                    card.lossType,
+                                    this
+                                ).show(
+                                    fm,
+                                    "DIALOG_CARD_LOSS"
+                                )
+                            else
+                                throwCard(playerId, properHelperCards[Random.nextInt(0, properHelperCards.size)])
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun throwCard(playerId: Int, card: HelperCard) {
+        playerList[playerId].helperCards!!.remove(card)
     }
 }
