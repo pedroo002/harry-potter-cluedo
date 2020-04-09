@@ -167,8 +167,8 @@ class MapViewModel(
     }
 
     fun showDialog(playerId: Int) {
-        /*if (player.id != playerId)
-            return*/
+        if (player.id != playerId)
+            return
         DiceRollerDialog(this, playerId).show(fm, "DIALOG_DICE")
     }
 
