@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.activity_map.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.*
 import neptun.jxy1vz.cluedo.model.helper.*
@@ -20,6 +21,11 @@ import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.elementAt
+import kotlin.collections.isNotEmpty
+import kotlin.collections.isNullOrEmpty
+import kotlin.collections.iterator
 import kotlin.collections.set
 import kotlin.math.min
 import kotlin.random.Random
@@ -35,6 +41,183 @@ class MapViewModel(
 
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
+
+    private var slytherinState = 0
+    private var ravenclawState = 0
+    private var gryffindorState = 0
+    private var hufflepuffState = 0
+
+    enum class HogwartsHouse {
+        SLYTHERIN,
+        RAVENCLAW,
+        GRYFFINDOR,
+        HUFFLEPUFF
+    }
+
+    private fun setState(playerId: Int, house: HogwartsHouse) {
+        when (house) {
+            HogwartsHouse.SLYTHERIN -> {
+                setChanges(
+                    playerId,
+                    slytherinStates,
+                    passageWayListSlytherin,
+                    passageWayVisibilitiesSlytherin,
+                    slytherinState,
+                    HogwartsHouse.SLYTHERIN
+                )
+                slytherinState++
+                if (slytherinState == 16)
+                    slytherinState = 0
+            }
+            HogwartsHouse.RAVENCLAW -> {
+                setChanges(
+                    playerId,
+                    ravencalwStates,
+                    passageWayListRavenclaw,
+                    passageWayVisibilitiesRavenclaw,
+                    ravenclawState,
+                    HogwartsHouse.RAVENCLAW
+                )
+                ravenclawState++
+                if (ravenclawState == 16)
+                    ravenclawState = 0
+            }
+            HogwartsHouse.GRYFFINDOR -> {
+                setChanges(
+                    playerId,
+                    gryffindorStates,
+                    passageWayListGryffindor,
+                    passageWayVisibilitiesGryffindor,
+                    gryffindorState,
+                    HogwartsHouse.GRYFFINDOR
+                )
+                gryffindorState++
+                if (gryffindorState == 16)
+                    gryffindorState = 0
+            }
+            HogwartsHouse.HUFFLEPUFF -> {
+                setChanges(
+                    playerId,
+                    hufflepuffStates,
+                    passageWayListHufflepuff,
+                    passageWayVisibilitiesHufflepuff,
+                    hufflepuffState,
+                    HogwartsHouse.HUFFLEPUFF
+                )
+                hufflepuffState++
+                if (hufflepuffState == 16)
+                    hufflepuffState = 0
+            }
+        }
+    }
+
+    private fun setChanges(
+        playerId: Int,
+        stateList: List<State>,
+        gateways: List<Int>,
+        visibilities: List<List<Boolean>>,
+        state: Int,
+        house: HogwartsHouse
+    ) {
+        val gatewayNumbers: MutableList<Int> = ArrayList()
+        for (i in 0..2) {
+            stateList[state * 3 + i].passageWay?.let {
+                gatewayNumbers.add(i)
+            }
+        }
+
+        val visibleGatewaySerialNumbers: MutableList<Int> = ArrayList()
+        for (i in visibilities[state].indices) {
+            if (visibilities[state][i])
+                visibleGatewaySerialNumbers.add(i)
+        }
+
+        for (i in gatewayNumbers.indices) {
+            mapLayout.findViewById<ImageView>(gateways[visibleGatewaySerialNumbers[i]]).setOnClickListener {
+                if (it.visibility == View.VISIBLE)
+                    teleport(playerId, stateList[state * 3 + gatewayNumbers[i]].roomId, stateList[state * 3 + gatewayNumbers[i]].passageWay!!)
+            }
+        }
+
+        for (p in gateways) {
+            val visibility = visibilities[state][gateways.indexOf(p)]
+            setViewVisibility(mapLayout.findViewById(p), visibility)
+        }
+
+        for (s in stateList) {
+            if (s.serialNum == state) {
+                doorList[s.doorId].state = s.doorState
+                when (s.doorId) {
+                    0 -> {
+                        setViewVisibility(mapLayout.ivDoor0, s.doorState.boolean())
+                    }
+                    2 -> {
+                        setViewVisibility(mapLayout.ivDoor2, s.doorState.boolean())
+                    }
+                    4 -> {
+                        setViewVisibility(mapLayout.ivDoor4, s.doorState.boolean())
+                    }
+                    6 -> {
+                        setViewVisibility(mapLayout.ivDoor6, s.doorState.boolean())
+                    }
+                    7 -> {
+                        setViewVisibility(mapLayout.ivDoor7, s.doorState.boolean())
+                    }
+                    12 -> {
+                        setViewVisibility(mapLayout.ivDoor12, s.doorState.boolean())
+                    }
+                    13 -> {
+                        setViewVisibility(mapLayout.ivDoor13, s.doorState.boolean())
+                    }
+                    15 -> {
+                        setViewVisibility(mapLayout.ivDoor15, s.doorState.boolean())
+                    }
+                    17 -> {
+                        setViewVisibility(mapLayout.ivDoor17, s.doorState.boolean())
+                    }
+                    19 -> {
+                        setViewVisibility(mapLayout.ivDoor19, s.doorState.boolean())
+                    }
+                    20 -> {
+                        setViewVisibility(mapLayout.ivDoor20, s.doorState.boolean())
+                    }
+                    21 -> {
+                        setViewVisibility(mapLayout.ivDoor21, s.doorState.boolean())
+                    }
+                }
+                when (house) {
+                    HogwartsHouse.SLYTHERIN -> {
+                        setViewVisibility(mapLayout.ivDarkMarkSlytherin, s.darkMark)
+                    }
+                    HogwartsHouse.RAVENCLAW -> {
+                        setViewVisibility(mapLayout.ivDarkMarkRavenclaw, s.darkMark)
+                    }
+                    HogwartsHouse.GRYFFINDOR -> {
+                        setViewVisibility(mapLayout.ivDarkMarkGryffindor, s.darkMark)
+                    }
+                    HogwartsHouse.HUFFLEPUFF -> {
+                        setViewVisibility(mapLayout.ivDarkMarkHufflepuff, s.darkMark)
+                    }
+                }
+                if (s.darkMark)
+                    showCard(playerId, CardType.DARK)
+            }
+        }
+    }
+
+    private fun teleport(playerId: Int, from: Int, to: Int) {
+        if (stepInRoom(getPlayerById(playerId).pos) == from) {
+            stepPlayer(playerId, Position(roomList[to].top, roomList[to].left))
+            emptySelectionList()
+        }
+    }
+
+    private fun setViewVisibility(imageView: ImageView, visible: Boolean) {
+        if (visible)
+            imageView.visibility = View.VISIBLE
+        else
+            imageView.visibility = View.GONE
+    }
 
     private fun getPlayerById(id: Int): Player {
         for (player in playerList) {
@@ -60,6 +243,11 @@ class MapViewModel(
     }
 
     init {
+        setState(playerId, HogwartsHouse.SLYTHERIN)
+        setState(playerId, HogwartsHouse.RAVENCLAW)
+        setState(playerId, HogwartsHouse.GRYFFINDOR)
+        setState(playerId, HogwartsHouse.HUFFLEPUFF)
+
         for (pair in playerImagePairs) {
             setLayoutConstraintStart(pair.second, cols[pair.first.pos.col])
             setLayoutConstraintTop(pair.second, rows[pair.first.pos.row])
@@ -175,31 +363,36 @@ class MapViewModel(
     private fun showMovingOptions(playerId: Int, stepCount: Int) {
         emptySelectionList()
 
+        var limit = stepCount
+
         var distances: HashMap<Position, Int>? = null
         if (stepInRoom(getPlayerById(playerId).pos) == -1)
             distances = dijkstra(getPlayerById(playerId).pos)
         else {
+            limit--
             val roomId = stepInRoom(getPlayerById(playerId).pos)
             for (door in doorList) {
-                if (door.room.id == roomId) {
-                    distances =
-                        mergeDistances(dijkstra(Position(door.room.top, door.room.left)), distances)
+                if (door.room.id == roomId && door.state == DoorState.OPENED) {
+                    distances = mergeDistances(dijkstra(door.position), distances)
                 }
             }
         }
 
-        for (x in 0..COLS) {
-            for (y in 0..ROWS) {
-                val current = Position(y, x)
-                if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances!![current]!! <= stepCount) {
-                    drawSelection(R.drawable.field_selection, y, x, playerId)
+        if (!distances.isNullOrEmpty()) {
+            for (x in 0..COLS) {
+                for (y in 0..ROWS) {
+                    val current = Position(y, x)
+                    println(current)
+                    if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances[current]!! <= limit) {
+                        drawSelection(R.drawable.field_selection, y, x, playerId)
+                    }
                 }
             }
         }
 
         if (stepInRoom(getPlayerById(playerId).pos) == -1) {
             for (door in doorList) {
-                if (distances!![door.position]!! <= stepCount - 1) {
+                if (distances!![door.position]!! <= limit - 1 && door.state == DoorState.OPENED) {
                     drawSelection(door.room.selection, door.room.top, door.room.left, playerId)
                 }
             }
@@ -220,24 +413,27 @@ class MapViewModel(
         setLayoutConstraintStart(selection, cols[col])
         setLayoutConstraintTop(selection, rows[row])
         selection.setOnClickListener {
-            while (stepInRoom(targetPosition) != -1 && isFieldOccupied(targetPosition))
-                targetPosition.col++
-            getPlayerById(playerId).pos = targetPosition
-
-            for (star in starList) {
-                if (getPlayerById(playerId).pos == star) {
-                    if (helperCards.size > 0)
-                        showCard(playerId, CardType.HELPER)
-                }
-            }
-
-            val pair = getPairById(playerId)
-            setLayoutConstraintStart(pair.second, cols[getPlayerById(playerId).pos.col])
-            setLayoutConstraintTop(pair.second, rows[getPlayerById(playerId).pos.row])
-
+            stepPlayer(playerId, targetPosition)
             emptySelectionList()
         }
         mapLayout.addView(selection)
+    }
+
+    private fun stepPlayer(playerId: Int, targetPosition: Position) {
+        while (stepInRoom(targetPosition) != -1 && isFieldOccupied(targetPosition))
+            targetPosition.col++
+        getPlayerById(playerId).pos = targetPosition
+
+        for (star in starList) {
+            if (getPlayerById(playerId).pos == star) {
+                if (helperCards.size > 0)
+                    showCard(playerId, CardType.HELPER)
+            }
+        }
+
+        val pair = getPairById(playerId)
+        setLayoutConstraintStart(pair.second, cols[getPlayerById(playerId).pos.col])
+        setLayoutConstraintTop(pair.second, rows[getPlayerById(playerId).pos.row])
     }
 
     private fun emptySelectionList() {
@@ -269,7 +465,10 @@ class MapViewModel(
         }
     }
 
-    override fun onDiceRoll(playerId: Int, sum: Int, other: Int) {
+    override fun onDiceRoll(playerId: Int, sum: Int, house: HogwartsHouse?) {
+        house?.let {
+            setState(playerId, it)
+        }
         showMovingOptions(playerId, sum)
     }
 
@@ -347,7 +546,10 @@ class MapViewModel(
                                     "DIALOG_CARD_LOSS"
                                 )
                             else
-                                throwCard(playerId, properHelperCards[Random.nextInt(0, properHelperCards.size)])
+                                throwCard(
+                                    playerId,
+                                    properHelperCards[Random.nextInt(0, properHelperCards.size)]
+                                )
                         }
                     }
                 }

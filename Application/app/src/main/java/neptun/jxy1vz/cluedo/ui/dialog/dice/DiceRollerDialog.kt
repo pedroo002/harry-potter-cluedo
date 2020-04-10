@@ -8,12 +8,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDiceRollerBinding
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 
 class DiceRollerDialog(private val listener: DiceResultInterface, private val playerId: Int) :
     DialogFragment() {
 
     interface DiceResultInterface {
-        fun onDiceRoll(playerId: Int, sum: Int, other: Int)
+        fun onDiceRoll(playerId: Int, sum: Int, house: MapViewModel.HogwartsHouse?)
         fun showCard(playerId: Int, type: DiceRollerViewModel.CardType?)
     }
 
@@ -28,7 +29,7 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
         )
 
         dialogDiceRollerBinding.dialogViewModel =
-            DiceRollerViewModel(dialogDiceRollerBinding, context!!, listener, playerId)
+            DiceRollerViewModel(dialogDiceRollerBinding, context!!)
         dialogDiceRollerBinding.executePendingBindings()
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_DialogWhenLarge)
@@ -37,6 +38,7 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
                 resources.getString(R.string.ok)
             ) { dialog, _ ->
                 listener.showCard(playerId, dialogDiceRollerBinding.dialogViewModel!!.getCardType())
+                listener.onDiceRoll(playerId, dialogDiceRollerBinding.dialogViewModel!!.getSum(), dialogDiceRollerBinding.dialogViewModel!!.getHouse())
                 dialog.dismiss()
             }.create()
     }
