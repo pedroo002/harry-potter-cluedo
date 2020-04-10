@@ -13,9 +13,7 @@ import kotlin.random.Random
 
 class DiceRollerViewModel(
     private val bind: DialogDiceRollerBinding,
-    private val context: Context,
-    private val diceResultListener: DiceRollerDialog.DiceResultInterface,
-    private val playerId: Int
+    private val context: Context
 ) : BaseObservable(),
     Animation.AnimationListener {
 
@@ -29,6 +27,14 @@ class DiceRollerViewModel(
 
     fun getCardType(): CardType? {
         return cardType
+    }
+
+    fun getHouse(): MapViewModel.HogwartsHouse? {
+        return house
+    }
+
+    fun getSum(): Int {
+        return num1 + num2
     }
 
     private val diceImageList = listOf<ImageView>(
@@ -92,7 +98,7 @@ class DiceRollerViewModel(
         diceImageList[1].setImageResource(diceValue2)
         diceImageList[2].setImageResource(diceValue3)
 
-        onDiceResult(num1, num2, num3)
+        setDice3(num3)
     }
 
     override fun onAnimationStart(animation: Animation?) {
@@ -101,7 +107,7 @@ class DiceRollerViewModel(
         num3 = Random.nextInt(1, 7)
     }
 
-    private fun onDiceResult(dice1: Int, dice2: Int, dice3: Int) {
+    private fun setDice3(dice3: Int) {
         when (dice3) {
             1 -> cardType = CardType.HELPER
             2 -> house = MapViewModel.HogwartsHouse.GRYFFINDOR
@@ -110,7 +116,6 @@ class DiceRollerViewModel(
             5 -> house = MapViewModel.HogwartsHouse.RAVENCLAW
             6 -> cardType = CardType.DARK
         }
-        diceResultListener.onDiceRoll(playerId, dice1 + dice2, house)
     }
 
     private fun disableButton() {

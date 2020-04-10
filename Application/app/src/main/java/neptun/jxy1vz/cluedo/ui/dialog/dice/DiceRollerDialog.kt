@@ -29,7 +29,7 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
         )
 
         dialogDiceRollerBinding.dialogViewModel =
-            DiceRollerViewModel(dialogDiceRollerBinding, context!!, listener, playerId)
+            DiceRollerViewModel(dialogDiceRollerBinding, context!!)
         dialogDiceRollerBinding.executePendingBindings()
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_DialogWhenLarge)
@@ -38,6 +38,7 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
                 resources.getString(R.string.ok)
             ) { dialog, _ ->
                 listener.showCard(playerId, dialogDiceRollerBinding.dialogViewModel!!.getCardType())
+                listener.onDiceRoll(playerId, dialogDiceRollerBinding.dialogViewModel!!.getSum(), dialogDiceRollerBinding.dialogViewModel!!.getHouse())
                 dialog.dismiss()
             }.create()
     }
