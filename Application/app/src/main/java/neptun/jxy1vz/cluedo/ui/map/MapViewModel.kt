@@ -5,9 +5,7 @@ import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
-import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
-import androidx.databinding.ObservableBoolean
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.activity_map.view.*
 import neptun.jxy1vz.cluedo.R
@@ -51,28 +49,28 @@ class MapViewModel(
         HUFFLEPUFF
     }
 
-    private fun setState(house: HogwartsHouse) {
+    private fun setState(playerId: Int, house: HogwartsHouse) {
         when (house) {
             HogwartsHouse.SLYTHERIN -> {
-                setChanges(slytherinStates, slytherinState)
+                setChanges(playerId, slytherinStates, slytherinState, HogwartsHouse.SLYTHERIN)
                 slytherinState++
                 if (slytherinState == 16)
                     slytherinState = 0
             }
             HogwartsHouse.RAVENCLAW -> {
-                setChanges(ravencalwStates, ravenclawState)
+                setChanges(playerId, ravencalwStates, ravenclawState, HogwartsHouse.RAVENCLAW)
                 ravenclawState++
                 if (ravenclawState == 16)
                     ravenclawState = 0
             }
             HogwartsHouse.GRYFFINDOR -> {
-                setChanges(gryffindorStates, gryffindorState)
+                setChanges(playerId, gryffindorStates, gryffindorState, HogwartsHouse.GRYFFINDOR)
                 gryffindorState++
                 if (gryffindorState == 16)
                     gryffindorState = 0
             }
             HogwartsHouse.HUFFLEPUFF -> {
-                setChanges(hufflepuffStates, hufflepuffState)
+                setChanges(playerId, hufflepuffStates, hufflepuffState, HogwartsHouse.HUFFLEPUFF)
                 hufflepuffState++
                 if (hufflepuffState == 16)
                     hufflepuffState = 0
@@ -80,29 +78,37 @@ class MapViewModel(
         }
     }
 
-    private fun setChanges(stateList: List<State>, state: Int) {
+    private fun setChanges(playerId: Int, stateList: List<State>, state: Int, house: HogwartsHouse) {
         for (s in stateList) {
             if (s.serialNum == state) {
                 doorList[s.doorId].state = s.doorState
                 when (s.doorId) {
-                    0 -> { setDoorVisibility(mapLayout.ivDoor0, s.doorState.boolean()) }
-                    2 -> { setDoorVisibility(mapLayout.ivDoor2, s.doorState.boolean()) }
-                    4 -> { setDoorVisibility(mapLayout.ivDoor4, s.doorState.boolean()) }
-                    6 -> { setDoorVisibility(mapLayout.ivDoor6, s.doorState.boolean()) }
-                    7 -> { setDoorVisibility(mapLayout.ivDoor7, s.doorState.boolean()) }
-                    12 -> { setDoorVisibility(mapLayout.ivDoor12, s.doorState.boolean()) }
-                    13 -> { setDoorVisibility(mapLayout.ivDoor13, s.doorState.boolean()) }
-                    15 -> { setDoorVisibility(mapLayout.ivDoor15, s.doorState.boolean()) }
-                    17 -> { setDoorVisibility(mapLayout.ivDoor17, s.doorState.boolean()) }
-                    19 -> { setDoorVisibility(mapLayout.ivDoor19, s.doorState.boolean()) }
-                    20 -> { setDoorVisibility(mapLayout.ivDoor20, s.doorState.boolean()) }
-                    21 -> { setDoorVisibility(mapLayout.ivDoor21, s.doorState.boolean()) }
+                    0 -> { setViewVisibility(mapLayout.ivDoor0, s.doorState.boolean()) }
+                    2 -> { setViewVisibility(mapLayout.ivDoor2, s.doorState.boolean()) }
+                    4 -> { setViewVisibility(mapLayout.ivDoor4, s.doorState.boolean()) }
+                    6 -> { setViewVisibility(mapLayout.ivDoor6, s.doorState.boolean()) }
+                    7 -> { setViewVisibility(mapLayout.ivDoor7, s.doorState.boolean()) }
+                    12 -> { setViewVisibility(mapLayout.ivDoor12, s.doorState.boolean()) }
+                    13 -> { setViewVisibility(mapLayout.ivDoor13, s.doorState.boolean()) }
+                    15 -> { setViewVisibility(mapLayout.ivDoor15, s.doorState.boolean()) }
+                    17 -> { setViewVisibility(mapLayout.ivDoor17, s.doorState.boolean()) }
+                    19 -> { setViewVisibility(mapLayout.ivDoor19, s.doorState.boolean()) }
+                    20 -> { setViewVisibility(mapLayout.ivDoor20, s.doorState.boolean()) }
+                    21 -> { setViewVisibility(mapLayout.ivDoor21, s.doorState.boolean()) }
                 }
+                when (house) {
+                    HogwartsHouse.SLYTHERIN -> setViewVisibility(mapLayout.ivDarkMarkSlytherin, s.darkMark)
+                    HogwartsHouse.RAVENCLAW -> setViewVisibility(mapLayout.ivDarkMarkRavenclaw, s.darkMark)
+                    HogwartsHouse.GRYFFINDOR -> setViewVisibility(mapLayout.ivDarkMarkGryffindor, s.darkMark)
+                    HogwartsHouse.HUFFLEPUFF -> setViewVisibility(mapLayout.ivDarkMarkHufflepuff, s.darkMark)
+                }
+                if (s.darkMark)
+                    showCard(playerId, CardType.DARK)
             }
         }
     }
 
-    private fun setDoorVisibility(imageView: ImageView, visible: Boolean) {
+    private fun setViewVisibility(imageView: ImageView, visible: Boolean) {
         if (visible)
             imageView.visibility = View.VISIBLE
         else
@@ -133,10 +139,10 @@ class MapViewModel(
     }
 
     init {
-        setState(HogwartsHouse.SLYTHERIN)
-        setState(HogwartsHouse.RAVENCLAW)
-        setState(HogwartsHouse.GRYFFINDOR)
-        setState(HogwartsHouse.HUFFLEPUFF)
+        setState(playerId, HogwartsHouse.SLYTHERIN)
+        setState(playerId, HogwartsHouse.RAVENCLAW)
+        setState(playerId, HogwartsHouse.GRYFFINDOR)
+        setState(playerId, HogwartsHouse.HUFFLEPUFF)
 
         for (pair in playerImagePairs) {
             setLayoutConstraintStart(pair.second, cols[pair.first.pos.col])
@@ -350,7 +356,7 @@ class MapViewModel(
     override fun onDiceRoll(playerId: Int, sum: Int, house: HogwartsHouse?) {
         showMovingOptions(playerId, sum)
         house?.let {
-            setState(it)
+            setState(playerId, it)
         }
     }
 
