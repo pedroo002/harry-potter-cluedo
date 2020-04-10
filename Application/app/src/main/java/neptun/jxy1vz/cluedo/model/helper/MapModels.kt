@@ -333,3 +333,138 @@ val hufflepuffStates = listOf(
     State(15, 8, 19, DoorState.CLOSED, false),
     State(15, 6, 15, DoorState.OPENED, false, 0)
 )
+
+val passageWayListSlytherin = listOf(
+    R.id.ivSVKToBajitaltan,
+    R.id.ivSVKToJoslastan,
+    R.id.ivSVKToSzuksegSzobaja,
+    R.id.ivNagyteremToBajitaltan,
+    R.id.ivNagyteremToJoslastanBal,
+    R.id.ivNagyteremToSzuksegSzobaja,
+    R.id.ivKonyvtarToBajitaltan,
+    R.id.ivKonyvtarToJoslastan,
+    R.id.ivKonyvtarToSzuksegSzobaja
+)
+val passageWayVisibilitiesSlytherin = listOf(
+    listOf(true, false, false, false, false, false, false, true, false),
+    listOf(false, false, false, false, false, false, false, false, false),
+    listOf(false, false, false, false, false, false, false, false, false),
+    listOf(true, false, false, false, false, true, true, false, false),
+    listOf(true, false, false, false, false, false, false, false, false),
+    listOf(false, true, false, true, false, false, false, false, false),
+    listOf(false, true, false, false, false, false, false, false, false),
+    listOf(false, false, false, false, false, false, false, false, false),
+    listOf(true, false, false, false, false, false, false, false, true),
+    listOf(true, false, false, true, false, false, false, false, false),
+    listOf(false, false, false, false, false, false, true, false, false),
+    listOf(false, false, false, false, true, false, false, false, false),
+    listOf(false, false, false, false, false, false, false, false, false),
+    listOf(false, false, true, false, false, false, false, false, false),
+    listOf(false, false, true, true, false, false, true, false, false),
+    listOf(true, false, false, false, false, false, false, false, false)
+)
+
+val passageWayListRavenclaw = listOf(
+    R.id.ivGyengelkedoToJoslastan,
+    R.id.ivGyengelkedoToKonyvtar,
+    R.id.ivGyengelkedoToSVK,
+    R.id.ivGyengelkedoToSerleg,
+    R.id.ivNagyteremToJoslastanJobb,
+    R.id.ivNagyteremToKonyvtar,
+    R.id.ivNagyteremToSerleg,
+    R.id.ivNagyteremToSVK,
+    R.id.ivSzuksegSzobajaToJoslastanJobb,
+    R.id.ivSzuksegSzobajaToKonyvtarJobb,
+    R.id.ivSzuksegSzobajaToSerleg,
+    R.id.ivSzuksegSzobajaToSVKJobb
+)
+val passageWayVisibilitiesRavenclaw = listOf(
+    listOf(true, false, false, false, false, false, false, false, false, false, false, false),
+    listOf(true, false, false, false, false, false, false, true, false, false, false, false),
+    listOf(false, false, false, true, false, false, false, false, false, false, false, false),
+    listOf(false, false, false, true, false, false, false, false, false, true, false, false),
+    listOf(true, false, false, false, true, false, false, false, false, false, false, false),
+    listOf(true, false, false, false, false, false, false, false, false, false, false, false),
+    listOf(false, false, true, false, false, false, false, false, true, false, false, false),
+    listOf(false, false, true, false, false, false, false, false, false, false, false, false),
+    listOf(false, false, false, false, false, true, false, false, false, false, true, false),
+    listOf(true, false, false, false, false, false, false, false, false, false, false, false),
+    listOf(true, false, false, false, false, false, false, false, true, false, false, false),
+    listOf(false, false, false, false, false, false, false, false, true, false, false, false),
+    listOf(false, false, false, false, false, false, false, false, false, false, false, true),
+    listOf(false, true, false, false, false, false, true, false, false, false, false, false),
+    listOf(false, true, false, false, false, false, false, false, false, false, false, false),
+    listOf(false, false, false, false, true, false, false, false, true, false, false, false)
+)
+
+val passageWayListGryffindor = listOf(
+    R.id.ivBajitaltanToGyengelkedo,
+    R.id.ivBajitaltanToJoslastan,
+    R.id.ivBajitaltanToKonyvtar,
+    R.id.ivBajitaltanToNagyterem,
+    R.id.ivBajitaltanToSVK,
+    R.id.ivSerlegToGyengelkedoJobb,
+    R.id.ivSerlegToJoslastan,
+    R.id.ivSerlegToKonyvtar,
+    R.id.ivSerlegToNagyteremJobb,
+    R.id.ivSerlegToSVKJobb,
+    R.id.ivSzuksegSzobajaToGyengelkedo,
+    R.id.ivSzuksegSzobajaToJoslastanBal,
+    R.id.ivSzuksegSzobajaToKonyvtarBal,
+    R.id.ivSzuksegSzobajaToNagyterem,
+    R.id.ivSzuksegSzobajaToSVKBal
+)
+val passageWayVisibilitiesGryffindor = listOf(
+    listOf(false, false, false, false, true, false, true, false, false, false, false, false, false, false, false),
+    listOf(false, false, false, false, false, false, false, false, false, false, false, false, false, true, false),
+    listOf(true, false, false, false, false, false, false, true, false, false, false, false, false, false, false),
+    listOf(true, false, false, false, false, false, false, false, false, false, false, false, false, false, true),
+    listOf(false, false, false, false, true, false, false, false, false, false, false, false, false, false, false),
+    listOf(false, false, false, false, true, false, false, false, false, true, false, true, false, false, false),
+    listOf(false, false, false, true, false, false, false, false, false, false, false, false, false, false, false),
+    listOf(false, false, false, true, false, false, false, false, false, false, false, false, true, false, false),
+    listOf(false, false, false, false, true, true, false, false, false, false, false, false, false, false, false),
+    listOf(false, false, false, false, true, false, false, false, false, false, false, false, false, false, false),
+    listOf(false, true, false, false, false, false, false, false, false, true, false, false, false, false, true),
+    listOf(false, true, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    listOf(false, false, true, false, false, false, false, false, true, false, false, false, false, false, false),
+    listOf(false, false, true, false, false, false, false, false, false, false, true, false, false, false, false),
+    listOf(false, false, false, false, false, false, false, false, false, true, false, false, false, false, false),
+    listOf(false, false, false, false, true, false, false, false, false, false, false, false, false, false, true)
+)
+
+val passageWayListHufflepuff = listOf(
+    R.id.ivJoslastanToBajitaltan,
+    R.id.ivJoslastanToGyengelkedo,
+    R.id.ivJoslastanToNagyterem,
+    R.id.ivJoslastanToSVK,
+    R.id.ivJoslastanToSzuksegSzobaja,
+    R.id.ivSerlegToBajitaltan,
+    R.id.ivSerlegToGyengelkedoBal,
+    R.id.ivSerlegToNagyteremBal,
+    R.id.ivSerlegToSVKBal,
+    R.id.ivSerlegToSzuksegSzobaja,
+    R.id.ivBagolyhazToBajitaltan,
+    R.id.ivBagolyhazToGyengelkedo,
+    R.id.ivBagolyhazToNagyterem,
+    R.id.ivBagolyhazToSVK,
+    R.id.ivBagolyhazToSzuksegSzobaja
+)
+val passageWayVisibilitiesHufflepuff = listOf(
+    listOf(false, true, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    listOf(false, true, false, false, false, false, true, false, false, false, true, false, false, false, false),
+    listOf(false, false, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    listOf(false, true, false, false, false, false, false, false, false, true, false, false, true, false, false),
+    listOf(false, true, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    listOf(false, false, false, false, false, false, false, false, true, false, false, true, false, false, false),
+    listOf(false, true, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    listOf(false, true, false, false, false, true, false, false, false, false, false, false, false, false, false),
+    listOf(false, false, false, false, true, false, false, false, false, false, false, true, false, false, false),
+    listOf(false, false, false, false, true, false, false, true, false, false, false, false, false, false, false),
+    listOf(false, false, false, true, false, false, false, false, false, false, false, false, false, false, false),
+    listOf(false, false, false, true, false, false, true, false, false, false, false, true, false, false, false),
+    listOf(true, false, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    listOf(true, false, false, false, false, false, false, false, false, false, false, false, false, false, true),
+    listOf(false, false, true, false, false, false, true, false, false, false, false, false, false, false, false),
+    listOf(false, false, true, false, false, false, false, false, false, false, false, false, false, true, false)
+)

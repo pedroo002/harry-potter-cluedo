@@ -97,10 +97,30 @@ class MapViewModel(
                     21 -> { setViewVisibility(mapLayout.ivDoor21, s.doorState.boolean()) }
                 }
                 when (house) {
-                    HogwartsHouse.SLYTHERIN -> setViewVisibility(mapLayout.ivDarkMarkSlytherin, s.darkMark)
-                    HogwartsHouse.RAVENCLAW -> setViewVisibility(mapLayout.ivDarkMarkRavenclaw, s.darkMark)
-                    HogwartsHouse.GRYFFINDOR -> setViewVisibility(mapLayout.ivDarkMarkGryffindor, s.darkMark)
-                    HogwartsHouse.HUFFLEPUFF -> setViewVisibility(mapLayout.ivDarkMarkHufflepuff, s.darkMark)
+                    HogwartsHouse.SLYTHERIN -> {
+                        setViewVisibility(mapLayout.ivDarkMarkSlytherin, s.darkMark)
+                        for (p in passageWayListSlytherin) {
+                            setViewVisibility(mapLayout.findViewById(p), passageWayVisibilitiesSlytherin[slytherinState][passageWayListSlytherin.indexOf(p)])
+                        }
+                    }
+                    HogwartsHouse.RAVENCLAW -> {
+                        setViewVisibility(mapLayout.ivDarkMarkRavenclaw, s.darkMark)
+                        for (p in passageWayListRavenclaw) {
+                            setViewVisibility(mapLayout.findViewById(p), passageWayVisibilitiesRavenclaw[ravenclawState][passageWayListRavenclaw.indexOf(p)])
+                        }
+                    }
+                    HogwartsHouse.GRYFFINDOR -> {
+                        setViewVisibility(mapLayout.ivDarkMarkGryffindor, s.darkMark)
+                        for (p in passageWayListGryffindor) {
+                            setViewVisibility(mapLayout.findViewById(p), passageWayVisibilitiesGryffindor[gryffindorState][passageWayListGryffindor.indexOf(p)])
+                        }
+                    }
+                    HogwartsHouse.HUFFLEPUFF -> {
+                        setViewVisibility(mapLayout.ivDarkMarkHufflepuff, s.darkMark)
+                        for (p in passageWayListHufflepuff) {
+                            setViewVisibility(mapLayout.findViewById(p), passageWayVisibilitiesHufflepuff[hufflepuffState][passageWayListHufflepuff.indexOf(p)])
+                        }
+                    }
                 }
                 if (s.darkMark)
                     showCard(playerId, CardType.DARK)
