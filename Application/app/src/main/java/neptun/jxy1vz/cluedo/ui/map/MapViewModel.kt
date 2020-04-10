@@ -279,31 +279,36 @@ class MapViewModel(
     private fun showMovingOptions(playerId: Int, stepCount: Int) {
         emptySelectionList()
 
+        var limit = stepCount
+
         var distances: HashMap<Position, Int>? = null
         if (stepInRoom(getPlayerById(playerId).pos) == -1)
             distances = dijkstra(getPlayerById(playerId).pos)
         else {
+            limit--
             val roomId = stepInRoom(getPlayerById(playerId).pos)
             for (door in doorList) {
-                if (door.room.id == roomId) {
-                    distances =
-                        mergeDistances(dijkstra(Position(door.room.top, door.room.left)), distances)
+                if (door.room.id == roomId && door.state == DoorState.OPENED) {
+                    distances = mergeDistances(dijkstra(door.position), distances)
                 }
             }
         }
 
-        for (x in 0..COLS) {
-            for (y in 0..ROWS) {
-                val current = Position(y, x)
-                if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances!![current]!! <= stepCount) {
-                    drawSelection(R.drawable.field_selection, y, x, playerId)
+        if (!distances.isNullOrEmpty()) {
+            for (x in 0..COLS) {
+                for (y in 0..ROWS) {
+                    val current = Position(y, x)
+                    println(current)
+                    if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances[current]!! <= limit) {
+                        drawSelection(R.drawable.field_selection, y, x, playerId)
+                    }
                 }
             }
         }
 
         if (stepInRoom(getPlayerById(playerId).pos) == -1) {
             for (door in doorList) {
-                if (distances!![door.position]!! <= stepCount - 1 && door.state == DoorState.OPENED) {
+                if (distances!![door.position]!! <= limit - 1 && door.state == DoorState.OPENED) {
                     drawSelection(door.room.selection, door.room.top, door.room.left, playerId)
                 }
             }
@@ -374,10 +379,10 @@ class MapViewModel(
     }
 
     override fun onDiceRoll(playerId: Int, sum: Int, house: HogwartsHouse?) {
-        showMovingOptions(playerId, sum)
         house?.let {
             setState(playerId, it)
         }
+        showMovingOptions(playerId, sum)
     }
 
     override fun showCard(playerId: Int, type: CardType?) {
