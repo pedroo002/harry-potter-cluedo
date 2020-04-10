@@ -21,6 +21,11 @@ import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.elementAt
+import kotlin.collections.isNotEmpty
+import kotlin.collections.isNullOrEmpty
+import kotlin.collections.iterator
 import kotlin.collections.set
 import kotlin.math.min
 import kotlin.random.Random
@@ -52,25 +57,53 @@ class MapViewModel(
     private fun setState(playerId: Int, house: HogwartsHouse) {
         when (house) {
             HogwartsHouse.SLYTHERIN -> {
-                setChanges(playerId, slytherinStates, slytherinState, HogwartsHouse.SLYTHERIN)
+                setChanges(
+                    playerId,
+                    slytherinStates,
+                    passageWayListSlytherin,
+                    passageWayVisibilitiesSlytherin,
+                    slytherinState,
+                    HogwartsHouse.SLYTHERIN
+                )
                 slytherinState++
                 if (slytherinState == 16)
                     slytherinState = 0
             }
             HogwartsHouse.RAVENCLAW -> {
-                setChanges(playerId, ravencalwStates, ravenclawState, HogwartsHouse.RAVENCLAW)
+                setChanges(
+                    playerId,
+                    ravencalwStates,
+                    passageWayListRavenclaw,
+                    passageWayVisibilitiesRavenclaw,
+                    ravenclawState,
+                    HogwartsHouse.RAVENCLAW
+                )
                 ravenclawState++
                 if (ravenclawState == 16)
                     ravenclawState = 0
             }
             HogwartsHouse.GRYFFINDOR -> {
-                setChanges(playerId, gryffindorStates, gryffindorState, HogwartsHouse.GRYFFINDOR)
+                setChanges(
+                    playerId,
+                    gryffindorStates,
+                    passageWayListGryffindor,
+                    passageWayVisibilitiesGryffindor,
+                    gryffindorState,
+                    HogwartsHouse.GRYFFINDOR
+                )
                 gryffindorState++
                 if (gryffindorState == 16)
                     gryffindorState = 0
             }
             HogwartsHouse.HUFFLEPUFF -> {
-                setChanges(playerId, hufflepuffStates, hufflepuffState, HogwartsHouse.HUFFLEPUFF)
+                setChanges(
+                    playerId,
+                    hufflepuffStates,
+                    passageWayListHufflepuff,
+                    passageWayVisibilitiesHufflepuff,
+                    hufflepuffState,
+                    HogwartsHouse.HUFFLEPUFF
+                )
                 hufflepuffState++
                 if (hufflepuffState == 16)
                     hufflepuffState = 0
@@ -78,53 +111,104 @@ class MapViewModel(
         }
     }
 
-    private fun setChanges(playerId: Int, stateList: List<State>, state: Int, house: HogwartsHouse) {
+    private fun setChanges(
+        playerId: Int,
+        stateList: List<State>,
+        gateways: List<Int>,
+        visibilities: List<List<Boolean>>,
+        state: Int,
+        house: HogwartsHouse
+    ) {
+        val gatewayNumbers: MutableList<Int> = ArrayList()
+        for (i in 0..2) {
+            stateList[state * 3 + i].passageWay?.let {
+                gatewayNumbers.add(i)
+            }
+        }
+
+        val visibleGatewaySerialNumbers: MutableList<Int> = ArrayList()
+        for (i in visibilities[state].indices) {
+            if (visibilities[state][i])
+                visibleGatewaySerialNumbers.add(i)
+        }
+
+        for (i in gatewayNumbers.indices) {
+            mapLayout.findViewById<ImageView>(gateways[visibleGatewaySerialNumbers[i]]).setOnClickListener {
+                if (it.visibility == View.VISIBLE)
+                    teleport(playerId, stateList[state * 3 + gatewayNumbers[i]].roomId, stateList[state * 3 + gatewayNumbers[i]].passageWay!!)
+            }
+        }
+
+        for (p in gateways) {
+            val visibility = visibilities[state][gateways.indexOf(p)]
+            setViewVisibility(mapLayout.findViewById(p), visibility)
+        }
+
         for (s in stateList) {
             if (s.serialNum == state) {
                 doorList[s.doorId].state = s.doorState
                 when (s.doorId) {
-                    0 -> { setViewVisibility(mapLayout.ivDoor0, s.doorState.boolean()) }
-                    2 -> { setViewVisibility(mapLayout.ivDoor2, s.doorState.boolean()) }
-                    4 -> { setViewVisibility(mapLayout.ivDoor4, s.doorState.boolean()) }
-                    6 -> { setViewVisibility(mapLayout.ivDoor6, s.doorState.boolean()) }
-                    7 -> { setViewVisibility(mapLayout.ivDoor7, s.doorState.boolean()) }
-                    12 -> { setViewVisibility(mapLayout.ivDoor12, s.doorState.boolean()) }
-                    13 -> { setViewVisibility(mapLayout.ivDoor13, s.doorState.boolean()) }
-                    15 -> { setViewVisibility(mapLayout.ivDoor15, s.doorState.boolean()) }
-                    17 -> { setViewVisibility(mapLayout.ivDoor17, s.doorState.boolean()) }
-                    19 -> { setViewVisibility(mapLayout.ivDoor19, s.doorState.boolean()) }
-                    20 -> { setViewVisibility(mapLayout.ivDoor20, s.doorState.boolean()) }
-                    21 -> { setViewVisibility(mapLayout.ivDoor21, s.doorState.boolean()) }
+                    0 -> {
+                        setViewVisibility(mapLayout.ivDoor0, s.doorState.boolean())
+                    }
+                    2 -> {
+                        setViewVisibility(mapLayout.ivDoor2, s.doorState.boolean())
+                    }
+                    4 -> {
+                        setViewVisibility(mapLayout.ivDoor4, s.doorState.boolean())
+                    }
+                    6 -> {
+                        setViewVisibility(mapLayout.ivDoor6, s.doorState.boolean())
+                    }
+                    7 -> {
+                        setViewVisibility(mapLayout.ivDoor7, s.doorState.boolean())
+                    }
+                    12 -> {
+                        setViewVisibility(mapLayout.ivDoor12, s.doorState.boolean())
+                    }
+                    13 -> {
+                        setViewVisibility(mapLayout.ivDoor13, s.doorState.boolean())
+                    }
+                    15 -> {
+                        setViewVisibility(mapLayout.ivDoor15, s.doorState.boolean())
+                    }
+                    17 -> {
+                        setViewVisibility(mapLayout.ivDoor17, s.doorState.boolean())
+                    }
+                    19 -> {
+                        setViewVisibility(mapLayout.ivDoor19, s.doorState.boolean())
+                    }
+                    20 -> {
+                        setViewVisibility(mapLayout.ivDoor20, s.doorState.boolean())
+                    }
+                    21 -> {
+                        setViewVisibility(mapLayout.ivDoor21, s.doorState.boolean())
+                    }
                 }
                 when (house) {
                     HogwartsHouse.SLYTHERIN -> {
                         setViewVisibility(mapLayout.ivDarkMarkSlytherin, s.darkMark)
-                        for (p in passageWayListSlytherin) {
-                            setViewVisibility(mapLayout.findViewById(p), passageWayVisibilitiesSlytherin[slytherinState][passageWayListSlytherin.indexOf(p)])
-                        }
                     }
                     HogwartsHouse.RAVENCLAW -> {
                         setViewVisibility(mapLayout.ivDarkMarkRavenclaw, s.darkMark)
-                        for (p in passageWayListRavenclaw) {
-                            setViewVisibility(mapLayout.findViewById(p), passageWayVisibilitiesRavenclaw[ravenclawState][passageWayListRavenclaw.indexOf(p)])
-                        }
                     }
                     HogwartsHouse.GRYFFINDOR -> {
                         setViewVisibility(mapLayout.ivDarkMarkGryffindor, s.darkMark)
-                        for (p in passageWayListGryffindor) {
-                            setViewVisibility(mapLayout.findViewById(p), passageWayVisibilitiesGryffindor[gryffindorState][passageWayListGryffindor.indexOf(p)])
-                        }
                     }
                     HogwartsHouse.HUFFLEPUFF -> {
                         setViewVisibility(mapLayout.ivDarkMarkHufflepuff, s.darkMark)
-                        for (p in passageWayListHufflepuff) {
-                            setViewVisibility(mapLayout.findViewById(p), passageWayVisibilitiesHufflepuff[hufflepuffState][passageWayListHufflepuff.indexOf(p)])
-                        }
                     }
                 }
                 if (s.darkMark)
                     showCard(playerId, CardType.DARK)
             }
+        }
+    }
+
+    private fun teleport(playerId: Int, from: Int, to: Int) {
+        if (stepInRoom(getPlayerById(playerId).pos) == from) {
+            stepPlayer(playerId, Position(roomList[to].top, roomList[to].left))
+            emptySelectionList()
         }
     }
 
@@ -329,24 +413,27 @@ class MapViewModel(
         setLayoutConstraintStart(selection, cols[col])
         setLayoutConstraintTop(selection, rows[row])
         selection.setOnClickListener {
-            while (stepInRoom(targetPosition) != -1 && isFieldOccupied(targetPosition))
-                targetPosition.col++
-            getPlayerById(playerId).pos = targetPosition
-
-            for (star in starList) {
-                if (getPlayerById(playerId).pos == star) {
-                    if (helperCards.size > 0)
-                        showCard(playerId, CardType.HELPER)
-                }
-            }
-
-            val pair = getPairById(playerId)
-            setLayoutConstraintStart(pair.second, cols[getPlayerById(playerId).pos.col])
-            setLayoutConstraintTop(pair.second, rows[getPlayerById(playerId).pos.row])
-
+            stepPlayer(playerId, targetPosition)
             emptySelectionList()
         }
         mapLayout.addView(selection)
+    }
+
+    private fun stepPlayer(playerId: Int, targetPosition: Position) {
+        while (stepInRoom(targetPosition) != -1 && isFieldOccupied(targetPosition))
+            targetPosition.col++
+        getPlayerById(playerId).pos = targetPosition
+
+        for (star in starList) {
+            if (getPlayerById(playerId).pos == star) {
+                if (helperCards.size > 0)
+                    showCard(playerId, CardType.HELPER)
+            }
+        }
+
+        val pair = getPairById(playerId)
+        setLayoutConstraintStart(pair.second, cols[getPlayerById(playerId).pos.col])
+        setLayoutConstraintTop(pair.second, rows[getPlayerById(playerId).pos.row])
     }
 
     private fun emptySelectionList() {
@@ -459,7 +546,10 @@ class MapViewModel(
                                     "DIALOG_CARD_LOSS"
                                 )
                             else
-                                throwCard(playerId, properHelperCards[Random.nextInt(0, properHelperCards.size)])
+                                throwCard(
+                                    playerId,
+                                    properHelperCards[Random.nextInt(0, properHelperCards.size)]
+                                )
                         }
                     }
                 }
