@@ -16,6 +16,7 @@ import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel.CardType
+import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
 import java.util.*
@@ -434,12 +435,19 @@ class MapViewModel(
         val pair = getPairById(playerId)
         setLayoutConstraintStart(pair.second, cols[getPlayerById(playerId).pos.col])
         setLayoutConstraintTop(pair.second, rows[getPlayerById(playerId).pos.row])
+
+        if (stepInRoom(getPlayerById(playerId).pos) != -1)
+            incrimination(playerId, stepInRoom(getPlayerById(playerId).pos))
     }
 
     private fun emptySelectionList() {
         for (sel in selectionList)
             mapLayout.removeView(sel)
         selectionList = ArrayList()
+    }
+
+    private fun incrimination(playerId: Int, roomId: Int) {
+        IncriminationDialog(playerId, roomId).show(fm, "DIALOG_INCRIMINATION")
     }
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")

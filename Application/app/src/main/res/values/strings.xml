@@ -57,6 +57,9 @@
     <string name="dice1">Dice 1</string>
     <string name="dice2">Dice 2</string>
     <string name="dice3">Dice3</string>
+    <string name="incriminate">Gyanúsít</string>
+    <string name="tool">Eszköz</string>
+    <string name="suspect">Gyanúsított</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
@@ -70,5 +73,23 @@
     <string-array name="playmodes">
         <item>Egyjátékos mód</item>
         <item>Többjátékos mód</item>
+    </string-array>
+
+    <string-array name="tools">
+        <item>Altatóital</item>
+        <item>Mandragóra</item>
+        <item>Obstructo</item>
+        <item>Petrificus Totalus</item>
+        <item>Volt-nincs szekrény</item>
+        <item>Zsupszkulcs</item>
+    </string-array>
+
+    <string-array name="suspects">
+        <item>Bellatrix Lestrange</item>
+        <item>Crak és Monstro</item>
+        <item>Dolores Umbridge</item>
+        <item>Draco Malfoy</item>
+        <item>Lucius Malfoy</item>
+        <item>Peter Pettigrew</item>
     </string-array>
 </resources>
