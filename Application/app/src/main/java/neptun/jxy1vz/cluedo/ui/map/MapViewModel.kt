@@ -14,6 +14,7 @@ import neptun.jxy1vz.cluedo.model.helper.*
 import neptun.jxy1vz.cluedo.ui.dialog.RescuedFromDarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
+import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.reveal_mystery_card.CardRevealDialog
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel.CardType
 import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
@@ -570,6 +571,29 @@ class MapViewModel(
     }
 
     override fun getIncrimination(playerId: Int, room: String, tool: String, suspect: String) {
+        var playerIdx = playerList.indexOf(getPlayerById(playerId))
+        for (i in 0 until playerList.size - 1) {
+            playerIdx--
+            if (playerIdx < 0)
+                playerIdx = playerList.lastIndex
+            val card = revealMysteryCard(playerIdx, room, tool, suspect)
+            if (card != null) {
+                CardRevealDialog(card, playerList[playerIdx].card.name).show(fm, "DIALOG_CARD_REVEAL")
+                //Többi játékos tájékoztatása (kitől, kinek, milyen gyanúsítási paraméterek)
+                break
+            }
+        }
+    }
 
+    private fun revealMysteryCard(playerIdx: Int, room: String, tool: String, suspect: String): MysteryCard? {
+        val cardList: MutableList<MysteryCard> = ArrayList()
+        for (card in playerList[playerIdx].mysteryCards) {
+            if (card.name == room || card.name == tool || card.name == suspect)
+                cardList.add(card)
+        }
+
+        if (cardList.isNotEmpty())
+            return cardList[Random.nextInt(0, cardList.size)]
+        return null
     }
 }

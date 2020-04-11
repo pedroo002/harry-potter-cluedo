@@ -60,6 +60,8 @@
     <string name="incriminate">Gyanúsít</string>
     <string name="tool">Eszköz</string>
     <string name="suspect">Gyanúsított</string>
+    <string name="mystery_card">Rejtély kártya</string>
+    <string name="card_reveal">Rejtélykártya felfedése</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
