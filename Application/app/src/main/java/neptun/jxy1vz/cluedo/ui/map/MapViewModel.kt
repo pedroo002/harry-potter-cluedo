@@ -38,7 +38,7 @@ class MapViewModel(
     private val fm: FragmentManager
 ) : BaseObservable(),
     DiceRollerDialog.DiceResultInterface, DarkCardDialog.DarkCardDialogListener,
-    CardLossDialog.CardLossDialogListener {
+    CardLossDialog.CardLossDialogListener, IncriminationDialog.MapInterface {
 
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
@@ -447,7 +447,7 @@ class MapViewModel(
     }
 
     private fun incrimination(playerId: Int, roomId: Int) {
-        IncriminationDialog(playerId, roomId).show(fm, "DIALOG_INCRIMINATION")
+        IncriminationDialog(playerId, roomId, this).show(fm, "DIALOG_INCRIMINATION")
     }
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")
@@ -567,5 +567,9 @@ class MapViewModel(
 
     override fun throwCard(playerId: Int, card: HelperCard) {
         getPlayerById(playerId).helperCards!!.remove(card)
+    }
+
+    override fun getIncrimination(playerId: Int, room: String, tool: String, suspect: String) {
+
     }
 }

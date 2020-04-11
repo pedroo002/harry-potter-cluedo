@@ -11,8 +11,12 @@ import neptun.jxy1vz.cluedo.model.helper.roomList
 import neptun.jxy1vz.cluedo.model.helper.suspectTokens
 import neptun.jxy1vz.cluedo.model.helper.toolTokens
 
-class IncriminationViewModel(private val bind: DialogIncriminationBinding, private val context: Context, private val roomId: Int) : BaseObservable(),
+class IncriminationViewModel(private val bind: DialogIncriminationBinding, private val context: Context, private val roomId: Int, private val listener: IncriminationDialogInterface) : BaseObservable(),
     AdapterView.OnItemSelectedListener {
+
+    interface IncriminationDialogInterface {
+        fun onIncriminationFinalization(tool: String, suspect: String)
+    }
 
     private var title = ""
 
@@ -24,7 +28,7 @@ class IncriminationViewModel(private val bind: DialogIncriminationBinding, priva
     private var suspect = ""
 
     fun finalize() {
-
+        listener.onIncriminationFinalization(tool, suspect)
     }
 
     init {
