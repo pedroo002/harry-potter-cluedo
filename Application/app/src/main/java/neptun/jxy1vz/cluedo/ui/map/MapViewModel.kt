@@ -57,6 +57,54 @@ class MapViewModel(
         HUFFLEPUFF
     }
 
+    init {
+        val initHp = when (playerList.size) {
+            3 -> 60
+            4 -> 70
+            else -> 80
+        }
+        for (player in playerList) {
+            player.hp = initHp
+            showCard(player.id, CardType.HELPER)
+        }
+
+        setState(playerId, HogwartsHouse.SLYTHERIN)
+        setState(playerId, HogwartsHouse.RAVENCLAW)
+        setState(playerId, HogwartsHouse.GRYFFINDOR)
+        setState(playerId, HogwartsHouse.HUFFLEPUFF)
+
+        for (pair in playerImagePairs) {
+            setLayoutConstraintStart(pair.second, cols[pair.first.pos.col])
+            setLayoutConstraintTop(pair.second, rows[pair.first.pos.row])
+        }
+
+        mapGraph = Graph()
+
+        for (x in 0..COLS) {
+            for (y in 0..ROWS) {
+                val current = Position(y, x)
+                if (stepInRoom(current) == -1) {
+                    if (y > 0 && stepInRoom(Position(y - 1, x)) == -1)
+                        mapGraph.addEdge(current, Position(y - 1, x))
+                    if (y < 24 && stepInRoom(Position(y + 1, x)) == -1)
+                        mapGraph.addEdge(current, Position(y + 1, x))
+                    if (x > 0 && stepInRoom(Position(y, x - 1)) == -1)
+                        mapGraph.addEdge(current, Position(y, x - 1))
+                    if (x < 24 && stepInRoom(Position(y, x + 1)) == -1)
+                        mapGraph.addEdge(current, Position(y, x + 1))
+
+                }
+            }
+        }
+
+        for (door: Door in doorList) {
+            for (i in 0..4) {
+                mapGraph.addEdge(Position(door.room.top, door.room.left + i), door.position)
+                mapGraph.addEdge(door.position, Position(door.room.top, door.room.left + i))
+            }
+        }
+    }
+
     private fun setState(playerId: Int, house: HogwartsHouse) {
         when (house) {
             HogwartsHouse.SLYTHERIN -> {
@@ -243,44 +291,6 @@ class MapViewModel(
     companion object {
         const val ROWS = 24
         const val COLS = 24
-    }
-
-    init {
-        setState(playerId, HogwartsHouse.SLYTHERIN)
-        setState(playerId, HogwartsHouse.RAVENCLAW)
-        setState(playerId, HogwartsHouse.GRYFFINDOR)
-        setState(playerId, HogwartsHouse.HUFFLEPUFF)
-
-        for (pair in playerImagePairs) {
-            setLayoutConstraintStart(pair.second, cols[pair.first.pos.col])
-            setLayoutConstraintTop(pair.second, rows[pair.first.pos.row])
-        }
-
-        mapGraph = Graph()
-
-        for (x in 0..COLS) {
-            for (y in 0..ROWS) {
-                val current = Position(y, x)
-                if (stepInRoom(current) == -1) {
-                    if (y > 0 && stepInRoom(Position(y - 1, x)) == -1)
-                        mapGraph.addEdge(current, Position(y - 1, x))
-                    if (y < 24 && stepInRoom(Position(y + 1, x)) == -1)
-                        mapGraph.addEdge(current, Position(y + 1, x))
-                    if (x > 0 && stepInRoom(Position(y, x - 1)) == -1)
-                        mapGraph.addEdge(current, Position(y, x - 1))
-                    if (x < 24 && stepInRoom(Position(y, x + 1)) == -1)
-                        mapGraph.addEdge(current, Position(y, x + 1))
-
-                }
-            }
-        }
-
-        for (door: Door in doorList) {
-            for (i in 0..4) {
-                mapGraph.addEdge(Position(door.room.top, door.room.left + i), door.position)
-                mapGraph.addEdge(door.position, Position(door.room.top, door.room.left + i))
-            }
-        }
     }
 
     private fun stepInRoom(pos: Position): Int {
