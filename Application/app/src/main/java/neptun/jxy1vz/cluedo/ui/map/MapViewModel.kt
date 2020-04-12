@@ -42,6 +42,7 @@ class MapViewModel(
     DiceRollerDialog.DiceResultInterface, DarkCardDialog.DarkCardDialogListener,
     CardLossDialog.CardLossDialogListener, IncriminationDialog.MapInterface {
 
+    private var player = getPlayerById(playerId)
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
 
@@ -55,6 +56,11 @@ class MapViewModel(
         RAVENCLAW,
         GRYFFINDOR,
         HUFFLEPUFF
+    }
+
+    companion object {
+        const val ROWS = 24
+        const val COLS = 24
     }
 
     init {
@@ -284,13 +290,6 @@ class MapViewModel(
                 return pair
         }
         return playerImagePairs[0]
-    }
-
-    private var player = getPlayerById(playerId)
-
-    companion object {
-        const val ROWS = 24
-        const val COLS = 24
     }
 
     private fun stepInRoom(pos: Position): Int {
