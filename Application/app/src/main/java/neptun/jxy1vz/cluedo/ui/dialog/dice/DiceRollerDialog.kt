@@ -15,7 +15,7 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
 
     interface DiceResultInterface {
         fun onDiceRoll(playerId: Int, sum: Int, house: MapViewModel.HogwartsHouse?)
-        fun showCard(playerId: Int, type: DiceRollerViewModel.CardType?)
+        fun getCard(playerId: Int, type: DiceRollerViewModel.CardType?)
     }
 
     private lateinit var dialogDiceRollerBinding: DialogDiceRollerBinding
@@ -37,7 +37,7 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
             .setNeutralButton(
                 resources.getString(R.string.ok)
             ) { dialog, _ ->
-                listener.showCard(playerId, dialogDiceRollerBinding.dialogViewModel!!.getCardType())
+                listener.getCard(playerId, dialogDiceRollerBinding.dialogViewModel!!.getCardType())
                 listener.onDiceRoll(playerId, dialogDiceRollerBinding.dialogViewModel!!.getSum(), dialogDiceRollerBinding.dialogViewModel!!.getHouse())
                 dialog.dismiss()
             }.create()

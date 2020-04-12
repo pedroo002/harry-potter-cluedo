@@ -39,7 +39,7 @@ class MapActivity : AppCompatActivity() {
             playerImagePairs.add(Pair(playerList[i], playerImageList[i]))
         }
 
-        activityMapBinding.mapViewModel = MapViewModel(intent.getIntExtra("Player ID", 0), playerImagePairs, mapLayout, supportFragmentManager)
+        activityMapBinding.mapViewModel = MapViewModel(applicationContext, intent.getIntExtra("Player ID", 0), playerImagePairs, mapLayout, supportFragmentManager)
         activityMapBinding.executePendingBindings()
     }
 }
