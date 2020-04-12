@@ -11,11 +11,11 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogIncriminationBinding
 import neptun.jxy1vz.cluedo.model.helper.roomList
 
-class IncriminationDialog(private val playerId: Int, private val roomId: Int, private val listener: MapInterface): DialogFragment(),
+class IncriminationDialog(private val playerId: Int, private val roomId: Int, private val listener: MapInterface, private val titleId: Int): DialogFragment(),
     IncriminationViewModel.IncriminationDialogInterface {
 
     interface MapInterface {
-        fun getIncrimination(playerId: Int, room: String, tool: String, suspect: String)
+        fun getIncrimination(playerId: Int, room: String, tool: String, suspect: String, solution: Boolean)
     }
 
     private lateinit var tool: String
@@ -28,12 +28,12 @@ class IncriminationDialog(private val playerId: Int, private val roomId: Int, pr
 
         dialogIncriminationBinding.dialogViewModel = IncriminationViewModel(dialogIncriminationBinding, context!!, roomId, this)
 
-        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog).setView(dialogIncriminationBinding.root).setTitle(R.string.incriminate).create()
+        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog).setView(dialogIncriminationBinding.root).setTitle(resources.getString(titleId)).create()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         if (tool.isNotEmpty() && suspect.isNotEmpty())
-            listener.getIncrimination(playerId, roomList[roomId].name, tool, suspect)
+            listener.getIncrimination(playerId, roomList[roomId].name, tool, suspect, titleId == R.string.accusation)
         super.onDismiss(dialog)
     }
 

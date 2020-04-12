@@ -448,7 +448,11 @@ class MapViewModel(
     }
 
     private fun incrimination(playerId: Int, roomId: Int) {
-        IncriminationDialog(playerId, roomId, this).show(fm, "DIALOG_INCRIMINATION")
+        val title = when (roomId) {
+            4 -> R.string.accusation
+            else -> R.string.incrimination
+        }
+        IncriminationDialog(playerId, roomId, this, title).show(fm, "DIALOG_INCRIMINATION")
     }
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")
@@ -570,17 +574,36 @@ class MapViewModel(
         getPlayerById(playerId).helperCards!!.remove(card)
     }
 
-    override fun getIncrimination(playerId: Int, room: String, tool: String, suspect: String) {
-        var playerIdx = playerList.indexOf(getPlayerById(playerId))
-        for (i in 0 until playerList.size - 1) {
-            playerIdx--
-            if (playerIdx < 0)
-                playerIdx = playerList.lastIndex
-            val card = revealMysteryCard(playerIdx, room, tool, suspect)
-            if (card != null) {
-                CardRevealDialog(card, playerList[playerIdx].card.name).show(fm, "DIALOG_CARD_REVEAL")
-                //Többi játékos tájékoztatása (kitől, kinek, milyen gyanúsítási paraméterek)
-                break
+    override fun getIncrimination(
+        playerId: Int,
+        room: String,
+        tool: String,
+        suspect: String,
+        solution: Boolean
+    ) {
+        if (solution) {
+            var correct = true
+            for (card in gameSolution) {
+                if (card.name != room && card.name != tool && card.name != suspect)
+                    correct = false
+            }
+            //TODO: játék vége
+        }
+        else {
+            var playerIdx = playerList.indexOf(getPlayerById(playerId))
+            for (i in 0 until playerList.size - 1) {
+                playerIdx--
+                if (playerIdx < 0)
+                    playerIdx = playerList.lastIndex
+                val card = revealMysteryCard(playerIdx, room, tool, suspect)
+                if (card != null) {
+                    CardRevealDialog(card, playerList[playerIdx].card.name).show(
+                        fm,
+                        "DIALOG_CARD_REVEAL"
+                    )
+                    //TODO: többi játékos tájékoztatása (kitől, kinek, milyen gyanúsítási paraméterek)
+                    break
+                }
             }
         }
     }

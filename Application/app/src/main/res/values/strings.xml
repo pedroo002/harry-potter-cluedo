@@ -57,7 +57,8 @@
     <string name="dice1">Dice 1</string>
     <string name="dice2">Dice 2</string>
     <string name="dice3">Dice3</string>
-    <string name="incriminate">Gyanúsít</string>
+    <string name="incrimination">Gyanúsítás</string>
+    <string name="accusation">Vádemelés</string>
     <string name="tool">Eszköz</string>
     <string name="suspect">Gyanúsított</string>
     <string name="mystery_card">Rejtély kártya</string>
