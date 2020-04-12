@@ -18,8 +18,8 @@ class IncriminationDialog(private val playerId: Int, private val roomId: Int, pr
         fun getIncrimination(playerId: Int, room: String, tool: String, suspect: String, solution: Boolean)
     }
 
-    private lateinit var tool: String
-    private lateinit var suspect: String
+    private var tool: String = ""
+    private var suspect: String = ""
 
     private lateinit var dialogIncriminationBinding: DialogIncriminationBinding
 
@@ -40,5 +40,6 @@ class IncriminationDialog(private val playerId: Int, private val roomId: Int, pr
     override fun onIncriminationFinalization(tool: String, suspect: String) {
         this.tool = tool
         this.suspect = suspect
+        dialog!!.dismiss()
     }
 }
