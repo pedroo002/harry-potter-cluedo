@@ -592,6 +592,7 @@ class MapViewModel(
             EndOfGameDialog(getPlayerById(playerId).card.name, titleId, correct).show(fm, "DIALOG_END_OF_GAME")
         }
         else {
+            var someoneShowedSomething = false
             var playerIdx = playerList.indexOf(getPlayerById(playerId))
             for (i in 0 until playerList.size - 1) {
                 playerIdx--
@@ -603,11 +604,19 @@ class MapViewModel(
                         fm,
                         "DIALOG_CARD_REVEAL"
                     )
-                    //TODO: többi játékos tájékoztatása (kitől, kinek, milyen gyanúsítási paraméterek)
+                    someoneShowedSomething = true
+                    letOtherPlayersKnow()
                     break
                 }
             }
+            if (!someoneShowedSomething) {
+
+            }
         }
+    }
+
+    private fun letOtherPlayersKnow() {
+
     }
 
     private fun revealMysteryCard(playerIdx: Int, room: String, tool: String, suspect: String): MysteryCard? {
