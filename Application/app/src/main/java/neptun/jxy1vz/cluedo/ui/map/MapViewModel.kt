@@ -14,8 +14,11 @@ import neptun.jxy1vz.cluedo.model.helper.*
 import neptun.jxy1vz.cluedo.ui.dialog.RescuedFromDarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
+import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.reveal_mystery_card.CardRevealDialog
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel.CardType
+import neptun.jxy1vz.cluedo.ui.dialog.endgame.EndOfGameDialog
+import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
 import java.util.*
@@ -37,7 +40,7 @@ class MapViewModel(
     private val fm: FragmentManager
 ) : BaseObservable(),
     DiceRollerDialog.DiceResultInterface, DarkCardDialog.DarkCardDialogListener,
-    CardLossDialog.CardLossDialogListener {
+    CardLossDialog.CardLossDialogListener, IncriminationDialog.MapInterface {
 
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
@@ -434,12 +437,23 @@ class MapViewModel(
         val pair = getPairById(playerId)
         setLayoutConstraintStart(pair.second, cols[getPlayerById(playerId).pos.col])
         setLayoutConstraintTop(pair.second, rows[getPlayerById(playerId).pos.row])
+
+        if (stepInRoom(getPlayerById(playerId).pos) != -1)
+            incrimination(playerId, stepInRoom(getPlayerById(playerId).pos))
     }
 
     private fun emptySelectionList() {
         for (sel in selectionList)
             mapLayout.removeView(sel)
         selectionList = ArrayList()
+    }
+
+    private fun incrimination(playerId: Int, roomId: Int) {
+        val title = when (roomId) {
+            4 -> R.string.accusation
+            else -> R.string.incrimination
+        }
+        IncriminationDialog(playerId, roomId, this, title).show(fm, "DIALOG_INCRIMINATION")
     }
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")
@@ -559,5 +573,61 @@ class MapViewModel(
 
     override fun throwCard(playerId: Int, card: HelperCard) {
         getPlayerById(playerId).helperCards!!.remove(card)
+    }
+
+    override fun getIncrimination(
+        playerId: Int,
+        room: String,
+        tool: String,
+        suspect: String,
+        solution: Boolean
+    ) {
+        if (solution) {
+            var correct = true
+            for (card in gameSolution) {
+                if (card.name != room && card.name != tool && card.name != suspect)
+                    correct = false
+            }
+            val titleId = if (correct) R.string.correct_accusation else R.string.incorrect_accusation
+            EndOfGameDialog(getPlayerById(playerId).card.name, titleId, correct).show(fm, "DIALOG_END_OF_GAME")
+        }
+        else {
+            var someoneShowedSomething = false
+            var playerIdx = playerList.indexOf(getPlayerById(playerId))
+            for (i in 0 until playerList.size - 1) {
+                playerIdx--
+                if (playerIdx < 0)
+                    playerIdx = playerList.lastIndex
+                val card = revealMysteryCard(playerIdx, room, tool, suspect)
+                if (card != null) {
+                    CardRevealDialog(card, playerList[playerIdx].card.name).show(
+                        fm,
+                        "DIALOG_CARD_REVEAL"
+                    )
+                    someoneShowedSomething = true
+                    letOtherPlayersKnow()
+                    break
+                }
+            }
+            if (!someoneShowedSomething) {
+
+            }
+        }
+    }
+
+    private fun letOtherPlayersKnow() {
+
+    }
+
+    private fun revealMysteryCard(playerIdx: Int, room: String, tool: String, suspect: String): MysteryCard? {
+        val cardList: MutableList<MysteryCard> = ArrayList()
+        for (card in playerList[playerIdx].mysteryCards) {
+            if (card.name == room || card.name == tool || card.name == suspect)
+                cardList.add(card)
+        }
+
+        if (cardList.isNotEmpty())
+            return cardList[Random.nextInt(0, cardList.size)]
+        return null
     }
 }

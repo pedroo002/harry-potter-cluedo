@@ -6,12 +6,12 @@ import neptun.jxy1vz.cluedo.model.*
 var gameSolution: List<MysteryCard> = ArrayList()
 
 var playerList = listOf(
-    Player(0, Position(0, 17), R.id.ivBluePlayer),
-    Player(1, Position(24, 17), R.id.ivPurplePlayer),
-    Player(2, Position(0, 7), R.id.ivRedPlayer),
-    Player(3, Position(24, 7), R.id.ivYellowPlayer),
-    Player(4, Position(17, 24), R.id.ivWhitePlayer),
-    Player(5, Position(7, 0), R.id.ivGreenPlayer)
+    Player(0, playerCards[0], Position(0, 17), R.id.ivBluePlayer),
+    Player(1, playerCards[1], Position(24, 17), R.id.ivPurplePlayer),
+    Player(2, playerCards[2], Position(0, 7), R.id.ivRedPlayer),
+    Player(3, playerCards[3], Position(24, 7), R.id.ivYellowPlayer),
+    Player(4, playerCards[4], Position(17, 24), R.id.ivWhitePlayer),
+    Player(5, playerCards[5], Position(7, 0), R.id.ivGreenPlayer)
 ).toMutableList()
 
 val playerImageIdList = listOf(
