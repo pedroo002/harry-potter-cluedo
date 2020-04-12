@@ -8,9 +8,7 @@ import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogCardRevealBinding
 
-class CardRevealViewModel(private val bind: DialogCardRevealBinding, context: Context, private val cardResource: Int, private val playerName: String) : BaseObservable() {
-
-    private val name = playerName
+class CardRevealViewModel(private val bind: DialogCardRevealBinding, context: Context, private val cardResource: Int, private val name: String) : BaseObservable() {
 
     fun getDialogTitle(): String {
         return "$name ezt a kártyát mutatja neked:"

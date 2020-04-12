@@ -17,6 +17,7 @@ import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.reveal_mystery_card.CardRevealDialog
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel.CardType
+import neptun.jxy1vz.cluedo.ui.dialog.endgame.EndOfGameDialog
 import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
@@ -587,7 +588,8 @@ class MapViewModel(
                 if (card.name != room && card.name != tool && card.name != suspect)
                     correct = false
             }
-            //TODO: játék vége
+            val titleId = if (correct) R.string.correct_accusation else R.string.incorrect_accusation
+            EndOfGameDialog(getPlayerById(playerId).card.name, titleId, correct).show(fm, "DIALOG_END_OF_GAME")
         }
         else {
             var playerIdx = playerList.indexOf(getPlayerById(playerId))
