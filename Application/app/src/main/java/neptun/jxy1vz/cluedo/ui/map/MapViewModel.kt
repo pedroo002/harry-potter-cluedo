@@ -14,6 +14,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.*
 import neptun.jxy1vz.cluedo.model.helper.*
 import neptun.jxy1vz.cluedo.ui.dialog.RescuedFromDarkCardDialog
+import neptun.jxy1vz.cluedo.ui.dialog.accusation.AccusationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.reveal_mystery_card.CardRevealDialog
@@ -526,33 +527,22 @@ class MapViewModel(
 
     private fun incrimination(playerId: Int, roomId: Int) {
         if (playerId == player.id) {
-            val title = when (roomId) {
-                4 -> R.string.accusation
-                else -> R.string.incrimination
-            }
-            IncriminationDialog(playerId, roomId, this, title).show(fm, "DIALOG_INCRIMINATION")
+            if (roomId != 4)
+                IncriminationDialog(playerId, roomId, this).show(fm, "DIALOG_INCRIMINATION")
+            else
+                AccusationDialog(playerId, this).show(fm, "DIALOG_ACCUSATION")
         }
         else {
             val room = roomList[roomId].name
             val tool = context.resources.getStringArray(R.array.tools)[Random.nextInt(0, 6)]
             val suspect = context.resources.getStringArray(R.array.suspects)[Random.nextInt(0, 6)]
 
-            getIncrimination(Suspect(playerId, room, tool, suspect), roomId == 4)
+            if (room != "Dumbledore irodája")
+                getIncrimination(Suspect(playerId, room, tool, suspect))
         }
     }
 
-    override fun getIncrimination(suspect: Suspect, solution: Boolean) {
-        if (solution) {
-            var correct = true
-            for (card in gameSolution) {
-                if (card.name != suspect.room && card.name != suspect.tool && card.name != suspect.suspect)
-                    correct = false
-            }
-            val titleId = if (correct) R.string.correct_accusation else R.string.incorrect_accusation
-            EndOfGameDialog(getPlayerById(suspect.playerId).card.name, titleId, correct).show(fm, "DIALOG_END_OF_GAME")
-            isGameRunning = false
-            return
-        }
+    override fun getIncrimination(suspect: Suspect) {
         if (suspect.playerId != player.id) {
             val title = "${getPlayerById(suspect.playerId).card.name} gyanúsít"
             val message = "Ebben a helyiségben: ${suspect.room}\nEzzel az eszközzel: ${suspect.tool}\nGyanúsított: ${suspect.suspect}"
@@ -680,6 +670,17 @@ class MapViewModel(
     override fun onHelperCardDismiss() {
         if (userFinishedHisTurn)
             moveToNextPlayer()
+    }
+
+    override fun onAccusationDismiss(suspect: Suspect) {
+        var correct = true
+        for (card in gameSolution) {
+            if (card.name != suspect.room && card.name != suspect.tool && card.name != suspect.suspect)
+                correct = false
+        }
+        val titleId = if (correct) R.string.correct_accusation else R.string.incorrect_accusation
+        EndOfGameDialog(getPlayerById(suspect.playerId).card.name, titleId, correct).show(fm, "DIALOG_END_OF_GAME")
+        isGameRunning = false
     }
 
     private fun nothingHasBeenShowed(suspect: Suspect) {
@@ -816,4 +817,5 @@ interface DialogDismiss {
     fun onCardRevealDismiss()
     fun onCardShowDismiss(suspect: Suspect, card: MysteryCard)
     fun onHelperCardDismiss()
+    fun onAccusationDismiss(suspect: Suspect)
 }

@@ -70,6 +70,8 @@
     <string name="show_card">Fedd fel az egyik kártyádat</string>
     <string name="show">Felfed</string>
     <string name="skip">Passz</string>
+    <string name="room">Helyiség</string>
+    <string name="accuse">Vádemelés</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
@@ -83,6 +85,18 @@
     <string-array name="playmodes">
         <item>Egyjátékos mód</item>
         <item>Többjátékos mód</item>
+    </string-array>
+
+    <string-array name="rooms">
+        <item>Bagolyház</item>
+        <item>Bájitaltan terem</item>
+        <item>Gyengélkedő</item>
+        <item>Jóslástan terem</item>
+        <item>Könyvtár</item>
+        <item>Nagyterem</item>
+        <item>Serleg terem</item>
+        <item>Sötét varázslatok kivédése terem</item>
+        <item>Szükség szobája</item>
     </string-array>
 
     <string-array name="tools">
