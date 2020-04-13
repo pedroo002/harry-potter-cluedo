@@ -86,7 +86,6 @@ class MapViewModel(
         letPlayerTurn()
     }
 
-    //TODO: többi játékos tájékoztatása valamilyen módon arról, hogy valaki mutatott valakinek valamit
     //TODO: a többi játékos lépéseinek nyomon követhetősége: mit dobott, mit forgatott, hova lépett, mit gyanúsít, stb.
     private fun letPlayerTurn() {
         if (isGameRunning) {
@@ -534,14 +533,17 @@ class MapViewModel(
                     playerIdx = playerList.lastIndex
                 val cards = revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
                 if (cards != null) {
-                    CardRevealDialog(cards[Random.nextInt(0, cards.size)], playerList[playerIdx].card.name, this).show(fm, "DIALOG_CARD_REVEAL")
+                    val revealedCard = cards[Random.nextInt(0, cards.size)]
+                    CardRevealDialog(revealedCard, playerList[playerIdx].card.name, this).show(fm, "DIALOG_CARD_REVEAL")
                     someoneShowedSomething = true
+                    letOtherPlayersKnow(suspect, playerList[playerIdx].id, revealedCard.name)
                 }
                 if (someoneShowedSomething)
                     break
             }
             if (!someoneShowedSomething) {
                 nothingHasBeenShowed(suspect)
+                letOtherPlayersKnow(suspect)
             }
 
             userFinishedHisTurn = true
@@ -560,11 +562,26 @@ class MapViewModel(
         return null
     }
 
-    private fun letOtherPlayersKnow() {
-
+    private fun letOtherPlayersKnow(suspect: Suspect, playerWhoShowed: Int? = null, revealedMysteryCardName: String? = null) {
+        if (playerWhoShowed != null && revealedMysteryCardName != null) {
+            for (p in playerList) {
+                if (p.id != playerWhoShowed && p.id != player.id) {
+                    if (p.id == suspect.playerId)
+                        p.getConclusion(revealedMysteryCardName, playerWhoShowed)
+                    else
+                        p.getSuspicion(suspect, playerWhoShowed)
+                }
+            }
+        }
+        else {
+            for (p in playerList) {
+                if (p.id != player.id)
+                    p.getSuspicion(suspect)
+            }
+        }
     }
 
-    override fun onInformationDismiss(suspect: Suspect) {
+    override fun onSuspectInformationDismiss(suspect: Suspect) {
         var someoneShowedSomething = false
         var playerIdx = playerList.indexOf(getPlayerById(suspect.playerId))
         for (i in 0 until playerList.size - 1) {
@@ -574,19 +591,22 @@ class MapViewModel(
             if (playerIdx == playerList.indexOf(player)) {
                 val cards = revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
                 if (cards != null) {
-                    ShowCardDialog(getPlayerById(suspect.playerId).card.name, cards, this).show(fm, "DIALOG_SHOW_CARD")
+                    ShowCardDialog(suspect, getPlayerById(suspect.playerId).card.name, cards, this).show(fm, "DIALOG_SHOW_CARD")
                     someoneShowedSomething = true
                 }
             }
             else {
                 val cards = revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
                 if (cards != null) {
+                    val revealedCard = cards[Random.nextInt(0, cards.size)]
+
                     val title = "Kártyafelfedés történt"
                     val message = "${playerList[playerIdx].card.name} mutatott valamit neki: ${getPlayerById(suspect.playerId).card.name}\nGyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\t" +
                             "Eszköz: ${suspect.tool}\n\t" +
                             "Gyanúsított: ${suspect.suspect}"
                     InformationDialog(null, title, message, this).show(fm, "DIALOG_SIMPLE_INFORMATION")
                     someoneShowedSomething = true
+                    letOtherPlayersKnow(suspect, playerList[playerIdx].id, revealedCard.name)
                 }
             }
             if (someoneShowedSomething)
@@ -594,6 +614,7 @@ class MapViewModel(
         }
         if (!someoneShowedSomething) {
             nothingHasBeenShowed(suspect)
+            letOtherPlayersKnow(suspect)
         }
     }
 
@@ -605,7 +626,8 @@ class MapViewModel(
         moveToNextPlayer()
     }
 
-    override fun onCardShowDismiss(card: MysteryCard) {
+    override fun onCardShowDismiss(suspect: Suspect, card: MysteryCard) {
+        letOtherPlayersKnow(suspect, player.id, card.name)
         moveToNextPlayer()
     }
 
@@ -743,9 +765,9 @@ class MapViewModel(
 }
 
 interface DialogDismiss {
-    fun onInformationDismiss(suspect: Suspect)
+    fun onSuspectInformationDismiss(suspect: Suspect)
     fun onSimpleInformationDismiss()
     fun onCardRevealDismiss()
-    fun onCardShowDismiss(card: MysteryCard)
+    fun onCardShowDismiss(suspect: Suspect, card: MysteryCard)
     fun onHelperCardDismiss()
 }

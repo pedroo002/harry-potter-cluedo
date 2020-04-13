@@ -12,11 +12,12 @@ import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogShowCardBinding
 import neptun.jxy1vz.cluedo.model.MysteryCard
+import neptun.jxy1vz.cluedo.model.Suspect
 import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
 import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
 import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
 
-class ShowCardDialog(private val forWho: String, private val cardList: List<MysteryCard>, private val listener: DialogDismiss) : DialogFragment() {
+class ShowCardDialog(private val suspect: Suspect, private val forWho: String, private val cardList: List<MysteryCard>, private val listener: DialogDismiss) : DialogFragment() {
 
     private lateinit var dialogShowCardBinding: DialogShowCardBinding
     private lateinit var adapter: CardPagerAdapter
@@ -51,7 +52,7 @@ class ShowCardDialog(private val forWho: String, private val cardList: List<Myst
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        listener.onCardShowDismiss(cardList[dialogShowCardBinding.vpCards.currentItem])
+        listener.onCardShowDismiss(suspect, cardList[dialogShowCardBinding.vpCards.currentItem])
         super.onDismiss(dialog)
     }
 }

@@ -21,7 +21,7 @@ class InformationDialog(private val suspect: Suspect?, private val title: String
 
     override fun onDismiss(dialog: DialogInterface) {
         suspect?.let {
-            listener.onInformationDismiss(Suspect(suspect.playerId, suspect.room, suspect.tool, suspect.suspect))
+            listener.onSuspectInformationDismiss(Suspect(suspect.playerId, suspect.room, suspect.tool, suspect.suspect))
         }
         if (suspect == null)
             listener.onSimpleInformationDismiss()
