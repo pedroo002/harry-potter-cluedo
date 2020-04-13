@@ -541,9 +541,7 @@ class MapViewModel(
                     break
             }
             if (!someoneShowedSomething) {
-                val title = "Senki sem tudott mutatni..."
-                val message = "Gyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\tEszköz: ${suspect.tool}\n\tGyanúsított: ${suspect.suspect}"
-                InformationDialog(null, title, message, this).show(fm, "DIALOG_SIMPLE_INFORMATION")
+                nothingHasBeenShowed(suspect)
             }
 
             userFinishedHisTurn = true
@@ -595,9 +593,7 @@ class MapViewModel(
                 break
         }
         if (!someoneShowedSomething) {
-            val title = "Senki sem tudott mutatni..."
-            val message = "Gyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\tEszköz: ${suspect.tool}\n\tGyanúsított: ${suspect.suspect}"
-            InformationDialog(null, title, message, this).show(fm, "DIALOG_SIMPLE_INFORMATION")
+            nothingHasBeenShowed(suspect)
         }
     }
 
@@ -616,6 +612,12 @@ class MapViewModel(
     override fun onHelperCardDismiss() {
         if (userFinishedHisTurn)
             moveToNextPlayer()
+    }
+
+    private fun nothingHasBeenShowed(suspect: Suspect) {
+        val title = "Senki sem tudott mutatni..."
+        val message = "Gyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\tEszköz: ${suspect.tool}\n\tGyanúsított: ${suspect.suspect}"
+        InformationDialog(null, title, message, this).show(fm, "DIALOG_SIMPLE_INFORMATION")
     }
 
     private fun getRandomCardId(type: CardType): Int? {
