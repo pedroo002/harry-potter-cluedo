@@ -11,7 +11,7 @@ import neptun.jxy1vz.cluedo.model.Player
 import neptun.jxy1vz.cluedo.model.helper.playerImageIdList
 import neptun.jxy1vz.cluedo.model.helper.playerList
 
-class MapActivity : AppCompatActivity() {
+class MapActivity : AppCompatActivity(), MapActivityListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,11 @@ class MapActivity : AppCompatActivity() {
             playerImagePairs.add(Pair(playerList[i], playerImageList[i]))
         }
 
-        activityMapBinding.mapViewModel = MapViewModel(applicationContext, intent.getIntExtra("Player ID", 0), playerImagePairs, mapLayout, supportFragmentManager)
+        activityMapBinding.mapViewModel = MapViewModel(this, applicationContext, intent.getIntExtra("Player ID", 0), playerImagePairs, mapLayout, supportFragmentManager)
         activityMapBinding.executePendingBindings()
+    }
+
+    override fun exitToMenu() {
+        finish()
     }
 }

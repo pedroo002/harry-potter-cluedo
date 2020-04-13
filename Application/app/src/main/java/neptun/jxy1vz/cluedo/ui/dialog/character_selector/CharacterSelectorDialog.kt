@@ -9,7 +9,8 @@ import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogCharacterSelectorBinding
 
-class CharacterSelectorDialog : DialogFragment() {
+class CharacterSelectorDialog : DialogFragment(),
+    CharacterSelectorViewModel.CharacterSelectorInterface {
 
     private lateinit var dialogCharacterSelectorBinding: DialogCharacterSelectorBinding
 
@@ -21,11 +22,15 @@ class CharacterSelectorDialog : DialogFragment() {
             false
         )
 
-        dialogCharacterSelectorBinding.dialogViewModel = CharacterSelectorViewModel(dialogCharacterSelectorBinding, context!!)
+        dialogCharacterSelectorBinding.dialogViewModel = CharacterSelectorViewModel(dialogCharacterSelectorBinding, context!!, this)
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
             .setView(dialogCharacterSelectorBinding.root)
             .setTitle(resources.getString(R.string.dialog_character_title))
             .create()
+    }
+
+    override fun onGameStart() {
+        dialog!!.dismiss()
     }
 }

@@ -1,6 +1,5 @@
 package neptun.jxy1vz.cluedo.ui.dialog.character_selector
 
-import android.R
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
@@ -13,15 +12,19 @@ import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.databinding.DialogCharacterSelectorBinding
 import neptun.jxy1vz.cluedo.ui.mystery_cards.MysteryCardActivity
 
-class CharacterSelectorViewModel(private val bind: DialogCharacterSelectorBinding, private val context: Context) : BaseObservable(),
+class CharacterSelectorViewModel(private val bind: DialogCharacterSelectorBinding, private val context: Context, private val listener: CharacterSelectorInterface) : BaseObservable(),
     AdapterView.OnItemSelectedListener {
+
+    interface CharacterSelectorInterface {
+        fun onGameStart()
+    }
 
     private var playerId: Int = 0
 
     init {
         bind.spinnerCharacter.adapter = ArrayAdapter<String>(
             context,
-            R.layout.simple_spinner_dropdown_item,
+            android.R.layout.simple_spinner_dropdown_item,
             context.resources.getStringArray(neptun.jxy1vz.cluedo.R.array.characters)
         )
         bind.spinnerCharacter.onItemSelectedListener = this
@@ -35,6 +38,8 @@ class CharacterSelectorViewModel(private val bind: DialogCharacterSelectorBindin
         mysteryCardIntent.putExtra("Player ID", playerId)
         mysteryCardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(mysteryCardIntent)
+
+        listener.onGameStart()
     }
 
     private fun setPlayer(id: Int) {

@@ -42,6 +42,7 @@ import kotlin.math.min
 import kotlin.random.Random
 
 class MapViewModel(
+    private val activityListener: MapActivityListener,
     private val context: Context,
     playerId: Int,
     private var playerImagePairs: List<Pair<Player, ImageView>>,
@@ -351,22 +352,23 @@ class MapViewModel(
     }
 
     fun showOptions(playerId: Int) {
-        if (isGameRunning && playerId == player.id && playerId == playerInTurn) {
-            if (!userHasToStep) {
-                val roomId = stepInRoom(player.pos)
-                val snackbar = Snackbar.make(mapLayout, "Lépj!", Snackbar.LENGTH_LONG)
-                    .setAction("Kockadobás") {
-                        rollWithDice(playerId)
+        if (isGameRunning) {
+            if (playerId == player.id && playerId == playerInTurn) {
+                if (!userHasToStep) {
+                    val roomId = stepInRoom(player.pos)
+                    val snackbar = Snackbar.make(mapLayout, "Lépj!", Snackbar.LENGTH_LONG)
+                        .setAction("Kockadobás") {
+                            rollWithDice(playerId)
+                        }
+                    if (roomId != -1) {
+                        snackbar.setAction("Gyanúsítás") {
+                            incrimination(playerId, roomId)
+                        }
                     }
-                if (roomId != -1) {
-                    snackbar.setAction("Gyanúsítás") {
-                        incrimination(playerId, roomId)
-                    }
-                }
-                snackbar.show()
+                    snackbar.show()
+                } else
+                    Snackbar.make(mapLayout, "Muszáj lépned!", Snackbar.LENGTH_LONG).show()
             }
-            else
-                Snackbar.make(mapLayout, "Muszáj lépned!", Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -684,8 +686,12 @@ class MapViewModel(
                 correct = false
         }
         val titleId = if (correct) R.string.correct_accusation else R.string.incorrect_accusation
-        EndOfGameDialog(getPlayerById(suspect.playerId).card.name, titleId, correct).show(fm, "DIALOG_END_OF_GAME")
+        EndOfGameDialog(this, getPlayerById(suspect.playerId).card.name, titleId, correct).show(fm, "DIALOG_END_OF_GAME")
         isGameRunning = false
+    }
+
+    override fun onEndOfGameDismiss() {
+        activityListener.exitToMenu()
     }
 
     private fun nothingHasBeenShowed(suspect: Suspect) {
@@ -823,4 +829,9 @@ interface DialogDismiss {
     fun onCardShowDismiss(suspect: Suspect, card: MysteryCard)
     fun onHelperCardDismiss()
     fun onAccusationDismiss(suspect: Suspect?)
+    fun onEndOfGameDismiss()
+}
+
+interface MapActivityListener {
+    fun exitToMenu()
 }
