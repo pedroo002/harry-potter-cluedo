@@ -86,7 +86,6 @@ class MapViewModel(
         letPlayerTurn()
     }
 
-    //TODO: mentő kártya vagy sötét lap feltűnésénél megvárni a legutolsó dismisst, mielőtt új játékos következne
     //TODO: többi játékos tájékoztatása valamilyen módon arról, hogy valaki mutatott valakinek valamit
     //TODO: a többi játékos lépéseinek nyomon követhetősége: mit dobott, mit forgatott, hova lépett, mit gyanúsít, stb.
     private fun letPlayerTurn() {
