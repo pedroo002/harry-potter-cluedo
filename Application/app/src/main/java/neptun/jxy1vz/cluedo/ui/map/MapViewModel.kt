@@ -24,6 +24,7 @@ import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
+import neptun.jxy1vz.cluedo.ui.dialog.show_card.ShowCardDialog
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -48,7 +49,7 @@ class MapViewModel(
 ) : BaseObservable(),
     DiceRollerDialog.DiceResultInterface, DarkCardDialog.DarkCardDialogListener,
     CardLossDialog.CardLossDialogListener, IncriminationDialog.MapInterface,
-    InformationDialog.InformationDialogListener {
+    DialogDismiss {
 
     private var player = getPlayerById(playerId)
     private var mapGraph: Graph<Position>
@@ -61,6 +62,7 @@ class MapViewModel(
 
     private var isGameRunning = true
     private var playerInTurn = playerId
+    private var userFinishedHisTurn = false
 
     enum class HogwartsHouse {
         SLYTHERIN,
@@ -84,12 +86,17 @@ class MapViewModel(
         letPlayerTurn()
     }
 
+    //TODO: mentő kártya vagy sötét lap feltűnésénél megvárni a legutolsó dismisst, mielőtt új játékos következne
+    //TODO: többi játékos tájékoztatása valamilyen módon arról, hogy valaki mutatott valakinek valamit
+    //TODO: a többi játékos lépéseinek nyomon követhetősége: mit dobott, mit forgatott, hova lépett, mit gyanúsít, stb.
     private fun letPlayerTurn() {
         if (isGameRunning) {
             if (playerInTurn != player.id)
                 rollWithDice(playerInTurn)
-            else
+            else {
                 Snackbar.make(mapLayout, R.string.your_turn, Snackbar.LENGTH_LONG).show()
+                userFinishedHisTurn = false
+            }
         }
     }
 
@@ -454,9 +461,11 @@ class MapViewModel(
             targetPosition.col++
         getPlayerById(playerId).pos = targetPosition
 
+        var starStep = false
         for (star in starList) {
             if (getPlayerById(playerId).pos == star) {
                 getCard(playerId, CardType.HELPER)
+                starStep = true
             }
         }
 
@@ -464,10 +473,16 @@ class MapViewModel(
         setLayoutConstraintStart(pair.second, cols[getPlayerById(playerId).pos.col])
         setLayoutConstraintTop(pair.second, rows[getPlayerById(playerId).pos.row])
 
-        if (stepInRoom(getPlayerById(playerId).pos) != -1)
-            incrimination(playerId, stepInRoom(getPlayerById(playerId).pos))
-        else {
-            moveToNextPlayer()
+        when {
+            stepInRoom(getPlayerById(playerId).pos) != -1 -> incrimination(playerId, stepInRoom(getPlayerById(playerId).pos))
+            playerId != player.id -> {
+                moveToNextPlayer()
+            }
+            starStep -> userFinishedHisTurn = true
+            else -> {
+                userFinishedHisTurn = true
+                moveToNextPlayer()
+            }
         }
     }
 
@@ -490,75 +505,53 @@ class MapViewModel(
             val tool = context.resources.getStringArray(R.array.tools)[Random.nextInt(0, 6)]
             val suspect = context.resources.getStringArray(R.array.suspects)[Random.nextInt(0, 6)]
 
-            getIncrimination(playerId, room, tool, suspect, roomId == 4)
+            getIncrimination(Suspect(playerId, room, tool, suspect), roomId == 4)
         }
     }
 
-    override fun onDismiss(playerId: Int, room: String, tool: String, suspect: String) {
-        var someoneShowedSomething = false
-        var playerIdx = playerList.indexOf(getPlayerById(playerId))
-        for (i in 0 until playerList.size - 1) {
-            playerIdx--
-            if (playerIdx < 0)
-                playerIdx = playerList.lastIndex
-            if (playerIdx == playerList.indexOf(player)) {
-                Snackbar.make(mapLayout, "Mutass valamit...", Snackbar.LENGTH_LONG).show()
-                someoneShowedSomething = true
-            }
-            else {
-                val card = revealMysteryCard(playerIdx, room, tool, suspect)
-                if (card != null) {
-                    Snackbar.make(mapLayout, "${playerList[playerIdx].card.name} mutatott valamit neki: ${getPlayerById(playerId).card.name}", Snackbar.LENGTH_INDEFINITE).show()
-                    someoneShowedSomething = true
-                }
-            }
-            if (someoneShowedSomething)
-                break
-        }
-        if (!someoneShowedSomething) {
-            Snackbar.make(mapLayout, "Senki sem tudott lapot mutatni.", Snackbar.LENGTH_LONG).show()
-        }
-
-        moveToNextPlayer()
-    }
-
-    override fun getIncrimination(playerId: Int, room: String, tool: String, suspect: String, solution: Boolean) {
+    override fun getIncrimination(suspect: Suspect, solution: Boolean) {
         if (solution) {
             var correct = true
             for (card in gameSolution) {
-                if (card.name != room && card.name != tool && card.name != suspect)
+                if (card.name != suspect.room && card.name != suspect.tool && card.name != suspect.suspect)
                     correct = false
             }
             val titleId = if (correct) R.string.correct_accusation else R.string.incorrect_accusation
-            EndOfGameDialog(getPlayerById(playerId).card.name, titleId, correct).show(fm, "DIALOG_END_OF_GAME")
+            EndOfGameDialog(getPlayerById(suspect.playerId).card.name, titleId, correct).show(fm, "DIALOG_END_OF_GAME")
+            isGameRunning = false
+            return
         }
-        if (playerId != player.id) {
-            InformationDialog(playerId, getPlayerById(playerId).card.name, room, tool, suspect, this).show(fm, "DIALOG_INFORMATION")
+        if (suspect.playerId != player.id) {
+            val title = "${getPlayerById(suspect.playerId).card.name} gyanúsít"
+            val message = "Ebben a helyiségben: ${suspect.room}\nEzzel az eszközzel: ${suspect.tool}\nGyanúsított: ${suspect.suspect}"
+            InformationDialog(suspect, title, message, this).show(fm, "DIALOG_INFORMATION")
         }
         else {
             var someoneShowedSomething = false
-            var playerIdx = playerList.indexOf(getPlayerById(playerId))
+            var playerIdx = playerList.indexOf(getPlayerById(suspect.playerId))
             for (i in 0 until playerList.size - 1) {
                 playerIdx--
                 if (playerIdx < 0)
                     playerIdx = playerList.lastIndex
-                val card = revealMysteryCard(playerIdx, room, tool, suspect)
-                if (card != null) {
-                    CardRevealDialog(card, playerList[playerIdx].card.name).show(fm, "DIALOG_CARD_REVEAL")
+                val cards = revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
+                if (cards != null) {
+                    CardRevealDialog(cards[Random.nextInt(0, cards.size)], playerList[playerIdx].card.name, this).show(fm, "DIALOG_CARD_REVEAL")
                     someoneShowedSomething = true
                 }
                 if (someoneShowedSomething)
                     break
             }
             if (!someoneShowedSomething) {
-                Snackbar.make(mapLayout, "Senki sem tudott lapot mutatni.", Snackbar.LENGTH_LONG).show()
+                val title = "Senki sem tudott mutatni..."
+                val message = "Gyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\tEszköz: ${suspect.tool}\n\tGyanúsított: ${suspect.suspect}"
+                InformationDialog(null, title, message, this).show(fm, "DIALOG_SIMPLE_INFORMATION")
             }
 
-            moveToNextPlayer()
+            userFinishedHisTurn = true
         }
     }
 
-    private fun revealMysteryCard(playerIdx: Int, room: String, tool: String, suspect: String): MysteryCard? {
+    private fun revealMysteryCards(playerIdx: Int, room: String, tool: String, suspect: String): List<MysteryCard>? {
         val cardList: MutableList<MysteryCard> = ArrayList()
         for (card in playerList[playerIdx].mysteryCards) {
             if (card.name == room || card.name == tool || card.name == suspect)
@@ -566,12 +559,64 @@ class MapViewModel(
         }
 
         if (cardList.isNotEmpty())
-            return cardList[Random.nextInt(0, cardList.size)]
+            return cardList
         return null
     }
 
     private fun letOtherPlayersKnow() {
 
+    }
+
+    override fun onInformationDismiss(suspect: Suspect) {
+        var someoneShowedSomething = false
+        var playerIdx = playerList.indexOf(getPlayerById(suspect.playerId))
+        for (i in 0 until playerList.size - 1) {
+            playerIdx--
+            if (playerIdx < 0)
+                playerIdx = playerList.lastIndex
+            if (playerIdx == playerList.indexOf(player)) {
+                val cards = revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
+                if (cards != null) {
+                    ShowCardDialog(getPlayerById(suspect.playerId).card.name, cards, this).show(fm, "DIALOG_SHOW_CARD")
+                    someoneShowedSomething = true
+                }
+            }
+            else {
+                val cards = revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
+                if (cards != null) {
+                    val title = "Kártyafelfedés történt"
+                    val message = "${playerList[playerIdx].card.name} mutatott valamit neki: ${getPlayerById(suspect.playerId).card.name}\nGyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\t" +
+                            "Eszköz: ${suspect.tool}\n\t" +
+                            "Gyanúsított: ${suspect.suspect}"
+                    InformationDialog(null, title, message, this).show(fm, "DIALOG_SIMPLE_INFORMATION")
+                    someoneShowedSomething = true
+                }
+            }
+            if (someoneShowedSomething)
+                break
+        }
+        if (!someoneShowedSomething) {
+            val title = "Senki sem tudott mutatni..."
+            val message = "Gyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\tEszköz: ${suspect.tool}\n\tGyanúsított: ${suspect.suspect}"
+            InformationDialog(null, title, message, this).show(fm, "DIALOG_SIMPLE_INFORMATION")
+        }
+    }
+
+    override fun onSimpleInformationDismiss() {
+        moveToNextPlayer()
+    }
+
+    override fun onCardRevealDismiss() {
+        moveToNextPlayer()
+    }
+
+    override fun onCardShowDismiss(card: MysteryCard) {
+        moveToNextPlayer()
+    }
+
+    override fun onHelperCardDismiss() {
+        if (userFinishedHisTurn)
+            moveToNextPlayer()
     }
 
     private fun getRandomCardId(type: CardType): Int? {
@@ -609,7 +654,7 @@ class MapViewModel(
                         helperCards.remove(card)
 
                     if (playerId == player.id)
-                        HelperCardDialog(card.imageRes).show(fm, "DIALOG_HELPER")
+                        HelperCardDialog(card.imageRes, this).show(fm, "DIALOG_HELPER")
                 }
             }
             else -> {
@@ -694,4 +739,12 @@ class MapViewModel(
         layoutParams.startToStart = col
         view.layoutParams = layoutParams
     }
+}
+
+interface DialogDismiss {
+    fun onInformationDismiss(suspect: Suspect)
+    fun onSimpleInformationDismiss()
+    fun onCardRevealDismiss()
+    fun onCardShowDismiss(card: MysteryCard)
+    fun onHelperCardDismiss()
 }

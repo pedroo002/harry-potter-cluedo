@@ -9,13 +9,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogIncriminationBinding
+import neptun.jxy1vz.cluedo.model.Suspect
 import neptun.jxy1vz.cluedo.model.helper.roomList
 
 class IncriminationDialog(private val playerId: Int, private val roomId: Int, private val listener: MapInterface, private val titleId: Int): DialogFragment(),
     IncriminationViewModel.IncriminationDialogInterface {
 
     interface MapInterface {
-        fun getIncrimination(playerId: Int, room: String, tool: String, suspect: String, solution: Boolean)
+        fun getIncrimination(suspect: Suspect, solution: Boolean)
     }
 
     private var tool: String = ""
@@ -33,7 +34,7 @@ class IncriminationDialog(private val playerId: Int, private val roomId: Int, pr
 
     override fun onDismiss(dialog: DialogInterface) {
         if (tool.isNotEmpty() && suspect.isNotEmpty())
-            listener.getIncrimination(playerId, roomList[roomId].name, tool, suspect, titleId == R.string.accusation)
+            listener.getIncrimination(Suspect(playerId, roomList[roomId].name, tool, suspect), titleId == R.string.accusation)
         super.onDismiss(dialog)
     }
 

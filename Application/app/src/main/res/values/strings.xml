@@ -67,6 +67,8 @@
     <string name="correct_accusation">Helyes vád</string>
     <string name="incorrect_accusation">Helytelen vád</string>
     <string name="your_turn">Te jössz!</string>
+    <string name="show_card">Fedd fel az egyik kártyádat</string>
+    <string name="show">Felfed</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>

@@ -1,6 +1,7 @@
 package neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
@@ -8,8 +9,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogHelperCardBinding
+import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
 
-class HelperCardDialog(private val cardResource: Int) : DialogFragment() {
+class HelperCardDialog(private val cardResource: Int, private val listener: DialogDismiss) : DialogFragment() {
 
     private lateinit var dialogHelperCardBinding: DialogHelperCardBinding
 
@@ -29,5 +31,10 @@ class HelperCardDialog(private val cardResource: Int) : DialogFragment() {
         ) { dialog, _ ->
             dialog.dismiss()
         }.create()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        listener.onHelperCardDismiss()
+        super.onDismiss(dialog)
     }
 }

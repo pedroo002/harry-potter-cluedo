@@ -1,6 +1,7 @@
 package neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
@@ -14,7 +15,7 @@ import neptun.jxy1vz.cluedo.model.Player
 class DarkCardDialog(
     private val player: Player,
     private val darkCard: DarkCard,
-    private val listener: DarkCardDialogListener
+    private val darkListener: DarkCardDialogListener
 ) : DialogFragment() {
 
     interface DarkCardDialogListener {
@@ -37,8 +38,13 @@ class DarkCardDialog(
             .setTitle(resources.getString(R.string.sotet_jegy)).setNeutralButton(
                 resources.getString(R.string.ok)
             ) { dialog, _ ->
-                listener.getLoss(player.id, dialogDarkCardBinding.darkCardDialogViewModel!!.getLoss())
                 dialog.dismiss()
             }.create()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        val card = dialogDarkCardBinding.darkCardDialogViewModel!!.getLoss()
+        darkListener.getLoss(player.id, card)
+        super.onDismiss(dialog)
     }
 }
