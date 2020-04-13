@@ -14,7 +14,7 @@ import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
 class AccusationDialog(private val playerId: Int, private val listener: DialogDismiss) : DialogFragment(), AccusationViewModel.FinalizationListener {
 
     private lateinit var dialogAccusationBinding: DialogAccusationBinding
-    private lateinit var suspect: Suspect
+    private var suspect: Suspect? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         dialogAccusationBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_accusation, null, false)

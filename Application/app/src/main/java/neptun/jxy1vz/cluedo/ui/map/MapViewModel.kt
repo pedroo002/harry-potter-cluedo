@@ -672,7 +672,12 @@ class MapViewModel(
             moveToNextPlayer()
     }
 
-    override fun onAccusationDismiss(suspect: Suspect) {
+    override fun onAccusationDismiss(suspect: Suspect?) {
+        if (suspect == null) {
+            Snackbar.make(mapLayout, "Add le a gyanúdat!", Snackbar.LENGTH_LONG).show()
+            AccusationDialog(playerInTurn, this).show(fm, "DIALOG_ACCUSATION")
+            return
+        }
         var correct = true
         for (card in gameSolution) {
             if (card.name != suspect.room && card.name != suspect.tool && card.name != suspect.suspect)
@@ -817,5 +822,5 @@ interface DialogDismiss {
     fun onCardRevealDismiss()
     fun onCardShowDismiss(suspect: Suspect, card: MysteryCard)
     fun onHelperCardDismiss()
-    fun onAccusationDismiss(suspect: Suspect)
+    fun onAccusationDismiss(suspect: Suspect?)
 }
