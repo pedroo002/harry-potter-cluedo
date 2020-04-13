@@ -20,7 +20,7 @@ class AccusationDialog(private val playerId: Int, private val listener: DialogDi
         dialogAccusationBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_accusation, null, false)
         dialogAccusationBinding.dialogViewModel = AccusationViewModel(playerId, dialogAccusationBinding, context!!, this)
 
-        return androidx.appcompat.app.AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_DialogWhenLarge).setView(dialogAccusationBinding.root).setTitle(R.string.accusation).create()
+        return androidx.appcompat.app.AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog).setView(dialogAccusationBinding.root).setTitle(R.string.accusation).create()
     }
 
     override fun onFinalized(suspect: Suspect) {

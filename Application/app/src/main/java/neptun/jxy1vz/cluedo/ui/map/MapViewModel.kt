@@ -351,7 +351,7 @@ class MapViewModel(
     }
 
     fun showOptions(playerId: Int) {
-        if (playerId == player.id && playerId == playerInTurn) {
+        if (isGameRunning && playerId == player.id && playerId == playerInTurn) {
             if (!userHasToStep) {
                 val roomId = stepInRoom(player.pos)
                 val snackbar = Snackbar.make(mapLayout, "Lépj!", Snackbar.LENGTH_LONG)
