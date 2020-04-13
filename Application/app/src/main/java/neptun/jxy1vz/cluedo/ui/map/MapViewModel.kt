@@ -541,6 +541,8 @@ class MapViewModel(
 
             if (room != "Dumbledore irodája")
                 getIncrimination(Suspect(playerId, room, tool, suspect))
+            else
+                onAccusationDismiss(Suspect(playerId, room, tool, suspect))
         }
     }
 
