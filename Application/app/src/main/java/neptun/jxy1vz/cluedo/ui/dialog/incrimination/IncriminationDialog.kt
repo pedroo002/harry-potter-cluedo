@@ -17,6 +17,7 @@ class IncriminationDialog(private val playerId: Int, private val roomId: Int, pr
 
     interface MapInterface {
         fun getIncrimination(suspect: Suspect, solution: Boolean)
+        fun onIncriminationSkip()
     }
 
     private var tool: String = ""
@@ -35,12 +36,18 @@ class IncriminationDialog(private val playerId: Int, private val roomId: Int, pr
     override fun onDismiss(dialog: DialogInterface) {
         if (tool.isNotEmpty() && suspect.isNotEmpty())
             listener.getIncrimination(Suspect(playerId, roomList[roomId].name, tool, suspect), titleId == R.string.accusation)
+        else
+            listener.onIncriminationSkip()
         super.onDismiss(dialog)
     }
 
     override fun onIncriminationFinalization(tool: String, suspect: String) {
         this.tool = tool
         this.suspect = suspect
+        dialog!!.dismiss()
+    }
+
+    override fun onSkip() {
         dialog!!.dismiss()
     }
 }

@@ -69,6 +69,7 @@
     <string name="your_turn">Te jössz!</string>
     <string name="show_card">Fedd fel az egyik kártyádat</string>
     <string name="show">Felfed</string>
+    <string name="skip">Passz</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>

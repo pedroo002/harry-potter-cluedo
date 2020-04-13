@@ -63,6 +63,7 @@ class MapViewModel(
     private var isGameRunning = true
     private var playerInTurn = playerId
     private var userFinishedHisTurn = false
+    private var userHasToIncriminate = false
 
     enum class HogwartsHouse {
         SLYTHERIN,
@@ -94,6 +95,9 @@ class MapViewModel(
             else {
                 Snackbar.make(mapLayout, R.string.your_turn, Snackbar.LENGTH_LONG).show()
                 userFinishedHisTurn = false
+                userHasToIncriminate = false
+                if (stepInRoom(player.pos) != -1)
+                    incrimination(player.id, stepInRoom(player.pos))
             }
         }
     }
@@ -472,7 +476,11 @@ class MapViewModel(
         setLayoutConstraintTop(pair.second, rows[getPlayerById(playerId).pos.row])
 
         when {
-            stepInRoom(getPlayerById(playerId).pos) != -1 -> incrimination(playerId, stepInRoom(getPlayerById(playerId).pos))
+            stepInRoom(getPlayerById(playerId).pos) != -1 -> {
+                incrimination(playerId, stepInRoom(getPlayerById(playerId).pos))
+                if (playerId == player.id)
+                    userHasToIncriminate = true
+            }
             playerId != player.id -> {
                 moveToNextPlayer()
             }
@@ -547,6 +555,16 @@ class MapViewModel(
             }
 
             userFinishedHisTurn = true
+        }
+    }
+
+    override fun onIncriminationSkip() {
+        if (userHasToIncriminate) {
+            Snackbar.make(mapLayout, "Muszáj gyanúsítanod!", Snackbar.LENGTH_LONG).show()
+            incrimination(player.id, stepInRoom(player.pos))
+        }
+        else {
+            Snackbar.make(mapLayout, "Lépj!", Snackbar.LENGTH_SHORT).show()
         }
     }
 
