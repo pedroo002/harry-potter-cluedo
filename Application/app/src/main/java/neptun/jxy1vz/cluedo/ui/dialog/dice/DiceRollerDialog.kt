@@ -37,8 +37,13 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
             .setNeutralButton(
                 resources.getString(R.string.ok)
             ) { dialog, _ ->
-                listener.getCard(playerId, dialogDiceRollerBinding.dialogViewModel!!.getCardType())
-                listener.onDiceRoll(playerId, dialogDiceRollerBinding.dialogViewModel!!.getSum(), dialogDiceRollerBinding.dialogViewModel!!.getHouse())
+                val cardType = dialogDiceRollerBinding.dialogViewModel!!.getCardType()
+                val house = dialogDiceRollerBinding.dialogViewModel!!.getHouse()
+                val sum = dialogDiceRollerBinding.dialogViewModel!!.getSum()
+
+                listener.getCard(playerId, cardType)
+                if (sum > 0)
+                    listener.onDiceRoll(playerId, sum, house)
                 dialog.dismiss()
             }.create()
     }

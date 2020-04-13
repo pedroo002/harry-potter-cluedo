@@ -64,6 +64,7 @@ class MapViewModel(
     private var playerInTurn = playerId
     private var userFinishedHisTurn = false
     private var userHasToIncriminate = false
+    private var userHasToStep = false
 
     enum class HogwartsHouse {
         SLYTHERIN,
@@ -93,11 +94,14 @@ class MapViewModel(
             if (playerInTurn != player.id)
                 rollWithDice(playerInTurn)
             else {
-                Snackbar.make(mapLayout, R.string.your_turn, Snackbar.LENGTH_LONG).show()
                 userFinishedHisTurn = false
                 userHasToIncriminate = false
+                userHasToStep = false
                 if (stepInRoom(player.pos) != -1)
                     incrimination(player.id, stepInRoom(player.pos))
+                else {
+                    showOptions(player.id)
+                }
             }
         }
     }
@@ -345,28 +349,46 @@ class MapViewModel(
         return intersection
     }
 
-    fun rollWithDice(playerId: Int) {
-        if (playerId == playerInTurn) {
-            if (player.id != playerId) {
-                val sum = Random.nextInt(2, 13)
-                val hogwartsDice = Random.nextInt(1, 7)
-                var cardType: CardType? = null
-                var house: HogwartsHouse? = null
-                when (hogwartsDice) {
-                    1 -> cardType = CardType.HELPER
-                    2 -> house = HogwartsHouse.GRYFFINDOR
-                    3 -> house = HogwartsHouse.SLYTHERIN
-                    4 -> house = HogwartsHouse.HUFFLEPUFF
-                    5 -> house = HogwartsHouse.RAVENCLAW
-                    6 -> cardType = CardType.DARK
+    fun showOptions(playerId: Int) {
+        if (playerId == player.id && playerId == playerInTurn) {
+            if (!userHasToStep) {
+                val roomId = stepInRoom(player.pos)
+                val snackbar = Snackbar.make(mapLayout, "Lépj!", Snackbar.LENGTH_LONG)
+                    .setAction("Kockadobás") {
+                        rollWithDice(playerId)
+                    }
+                if (roomId != -1) {
+                    snackbar.setAction("Gyanúsítás") {
+                        incrimination(playerId, roomId)
+                    }
                 }
-                cardType?.let {
-                    getCard(playerId, cardType)
-                }
-                onDiceRoll(playerId, sum, house)
-            } else
-                DiceRollerDialog(this, playerId).show(fm, "DIALOG_DICE")
+                snackbar.show()
+            }
+            else
+                Snackbar.make(mapLayout, "Muszáj lépned!", Snackbar.LENGTH_LONG).show()
         }
+    }
+
+    private fun rollWithDice(playerId: Int) {
+        if (player.id != playerId) {
+            val sum = Random.nextInt(2, 13)
+            val hogwartsDice = Random.nextInt(1, 7)
+            var cardType: CardType? = null
+            var house: HogwartsHouse? = null
+            when (hogwartsDice) {
+                1 -> cardType = CardType.HELPER
+                2 -> house = HogwartsHouse.GRYFFINDOR
+                3 -> house = HogwartsHouse.SLYTHERIN
+                4 -> house = HogwartsHouse.HUFFLEPUFF
+                5 -> house = HogwartsHouse.RAVENCLAW
+                6 -> cardType = CardType.DARK
+            }
+            cardType?.let {
+                getCard(playerId, cardType)
+            }
+            onDiceRoll(playerId, sum, house)
+        } else
+            DiceRollerDialog(this, playerId).show(fm, "DIALOG_DICE")
     }
 
     override fun onDiceRoll(playerId: Int, sum: Int, house: HogwartsHouse?) {
@@ -374,6 +396,8 @@ class MapViewModel(
             setState(playerId, it)
         }
         calculateMovingOptions(playerId, sum)
+        if (playerId == player.id)
+            userHasToStep = true
     }
 
     private fun calculateMovingOptions(playerId: Int, stepCount: Int) {
@@ -478,8 +502,10 @@ class MapViewModel(
         when {
             stepInRoom(getPlayerById(playerId).pos) != -1 -> {
                 incrimination(playerId, stepInRoom(getPlayerById(playerId).pos))
-                if (playerId == player.id)
+                if (playerId == player.id) {
                     userHasToIncriminate = true
+                    userHasToStep = false
+                }
             }
             playerId != player.id -> {
                 moveToNextPlayer()
@@ -564,7 +590,9 @@ class MapViewModel(
             incrimination(player.id, stepInRoom(player.pos))
         }
         else {
-            Snackbar.make(mapLayout, "Lépj!", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(mapLayout, "Lépj!", Snackbar.LENGTH_SHORT).setAction("Kockadobás"){
+                rollWithDice(player.id)
+            }.show()
         }
     }
 
