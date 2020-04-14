@@ -1,12 +1,15 @@
 package neptun.jxy1vz.cluedo.ui.map
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.content.Context
 import android.graphics.Matrix
+import android.media.Image
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.FragmentManager
@@ -176,28 +179,71 @@ class MapViewModel(
         mapRoot.panTo(-x, -y, true)
     }
 
+    private fun moveCameraToCorner(house: HogwartsHouse) {
+        val x = when(house) {
+            HogwartsHouse.SLYTHERIN -> mapRoot.mapLayout.ivMap.left.toFloat()
+            HogwartsHouse.RAVENCLAW -> mapRoot.mapLayout.ivMap.right.toFloat()
+            HogwartsHouse.GRYFFINDOR -> mapRoot.mapLayout.ivMap.right.toFloat()
+            else -> mapRoot.mapLayout.ivMap.left.toFloat()
+        }
+        val y = when(house) {
+            HogwartsHouse.SLYTHERIN -> mapRoot.mapLayout.ivMap.top.toFloat()
+            HogwartsHouse.RAVENCLAW -> mapRoot.mapLayout.ivMap.top.toFloat()
+            HogwartsHouse.GRYFFINDOR -> mapRoot.mapLayout.ivMap.bottom.toFloat()
+            else -> mapRoot.mapLayout.ivMap.bottom.toFloat()
+        }
+
+        mapRoot.panTo(-x, -y, true)
+    }
+
     private fun setState(playerId: Int, house: HogwartsHouse) {
+        moveCameraToCorner(house)
+
         when (house) {
             HogwartsHouse.SLYTHERIN -> {
-                setChanges(playerId, slytherinStates, passageWayListSlytherin, passageWayVisibilitiesSlytherin, slytherinState, HogwartsHouse.SLYTHERIN)
+                setChanges(playerId,
+                    slytherinStates,
+                    passageWayListSlytherin,
+                    passageWayVisibilitiesSlytherin,
+                    slytherinState,
+                    HogwartsHouse.SLYTHERIN
+                )
                 slytherinState++
                 if (slytherinState == 16)
                     slytherinState = 0
             }
             HogwartsHouse.RAVENCLAW -> {
-                setChanges(playerId, ravencalwStates, passageWayListRavenclaw, passageWayVisibilitiesRavenclaw, ravenclawState, HogwartsHouse.RAVENCLAW)
+                setChanges(playerId,
+                    ravencalwStates,
+                    passageWayListRavenclaw,
+                    passageWayVisibilitiesRavenclaw,
+                    ravenclawState,
+                    HogwartsHouse.RAVENCLAW
+                )
                 ravenclawState++
                 if (ravenclawState == 16)
                     ravenclawState = 0
             }
             HogwartsHouse.GRYFFINDOR -> {
-                setChanges(playerId, gryffindorStates, passageWayListGryffindor, passageWayVisibilitiesGryffindor, gryffindorState, HogwartsHouse.GRYFFINDOR)
+                setChanges(playerId,
+                    gryffindorStates,
+                    passageWayListGryffindor,
+                    passageWayVisibilitiesGryffindor,
+                    gryffindorState,
+                    HogwartsHouse.GRYFFINDOR
+                )
                 gryffindorState++
                 if (gryffindorState == 16)
                     gryffindorState = 0
             }
             HogwartsHouse.HUFFLEPUFF -> {
-                setChanges(playerId, hufflepuffStates, passageWayListHufflepuff, passageWayVisibilitiesHufflepuff, hufflepuffState, HogwartsHouse.HUFFLEPUFF)
+                setChanges(playerId,
+                    hufflepuffStates,
+                    passageWayListHufflepuff,
+                    passageWayVisibilitiesHufflepuff,
+                    hufflepuffState,
+                    HogwartsHouse.HUFFLEPUFF
+                )
                 hufflepuffState++
                 if (hufflepuffState == 16)
                     hufflepuffState = 0
@@ -205,7 +251,14 @@ class MapViewModel(
         }
     }
 
-    private fun setChanges(playerId: Int, stateList: List<State>, gateways: List<Int>, visibilities: List<List<Boolean>>, state: Int, house: HogwartsHouse) {
+    private fun setChanges(
+        playerId: Int,
+        stateList: List<State>,
+        gateways: List<Int>,
+        visibilities: List<List<Boolean>>,
+        state: Int,
+        house: HogwartsHouse
+    ) {
         val gatewayNumbers: MutableList<Int> = ArrayList()
         for (i in 0..2) {
             stateList[state * 3 + i].passageWay?.let {
@@ -226,44 +279,125 @@ class MapViewModel(
             }
         }
 
+        val gatewayAnimations: MutableList<Pair<ImageView, Boolean>> = ArrayList()
         for (p in gateways) {
             val visibility = visibilities[state][gateways.indexOf(p)]
-            setViewVisibility(mapRoot.mapLayout.findViewById(p), visibility)
+
+            if (state > 0) {
+                if (visibilities[state - 1][gateways.indexOf(p)] != visibility) {
+                    gatewayAnimations.add(Pair(mapRoot.mapLayout.findViewById(p), visibility))
+                    if (visibility)
+                        setViewVisibility(mapRoot.mapLayout.findViewById(p), visibility)
+                }
+            }
+            else
+                setViewVisibility(mapRoot.mapLayout.findViewById(p), visibility)
         }
 
         for (s in stateList) {
             if (s.serialNum == state) {
+                val oldState = doorList[s.doorId].state
+                val doorAnimation = oldState != s.doorState
                 doorList[s.doorId].state = s.doorState
-                when (s.doorId) {
-                    0 -> setViewVisibility(mapRoot.mapLayout.ivDoor0, s.doorState.boolean())
-                    2 -> setViewVisibility(mapRoot.mapLayout.ivDoor2, s.doorState.boolean())
-                    4 -> setViewVisibility(mapRoot.mapLayout.ivDoor4, s.doorState.boolean())
-                    6 -> setViewVisibility(mapRoot.mapLayout.ivDoor6, s.doorState.boolean())
-                    7 -> setViewVisibility(mapRoot.mapLayout.ivDoor7, s.doorState.boolean())
-                    12 -> setViewVisibility(mapRoot.mapLayout.ivDoor12, s.doorState.boolean())
-                    13 -> setViewVisibility(mapRoot.mapLayout.ivDoor13, s.doorState.boolean())
-                    15 -> setViewVisibility(mapRoot.mapLayout.ivDoor15, s.doorState.boolean())
-                    17 -> setViewVisibility(mapRoot.mapLayout.ivDoor17, s.doorState.boolean())
-                    19 -> setViewVisibility(mapRoot.mapLayout.ivDoor19, s.doorState.boolean())
-                    20 -> setViewVisibility(mapRoot.mapLayout.ivDoor20, s.doorState.boolean())
-                    21 -> setViewVisibility(mapRoot.mapLayout.ivDoor21, s.doorState.boolean())
+                val ivDoor = when (s.doorId) {
+                    0 -> mapRoot.mapLayout.ivDoor0
+                    2 -> mapRoot.mapLayout.ivDoor2
+                    4 -> mapRoot.mapLayout.ivDoor4
+                    6 -> mapRoot.mapLayout.ivDoor6
+                    7 -> mapRoot.mapLayout.ivDoor7
+                    12 -> mapRoot.mapLayout.ivDoor12
+                    13 -> mapRoot.mapLayout.ivDoor13
+                    15 -> mapRoot.mapLayout.ivDoor15
+                    17 -> mapRoot.mapLayout.ivDoor17
+                    19 -> mapRoot.mapLayout.ivDoor19
+                    20 -> mapRoot.mapLayout.ivDoor20
+                    else -> mapRoot.mapLayout.ivDoor21
                 }
-                when (house) {
+
+                val darkMarkAnimation = when (stateList.indexOf(s) % 3) {
+                    2 -> stateList.indexOf(s) >= 5 && stateList[stateList.indexOf(s) - 3].darkMark != s.darkMark
+                    else -> false
+                }
+                val ivDarkMark = when (house) {
                     HogwartsHouse.SLYTHERIN -> {
-                        setViewVisibility(mapRoot.mapLayout.ivDarkMarkSlytherin, s.darkMark)
+                        mapRoot.mapLayout.ivDarkMarkSlytherin
                     }
                     HogwartsHouse.RAVENCLAW -> {
-                        setViewVisibility(mapRoot.mapLayout.ivDarkMarkRavenclaw, s.darkMark)
+                        mapRoot.mapLayout.ivDarkMarkRavenclaw
                     }
                     HogwartsHouse.GRYFFINDOR -> {
-                        setViewVisibility(mapRoot.mapLayout.ivDarkMarkGryffindor, s.darkMark)
+                        mapRoot.mapLayout.ivDarkMarkGryffindor
                     }
                     HogwartsHouse.HUFFLEPUFF -> {
-                        setViewVisibility(mapRoot.mapLayout.ivDarkMarkHufflepuff, s.darkMark)
+                        mapRoot.mapLayout.ivDarkMarkHufflepuff
                     }
                 }
-                if (s.darkMark)
-                    getCard(playerId, CardType.DARK)
+
+                if (s.serialNum == 0) {
+                    setViewVisibility(ivDoor, s.doorState.boolean())
+                    setViewVisibility(ivDarkMark, s.darkMark)
+                }
+                else
+                    animateMapChanges(playerId, s, doorAnimation, ivDoor, darkMarkAnimation, ivDarkMark, gatewayAnimations)
+            }
+        }
+    }
+
+    private fun animateMapChanges(playerId: Int, s: State, doorAnimation: Boolean, ivDoor: ImageView, darkMarkAnimation: Boolean, ivDarkMark: ImageView, gatewayAnimations: List<Pair<ImageView, Boolean>>) {
+        if (s.doorState == DoorState.CLOSED)
+            setViewVisibility(ivDoor, s.doorState.boolean())
+        if (s.darkMark)
+            setViewVisibility(ivDarkMark, s.darkMark)
+
+        if (doorAnimation) {
+            val doorAnimId = when (s.doorState) {
+                DoorState.CLOSED -> R.animator.appear
+                else -> R.animator.disappear
+            }
+            (AnimatorInflater.loadAnimator(context, doorAnimId) as AnimatorSet).apply {
+                setTarget(ivDoor)
+                start()
+                doOnEnd {
+                    if (s.doorState == DoorState.OPENED)
+                        setViewVisibility(ivDoor, s.doorState.boolean())
+                    if (!darkMarkAnimation)
+                        moveCameraToPlayer(playerInTurn)
+                }
+            }
+        }
+        if (darkMarkAnimation) {
+            val darkMarkAnimId = when (s.darkMark) {
+                true -> R.animator.appear
+                else -> R.animator.disappear
+            }
+            (AnimatorInflater.loadAnimator(context, darkMarkAnimId) as AnimatorSet).apply {
+                setTarget(ivDarkMark)
+                start()
+                doOnEnd {
+                    if (gatewayAnimations.isEmpty())
+                        moveCameraToPlayer(playerInTurn)
+                    if (s.darkMark)
+                        getCard(playerId, CardType.DARK)
+                    else
+                        setViewVisibility(ivDarkMark, s.darkMark)
+                }
+            }
+        }
+        if (gatewayAnimations.isNotEmpty()) {
+            for (pair in gatewayAnimations) {
+                val gatewayAnimId = when (pair.second) {
+                    true -> R.animator.appear
+                    else -> R.animator.disappear
+                }
+                (AnimatorInflater.loadAnimator(context, gatewayAnimId) as AnimatorSet).apply {
+                    setTarget(pair.first)
+                    start()
+                    doOnEnd {
+                        moveCameraToPlayer(playerInTurn)
+                        if (!pair.second)
+                            setViewVisibility(pair.first, pair.second)
+                    }
+                }
             }
         }
     }

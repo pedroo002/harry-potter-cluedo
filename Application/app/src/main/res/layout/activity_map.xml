@@ -31,7 +31,7 @@
         app:minZoomType="realZoom"
         app:maxZoom="5"
         app:maxZoomType="realZoom"
-        app:animationDuration="280"
+        app:animationDuration="1000"
         app:hasClickableChildren="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
