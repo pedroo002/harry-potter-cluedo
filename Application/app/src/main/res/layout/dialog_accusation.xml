@@ -322,6 +322,7 @@
                         android:onClick="@{()->dialogViewModel.selectSuspect(5)}"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
             </HorizontalScrollView>
 
             <Button

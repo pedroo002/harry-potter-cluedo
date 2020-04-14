@@ -16,7 +16,7 @@ class IncriminationDialog(
     private val playerId: Int,
     private val roomId: Int,
     private val listener: MapInterface
-): DialogFragment(),
+) : DialogFragment(),
     IncriminationViewModel.IncriminationDialogInterface {
 
     interface MapInterface {
@@ -30,11 +30,23 @@ class IncriminationDialog(
     private lateinit var dialogIncriminationBinding: DialogIncriminationBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        dialogIncriminationBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_incrimination, null, false)
+        dialogIncriminationBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(context),
+            R.layout.dialog_incrimination,
+            null,
+            false
+        )
 
-        dialogIncriminationBinding.dialogViewModel = IncriminationViewModel(dialogIncriminationBinding, context!!, roomId, this)
+        dialogIncriminationBinding.dialogViewModel = IncriminationViewModel(
+            dialogIncriminationBinding,
+            context!!,
+            this
+        )
 
-        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog).setView(dialogIncriminationBinding.root).setTitle(R.string.incrimination).create()
+        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
+            .setView(dialogIncriminationBinding.root)
+            .setTitle("${context!!.resources.getString(R.string.incrimination)} itt: ${roomList[roomId].name}")
+            .create()
     }
 
     override fun onDismiss(dialog: DialogInterface) {

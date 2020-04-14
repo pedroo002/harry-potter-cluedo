@@ -3,33 +3,39 @@ package neptun.jxy1vz.cluedo.ui.dialog.incrimination
 import android.content.Context
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.widget.ImageView
+import androidx.core.view.children
 import androidx.databinding.BaseObservable
+import com.google.android.material.snackbar.Snackbar
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogIncriminationBinding
-import neptun.jxy1vz.cluedo.model.helper.roomList
 import neptun.jxy1vz.cluedo.model.helper.suspectTokens
+import neptun.jxy1vz.cluedo.model.helper.suspectTokensBW
 import neptun.jxy1vz.cluedo.model.helper.toolTokens
+import neptun.jxy1vz.cluedo.model.helper.toolTokensBW
 
-class IncriminationViewModel(private val bind: DialogIncriminationBinding, private val context: Context, private val roomId: Int, private val listener: IncriminationDialogInterface) : BaseObservable(),
-    AdapterView.OnItemSelectedListener {
+class IncriminationViewModel(
+    private val bind: DialogIncriminationBinding,
+    private val context: Context,
+    private val listener: IncriminationDialogInterface
+) : BaseObservable() {
 
     interface IncriminationDialogInterface {
         fun onIncriminationFinalization(tool: String, suspect: String)
         fun onSkip()
     }
 
-    private var title = ""
-
-    fun getTitle(): String {
-        return title
-    }
+    private val toolList: MutableList<ImageView> = ArrayList()
+    private val suspectList: MutableList<ImageView> = ArrayList()
 
     private var tool = ""
     private var suspect = ""
 
     fun finalize() {
-        listener.onIncriminationFinalization(tool, suspect)
+        if (tool.isEmpty() || suspect.isEmpty())
+            Snackbar.make(bind.root, "Válassz mindkét sorból egyet!", Snackbar.LENGTH_LONG).show()
+        else
+            listener.onIncriminationFinalization(tool, suspect)
     }
 
     fun skip() {
@@ -37,27 +43,33 @@ class IncriminationViewModel(private val bind: DialogIncriminationBinding, priva
     }
 
     init {
-        title = "Helyszín: " + roomList[roomId].name
-
-        bind.spinnerTool.adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, context.resources.getStringArray(R.array.tools))
-        bind.spinnerSuspect.adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, context.resources.getStringArray(R.array.suspects))
-
-        bind.spinnerTool.onItemSelectedListener = this
-        bind.spinnerSuspect.onItemSelectedListener = this
+        for (child in bind.layoutToolImages.children.asSequence()) {
+            toolList.add(child as ImageView)
+        }
+        for (child in bind.layoutSuspectImages.children.asSequence()) {
+            suspectList.add(child as ImageView)
+        }
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {}
+    fun selectTool(idx: Int) {
+        for (i in toolList.indices) {
+            if (i == idx) {
+                toolList[i].setImageResource(toolTokens[i])
+                tool = context.resources.getStringArray(R.array.tools)[i]
+            }
+            else
+                toolList[i].setImageResource(toolTokensBW[i])
+        }
+    }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        when (parent) {
-            bind.spinnerTool -> {
-                bind.ivTool.setImageResource(toolTokens[position])
-                tool = bind.spinnerTool.selectedItem.toString()
+    fun selectSuspect(idx: Int) {
+        for (i in suspectList.indices) {
+            if (i == idx) {
+                suspectList[i].setImageResource(suspectTokens[i])
+                suspect = context.resources.getStringArray(R.array.suspects)[i]
             }
-            bind.spinnerSuspect -> {
-                bind.ivSuspect.setImageResource(suspectTokens[position])
-                suspect = bind.spinnerSuspect.selectedItem.toString()
-            }
+            else
+                suspectList[i].setImageResource(suspectTokensBW[i])
         }
     }
 }

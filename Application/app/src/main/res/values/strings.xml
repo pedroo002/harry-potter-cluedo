@@ -72,6 +72,18 @@
     <string name="skip">Passz</string>
     <string name="room">Helyiség</string>
     <string name="accuse">Vádemelés</string>
+    <string name="lucius_malfoy">Lucius Malfoy</string>
+    <string name="peter_pettigrew">Peter Pettigrew</string>
+    <string name="draco_malfoy">Draco Malfoy</string>
+    <string name="dolores_umbridge">Dolores Umbridge</string>
+    <string name="crak_es_monstro">Crak és Monstro</string>
+    <string name="bellatrix_lestrange">Bellatrix Lestrange</string>
+    <string name="zsupszkulcs">Zsupszkulcs</string>
+    <string name="volt_nincs_szekreny">Volt-nincs szekrény</string>
+    <string name="petrificus_totalus">Petrificus Totalus</string>
+    <string name="obstructo">Obstructo</string>
+    <string name="mandragora">Mandragóra</string>
+    <string name="altatoital">Altatóital</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
