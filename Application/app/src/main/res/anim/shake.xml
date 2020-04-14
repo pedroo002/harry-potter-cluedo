@@ -6,7 +6,7 @@
         android:interpolator="@android:anim/linear_interpolator"
         android:pivotX="50%"
         android:pivotY="50%"
-        android:repeatCount="5"
+        android:repeatCount="8"
         android:repeatMode="reverse"
         android:toDegrees="10" />
 
@@ -14,7 +14,7 @@
         android:duration="70"
         android:fromXDelta="-10"
         android:interpolator="@android:anim/linear_interpolator"
-        android:repeatCount="5"
+        android:repeatCount="8"
         android:repeatMode="reverse"
         android:toXDelta="10" />
 </set>

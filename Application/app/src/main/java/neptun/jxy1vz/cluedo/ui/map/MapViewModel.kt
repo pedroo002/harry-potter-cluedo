@@ -5,6 +5,9 @@ import android.animation.AnimatorSet
 import android.content.Context
 import android.graphics.Matrix
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -44,6 +47,8 @@ import kotlin.collections.isNullOrEmpty
 import kotlin.collections.iterator
 import kotlin.collections.lastIndex
 import kotlin.collections.set
+import kotlin.math.abs
+import kotlin.math.floor
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -57,11 +62,14 @@ class MapViewModel(
 ) : BaseObservable(),
     DiceRollerDialog.DiceResultInterface, DarkCardDialog.DarkCardDialogListener,
     CardLossDialog.CardLossDialogListener, IncriminationDialog.MapInterface,
-    DialogDismiss, ZoomEngine.Listener {
+    DialogDismiss, Animation.AnimationListener {
 
     private var player = getPlayerById(playerId)
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
+    private var diceList: List<ImageView>
+
+    private val anim = AnimationUtils.loadAnimation(context, R.anim.shake)
 
     private var slytherinState = 0
     private var ravenclawState = 0
@@ -116,7 +124,29 @@ class MapViewModel(
     }
 
     init {
-        mapRoot.engine.addListener(this)
+        val dice1 = ImageView(mapRoot.mapLayout.context)
+        dice1.layoutParams = ConstraintLayout.LayoutParams(100, 100)
+        dice1.setImageResource(R.drawable.dice1)
+        dice1.visibility = ImageView.GONE
+
+        val dice2 = ImageView(mapRoot.mapLayout.context)
+        dice2.layoutParams = ConstraintLayout.LayoutParams(100, 100)
+        dice2.setImageResource(R.drawable.helper_card)
+        dice2.visibility = ImageView.GONE
+
+        val dice3 = ImageView(mapRoot.mapLayout.context)
+        dice3.layoutParams = ConstraintLayout.LayoutParams(100, 100)
+        dice3.setImageResource(R.drawable.dice2)
+        dice3.visibility = ImageView.GONE
+
+        diceList = listOf(dice1, dice2, dice3)
+        for (dice in diceList) {
+            setLayoutConstraintStart(dice, cols[0])
+            setLayoutConstraintTop(dice, rows[0])
+            mapRoot.mapLayout.addView(dice)
+        }
+
+        anim.setAnimationListener(this)
 
         mapRoot.mapLayout.setOnClickListener {
             moveCameraToPlayer(playerInTurn)
@@ -359,8 +389,13 @@ class MapViewModel(
                 doOnEnd {
                     if (s.doorState == DoorState.OPENED)
                         setViewVisibility(ivDoor, s.doorState.boolean())
-                    if (!darkMarkAnimation)
+                    if (!darkMarkAnimation) {
                         moveCameraToPlayer(playerInTurn)
+                        getPlayerById(playerId).diceSum?.let {
+                            calculateMovingOptions(playerId, getPlayerById(playerId).diceSum!!)
+                            getPlayerById(playerId).diceSum = null
+                        }
+                    }
                 }
             }
         }
@@ -373,8 +408,13 @@ class MapViewModel(
                 setTarget(ivDarkMark)
                 start()
                 doOnEnd {
-                    if (gatewayAnimations.isEmpty())
+                    if (gatewayAnimations.isEmpty()) {
                         moveCameraToPlayer(playerInTurn)
+                        getPlayerById(playerId).diceSum?.let {
+                            calculateMovingOptions(playerId, getPlayerById(playerId).diceSum!!)
+                            getPlayerById(playerId).diceSum = null
+                        }
+                    }
                     if (s.darkMark)
                         getCard(playerId, CardType.DARK)
                     else
@@ -392,7 +432,13 @@ class MapViewModel(
                     setTarget(pair.first)
                     start()
                     doOnEnd {
-                        moveCameraToPlayer(playerInTurn)
+                        if (gatewayAnimations.indexOf(pair) == gatewayAnimations.lastIndex) {
+                            moveCameraToPlayer(playerInTurn)
+                            getPlayerById(playerId).diceSum?.let {
+                                calculateMovingOptions(playerId, getPlayerById(playerId).diceSum!!)
+                                getPlayerById(playerId).diceSum = null
+                            }
+                        }
                         if (!pair.second)
                             setViewVisibility(pair.first, pair.second)
                     }
@@ -525,22 +571,15 @@ class MapViewModel(
 
     private fun rollWithDice(playerId: Int) {
         if (player.id != playerId) {
-            val sum = Random.nextInt(2, 13)
-            val hogwartsDice = Random.nextInt(1, 7)
-            var cardType: CardType? = null
-            var house: HogwartsHouse? = null
-            when (hogwartsDice) {
-                1 -> cardType = CardType.HELPER
-                2 -> house = HogwartsHouse.GRYFFINDOR
-                3 -> house = HogwartsHouse.SLYTHERIN
-                4 -> house = HogwartsHouse.HUFFLEPUFF
-                5 -> house = HogwartsHouse.RAVENCLAW
-                6 -> cardType = CardType.DARK
+            for (i in diceList.indices) {
+                val row = if (getPlayerById(playerId).pos.row == ROWS) ROWS - 1 else getPlayerById(playerId).pos.row + 1
+                val col = if (getPlayerById(playerId).pos.col == 0) 0 else if (getPlayerById(playerId).pos.col >= COLS - 2) COLS - 2 else getPlayerById(playerId).pos.col - 1
+                setLayoutConstraintTop(diceList[i], rows[row])
+                setLayoutConstraintStart(diceList[i], cols[col + i])
+                diceList[i].visibility = ImageView.VISIBLE
+
+                diceList[i].startAnimation(anim)
             }
-            cardType?.let {
-                getCard(playerId, cardType)
-            }
-            onDiceRoll(playerId, sum, house)
         } else
             DiceRollerDialog(this, playerId).show(fm, "DIALOG_DICE")
     }
@@ -549,7 +588,10 @@ class MapViewModel(
         house?.let {
             setState(playerId, it)
         }
-        calculateMovingOptions(playerId, sum)
+        if (house != null)
+            getPlayerById(playerId).diceSum = sum
+        else
+            calculateMovingOptions(playerId, sum)
         if (playerId == player.id)
             userHasToStep = true
     }
@@ -975,13 +1017,69 @@ class MapViewModel(
         view.layoutParams = layoutParams
     }
 
-    override fun onIdle(engine: ZoomEngine) {
+    override fun onAnimationRepeat(animation: Animation?) {}
 
+    override fun onAnimationEnd(animation: Animation?) {
+        val dice1Value = Random.nextInt(1, 7)
+        val dice2Value = Random.nextInt(1, 7)
+        val hogwartsDice = Random.nextInt(1, 7)
+
+        diceList[0].setImageResource(when (dice1Value) {
+            1 -> R.drawable.dice1
+            2 -> R.drawable.dice2
+            3 -> R.drawable.dice3
+            4 -> R.drawable.dice4
+            5 -> R.drawable.dice5
+            else -> R.drawable.dice6
+        })
+
+        diceList[2].setImageResource(when (dice2Value) {
+            1 -> R.drawable.dice1
+            2 -> R.drawable.dice2
+            3 -> R.drawable.dice3
+            4 -> R.drawable.dice4
+            5 -> R.drawable.dice5
+            else -> R.drawable.dice6
+        })
+
+        diceList[1].setImageResource(when (hogwartsDice) {
+            1 -> R.drawable.helper_card
+            2 -> R.drawable.gryffindor
+            3 -> R.drawable.slytherin
+            4 -> R.drawable.hufflepuff
+            5 -> R.drawable.ravenclaw
+            else -> R.drawable.dark_mark
+        })
+
+        var cardType: CardType? = null
+        var house: HogwartsHouse? = null
+        when (hogwartsDice) {
+            1 -> cardType = CardType.HELPER
+            2 -> house = HogwartsHouse.GRYFFINDOR
+            3 -> house = HogwartsHouse.SLYTHERIN
+            4 -> house = HogwartsHouse.HUFFLEPUFF
+            5 -> house = HogwartsHouse.RAVENCLAW
+            6 -> cardType = CardType.DARK
+        }
+
+        for (dice in diceList) {
+            (AnimatorInflater.loadAnimator(context, R.animator.disappear) as AnimatorSet).apply {
+                setTarget(dice)
+                start()
+                doOnEnd {
+                    dice.visibility = ImageView.GONE
+                    if (diceList.indexOf(dice) == 2) {
+                        cardType?.let {
+                            getCard(playerInTurn, cardType)
+                        }
+                        onDiceRoll(playerInTurn, dice1Value + dice2Value, house)
+                    }
+                }
+            }
+        }
     }
 
-    override fun onUpdate(engine: ZoomEngine, matrix: Matrix) {
-
-    }
+    override fun onAnimationStart(animation: Animation?) {}
 }
 
 interface DialogDismiss {
