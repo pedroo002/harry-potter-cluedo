@@ -13,7 +13,8 @@
             android:screenOrientation="landscape">
         </activity>
         <activity android:name=".ui.mystery_cards.MysteryCardActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            android:noHistory="true">
         </activity>
         <activity android:name=".ui.menu.MenuActivity"
             android:screenOrientation="portrait">

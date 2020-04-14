@@ -12,10 +12,10 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogCardLossBinding
 import neptun.jxy1vz.cluedo.model.HelperCard
 import neptun.jxy1vz.cluedo.model.LossType
-import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.adapter.CardPagerAdapter
-import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.fragment.CardFragment
+import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
+import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
 
-class CardLossDialog(private val playerId: Int, private val helperCards: List<HelperCard>, private val loss_type: LossType, private val listener: CardLossDialogListener) : DialogFragment() {
+class CardLossDialog(private val playerIdx: Int, private val helperCards: List<HelperCard>, private val loss_type: LossType, private val listener: CardLossDialogListener) : DialogFragment() {
 
     interface CardLossDialogListener {
         fun throwCard(playerId: Int, card: HelperCard)
@@ -56,7 +56,7 @@ class CardLossDialog(private val playerId: Int, private val helperCards: List<He
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
             .setView(dialogCardLossBinding.root).setTitle(title)
             .setNeutralButton(R.string.throw_card) { dialog, _ ->
-                listener.throwCard(playerId, helperCards[dialogCardLossBinding.vpCards.currentItem])
+                listener.throwCard(playerIdx, helperCards[dialogCardLossBinding.vpCards.currentItem])
                 dialog.dismiss()
             }.create()
     }

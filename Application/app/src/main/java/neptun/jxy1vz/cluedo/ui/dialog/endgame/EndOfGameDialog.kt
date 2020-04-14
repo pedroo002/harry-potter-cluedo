@@ -1,6 +1,7 @@
 package neptun.jxy1vz.cluedo.ui.dialog.endgame
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
@@ -8,8 +9,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogEndOfGameBinding
+import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
 
-class EndOfGameDialog(private val playerName: String, private val titleId: Int, private val correct: Boolean) : DialogFragment() {
+class EndOfGameDialog(private val listener: DialogDismiss, private val playerName: String, private val titleId: Int, private val correct: Boolean) : DialogFragment() {
 
     private lateinit var dialogEndOfGameBinding: DialogEndOfGameBinding
 
@@ -21,5 +23,10 @@ class EndOfGameDialog(private val playerName: String, private val titleId: Int, 
             dialog, _ ->
             dialog.dismiss()
         }.create()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        listener.onEndOfGameDismiss()
+        super.onDismiss(dialog)
     }
 }

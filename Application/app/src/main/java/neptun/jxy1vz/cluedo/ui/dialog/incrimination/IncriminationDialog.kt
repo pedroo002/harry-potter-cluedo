@@ -1,21 +1,27 @@
 package neptun.jxy1vz.cluedo.ui.dialog.incrimination
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogIncriminationBinding
+import neptun.jxy1vz.cluedo.model.Suspect
 import neptun.jxy1vz.cluedo.model.helper.roomList
 
-class IncriminationDialog(private val playerId: Int, private val roomId: Int, private val listener: MapInterface, private val titleId: Int): DialogFragment(),
+class IncriminationDialog(
+    private val playerId: Int,
+    private val roomId: Int,
+    private val listener: MapInterface
+): DialogFragment(),
     IncriminationViewModel.IncriminationDialogInterface {
 
     interface MapInterface {
-        fun getIncrimination(playerId: Int, room: String, tool: String, suspect: String, solution: Boolean)
+        fun getIncrimination(suspect: Suspect)
+        fun onIncriminationSkip()
     }
 
     private var tool: String = ""
@@ -28,18 +34,24 @@ class IncriminationDialog(private val playerId: Int, private val roomId: Int, pr
 
         dialogIncriminationBinding.dialogViewModel = IncriminationViewModel(dialogIncriminationBinding, context!!, roomId, this)
 
-        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog).setView(dialogIncriminationBinding.root).setTitle(resources.getString(titleId)).create()
+        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog).setView(dialogIncriminationBinding.root).setTitle(R.string.incrimination).create()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         if (tool.isNotEmpty() && suspect.isNotEmpty())
-            listener.getIncrimination(playerId, roomList[roomId].name, tool, suspect, titleId == R.string.accusation)
+            listener.getIncrimination(Suspect(playerId, roomList[roomId].name, tool, suspect))
+        else
+            listener.onIncriminationSkip()
         super.onDismiss(dialog)
     }
 
     override fun onIncriminationFinalization(tool: String, suspect: String) {
         this.tool = tool
         this.suspect = suspect
+        dialog!!.dismiss()
+    }
+
+    override fun onSkip() {
         dialog!!.dismiss()
     }
 }

@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="dialogViewModel"
+            type="neptun.jxy1vz.cluedo.ui.dialog.accusation.AccusationViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <TextView
+                android:id="@+id/tvLabelRoom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/room"
+                android:layout_margin="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLabelRoom"
+                app:layout_constraintBottom_toTopOf="@+id/tvLabelTool"
+                android:id="@+id/svRoom">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layoutRoomImages">
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivRoomBagolyhaz"
+                        android:src="@drawable/room_bagolyhaz_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectRoom(0)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivRoomBajitaltan"
+                        android:src="@drawable/room_bajitaltan_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivRoomBagolyhaz"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectRoom(1)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivRoomGyengelkedo"
+                        android:src="@drawable/room_gyengelkedo_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivRoomBajitaltan"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectRoom(2)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivRoomJoslastan"
+                        android:src="@drawable/room_joslastan_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivRoomGyengelkedo"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectRoom(3)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivRoomKonyvtar"
+                        android:src="@drawable/room_konyvtar_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivRoomJoslastan"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectRoom(4)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivRoomNagyterem"
+                        android:src="@drawable/room_nagyterem_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivRoomKonyvtar"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectRoom(5)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivRoomSerleg"
+                        android:src="@drawable/room_serleg_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivRoomNagyterem"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectRoom(6)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivRoomSVK"
+                        android:src="@drawable/room_svk_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivRoomSerleg"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectRoom(7)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivRoomSzuksegSzobaja"
+                        android:src="@drawable/room_szukseg_szobaja_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivRoomSVK"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectRoom(8)}"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/tvLabelTool"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/tool"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/svRoom" />
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLabelTool"
+                app:layout_constraintBottom_toTopOf="@+id/tvLabelSuspect"
+                android:id="@+id/svTool">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layoutToolImages">
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivToolAltatoital"
+                        android:src="@drawable/tool_altatoital_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectTool(0)}" />
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivToolMandragora"
+                        android:src="@drawable/tool_mandragora_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivToolAltatoital"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectTool(1)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivToolObstructo"
+                        android:src="@drawable/tool_obstructo_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivToolMandragora"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectTool(2)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivToolPetrificusTotalus"
+                        android:src="@drawable/tool_petrificus_totalus_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivToolObstructo"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectTool(3)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivToolVoltNincs"
+                        android:src="@drawable/tool_volt_nincs_szekreny_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivToolPetrificusTotalus"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectTool(4)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivToolZsupszkulcs"
+                        android:src="@drawable/tool_zsupszkulcs_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivToolVoltNincs"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectTool(5)}"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/tvLabelSuspect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/suspect"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/svTool" />
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLabelSuspect"
+                android:id="@+id/svSuspect">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layoutSuspectImages">
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivSuspectBellatrix"
+                        android:src="@drawable/suspect_bellatrix_lestrange_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectSuspect(0)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivSuspectCrakEsMonstro"
+                        android:src="@drawable/suspect_crak_and_monstro_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivSuspectBellatrix"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectSuspect(1)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivSuspectUmbridge"
+                        android:src="@drawable/suspect_dolores_umbridge_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivSuspectCrakEsMonstro"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectSuspect(2)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivSuspectDraco"
+                        android:src="@drawable/suspect_draco_malfoy_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivSuspectUmbridge"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectSuspect(3)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivSuspectLucius"
+                        android:src="@drawable/suspect_lucius_malfoy_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivSuspectDraco"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectSuspect(4)}"/>
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/ivSuspectFeregfark"
+                        android:src="@drawable/suspect_peter_pettigrew_bw"
+                        android:layout_margin="20dp"
+                        app:layout_constraintStart_toEndOf="@id/ivSuspectLucius"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:onClick="@{()->dialogViewModel.selectSuspect(5)}"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </HorizontalScrollView>
+
+            <Button
+                android:id="@+id/btnValidate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/accuse"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/svSuspect"
+                android:onClick="@{()->dialogViewModel.finalize()}"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>

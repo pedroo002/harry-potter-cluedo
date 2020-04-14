@@ -16,6 +16,7 @@ class IncriminationViewModel(private val bind: DialogIncriminationBinding, priva
 
     interface IncriminationDialogInterface {
         fun onIncriminationFinalization(tool: String, suspect: String)
+        fun onSkip()
     }
 
     private var title = ""
@@ -29,6 +30,10 @@ class IncriminationViewModel(private val bind: DialogIncriminationBinding, priva
 
     fun finalize() {
         listener.onIncriminationFinalization(tool, suspect)
+    }
+
+    fun skip() {
+        listener.onSkip()
     }
 
     init {

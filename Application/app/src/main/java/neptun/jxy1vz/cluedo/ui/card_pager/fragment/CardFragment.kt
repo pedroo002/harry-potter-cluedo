@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.fragment
+package neptun.jxy1vz.cluedo.ui.card_pager.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
