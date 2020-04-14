@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -9,22 +8,35 @@
             type="neptun.jxy1vz.cluedo.ui.map.MapViewModel" />
     </data>
 
-    <ScrollView
+    <com.otaliastudios.zoom.ZoomLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:scrollbars="vertical|horizontal"
+        app:transformation="centerCrop"
+        app:transformationGravity="auto"
+        app:alignment="center"
+        app:overScrollHorizontal="true"
+        app:overScrollVertical="true"
+        app:overPinchable="true"
+        app:horizontalPanEnabled="true"
+        app:verticalPanEnabled="true"
+        app:zoomEnabled="true"
+        app:flingEnabled="true"
+        app:scrollEnabled="true"
+        app:oneFingerScrollEnabled="true"
+        app:twoFingersScrollEnabled="true"
+        app:threeFingersScrollEnabled="true"
+        app:minZoom="1"
+        app:minZoomType="realZoom"
+        app:maxZoom="5"
+        app:maxZoomType="realZoom"
+        app:animationDuration="280"
+        app:hasClickableChildren="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/mapLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/ivMap"
@@ -1191,6 +1203,5 @@
                     android:id="@+id/ivSzuksegSzobajaToSVKJobb" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </HorizontalScrollView>
-    </ScrollView>
+    </com.otaliastudios.zoom.ZoomLayout>
 </layout>
