@@ -90,7 +90,6 @@ class MapViewModel(
         letPlayerTurn()
     }
 
-    //TODO: a többi játékos lépéseinek nyomon követhetősége: mit dobott, mit forgatott, hova lépett, mit gyanúsít, stb.
     private fun letPlayerTurn() {
         if (isGameRunning) {
             if (playerInTurn != player.id)
@@ -305,8 +304,8 @@ class MapViewModel(
     }
 
     private fun dijkstra(current: Position): HashMap<Position, Int> {
-        var distances = HashMap<Position, Int>()
-        var unvisited = HashSet<Position>()
+        val distances = HashMap<Position, Int>()
+        val unvisited = HashSet<Position>()
 
         for (field in mapGraph.adjacencyMap.keys) {
             unvisited.add(field)
