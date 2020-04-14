@@ -136,7 +136,7 @@
                         app:layout_constraintStart_toEndOf="@id/ivRoomSVK"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        android:onClick="@{()->dialogViewModel.selectRoom(9)}"/>
+                        android:onClick="@{()->dialogViewModel.selectRoom(8)}"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
