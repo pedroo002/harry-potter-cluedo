@@ -1,14 +1,18 @@
 package neptun.jxy1vz.cluedo.ui.map
 
 import android.content.Context
+import android.graphics.Matrix
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
+import com.otaliastudios.zoom.ZoomEngine
+import com.otaliastudios.zoom.ZoomLayout
 import kotlinx.android.synthetic.main.activity_map.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.model.*
@@ -46,12 +50,12 @@ class MapViewModel(
     private val context: Context,
     playerId: Int,
     private var playerImagePairs: List<Pair<Player, ImageView>>,
-    private var mapLayout: ConstraintLayout,
+    private var mapRoot: ZoomLayout,
     private val fm: FragmentManager
 ) : BaseObservable(),
     DiceRollerDialog.DiceResultInterface, DarkCardDialog.DarkCardDialogListener,
     CardLossDialog.CardLossDialogListener, IncriminationDialog.MapInterface,
-    DialogDismiss {
+    DialogDismiss, ZoomEngine.Listener {
 
     private var player = getPlayerById(playerId)
     private var mapGraph: Graph<Position>
@@ -92,6 +96,8 @@ class MapViewModel(
 
     private fun letPlayerTurn() {
         if (isGameRunning) {
+            moveCameraToPlayer(playerInTurn)
+
             if (playerInTurn != player.id)
                 rollWithDice(playerInTurn)
             else {
@@ -108,6 +114,12 @@ class MapViewModel(
     }
 
     init {
+        mapRoot.engine.addListener(this)
+
+        mapRoot.mapLayout.setOnClickListener {
+            moveCameraToPlayer(playerInTurn)
+        }
+
         val initHp = when (playerList.size) {
             3 -> 60
             4 -> 70
@@ -157,6 +169,13 @@ class MapViewModel(
         letPlayerTurn()
     }
 
+    private fun moveCameraToPlayer(playerId: Int) {
+        val x = getPairById(playerId).second.left.toFloat() - context.resources.displayMetrics.widthPixels / 2
+        val y = getPairById(playerId).second.top.toFloat() - context.resources.displayMetrics.heightPixels / 2
+
+        mapRoot.panTo(-x, -y, true)
+    }
+
     private fun setState(playerId: Int, house: HogwartsHouse) {
         when (house) {
             HogwartsHouse.SLYTHERIN -> {
@@ -201,7 +220,7 @@ class MapViewModel(
         }
 
         for (i in gatewayNumbers.indices) {
-            mapLayout.findViewById<ImageView>(gateways[visibleGatewaySerialNumbers[i]]).setOnClickListener {
+            mapRoot.mapLayout.findViewById<ImageView>(gateways[visibleGatewaySerialNumbers[i]]).setOnClickListener {
                 if (it.visibility == View.VISIBLE)
                     teleport(playerInTurn, stateList[state * 3 + gatewayNumbers[i]].roomId, stateList[state * 3 + gatewayNumbers[i]].passageWay!!)
             }
@@ -209,38 +228,38 @@ class MapViewModel(
 
         for (p in gateways) {
             val visibility = visibilities[state][gateways.indexOf(p)]
-            setViewVisibility(mapLayout.findViewById(p), visibility)
+            setViewVisibility(mapRoot.mapLayout.findViewById(p), visibility)
         }
 
         for (s in stateList) {
             if (s.serialNum == state) {
                 doorList[s.doorId].state = s.doorState
                 when (s.doorId) {
-                    0 -> setViewVisibility(mapLayout.ivDoor0, s.doorState.boolean())
-                    2 -> setViewVisibility(mapLayout.ivDoor2, s.doorState.boolean())
-                    4 -> setViewVisibility(mapLayout.ivDoor4, s.doorState.boolean())
-                    6 -> setViewVisibility(mapLayout.ivDoor6, s.doorState.boolean())
-                    7 -> setViewVisibility(mapLayout.ivDoor7, s.doorState.boolean())
-                    12 -> setViewVisibility(mapLayout.ivDoor12, s.doorState.boolean())
-                    13 -> setViewVisibility(mapLayout.ivDoor13, s.doorState.boolean())
-                    15 -> setViewVisibility(mapLayout.ivDoor15, s.doorState.boolean())
-                    17 -> setViewVisibility(mapLayout.ivDoor17, s.doorState.boolean())
-                    19 -> setViewVisibility(mapLayout.ivDoor19, s.doorState.boolean())
-                    20 -> setViewVisibility(mapLayout.ivDoor20, s.doorState.boolean())
-                    21 -> setViewVisibility(mapLayout.ivDoor21, s.doorState.boolean())
+                    0 -> setViewVisibility(mapRoot.mapLayout.ivDoor0, s.doorState.boolean())
+                    2 -> setViewVisibility(mapRoot.mapLayout.ivDoor2, s.doorState.boolean())
+                    4 -> setViewVisibility(mapRoot.mapLayout.ivDoor4, s.doorState.boolean())
+                    6 -> setViewVisibility(mapRoot.mapLayout.ivDoor6, s.doorState.boolean())
+                    7 -> setViewVisibility(mapRoot.mapLayout.ivDoor7, s.doorState.boolean())
+                    12 -> setViewVisibility(mapRoot.mapLayout.ivDoor12, s.doorState.boolean())
+                    13 -> setViewVisibility(mapRoot.mapLayout.ivDoor13, s.doorState.boolean())
+                    15 -> setViewVisibility(mapRoot.mapLayout.ivDoor15, s.doorState.boolean())
+                    17 -> setViewVisibility(mapRoot.mapLayout.ivDoor17, s.doorState.boolean())
+                    19 -> setViewVisibility(mapRoot.mapLayout.ivDoor19, s.doorState.boolean())
+                    20 -> setViewVisibility(mapRoot.mapLayout.ivDoor20, s.doorState.boolean())
+                    21 -> setViewVisibility(mapRoot.mapLayout.ivDoor21, s.doorState.boolean())
                 }
                 when (house) {
                     HogwartsHouse.SLYTHERIN -> {
-                        setViewVisibility(mapLayout.ivDarkMarkSlytherin, s.darkMark)
+                        setViewVisibility(mapRoot.mapLayout.ivDarkMarkSlytherin, s.darkMark)
                     }
                     HogwartsHouse.RAVENCLAW -> {
-                        setViewVisibility(mapLayout.ivDarkMarkRavenclaw, s.darkMark)
+                        setViewVisibility(mapRoot.mapLayout.ivDarkMarkRavenclaw, s.darkMark)
                     }
                     HogwartsHouse.GRYFFINDOR -> {
-                        setViewVisibility(mapLayout.ivDarkMarkGryffindor, s.darkMark)
+                        setViewVisibility(mapRoot.mapLayout.ivDarkMarkGryffindor, s.darkMark)
                     }
                     HogwartsHouse.HUFFLEPUFF -> {
-                        setViewVisibility(mapLayout.ivDarkMarkHufflepuff, s.darkMark)
+                        setViewVisibility(mapRoot.mapLayout.ivDarkMarkHufflepuff, s.darkMark)
                     }
                 }
                 if (s.darkMark)
@@ -355,7 +374,7 @@ class MapViewModel(
             if (playerId == player.id && playerId == playerInTurn) {
                 if (!userHasToStep) {
                     val roomId = stepInRoom(player.pos)
-                    val snackbar = Snackbar.make(mapLayout, "Lépj!", Snackbar.LENGTH_LONG)
+                    val snackbar = Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_LONG)
                         .setAction("Kockadobás") {
                             rollWithDice(playerId)
                         }
@@ -366,7 +385,7 @@ class MapViewModel(
                     }
                     snackbar.show()
                 } else
-                    Snackbar.make(mapLayout, "Muszáj lépned!", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(mapRoot.mapLayout, "Muszáj lépned!", Snackbar.LENGTH_LONG).show()
             }
         }
     }
@@ -444,7 +463,7 @@ class MapViewModel(
             if (distances != null) {
                 val validKeys: MutableList<Position> = ArrayList()
                 for (pos in distances.keys) {
-                    if (!(pos == getPlayerById(playerId).pos || distances[pos]!! > stepCount || (stepInRoom(getPlayerById(playerId).pos) != -1 && stepInRoom(pos) != -1)))
+                    if (!(isFieldOccupied(pos) || distances[pos]!! > stepCount || (stepInRoom(getPlayerById(playerId).pos) != -1 && stepInRoom(pos) != -1)))
                         validKeys.add(pos)
                 }
                 var stepped = false
@@ -467,7 +486,7 @@ class MapViewModel(
     private fun drawSelection(@DrawableRes selRes: Int, row: Int, col: Int, playerId: Int) {
         val targetPosition = Position(row, col)
 
-        val selection = ImageView(mapLayout.context)
+        val selection = ImageView(mapRoot.mapLayout.context)
         selectionList.add(selection)
         selection.layoutParams = ConstraintLayout.LayoutParams(
             ConstraintLayout.LayoutParams.WRAP_CONTENT,
@@ -481,13 +500,14 @@ class MapViewModel(
             stepPlayer(playerId, targetPosition)
             emptySelectionList()
         }
-        mapLayout.addView(selection)
+        mapRoot.mapLayout.addView(selection)
     }
 
     private fun stepPlayer(playerId: Int, targetPosition: Position) {
         while (stepInRoom(targetPosition) != -1 && isFieldOccupied(targetPosition))
             targetPosition.col++
         getPlayerById(playerId).pos = targetPosition
+        moveCameraToPlayer(playerId)
 
         var starStep = false
         for (star in starList) {
@@ -522,7 +542,7 @@ class MapViewModel(
 
     private fun emptySelectionList() {
         for (sel in selectionList)
-            mapLayout.removeView(sel)
+            mapRoot.mapLayout.removeView(sel)
         selectionList = ArrayList()
     }
 
@@ -579,11 +599,11 @@ class MapViewModel(
 
     override fun onIncriminationSkip() {
         if (userHasToIncriminate) {
-            Snackbar.make(mapLayout, "Muszáj gyanúsítanod!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(mapRoot.mapLayout, "Muszáj gyanúsítanod!", Snackbar.LENGTH_LONG).show()
             incrimination(player.id, stepInRoom(player.pos))
         }
         else {
-            Snackbar.make(mapLayout, "Lépj!", Snackbar.LENGTH_SHORT).setAction("Kockadobás"){
+            Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_SHORT).setAction("Kockadobás"){
                 rollWithDice(player.id)
             }.show()
         }
@@ -677,7 +697,7 @@ class MapViewModel(
 
     override fun onAccusationDismiss(suspect: Suspect?) {
         if (suspect == null) {
-            Snackbar.make(mapLayout, "Add le a gyanúdat!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(mapRoot.mapLayout, "Add le a gyanúdat!", Snackbar.LENGTH_LONG).show()
             AccusationDialog(playerInTurn, this).show(fm, "DIALOG_ACCUSATION")
             return
         }
@@ -820,6 +840,14 @@ class MapViewModel(
             view.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.startToStart = col
         view.layoutParams = layoutParams
+    }
+
+    override fun onIdle(engine: ZoomEngine) {
+
+    }
+
+    override fun onUpdate(engine: ZoomEngine, matrix: Matrix) {
+
     }
 }
 
