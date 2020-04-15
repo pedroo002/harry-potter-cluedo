@@ -2,9 +2,18 @@ package neptun.jxy1vz.cluedo.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "Cards")
+@Entity(
+    tableName = "Cards",
+    foreignKeys = [ForeignKey(
+        entity = PlayerDBmodel::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("ownerId"),
+        onDelete = ForeignKey.CASCADE
+    )]
+)
 data class CardDBmodel(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
@@ -16,6 +25,8 @@ data class CardDBmodel(
     val versoRes: Int,
     @ColumnInfo(name = "type")
     val cardType: CardType,
+    @ColumnInfo(name = "owner")
+    val ownerId: Long? = null,
     @ColumnInfo(name = "loss")
     val lossType: LossType? = null
 )
