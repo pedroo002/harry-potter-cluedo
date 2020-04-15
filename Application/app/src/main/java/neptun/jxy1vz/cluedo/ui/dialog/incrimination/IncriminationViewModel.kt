@@ -1,8 +1,6 @@
 package neptun.jxy1vz.cluedo.ui.dialog.incrimination
 
 import android.content.Context
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ImageView
 import androidx.core.view.children
 import androidx.databinding.BaseObservable

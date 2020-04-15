@@ -1,6 +1,5 @@
 package neptun.jxy1vz.cluedo.ui.dialog.game_mode
 
-import android.R
 import android.content.Context
 import android.view.View
 import android.widget.AdapterView
@@ -17,11 +16,11 @@ class GameModeViewModel(private val context: Context, private val fm: FragmentMa
     private var playerCount: Int = 0
 
     init {
-        bind.spinnerPlayMode.adapter = ArrayAdapter<String>(context, R.layout.simple_spinner_dropdown_item, context.resources.getStringArray(
+        bind.spinnerPlayMode.adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, context.resources.getStringArray(
             neptun.jxy1vz.cluedo.R.array.playmodes))
 
         val playerCounts = listOf("3", "4", "5").toTypedArray()
-        bind.spinnerPlayerCount.adapter = ArrayAdapter<String>(context, R.layout.simple_spinner_dropdown_item, playerCounts)
+        bind.spinnerPlayerCount.adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, playerCounts)
 
         bind.spinnerPlayMode.onItemSelectedListener = this
         bind.spinnerPlayerCount.onItemSelectedListener = this

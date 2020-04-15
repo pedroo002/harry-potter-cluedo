@@ -11,7 +11,6 @@ import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDarkCardBinding
 import neptun.jxy1vz.cluedo.model.DarkCard
-import neptun.jxy1vz.cluedo.model.HelperType
 import neptun.jxy1vz.cluedo.model.Player
 import neptun.jxy1vz.cluedo.model.helper.getHelperObjects
 

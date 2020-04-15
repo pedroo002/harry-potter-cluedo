@@ -3,9 +3,7 @@ package neptun.jxy1vz.cluedo.ui.map
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
-import android.graphics.Matrix
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -16,7 +14,6 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
-import com.otaliastudios.zoom.ZoomEngine
 import com.otaliastudios.zoom.ZoomLayout
 import kotlinx.android.synthetic.main.activity_map.view.*
 import neptun.jxy1vz.cluedo.R
@@ -46,9 +43,8 @@ import kotlin.collections.isNotEmpty
 import kotlin.collections.isNullOrEmpty
 import kotlin.collections.iterator
 import kotlin.collections.lastIndex
+import kotlin.collections.listOf
 import kotlin.collections.set
-import kotlin.math.abs
-import kotlin.math.floor
 import kotlin.math.min
 import kotlin.random.Random
 
