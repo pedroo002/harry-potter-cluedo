@@ -6,10 +6,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.MysteryCard
@@ -28,6 +25,7 @@ class MysteryCardViewModel(private val gameModel: GameModels, private val contex
         bind.btnGo.isEnabled = false
         GlobalScope.launch(Dispatchers.IO) {
             val playerList = gameModel.loadPlayers()
+            delay(5000) //Ez valamiért kell, különben crashel, hogy 0 méretű a lista
             player = playerList[playerId]
             handOutCardsToPlayers()
         }
