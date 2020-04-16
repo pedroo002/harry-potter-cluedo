@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil.setContentView
 import com.otaliastudios.zoom.ZoomLayout
 import kotlinx.android.synthetic.main.activity_map.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMapBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
@@ -25,7 +28,6 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
         GlobalScope.launch(Dispatchers.IO) {
             val gameModel = GameModels(applicationContext)
             val playerList = gameModel.loadPlayers() //still 6 elemű mindig; mysteryCards üres
-            delay(10000)
             gameModel.setSolution()
 
             withContext(Dispatchers.Main) {

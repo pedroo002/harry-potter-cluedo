@@ -2,8 +2,7 @@ package neptun.jxy1vz.cluedo.domain.model.helper
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
 
@@ -44,7 +43,7 @@ class GameModels(context: Context) {
         playerCards.add(db.getCardByName("Luna Lovegood") as PlayerCard)
         playerCards.add(db.getCardByName("Neville Longbottom") as PlayerCard)
 
-        GlobalScope.launch(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             playerList.add(Player(0, playerCards[0], Position(0, 17), R.id.ivBluePlayer, Gender.WOMAN))
             playerList.add(Player(1, playerCards[1], Position(24, 17), R.id.ivPurplePlayer, Gender.MAN))
             playerList.add(Player(2, playerCards[2], Position(0, 7), R.id.ivRedPlayer, Gender.WOMAN))
