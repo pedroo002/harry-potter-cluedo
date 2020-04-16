@@ -6,7 +6,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.MysteryCard
@@ -25,7 +28,6 @@ class MysteryCardViewModel(private val gameModel: GameModels, private val contex
         bind.btnGo.isEnabled = false
         GlobalScope.launch(Dispatchers.IO) {
             val playerList = gameModel.loadPlayers()
-            delay(5000)
             player = playerList[playerId]
             handOutCardsToPlayers()
         }
@@ -46,7 +48,7 @@ class MysteryCardViewModel(private val gameModel: GameModels, private val contex
         val cards = getRandomMysteryCards(playerId)
         gameModel.playerList[player.id].mysteryCards.addAll(cards)
 
-        GlobalScope.launch(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             if (playerId == player.id) {
                 for (card in cards) {
                     val iv = when (card.type) {
@@ -71,7 +73,7 @@ class MysteryCardViewModel(private val gameModel: GameModels, private val contex
 
     private suspend fun setSolution() {
         getMysteryCards(-1)
-        GlobalScope.launch(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             bind.btnGo.isEnabled = true
         }
     }
