@@ -6,11 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil.setContentView
 import com.otaliastudios.zoom.ZoomLayout
 import kotlinx.android.synthetic.main.activity_map.view.*
+import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMapBinding
-import neptun.jxy1vz.cluedo.model.Player
-import neptun.jxy1vz.cluedo.model.helper.playerImageIdList
-import neptun.jxy1vz.cluedo.model.helper.playerList
+import neptun.jxy1vz.cluedo.domain.model.Player
+import neptun.jxy1vz.cluedo.domain.model.helper.DatabaseAccess
+import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 
 class MapActivity : AppCompatActivity(), MapActivityListener {
 
@@ -21,30 +22,49 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
         val mapRoot = findViewById<ZoomLayout>(R.id.mapRoot)
         val playerImageList: MutableList<ImageView> = ArrayList()
 
-        for (id in playerImageIdList) {
-            var delete = true
-            for (player in playerList) {
-                if (player.tile == id)
-                    delete = false
-            }
-            if (delete) {
-                mapRoot.mapLayout.removeView(findViewById(id))
-            }
-            else {
-                playerImageList.add(mapRoot.mapLayout.findViewById(id))
+        GlobalScope.launch(Dispatchers.IO) {
+            val gameModel = GameModels(applicationContext)
+            val playerList = gameModel.loadPlayers() //still 6 elemű mindig; mysteryCards üres
+            delay(10000)
+            gameModel.setSolution()
+
+            withContext(Dispatchers.Main) {
+                for (id in gameModel.playerImageIdList) {
+                    var delete = true
+                    for (player in playerList) {
+                        if (player.tile == id)
+                            delete = false
+                    }
+                    if (delete) {
+                        mapRoot.mapLayout.removeView(findViewById(id))
+                    } else {
+                        playerImageList.add(mapRoot.mapLayout.findViewById(id))
+                    }
+                }
+
+                val playerImagePairs: MutableList<Pair<Player, ImageView>> = ArrayList()
+                for (i in playerList.indices) {
+                    playerImagePairs.add(Pair(playerList[i], playerImageList[i]))
+                }
+
+                activityMapBinding.mapViewModel = MapViewModel(
+                    gameModel,
+                    this@MapActivity,
+                    applicationContext,
+                    intent.getIntExtra("Player ID", 0),
+                    playerImagePairs,
+                    mapRoot,
+                    supportFragmentManager
+                )
+                activityMapBinding.executePendingBindings()
             }
         }
-
-        val playerImagePairs: MutableList<Pair<Player, ImageView>> = ArrayList()
-        for (i in 0 until playerList.size) {
-            playerImagePairs.add(Pair(playerList[i], playerImageList[i]))
-        }
-
-        activityMapBinding.mapViewModel = MapViewModel(this, applicationContext, intent.getIntExtra("Player ID", 0), playerImagePairs, mapRoot, supportFragmentManager)
-        activityMapBinding.executePendingBindings()
     }
 
     override fun exitToMenu() {
+        GlobalScope.launch(Dispatchers.IO) {
+            DatabaseAccess(applicationContext).resetCards()
+        }
         finish()
     }
 }

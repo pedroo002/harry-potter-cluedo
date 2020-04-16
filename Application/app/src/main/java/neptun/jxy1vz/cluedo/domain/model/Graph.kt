@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.model
+package neptun.jxy1vz.cluedo.domain.model
 
 import android.os.Build
 import androidx.annotation.RequiresApi

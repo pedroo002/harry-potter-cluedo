@@ -10,9 +10,9 @@ import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDarkCardBinding
-import neptun.jxy1vz.cluedo.model.DarkCard
-import neptun.jxy1vz.cluedo.model.Player
-import neptun.jxy1vz.cluedo.model.helper.getHelperObjects
+import neptun.jxy1vz.cluedo.domain.model.DarkCard
+import neptun.jxy1vz.cluedo.domain.model.Player
+import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 
 class DarkCardViewModel(private val bind: DialogDarkCardBinding, private val context: Context, private val player: Player, private val darkCard: DarkCard) : BaseObservable(),
     AdapterView.OnItemSelectedListener {

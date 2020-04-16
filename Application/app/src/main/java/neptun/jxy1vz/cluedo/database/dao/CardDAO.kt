@@ -3,7 +3,6 @@ package neptun.jxy1vz.cluedo.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import neptun.jxy1vz.cluedo.database.model.CardDBmodel
-import neptun.jxy1vz.cluedo.database.model.CardType
 
 @Dao
 interface CardDAO : BaseDAO<CardDBmodel> {
@@ -13,9 +12,24 @@ interface CardDAO : BaseDAO<CardDBmodel> {
     @Query("SELECT * FROM Cards WHERE id = (:cardId)")
     suspend fun getCardById(cardId: Long): CardDBmodel?
 
-    @Query("SELECT * FROM Cards WHERE type = (:cardType) AND owner = null")
-    suspend fun getCardByType(cardType: CardType): CardDBmodel?
+    @Query("SELECT id FROM Cards WHERE name = (:name)")
+    suspend fun getCardIdByName(name: String): Long?
+
+    @Query("SELECT * FROM Cards WHERE name = (:name)")
+    suspend fun getCardByName(name: String): CardDBmodel?
+
+    @Query("SELECT * FROM Cards WHERE type = (:cardType) AND owner IS NULL")
+    suspend fun getCardsByType(cardType: String): List<CardDBmodel>?
 
     @Query("SELECT * FROM Cards WHERE owner = (:ownerId) and type = (:cardType)")
-    suspend fun getCardToOwnerByType(ownerId: Long, cardType: CardType): CardDBmodel?
+    suspend fun getCardToOwnerByType(ownerId: Int, cardType: String): CardDBmodel?
+
+    @Query("SELECT * FROM Cards WHERE owner IS NULL AND type LIKE (:prefix)")
+    suspend fun getCardBySuperType(prefix: String): CardDBmodel?
+
+    @Query("SELECT DISTINCT(owner) FROM Cards WHERE owner IS NOT NULL")
+    suspend fun getCurrentPlayerIds(): List<Int>?
+
+    @Query("SELECT * FROM Cards WHERE owner = -1")
+    suspend fun getSolution(): List<CardDBmodel>?
 }

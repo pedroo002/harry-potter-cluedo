@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.model.helper
+package neptun.jxy1vz.cluedo.domain.model.helper
 
 import neptun.jxy1vz.cluedo.R
 
