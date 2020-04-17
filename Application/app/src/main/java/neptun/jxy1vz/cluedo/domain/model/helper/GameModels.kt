@@ -4,60 +4,88 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.database.model.CardDBmodel
 import neptun.jxy1vz.cluedo.domain.model.*
 
-class GameModels(context: Context) {
+class GameModels(private val context: Context) {
 
     var db: DatabaseAccess = DatabaseAccess(context)
     lateinit var gameSolution: List<MysteryCard>
-
-    lateinit var playerList: ArrayList<Player>
-
-    suspend fun setSolution() {
-        gameSolution = db.getSolution()!!
-    }
-
-    suspend fun getCards(): List<CardDBmodel>? {
-        return db.getCards()
-    }
+    lateinit var playerList: List<Player>
 
     suspend fun keepCurrentPlayers(): List<Player> {
-        loadPlayers()
-        val playerIds = db.getCurrentPlayers()
-        playerIds?.let {
-            val playersToDelete = ArrayList<Player>()
-            for (p in playerList)
-                if (!playerIds.contains(p.id))
-                    playersToDelete.add(p)
-            playerList.removeAll(playersToDelete)
+        val allPlayers = loadPlayers()
 
-            for (player in playerList) {
-                player.mysteryCards.addAll(db.getMysteryCardsOfPlayer(player.id))
-            }
+        val mysteryCards = db.getMysteryCardsOfPlayers()
+        val solutionList = ArrayList<MysteryCard>()
+        for (card in mysteryCards!!) {
+            if (card.second != -1)
+                allPlayers[card.second].mysteryCards.add(card.first)
+            else
+                solutionList.add(card.first)
         }
+
+        val playerIds = mysteryCards.map { card -> card.second }.distinct()
+        val playersToDelete = ArrayList<Player>()
+        for (player in allPlayers) {
+            if (!playerIds.contains(player.id))
+                playersToDelete.add(player)
+        }
+        allPlayers.removeAll(playersToDelete)
+
+        playerList = allPlayers
+        gameSolution = solutionList
         return playerList
     }
 
-    suspend fun loadPlayers(): List<Player> {
+    suspend fun loadPlayers(): ArrayList<Player> {
         val playerCards: ArrayList<PlayerCard> = ArrayList()
-        playerCards.add(db.getCardByName("Ginny Weasley") as PlayerCard)
-        playerCards.add(db.getCardByName("Harry Potter") as PlayerCard)
-        playerCards.add(db.getCardByName("Hermione Granger") as PlayerCard)
-        playerCards.add(db.getCardByName("Ron Weasley") as PlayerCard)
-        playerCards.add(db.getCardByName("Luna Lovegood") as PlayerCard)
-        playerCards.add(db.getCardByName("Neville Longbottom") as PlayerCard)
+        for (name in context.resources.getStringArray(R.array.characters))
+            playerCards.add(db.getCardByName(name) as PlayerCard)
 
+        val listItems = ArrayList<Player>()
         withContext(Dispatchers.Main) {
-            playerList = ArrayList()
-            playerList.add(Player(0, playerCards[0], Position(0, 17), R.id.ivBluePlayer, Gender.WOMAN))
-            playerList.add(Player(1, playerCards[1], Position(24, 17), R.id.ivPurplePlayer, Gender.MAN))
-            playerList.add(Player(2, playerCards[2], Position(0, 7), R.id.ivRedPlayer, Gender.WOMAN))
-            playerList.add(Player(3, playerCards[3], Position(24, 7), R.id.ivYellowPlayer, Gender.MAN))
-            playerList.add(Player(4, playerCards[4], Position(17, 24), R.id.ivWhitePlayer, Gender.WOMAN))
-            playerList.add(Player(5, playerCards[5], Position(7, 0), R.id.ivGreenPlayer, Gender.MAN))
+            listItems.add(
+                Player(
+                    0,
+                    playerCards[0],
+                    Position(0, 17),
+                    R.id.ivBluePlayer,
+                    Gender.WOMAN
+                )
+            )
+            listItems.add(
+                Player(
+                    1,
+                    playerCards[1],
+                    Position(24, 17),
+                    R.id.ivPurplePlayer,
+                    Gender.MAN
+                )
+            )
+            listItems.add(Player(2, playerCards[2], Position(0, 7), R.id.ivRedPlayer, Gender.WOMAN))
+            listItems.add(
+                Player(
+                    3,
+                    playerCards[3],
+                    Position(24, 7),
+                    R.id.ivYellowPlayer,
+                    Gender.MAN
+                )
+            )
+            listItems.add(
+                Player(
+                    4,
+                    playerCards[4],
+                    Position(17, 24),
+                    R.id.ivWhitePlayer,
+                    Gender.WOMAN
+                )
+            )
+            listItems.add(Player(5, playerCards[5], Position(7, 0), R.id.ivGreenPlayer, Gender.MAN))
+
+            playerList = listItems
         }
-        return playerList
+        return listItems
     }
 
     val playerImageIdList = listOf(
@@ -67,7 +95,7 @@ class GameModels(context: Context) {
         R.id.ivYellowPlayer,
         R.id.ivWhitePlayer,
         R.id.ivGreenPlayer
-    ).toMutableList()
+    )
 
     val roomList = listOf(
         Room(
@@ -117,7 +145,7 @@ class GameModels(context: Context) {
         Door(22, Position(21, 17), roomList[9])
     )
 
-    val starList = arrayOf(
+    val starList = listOf(
         Position(2, 8),
         Position(8, 10),
         Position(8, 23),
@@ -128,7 +156,7 @@ class GameModels(context: Context) {
         Position(23, 16)
     )
 
-    val cols = arrayOf(
+    val cols = listOf(
         R.id.borderLeft,
         R.id.guidelineCol1,
         R.id.guidelineCol2,
@@ -156,7 +184,7 @@ class GameModels(context: Context) {
         R.id.guidelineCol24,
         R.id.borderRight
     )
-    val rows = arrayOf(
+    val rows = listOf(
         R.id.borderTop,
         R.id.guidelineRow1,
         R.id.guidelineRow2,

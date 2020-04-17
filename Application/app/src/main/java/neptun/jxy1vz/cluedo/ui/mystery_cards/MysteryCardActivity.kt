@@ -3,9 +3,6 @@ package neptun.jxy1vz.cluedo.ui.mystery_cards
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
@@ -20,10 +17,6 @@ class MysteryCardActivity : AppCompatActivity() {
 
         val gameModel = GameModels(applicationContext)
         playerId = intent.getIntExtra("Player ID", 0)
-
-        GlobalScope.launch(Dispatchers.IO) {
-            gameModel.db.resetCards()
-        }
 
         activityMysteryCardBinding = DataBindingUtil.setContentView(this, R.layout.activity_mystery_card)
         activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(gameModel, applicationContext, playerId, activityMysteryCardBinding)

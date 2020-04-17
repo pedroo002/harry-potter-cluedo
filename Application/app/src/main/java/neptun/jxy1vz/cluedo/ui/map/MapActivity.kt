@@ -27,7 +27,6 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
         GlobalScope.launch(Dispatchers.IO) {
             val gameModel = GameModels(applicationContext)
             val playerList = gameModel.keepCurrentPlayers()
-            gameModel.setSolution()
             withContext(Dispatchers.Main) {
                 for (id in gameModel.playerImageIdList) {
                     var delete = true

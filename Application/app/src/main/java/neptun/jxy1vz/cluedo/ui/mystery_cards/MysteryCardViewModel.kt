@@ -12,13 +12,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
-import neptun.jxy1vz.cluedo.domain.model.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.MysteryType
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.cluedo.ui.map.MapActivity
 
-class MysteryCardViewModel(private val gameModel: GameModels, private val context: Context, private val playerId: Int, private val bind: ActivityMysteryCardBinding) : BaseObservable() {
+class MysteryCardViewModel(
+    private val gameModel: GameModels,
+    private val context: Context,
+    private val playerId: Int,
+    private val bind: ActivityMysteryCardBinding
+) : BaseObservable() {
 
     private lateinit var player: Player
 
@@ -33,10 +37,6 @@ class MysteryCardViewModel(private val gameModel: GameModels, private val contex
         }
     }
 
-    private suspend fun getRandomMysteryCards(playerId: Int): List<MysteryCard> = withContext(Dispatchers.IO) {
-        return@withContext gameModel.db.getMysteryCardsForPlayer(playerId)
-    }
-
     fun openHogwarts() {
         val mapIntent = Intent(context, MapActivity::class.java)
         mapIntent.putExtra("Player ID", player.id)
@@ -44,14 +44,14 @@ class MysteryCardViewModel(private val gameModel: GameModels, private val contex
         context.startActivity(mapIntent)
     }
 
-    private suspend fun getMysteryCards(playerId: Int) {
-        val cards = getRandomMysteryCards(playerId)
-        gameModel.playerList[player.id].mysteryCards.addAll(cards)
+    private suspend fun getMysteryCards(playerIds: List<Int>) {
+        val cards = gameModel.db.getMysteryCardsForPlayers(playerIds)
 
         withContext(Dispatchers.Main) {
-            if (playerId == player.id) {
-                for (card in cards) {
-                    val iv = when (card.type) {
+            var i = 0
+            for (card in cards) {
+                if (card.second == playerId) {
+                    val iv = when (card.first.type) {
                         MysteryType.TOOL -> bind.ivMysteryCardTool
                         MysteryType.SUSPECT -> bind.ivMysteryCardSuspect
                         else -> bind.ivMysteryCardVenue
@@ -63,7 +63,10 @@ class MysteryCardViewModel(private val gameModel: GameModels, private val contex
                         setTarget(iv)
                         start()
                         doOnEnd {
-                            iv.setImageResource(card.imageRes)
+                            iv.setImageResource(card.first.imageRes)
+                            i++
+                            if (i == 3)
+                                bind.btnGo.isEnabled = true
                         }
                     }
                 }
@@ -71,24 +74,19 @@ class MysteryCardViewModel(private val gameModel: GameModels, private val contex
         }
     }
 
-    private suspend fun setSolution() {
-        getMysteryCards(-1)
-        withContext(Dispatchers.Main) {
-            bind.btnGo.isEnabled = true
-        }
-    }
-
     private suspend fun handOutCardsToPlayers() {
-        getMysteryCards(player.id)
+        val idList = ArrayList<Int>()
+        idList.add(playerId)
 
         var playerCount = context.getSharedPreferences("Game params", Context.MODE_PRIVATE).getInt("player_count", 0) - 1
 
         for (p in gameModel.playerList) {
             if (p.id != player.id && playerCount > 0) {
-                getMysteryCards(p.id)
+                idList.add(p.id)
                 playerCount--
             }
         }
-        setSolution()
+        idList.add(-1)
+        getMysteryCards(idList)
     }
 }

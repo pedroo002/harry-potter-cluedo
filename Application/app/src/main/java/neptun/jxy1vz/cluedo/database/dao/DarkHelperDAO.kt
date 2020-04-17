@@ -6,9 +6,6 @@ import neptun.jxy1vz.cluedo.database.model.DarkHelperPairDBmodel
 
 @Dao
 interface DarkHelperDAO : BaseDAO<DarkHelperPairDBmodel> {
-    @Query("SELECT * FROM DarkHelperPairs")
-    suspend fun getPairs(): List<DarkHelperPairDBmodel>?
-
     @Query("SELECT * FROM DarkHelperPairs WHERE id = (:pairId)")
     suspend fun getPairById(pairId: Long): DarkHelperPairDBmodel?
 

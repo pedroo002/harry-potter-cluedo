@@ -11,26 +11,17 @@ import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.util.Interactor
 import neptun.jxy1vz.cluedo.domain.util.toDatabaseModel
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
-import kotlin.random.Random
 
 class DatabaseAccess(context: Context) {
 
     private val interactor = Interactor(CluedoDatabase.getInstance(context))
 
-    suspend fun resetCards() {
+    private suspend fun resetCards() {
         val allCards = interactor.getCards()
         for (card in allCards!!) {
             val clearCard = CardDBmodel(card.id, card.name, card.imageRes, card.versoRes, card.cardType, null, card.lossType, card.hpLoss)
             interactor.updateCards(clearCard)
         }
-    }
-
-    suspend fun getSolution(): List<MysteryCard>? {
-        return interactor.getSolution()?.map { cardDBmodel -> cardDBmodel.toDomainModel() as MysteryCard }
-    }
-
-    suspend fun getCards(): List<CardDBmodel>? {
-        return interactor.getCards()
     }
 
     suspend fun getCardBySuperType(prefix: String): Card? {
@@ -42,56 +33,38 @@ class DatabaseAccess(context: Context) {
         }
     }
 
-    suspend fun getMysteryCardsOfPlayer(owner: Int): List<MysteryCard> {
-        val mcList = ArrayList<MysteryCard>()
-        val card1 = interactor.getCardToOwnerByType(owner, MysteryType.TOOL.toDatabaseModel().string())?.toDomainModel() as? MysteryCard
-        val card2 = interactor.getCardToOwnerByType(owner, MysteryType.SUSPECT.toDatabaseModel().string())?.toDomainModel() as? MysteryCard
-        val card3 = interactor.getCardToOwnerByType(owner, MysteryType.VENUE.toDatabaseModel().string())?.toDomainModel() as? MysteryCard
-        card1?.let {
-            mcList.add(card1)
-        }
-        card2?.let {
-            mcList.add(card2)
-        }
-        card3?.let {
-            mcList.add(card3)
-        }
-        return mcList
-    }
-
-    suspend fun getCurrentPlayers(): List<Int>? {
-        return interactor.getCurrentPlayerIds()
-    }
-
     suspend fun getCardByName(name: String): Card? {
         return interactor.getCardByName(name)?.toDomainModel()
     }
 
-    suspend fun getMysteryCardsForPlayer(playerId: Int): List<MysteryCard> {
-        val mcList = ArrayList<MysteryCard>()
-        val card1 = getCardForPlayer(playerId, MysteryType.TOOL) as? MysteryCard
-        val card2 = getCardForPlayer(playerId, MysteryType.SUSPECT) as? MysteryCard
-        val card3 = getCardForPlayer(playerId, MysteryType.VENUE) as? MysteryCard
-        card1?.let {
-            mcList.add(card1)
-        }
-        card2?.let {
-            mcList.add(card2)
-        }
-        card3?.let {
-            mcList.add(card3)
+    suspend fun getMysteryCardsForPlayers(playerIds: List<Int>): List<Pair<MysteryCard, Int>> {
+        resetCards()
+
+        val mcList = ArrayList<Pair<MysteryCard, Int>>()
+        val tools = interactor.getCardsByType(MysteryType.TOOL.toDatabaseModel().string())
+        val suspects = interactor.getCardsByType(MysteryType.SUSPECT.toDatabaseModel().string())
+        val venues = interactor.getCardsByType(MysteryType.VENUE.toDatabaseModel().string())
+        for (id in playerIds) {
+            val card1 = tools?.get(id + 1)
+            val card2 = suspects?.get(id + 1)
+            val card3 = venues?.get(id + 1)
+            interactor.updateCards(CardDBmodel(card1!!.id, card1.name, card1.imageRes, card1.versoRes, card1.cardType, id, card1.lossType, card1.hpLoss))
+            interactor.updateCards(CardDBmodel(card2!!.id, card2.name, card2.imageRes, card2.versoRes, card2.cardType, id, card2.lossType, card2.hpLoss))
+            interactor.updateCards(CardDBmodel(card3!!.id, card3.name, card3.imageRes, card3.versoRes, card3.cardType, id, card3.lossType, card3.hpLoss))
+            mcList.add(Pair(card1.toDomainModel() as MysteryCard, id))
+            mcList.add(Pair(card2.toDomainModel() as MysteryCard, id))
+            mcList.add(Pair(card3.toDomainModel() as MysteryCard, id))
         }
         return mcList
     }
 
-    private suspend fun getCardForPlayer(playerId: Int, type: CardType): Card? {
-        val cardList = interactor.getCardsByType(type.toDatabaseModel().string())
-        if (!cardList.isNullOrEmpty()) {
-            val card = cardList[Random.nextInt(0, cardList.size)]
-            interactor.updateCards(CardDBmodel(card.id, card.name, card.imageRes, card.versoRes, card.cardType, playerId, card.lossType, card.hpLoss))
-            return card.toDomainModel()
+    suspend fun getMysteryCardsOfPlayers(): List<Pair<MysteryCard, Int>>? {
+        val cards = interactor.getUsedMysteryCards()
+        val pairList = ArrayList<Pair<MysteryCard, Int>>()
+        for (card in cards!!) {
+            pairList.add(Pair(card.toDomainModel() as MysteryCard, card.ownerId!!))
         }
-        return null
+        return pairList
     }
 
     suspend fun getHelperCardsAgainstDarkCard(card: DarkCard): List<HelperCard>? {

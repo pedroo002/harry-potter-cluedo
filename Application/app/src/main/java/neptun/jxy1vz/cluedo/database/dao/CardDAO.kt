@@ -27,9 +27,6 @@ interface CardDAO : BaseDAO<CardDBmodel> {
     @Query("SELECT * FROM Cards WHERE owner IS NULL AND type LIKE (:prefix)")
     suspend fun getCardBySuperType(prefix: String): CardDBmodel?
 
-    @Query("SELECT DISTINCT(owner) FROM Cards WHERE owner IS NOT NULL")
-    suspend fun getCurrentPlayerIds(): List<Int>?
-
-    @Query("SELECT * FROM Cards WHERE owner = -1")
-    suspend fun getSolution(): List<CardDBmodel>?
+    @Query("SELECT * FROM Cards WHERE owner IS NOT NULL AND type LIKE 'MYSTERY_%'")
+    suspend fun getUsedMysteryCards(): List<CardDBmodel>?
 }
