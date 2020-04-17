@@ -7,10 +7,10 @@ import androidx.databinding.BaseObservable
 import com.google.android.material.snackbar.Snackbar
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogIncriminationBinding
-import neptun.jxy1vz.cluedo.model.helper.suspectTokens
-import neptun.jxy1vz.cluedo.model.helper.suspectTokensBW
-import neptun.jxy1vz.cluedo.model.helper.toolTokens
-import neptun.jxy1vz.cluedo.model.helper.toolTokensBW
+import neptun.jxy1vz.cluedo.domain.model.helper.suspectTokens
+import neptun.jxy1vz.cluedo.domain.model.helper.suspectTokensBW
+import neptun.jxy1vz.cluedo.domain.model.helper.toolTokens
+import neptun.jxy1vz.cluedo.domain.model.helper.toolTokensBW
 
 class IncriminationViewModel(
     private val bind: DialogIncriminationBinding,

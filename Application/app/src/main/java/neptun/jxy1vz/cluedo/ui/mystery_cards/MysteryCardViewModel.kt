@@ -4,40 +4,37 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
 import android.content.Intent
-import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
-import neptun.jxy1vz.cluedo.model.MysteryCard
-import neptun.jxy1vz.cluedo.model.MysteryType
-import neptun.jxy1vz.cluedo.model.Player
-import neptun.jxy1vz.cluedo.model.helper.gameSolution
-import neptun.jxy1vz.cluedo.model.helper.mysteryCards
-import neptun.jxy1vz.cluedo.model.helper.playerList
+import neptun.jxy1vz.cluedo.domain.model.MysteryType
+import neptun.jxy1vz.cluedo.domain.model.Player
+import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.cluedo.ui.map.MapActivity
-import kotlin.random.Random
 
-class MysteryCardViewModel(private val context: Context, private val player: Player, bind: ActivityMysteryCardBinding) : BaseObservable() {
+class MysteryCardViewModel(
+    private val gameModel: GameModels,
+    private val context: Context,
+    private val playerId: Int,
+    private val bind: ActivityMysteryCardBinding
+) : BaseObservable() {
 
-    private lateinit var solution: MutableList<MysteryCard>
+    private lateinit var player: Player
 
     init {
-        getMysteryCard(MysteryType.TOOL, bind.ivMysteryCardTool)
-        getMysteryCard(MysteryType.SUSPECT, bind.ivMysteryCardSuspect)
-        getMysteryCard(MysteryType.VENUE, bind.ivMysteryCardVenue)
-
-        setSolution()
-    }
-
-    private fun getRandomMysteryCard(type: MysteryType): MysteryCard {
-        var card: MysteryCard
-        do {
-            card = mysteryCards[Random.nextInt(0, mysteryCards.size)]
-        } while (card.type != type)
-        mysteryCards.remove(card)
-
-        return card
+        bind.btnGo.isEnabled = false
+        GlobalScope.launch(Dispatchers.IO) {
+            val playerList = gameModel.loadPlayers()
+            withContext(Dispatchers.Main) {
+                player = playerList[playerId]
+                handOutCardsToPlayers()
+            }
+        }
     }
 
     fun openHogwarts() {
@@ -47,47 +44,49 @@ class MysteryCardViewModel(private val context: Context, private val player: Pla
         context.startActivity(mapIntent)
     }
 
-    fun getMysteryCard(type: MysteryType, iv: ImageView) {
-        val card = getRandomMysteryCard(type)
-        playerList[player.id].mysteryCards.add(card)
-        (AnimatorInflater.loadAnimator(context, R.animator.card_flip) as AnimatorSet).apply {
-            setTarget(iv)
-            start()
-            doOnEnd {
-                iv.setImageResource(card.imageRes)
+    private suspend fun getMysteryCards(playerIds: List<Int>) {
+        val cards = gameModel.db.getMysteryCardsForPlayers(playerIds)
+
+        withContext(Dispatchers.Main) {
+            var i = 0
+            for (card in cards) {
+                if (card.second == playerId) {
+                    val iv = when (card.first.type) {
+                        MysteryType.TOOL -> bind.ivMysteryCardTool
+                        MysteryType.SUSPECT -> bind.ivMysteryCardSuspect
+                        else -> bind.ivMysteryCardVenue
+                    }
+                    (AnimatorInflater.loadAnimator(
+                        context,
+                        R.animator.card_flip
+                    ) as AnimatorSet).apply {
+                        setTarget(iv)
+                        start()
+                        doOnEnd {
+                            iv.setImageResource(card.first.imageRes)
+                            i++
+                            if (i == 3)
+                                bind.btnGo.isEnabled = true
+                        }
+                    }
+                }
             }
         }
     }
 
-    fun setSolution() {
-        solution = ArrayList()
-        solution.add(getRandomMysteryCard(MysteryType.TOOL))
-        solution.add(getRandomMysteryCard(MysteryType.SUSPECT))
-        solution.add(getRandomMysteryCard(MysteryType.VENUE))
+    private suspend fun handOutCardsToPlayers() {
+        val idList = ArrayList<Int>()
+        idList.add(playerId)
 
-        gameSolution = solution
-
-        handOutCardsToOtherPlayers()
-    }
-
-    private fun handOutCardsToOtherPlayers() {
         var playerCount = context.getSharedPreferences("Game params", Context.MODE_PRIVATE).getInt("player_count", 0) - 1
 
-        val playersToDelete: MutableList<Player> = ArrayList()
-
-        for (p in playerList) {
+        for (p in gameModel.playerList) {
             if (p.id != player.id && playerCount > 0) {
-                p.mysteryCards.add(getRandomMysteryCard(MysteryType.TOOL))
-                p.mysteryCards.add(getRandomMysteryCard(MysteryType.SUSPECT))
-                p.mysteryCards.add(getRandomMysteryCard(MysteryType.VENUE))
+                idList.add(p.id)
                 playerCount--
             }
-            else if (p.id != player.id && playerCount == 0)
-                playersToDelete.add(p)
         }
-
-        for (player in playersToDelete) {
-            playerList.remove(player)
-        }
+        idList.add(-1)
+        getMysteryCards(idList)
     }
 }

@@ -10,8 +10,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogCardLossBinding
-import neptun.jxy1vz.cluedo.model.HelperCard
-import neptun.jxy1vz.cluedo.model.LossType
+import neptun.jxy1vz.cluedo.domain.model.HelperCard
+import neptun.jxy1vz.cluedo.domain.model.LossType
 import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
 import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
 

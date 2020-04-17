@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
-import neptun.jxy1vz.cluedo.model.helper.playerList
+import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 
 class MysteryCardActivity : AppCompatActivity() {
 
@@ -15,10 +15,11 @@ class MysteryCardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val gameModel = GameModels(applicationContext)
         playerId = intent.getIntExtra("Player ID", 0)
 
         activityMysteryCardBinding = DataBindingUtil.setContentView(this, R.layout.activity_mystery_card)
-        activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(applicationContext, playerList[playerId], activityMysteryCardBinding)
+        activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(gameModel, applicationContext, playerId, activityMysteryCardBinding)
         activityMysteryCardBinding.executePendingBindings()
     }
 }

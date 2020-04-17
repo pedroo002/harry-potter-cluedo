@@ -11,8 +11,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogShowCardBinding
-import neptun.jxy1vz.cluedo.model.MysteryCard
-import neptun.jxy1vz.cluedo.model.Suspect
+import neptun.jxy1vz.cluedo.domain.model.MysteryCard
+import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
 import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
 import neptun.jxy1vz.cluedo.ui.map.DialogDismiss

@@ -9,10 +9,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogIncriminationBinding
-import neptun.jxy1vz.cluedo.model.Suspect
-import neptun.jxy1vz.cluedo.model.helper.roomList
+import neptun.jxy1vz.cluedo.domain.model.Suspect
+import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 
 class IncriminationDialog(
+    private val gameModels: GameModels,
     private val playerId: Int,
     private val roomId: Int,
     private val listener: MapInterface
@@ -45,13 +46,13 @@ class IncriminationDialog(
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
             .setView(dialogIncriminationBinding.root)
-            .setTitle("${context!!.resources.getString(R.string.incrimination)} itt: ${roomList[roomId].name}")
+            .setTitle("${context!!.resources.getString(R.string.incrimination)} itt: ${gameModels.roomList[roomId].name}")
             .create()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         if (tool.isNotEmpty() && suspect.isNotEmpty())
-            listener.getIncrimination(Suspect(playerId, roomList[roomId].name, tool, suspect))
+            listener.getIncrimination(Suspect(playerId, gameModels.roomList[roomId].name, tool, suspect))
         else
             listener.onIncriminationSkip()
         super.onDismiss(dialog)

@@ -9,8 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDarkCardBinding
-import neptun.jxy1vz.cluedo.model.DarkCard
-import neptun.jxy1vz.cluedo.model.Player
+import neptun.jxy1vz.cluedo.domain.model.DarkCard
+import neptun.jxy1vz.cluedo.domain.model.Player
 
 class DarkCardDialog(
     private val player: Player,

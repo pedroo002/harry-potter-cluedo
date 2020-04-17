@@ -1,8 +1,8 @@
-package neptun.jxy1vz.cluedo.model.helper
+package neptun.jxy1vz.cluedo.domain.model.helper
 
-import neptun.jxy1vz.cluedo.model.DarkCard
-import neptun.jxy1vz.cluedo.model.HelperType
-import neptun.jxy1vz.cluedo.model.Player
+import neptun.jxy1vz.cluedo.domain.model.DarkCard
+import neptun.jxy1vz.cluedo.domain.model.HelperType
+import neptun.jxy1vz.cluedo.domain.model.Player
 
 fun getHelperObjects(player: Player, darkCard: DarkCard, tools: ArrayList<String>, spells: ArrayList<String>, allys: ArrayList<String>) {
     tools.add("")
@@ -11,7 +11,7 @@ fun getHelperObjects(player: Player, darkCard: DarkCard, tools: ArrayList<String
 
     if (!player.helperCards.isNullOrEmpty()) {
         for (helperCard in player.helperCards!!) {
-            if (!darkCard.helperIds.isNullOrEmpty() && darkCard.helperIds.contains(helperCard.id))
+            if (!darkCard.helperIds.isNullOrEmpty() && darkCard.helperIds!!.contains(helperCard.id))
                 when (helperCard.type) {
                     HelperType.TOOL -> addHelperToArray(helperCard.name, tools)
                     HelperType.SPELL -> addHelperToArray(helperCard.name, spells)
