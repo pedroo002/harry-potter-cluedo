@@ -916,7 +916,7 @@ class MapViewModel(
                         getPlayerById(playerId).helperCards!!.add(randomCard as HelperCard)
 
                         if (playerId == player.id)
-                            HelperCardDialog(randomCard!!.imageRes, this@MapViewModel).show(
+                            HelperCardDialog(randomCard.imageRes, this@MapViewModel).show(
                                 fm,
                                 "DIALOG_HELPER"
                             )

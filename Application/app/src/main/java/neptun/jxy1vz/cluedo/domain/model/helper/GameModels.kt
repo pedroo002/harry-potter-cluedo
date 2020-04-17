@@ -4,6 +4,7 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.database.model.CardDBmodel
 import neptun.jxy1vz.cluedo.domain.model.*
 
 class GameModels(context: Context) {
@@ -11,13 +12,18 @@ class GameModels(context: Context) {
     var db: DatabaseAccess = DatabaseAccess(context)
     lateinit var gameSolution: List<MysteryCard>
 
-    var playerList = ArrayList<Player>()
+    lateinit var playerList: ArrayList<Player>
 
     suspend fun setSolution() {
         gameSolution = db.getSolution()!!
     }
 
-    private suspend fun keepCurrentPlayers(): List<Player> {
+    suspend fun getCards(): List<CardDBmodel>? {
+        return db.getCards()
+    }
+
+    suspend fun keepCurrentPlayers(): List<Player> {
+        loadPlayers()
         val playerIds = db.getCurrentPlayers()
         playerIds?.let {
             val playersToDelete = ArrayList<Player>()
@@ -33,9 +39,8 @@ class GameModels(context: Context) {
         return playerList
     }
 
-    private val playerCards: MutableList<PlayerCard> = ArrayList()
-
     suspend fun loadPlayers(): List<Player> {
+        val playerCards: ArrayList<PlayerCard> = ArrayList()
         playerCards.add(db.getCardByName("Ginny Weasley") as PlayerCard)
         playerCards.add(db.getCardByName("Harry Potter") as PlayerCard)
         playerCards.add(db.getCardByName("Hermione Granger") as PlayerCard)
@@ -44,6 +49,7 @@ class GameModels(context: Context) {
         playerCards.add(db.getCardByName("Neville Longbottom") as PlayerCard)
 
         withContext(Dispatchers.Main) {
+            playerList = ArrayList()
             playerList.add(Player(0, playerCards[0], Position(0, 17), R.id.ivBluePlayer, Gender.WOMAN))
             playerList.add(Player(1, playerCards[1], Position(24, 17), R.id.ivPurplePlayer, Gender.MAN))
             playerList.add(Player(2, playerCards[2], Position(0, 7), R.id.ivRedPlayer, Gender.WOMAN))
@@ -51,7 +57,7 @@ class GameModels(context: Context) {
             playerList.add(Player(4, playerCards[4], Position(17, 24), R.id.ivWhitePlayer, Gender.WOMAN))
             playerList.add(Player(5, playerCards[5], Position(7, 0), R.id.ivGreenPlayer, Gender.MAN))
         }
-        return keepCurrentPlayers()
+        return playerList
     }
 
     val playerImageIdList = listOf(

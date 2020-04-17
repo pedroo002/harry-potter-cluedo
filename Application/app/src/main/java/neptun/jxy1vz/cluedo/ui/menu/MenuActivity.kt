@@ -38,11 +38,4 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
     override fun exitGame() {
         finish()
     }
-
-    override fun onStop() {
-        GlobalScope.launch(Dispatchers.IO) {
-            DatabaseAccess(applicationContext).resetCards()
-        }
-        super.onStop()
-    }
 }

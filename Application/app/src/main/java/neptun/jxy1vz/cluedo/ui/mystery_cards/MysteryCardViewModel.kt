@@ -6,33 +6,35 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.MysteryType
 import neptun.jxy1vz.cluedo.domain.model.Player
-import neptun.jxy1vz.cluedo.domain.model.helper.DatabaseAccess
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.cluedo.ui.map.MapActivity
 
 class MysteryCardViewModel(private val gameModel: GameModels, private val context: Context, private val playerId: Int, private val bind: ActivityMysteryCardBinding) : BaseObservable() {
 
-    private val db = DatabaseAccess(context)
     private lateinit var player: Player
 
     init {
         bind.btnGo.isEnabled = false
         GlobalScope.launch(Dispatchers.IO) {
             val playerList = gameModel.loadPlayers()
-            delay(5000) //Ez valamiért kell, különben crashel, hogy 0 méretű a lista
-            player = playerList[playerId]
-            handOutCardsToPlayers()
+            withContext(Dispatchers.Main) {
+                player = playerList[playerId]
+                handOutCardsToPlayers()
+            }
         }
     }
 
     private suspend fun getRandomMysteryCards(playerId: Int): List<MysteryCard> = withContext(Dispatchers.IO) {
-        return@withContext db.getMysteryCardsForPlayer(playerId)
+        return@withContext gameModel.db.getMysteryCardsForPlayer(playerId)
     }
 
     fun openHogwarts() {

@@ -13,7 +13,6 @@ import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMapBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
-import neptun.jxy1vz.cluedo.domain.model.helper.DatabaseAccess
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 
 class MapActivity : AppCompatActivity(), MapActivityListener {
@@ -27,9 +26,8 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
 
         GlobalScope.launch(Dispatchers.IO) {
             val gameModel = GameModels(applicationContext)
-            val playerList = gameModel.loadPlayers() //still 6 elemű mindig; mysteryCards üres
+            val playerList = gameModel.keepCurrentPlayers()
             gameModel.setSolution()
-
             withContext(Dispatchers.Main) {
                 for (id in gameModel.playerImageIdList) {
                     var delete = true
@@ -64,9 +62,6 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
     }
 
     override fun exitToMenu() {
-        GlobalScope.launch(Dispatchers.IO) {
-            DatabaseAccess(applicationContext).resetCards()
-        }
         finish()
     }
 }

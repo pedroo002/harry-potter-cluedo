@@ -1,8 +1,6 @@
 package neptun.jxy1vz.cluedo.domain.model.helper
 
 import android.content.Context
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.database.model.CardDBmodel
@@ -31,6 +29,10 @@ class DatabaseAccess(context: Context) {
         return interactor.getSolution()?.map { cardDBmodel -> cardDBmodel.toDomainModel() as MysteryCard }
     }
 
+    suspend fun getCards(): List<CardDBmodel>? {
+        return interactor.getCards()
+    }
+
     suspend fun getCardBySuperType(prefix: String): Card? {
         return when (prefix) {
             "DARK_%" -> interactor.getCardBySuperType(prefix)?.toDomainModel() as DarkCard
@@ -42,9 +44,18 @@ class DatabaseAccess(context: Context) {
 
     suspend fun getMysteryCardsOfPlayer(owner: Int): List<MysteryCard> {
         val mcList = ArrayList<MysteryCard>()
-        mcList.add(interactor.getCardToOwnerByType(owner, MysteryType.TOOL.toDatabaseModel().string())?.toDomainModel() as MysteryCard)
-        mcList.add(interactor.getCardToOwnerByType(owner, MysteryType.SUSPECT.toDatabaseModel().string())?.toDomainModel() as MysteryCard)
-        mcList.add(interactor.getCardToOwnerByType(owner, MysteryType.VENUE.toDatabaseModel().string())?.toDomainModel() as MysteryCard)
+        val card1 = interactor.getCardToOwnerByType(owner, MysteryType.TOOL.toDatabaseModel().string())?.toDomainModel() as? MysteryCard
+        val card2 = interactor.getCardToOwnerByType(owner, MysteryType.SUSPECT.toDatabaseModel().string())?.toDomainModel() as? MysteryCard
+        val card3 = interactor.getCardToOwnerByType(owner, MysteryType.VENUE.toDatabaseModel().string())?.toDomainModel() as? MysteryCard
+        card1?.let {
+            mcList.add(card1)
+        }
+        card2?.let {
+            mcList.add(card2)
+        }
+        card3?.let {
+            mcList.add(card3)
+        }
         return mcList
     }
 
@@ -58,21 +69,26 @@ class DatabaseAccess(context: Context) {
 
     suspend fun getMysteryCardsForPlayer(playerId: Int): List<MysteryCard> {
         val mcList = ArrayList<MysteryCard>()
-        mcList.add(getCardForPlayer(playerId, MysteryType.TOOL) as MysteryCard)
-        mcList.add(getCardForPlayer(playerId, MysteryType.SUSPECT) as MysteryCard)
-        mcList.add(getCardForPlayer(playerId, MysteryType.VENUE) as MysteryCard)
+        val card1 = getCardForPlayer(playerId, MysteryType.TOOL) as? MysteryCard
+        val card2 = getCardForPlayer(playerId, MysteryType.SUSPECT) as? MysteryCard
+        val card3 = getCardForPlayer(playerId, MysteryType.VENUE) as? MysteryCard
+        card1?.let {
+            mcList.add(card1)
+        }
+        card2?.let {
+            mcList.add(card2)
+        }
+        card3?.let {
+            mcList.add(card3)
+        }
         return mcList
     }
 
     private suspend fun getCardForPlayer(playerId: Int, type: CardType): Card? {
         val cardList = interactor.getCardsByType(type.toDatabaseModel().string())
-        cardList?.let {
-            var card = cardList[Random.nextInt(0, cardList.size)]
-            val id = card.id
-            GlobalScope.launch {
-                interactor.updateCards(CardDBmodel(card.id, card.name, card.imageRes, card.versoRes, card.cardType, playerId, card.lossType, card.hpLoss))
-            }
-            card = interactor.getCardById(id)!!
+        if (!cardList.isNullOrEmpty()) {
+            val card = cardList[Random.nextInt(0, cardList.size)]
+            interactor.updateCards(CardDBmodel(card.id, card.name, card.imageRes, card.versoRes, card.cardType, playerId, card.lossType, card.hpLoss))
             return card.toDomainModel()
         }
         return null
