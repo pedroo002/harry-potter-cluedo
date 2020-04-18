@@ -24,12 +24,18 @@ class DatabaseAccess(context: Context) {
         }
     }
 
-    suspend fun getCardBySuperType(prefix: String): Card? {
+    suspend fun getCardBySuperType(playerId: Int, prefix: String): Card? {
+        val card = interactor.getCardBySuperType(prefix)
+        if (card != null)
+            interactor.updateCards(CardDBmodel(card.id, card.name, card.imageRes, card.versoRes, card.cardType, playerId, card.lossType, card.hpLoss))
+        else
+            return null
+
         return when (prefix) {
-            "DARK_%" -> interactor.getCardBySuperType(prefix)?.toDomainModel() as DarkCard
-            "HELPER_%" -> interactor.getCardBySuperType(prefix)?.toDomainModel() as HelperCard
-            "MYSTERY_%" -> interactor.getCardBySuperType(prefix)?.toDomainModel() as MysteryCard
-            else -> interactor.getCardBySuperType(prefix)?.toDomainModel() as PlayerCard
+            "DARK_%" -> card.toDomainModel() as DarkCard
+            "HELPER_%" -> card.toDomainModel() as HelperCard
+            "MYSTERY_%" -> card.toDomainModel() as MysteryCard
+            else -> card.toDomainModel() as PlayerCard
         }
     }
 

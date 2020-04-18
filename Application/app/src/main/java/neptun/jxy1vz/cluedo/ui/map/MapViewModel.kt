@@ -84,6 +84,11 @@ class MapViewModel(
     private var userHasToIncriminate = false
     private var userHasToStep = false
 
+    private var pause = false
+    private var savedPlayerId = -1
+    private var savedDiceValue = 0
+    private var savedHouse: HogwartsHouse? = null
+
     enum class HogwartsHouse {
         SLYTHERIN,
         RAVENCLAW,
@@ -94,6 +99,23 @@ class MapViewModel(
     companion object {
         const val ROWS = 24
         const val COLS = 24
+    }
+
+    private fun pause(playerId: Int, diceSum: Int, house: HogwartsHouse?) {
+        pause = true
+        savedPlayerId = playerId
+        savedDiceValue = diceSum
+        savedHouse = house
+    }
+
+    private fun continueGame() {
+        if (pause) {
+            pause = false
+            onDiceRoll(savedPlayerId, savedDiceValue, savedHouse)
+            savedPlayerId = -1
+            savedDiceValue = 0
+            savedHouse = null
+        }
     }
 
     private fun moveToNextPlayer() {
@@ -225,6 +247,10 @@ class MapViewModel(
         }
 
         mapRoot.panTo(-x, -y, true)
+    }
+
+    private fun moveCameraToTopLeftCorner() {
+        mapRoot.panTo(0f, 0f, true)
     }
 
     private fun setState(playerId: Int, house: HogwartsHouse) {
@@ -369,12 +395,12 @@ class MapViewModel(
                     setViewVisibility(ivDarkMark, s.darkMark)
                 }
                 else
-                    animateMapChanges(playerId, s, doorAnimation, ivDoor, darkMarkAnimation, ivDarkMark, gatewayAnimations)
+                    animateMapChanges(playerId, s, stateList.indexOf(s), doorAnimation, ivDoor, darkMarkAnimation, ivDarkMark, gatewayAnimations)
             }
         }
     }
 
-    private fun animateMapChanges(playerId: Int, s: State, doorAnimation: Boolean, ivDoor: ImageView, darkMarkAnimation: Boolean, ivDarkMark: ImageView, gatewayAnimations: List<Pair<ImageView, Boolean>>) {
+    private fun animateMapChanges(playerId: Int, s: State, idx: Int, doorAnimation: Boolean, ivDoor: ImageView, darkMarkAnimation: Boolean, ivDarkMark: ImageView, gatewayAnimations: List<Pair<ImageView, Boolean>>) {
         if (s.doorState == DoorState.CLOSED)
             setViewVisibility(ivDoor, s.doorState.boolean())
         if (s.darkMark)
@@ -391,12 +417,9 @@ class MapViewModel(
                 doOnEnd {
                     if (s.doorState == DoorState.OPENED)
                         setViewVisibility(ivDoor, s.doorState.boolean())
-                    if (!darkMarkAnimation) {
+                    if (!darkMarkAnimation && idx % 3 == 2) {
                         moveCameraToPlayer(playerInTurn)
-                        getPlayerById(playerId).diceSum?.let {
-                            calculateMovingOptions(playerId, getPlayerById(playerId).diceSum!!)
-                            getPlayerById(playerId).diceSum = null
-                        }
+                        continueGame()
                     }
                 }
             }
@@ -410,17 +433,16 @@ class MapViewModel(
                 setTarget(ivDarkMark)
                 start()
                 doOnEnd {
-                    if (gatewayAnimations.isEmpty()) {
-                        moveCameraToPlayer(playerInTurn)
-                        getPlayerById(playerId).diceSum?.let {
-                            calculateMovingOptions(playerId, getPlayerById(playerId).diceSum!!)
-                            getPlayerById(playerId).diceSum = null
-                        }
-                    }
                     if (s.darkMark)
                         getCard(playerId, CardType.DARK)
                     else
                         setViewVisibility(ivDarkMark, s.darkMark)
+
+                    if (gatewayAnimations.isEmpty()) {
+                        moveCameraToPlayer(playerInTurn)
+                        if (!s.darkMark && idx % 3 == 2)
+                            continueGame()
+                    }
                 }
             }
         }
@@ -436,10 +458,8 @@ class MapViewModel(
                     doOnEnd {
                         if (gatewayAnimations.indexOf(pair) == gatewayAnimations.lastIndex) {
                             moveCameraToPlayer(playerInTurn)
-                            getPlayerById(playerId).diceSum?.let {
-                                calculateMovingOptions(playerId, getPlayerById(playerId).diceSum!!)
-                                getPlayerById(playerId).diceSum = null
-                            }
+                            if (!s.darkMark && idx % 3 == 2)
+                                continueGame()
                         }
                         if (!pair.second)
                             setViewVisibility(pair.first, pair.second)
@@ -588,11 +608,10 @@ class MapViewModel(
 
     override fun onDiceRoll(playerId: Int, sum: Int, house: HogwartsHouse?) {
         house?.let {
-            setState(playerId, it)
+            if (playerId == player.id)
+                setState(playerId, it)
         }
-        if (house != null)
-            getPlayerById(playerId).diceSum = sum
-        else
+        if (!pause)
             calculateMovingOptions(playerId, sum)
         if (playerId == player.id)
             userHasToStep = true
@@ -892,6 +911,10 @@ class MapViewModel(
         activityListener.exitToMenu()
     }
 
+    override fun onLossDialogDismiss() {
+        continueGame()
+    }
+
     private fun nothingHasBeenShowed(suspect: Suspect) {
         val title = "Senki sem tudott mutatni..."
         val message = "Gyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\tEszköz: ${suspect.tool}\n\tGyanúsított: ${suspect.suspect}"
@@ -903,59 +926,178 @@ class MapViewModel(
             return
         GlobalScope.launch(Dispatchers.IO) {
             val randomCard = when (type) {
-                CardType.HELPER -> gameModels.db.getCardBySuperType("HELPER_%") as HelperCard
-                else -> gameModels.db.getCardBySuperType("DARK_%") as DarkCard
+                CardType.HELPER -> gameModels.db.getCardBySuperType(playerId, "HELPER_%") as HelperCard
+                else -> gameModels.db.getCardBySuperType(playerId, "DARK_%") as DarkCard
             }
 
             withContext(Dispatchers.Main) {
-                when (type) {
-                    CardType.HELPER -> {
-                        if (getPlayerById(playerId).helperCards.isNullOrEmpty()) {
-                            getPlayerById(playerId).helperCards = ArrayList()
+                /*val cardImage = ImageView(mapRoot.mapLayout.context)
+                cardImage.layoutParams = ConstraintLayout.LayoutParams(context.resources.displayMetrics.widthPixels / 3, context.resources.displayMetrics.heightPixels)
+                cardImage.setImageResource(randomCard.imageRes)
+                cardImage.translationX = -cardImage.width.toFloat()
+                cardImage.visibility = ImageView.VISIBLE
+                val dpi = context.resources.displayMetrics.densityDpi
+                val possibleRow = abs(mapRoot.panY / (mapRoot.height * dpi / 160) * COLS).toInt()
+                val possibleCol = abs(mapRoot.panX / (mapRoot.width * dpi / 160) * ROWS).toInt()
+                setLayoutConstraintTop(cardImage, gameModels.rows[possibleRow])
+                setLayoutConstraintStart(cardImage, gameModels.cols[possibleCol])
+                mapRoot.mapLayout.addView(cardImage)
+                //moveCameraToTopLeftCorner()
+                ObjectAnimator.ofFloat(cardImage, "translationX", 2 * cardImage.width.toFloat()).apply {
+                    duration = 1000
+                    start()
+                    doOnEnd {
+                        ObjectAnimator.ofFloat(cardImage, "translationX", -2 * cardImage.width.toFloat()).apply {
+                            duration = 1000
+                            startDelay = 2000
+                            start()
+                            doOnEnd {
+                                mapRoot.mapLayout.removeView(cardImage)
+                                moveCameraToPlayer(playerInTurn)
+                                evaluateCard(playerId, randomCard, type)
+                            }
                         }
-                        getPlayerById(playerId).helperCards!!.add(randomCard as HelperCard)
-
-                        if (playerId == player.id)
-                            HelperCardDialog(randomCard.imageRes, this@MapViewModel).show(
-                                fm,
-                                "DIALOG_HELPER"
-                            )
                     }
-                    else -> {
-                        val helperCards = withContext(Dispatchers.IO) {
-                            gameModels.db.getHelperCardsAgainstDarkCard(randomCard as DarkCard)
-                        }
+                }*/
+                evaluateCard(playerId, randomCard, type)
+            }
+        }
+    }
 
+    private fun evaluateCard(playerId: Int, randomCard: Card, type: CardType) {
+        when (type) {
+            CardType.HELPER -> {
+                continueGame()
+
+                if (getPlayerById(playerId).helperCards.isNullOrEmpty()) {
+                    getPlayerById(playerId).helperCards = ArrayList()
+                }
+                getPlayerById(playerId).helperCards!!.add(randomCard as HelperCard)
+
+                if (playerId == player.id)
+                    HelperCardDialog(randomCard.imageRes, this@MapViewModel).show(
+                        fm,
+                        "DIALOG_HELPER"
+                    )
+            }
+            else -> {
+                GlobalScope.launch(Dispatchers.IO) {
+                    val helperCards = gameModels.db.getHelperCardsAgainstDarkCard(randomCard as DarkCard)
+                    withContext(Dispatchers.Main) {
                         helperCards?.let {
                             val idList = ArrayList<Int>()
                             for (card in helperCards)
                                 idList.add(card.id)
-                            (randomCard as DarkCard).helperIds = idList
+                            randomCard.helperIds = idList
                         }
-
-                        if (playerId == player.id)
-                            DarkCardDialog(player, randomCard as DarkCard, this@MapViewModel).show(
-                                fm,
-                                "DIALOG_DARK"
-                            )
-                        else {
-                            val tools: ArrayList<String> = ArrayList()
-                            val spells: ArrayList<String> = ArrayList()
-                            val allys: ArrayList<String> = ArrayList()
-
-                            getHelperObjects(
-                                getPlayerById(playerId),
-                                randomCard as DarkCard,
-                                tools,
-                                spells,
-                                allys
-                            )
-
-                            if (tools.size == 1 && spells.size == 1 && allys.size == 1)
-                                getLoss(playerId, randomCard)
-                        }
+                        harmToAffectedPlayers(randomCard)
                     }
                 }
+            }
+        }
+    }
+
+    private fun harmToAffectedPlayers(card: DarkCard) {
+        val playerIds = ArrayList<Int>()
+        when (card.type) {
+            DarkType.CORRIDOR -> {
+                for (player in gameModels.playerList) {
+                    if (stepInRoom(player.pos) == -1)
+                        playerIds.add(player.id)
+                }
+            }
+            DarkType.PLAYER_IN_TURN -> {
+                playerIds.add(playerInTurn)
+            }
+            DarkType.ROOM_BAGOLYHAZ -> {
+                for (player in gameModels.playerList) {
+                    if (stepInRoom(player.pos) == 6)
+                        playerIds.add(player.id)
+                }
+            }
+            DarkType.ROOM_BAJITALTAN -> {
+                for (player in gameModels.playerList) {
+                    if (stepInRoom(player.pos) == 9)
+                        playerIds.add(player.id)
+                }
+            }
+            DarkType.ROOM_GYENGELKEDO -> {
+                for (player in gameModels.playerList) {
+                    if (stepInRoom(player.pos) == 2)
+                        playerIds.add(player.id)
+                }
+            }
+            DarkType.ROOM_JOSLASTAN -> {
+                for (player in gameModels.playerList) {
+                    if (stepInRoom(player.pos) == 7)
+                        playerIds.add(player.id)
+                }
+            }
+            DarkType.ROOM_KONYVTAR -> {
+                for (player in gameModels.playerList) {
+                    if (stepInRoom(player.pos) == 3)
+                        playerIds.add(player.id)
+                }
+            }
+            DarkType.ROOM_NAGYTEREM -> {
+                for (player in gameModels.playerList) {
+                    if (stepInRoom(player.pos) == 1)
+                        playerIds.add(player.id)
+                }
+            }
+            DarkType.ROOM_SERLEG -> {
+                for (player in gameModels.playerList) {
+                    if (stepInRoom(player.pos) == 8)
+                        playerIds.add(player.id)
+                }
+            }
+            DarkType.ROOM_SVK -> {
+                for (player in gameModels.playerList) {
+                    if (stepInRoom(player.pos) == 0)
+                        playerIds.add(player.id)
+                }
+            }
+            DarkType.ROOM_SZUKSEG_SZOBAJA -> {
+                for (player in gameModels.playerList) {
+                    if (stepInRoom(player.pos) == 5)
+                        playerIds.add(player.id)
+                }
+            }
+            DarkType.ALL_PLAYERS -> {
+                for (player in gameModels.playerList) {
+                    playerIds.add(player.id)
+                }
+            }
+            DarkType.GENDER_MEN -> {
+                for (player in gameModels.playerList) {
+                    if (player.gender == Gender.MAN)
+                        playerIds.add(player.id)
+                }
+            }
+            DarkType.GENDER_WOMEN -> {
+                for (player in gameModels.playerList) {
+                    if (player.gender == Gender.WOMAN)
+                        playerIds.add(player.id)
+                }
+            }
+        }
+
+        if (!playerIds.contains(player.id)) {
+            continueGame()
+        }
+
+        for (id in playerIds) {
+            if (id == player.id)
+                DarkCardDialog(player, card, this@MapViewModel).show(fm, "DIALOG_DARK")
+            else {
+                val tools: ArrayList<String> = ArrayList()
+                val spells: ArrayList<String> = ArrayList()
+                val allys: ArrayList<String> = ArrayList()
+
+                getHelperObjects(getPlayerById(id), card, tools, spells, allys)
+
+                if (tools.size == 1 && spells.size == 1 && allys.size == 1)
+                    getLoss(id, card)
             }
         }
     }
@@ -963,13 +1105,13 @@ class MapViewModel(
     override fun getLoss(playerId: Int, card: DarkCard?) {
         if (card == null) {
             if (playerId == player.id)
-                RescuedFromDarkCardDialog().show(fm, "DIALOG_RESCUED")
+                RescuedFromDarkCardDialog(this).show(fm, "DIALOG_RESCUED")
         } else {
             when (card.lossType) {
                 LossType.HP -> {
                     getPlayerById(playerId).hp -= card.hpLoss
                     if (playerId == player.id)
-                        HpLossDialog(card.hpLoss, player.hp).show(fm, "DIALOG_HP_LOSS")
+                        HpLossDialog(this, card.hpLoss, player.hp).show(fm, "DIALOG_HP_LOSS")
                 }
                 else -> {
                     if (getPlayerById(playerId).helperCards != null) {
@@ -996,6 +1138,10 @@ class MapViewModel(
                                     properHelperCards[Random.nextInt(0, properHelperCards.size)]
                                 )
                         }
+                        else {
+                            if (playerId == player.id)
+                                continueGame()
+                        }
                     }
                 }
             }
@@ -1004,6 +1150,7 @@ class MapViewModel(
 
     override fun throwCard(playerId: Int, card: HelperCard) {
         getPlayerById(playerId).helperCards!!.remove(card)
+        continueGame()
     }
 
     @BindingAdapter("app:layout_constraintTop_toTopOf")
@@ -1074,10 +1221,13 @@ class MapViewModel(
                 doOnEnd {
                     dice.visibility = ImageView.GONE
                     if (diceList.indexOf(dice) == 2) {
+                        pause(playerInTurn, dice1Value + dice2Value, house)
                         cardType?.let {
                             getCard(playerInTurn, cardType)
                         }
-                        onDiceRoll(playerInTurn, dice1Value + dice2Value, house)
+                        house?.let {
+                            setState(playerInTurn, house)
+                        }
                     }
                 }
             }
@@ -1095,6 +1245,7 @@ interface DialogDismiss {
     fun onHelperCardDismiss()
     fun onAccusationDismiss(suspect: Suspect?)
     fun onEndOfGameDismiss()
+    fun onLossDialogDismiss()
 }
 
 interface MapActivityListener {
