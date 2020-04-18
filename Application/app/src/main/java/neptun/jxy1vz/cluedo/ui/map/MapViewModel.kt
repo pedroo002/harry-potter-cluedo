@@ -69,6 +69,7 @@ class MapViewModel(
     CardLossDialog.CardLossDialogListener, IncriminationDialog.MapInterface,
     DialogDismiss, Animation.AnimationListener {
 
+    private var otherPlayerStepsOnStar: Boolean = false
     private var player = getPlayerById(playerId)
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
@@ -511,6 +512,14 @@ class MapViewModel(
         return -1
     }
 
+    private fun stepOnStar(pos: Position): Boolean {
+        for (star in gameModels.starList) {
+            if (star == pos)
+                return true
+        }
+        return false
+    }
+
     private fun isFieldOccupied(pos: Position): Boolean {
         for (player in gameModels.playerList) {
             if (player.pos == pos)
@@ -673,6 +682,11 @@ class MapViewModel(
                         stepped = true
                         break
                     }
+                    if (stepOnStar(pos)) {
+                        stepPlayer(playerId, pos)
+                        stepped = true
+                        break
+                    }
                 }
                 if (!stepped)
                     stepPlayer(playerId, validKeys[Random.nextInt(0, validKeys.size)])
@@ -709,13 +723,7 @@ class MapViewModel(
         getPlayerById(playerId).pos = targetPosition
         moveCameraToPlayer(playerId)
 
-        var starStep = false
-        for (star in gameModels.starList) {
-            if (getPlayerById(playerId).pos == star) {
-                getCard(playerId, CardType.HELPER)
-                starStep = true
-            }
-        }
+        val starStep = stepOnStar(targetPosition)
 
         val pair = getPairById(playerId)
         setLayoutConstraintStart(pair.second, gameModels.cols[getPlayerById(playerId).pos.col])
@@ -729,14 +737,40 @@ class MapViewModel(
                     userHasToStep = false
                 }
             }
-            playerId != player.id -> {
-                moveToNextPlayer()
+            stepInRoom(getPlayerById(playerId).pos) == -1 -> {
+                if (playerId != player.id) {
+                    if (starStep) {
+                        moveCameraToPlayer(playerId)
+                        otherPlayerStepsOnStar = true
+                        getCard(playerId, CardType.HELPER)
+                    }
+                    else {
+                        moveToNextPlayer()
+                    }
+                }
+                else {
+                    userFinishedHisTurn = true
+                    if(!starStep) {
+                        moveToNextPlayer()
+                    }
+                    else
+                        getCard(playerId, CardType.HELPER)
+                }
+            }
+
+            /*playerId != player.id -> {
+                if (stepInRoom(getPlayerById(playerId).pos) == -1) {
+                    if (!starStep)
+                        moveToNextPlayer()
+                    else
+                        moveCameraToPlayer(playerId)
+                }
             }
             starStep -> userFinishedHisTurn = true
             else -> {
                 userFinishedHisTurn = true
                 moveToNextPlayer()
-            }
+            }*/
         }
     }
 
@@ -1007,6 +1041,10 @@ class MapViewModel(
         when (type) {
             CardType.HELPER -> {
                 continueGame()
+                if (otherPlayerStepsOnStar) {
+                    moveToNextPlayer()
+                    otherPlayerStepsOnStar = false
+                }
 
                 if (getPlayerById(playerId).helperCards.isNullOrEmpty()) {
                     getPlayerById(playerId).helperCards = ArrayList()
