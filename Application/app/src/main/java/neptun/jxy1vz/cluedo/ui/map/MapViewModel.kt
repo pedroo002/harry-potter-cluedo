@@ -231,20 +231,22 @@ class MapViewModel(
     }
 
     private fun moveCameraToPlayer(playerId: Int) {
-        val x = getPairById(playerId).second.left.toFloat() - context.resources.displayMetrics.widthPixels / 2
-        val y = getPairById(playerId).second.top.toFloat() - context.resources.displayMetrics.heightPixels / 2
+        val x =
+            getPairById(playerId).second.left.toFloat() - context.resources.displayMetrics.widthPixels / 2
+        val y =
+            getPairById(playerId).second.top.toFloat() - context.resources.displayMetrics.heightPixels / 2
 
         mapRoot.panTo(-x, -y, true)
     }
 
     private fun moveCameraToCorner(house: HogwartsHouse) {
-        val x = when(house) {
+        val x = when (house) {
             HogwartsHouse.SLYTHERIN -> mapRoot.mapLayout.ivMap.left.toFloat()
             HogwartsHouse.RAVENCLAW -> mapRoot.mapLayout.ivMap.right.toFloat()
             HogwartsHouse.GRYFFINDOR -> mapRoot.mapLayout.ivMap.right.toFloat()
             else -> mapRoot.mapLayout.ivMap.left.toFloat()
         }
-        val y = when(house) {
+        val y = when (house) {
             HogwartsHouse.SLYTHERIN -> mapRoot.mapLayout.ivMap.top.toFloat()
             HogwartsHouse.RAVENCLAW -> mapRoot.mapLayout.ivMap.top.toFloat()
             HogwartsHouse.GRYFFINDOR -> mapRoot.mapLayout.ivMap.bottom.toFloat()
@@ -259,7 +261,8 @@ class MapViewModel(
 
         when (house) {
             HogwartsHouse.SLYTHERIN -> {
-                setChanges(playerId,
+                setChanges(
+                    playerId,
                     gameModels.slytherinStates,
                     gameModels.passageWayListSlytherin,
                     gameModels.passageWayVisibilitiesSlytherin,
@@ -271,7 +274,8 @@ class MapViewModel(
                     slytherinState = 0
             }
             HogwartsHouse.RAVENCLAW -> {
-                setChanges(playerId,
+                setChanges(
+                    playerId,
                     gameModels.ravencalwStates,
                     gameModels.passageWayListRavenclaw,
                     gameModels.passageWayVisibilitiesRavenclaw,
@@ -283,7 +287,8 @@ class MapViewModel(
                     ravenclawState = 0
             }
             HogwartsHouse.GRYFFINDOR -> {
-                setChanges(playerId,
+                setChanges(
+                    playerId,
                     gameModels.gryffindorStates,
                     gameModels.passageWayListGryffindor,
                     gameModels.passageWayVisibilitiesGryffindor,
@@ -295,7 +300,8 @@ class MapViewModel(
                     gryffindorState = 0
             }
             HogwartsHouse.HUFFLEPUFF -> {
-                setChanges(playerId,
+                setChanges(
+                    playerId,
                     gameModels.hufflepuffStates,
                     gameModels.passageWayListHufflepuff,
                     gameModels.passageWayVisibilitiesHufflepuff,
@@ -331,10 +337,15 @@ class MapViewModel(
         }
 
         for (i in gatewayNumbers.indices) {
-            mapRoot.mapLayout.findViewById<ImageView>(gateways[visibleGatewaySerialNumbers[i]]).setOnClickListener {
-                if (it.visibility == View.VISIBLE)
-                    teleport(playerInTurn, stateList[state * 3 + gatewayNumbers[i]].roomId, stateList[state * 3 + gatewayNumbers[i]].passageWay!!)
-            }
+            mapRoot.mapLayout.findViewById<ImageView>(gateways[visibleGatewaySerialNumbers[i]])
+                .setOnClickListener {
+                    if (it.visibility == View.VISIBLE)
+                        teleport(
+                            playerInTurn,
+                            stateList[state * 3 + gatewayNumbers[i]].roomId,
+                            stateList[state * 3 + gatewayNumbers[i]].passageWay!!
+                        )
+                }
         }
 
         val gatewayAnimations: MutableList<Pair<ImageView, Boolean>> = ArrayList()
@@ -347,8 +358,7 @@ class MapViewModel(
                     if (visibility)
                         setViewVisibility(mapRoot.mapLayout.findViewById(p), visibility)
                 }
-            }
-            else
+            } else
                 setViewVisibility(mapRoot.mapLayout.findViewById(p), visibility)
         }
 
@@ -394,14 +404,31 @@ class MapViewModel(
                 if (s.serialNum == 0) {
                     setViewVisibility(ivDoor, s.doorState.boolean())
                     setViewVisibility(ivDarkMark, s.darkMark)
-                }
-                else
-                    animateMapChanges(playerId, s, stateList.indexOf(s), doorAnimation, ivDoor, darkMarkAnimation, ivDarkMark, gatewayAnimations)
+                } else
+                    animateMapChanges(
+                        playerId,
+                        s,
+                        stateList.indexOf(s),
+                        doorAnimation,
+                        ivDoor,
+                        darkMarkAnimation,
+                        ivDarkMark,
+                        gatewayAnimations
+                    )
             }
         }
     }
 
-    private fun animateMapChanges(playerId: Int, s: State, idx: Int, doorAnimation: Boolean, ivDoor: ImageView, darkMarkAnimation: Boolean, ivDarkMark: ImageView, gatewayAnimations: List<Pair<ImageView, Boolean>>) {
+    private fun animateMapChanges(
+        playerId: Int,
+        s: State,
+        idx: Int,
+        doorAnimation: Boolean,
+        ivDoor: ImageView,
+        darkMarkAnimation: Boolean,
+        ivDarkMark: ImageView,
+        gatewayAnimations: List<Pair<ImageView, Boolean>>
+    ) {
         if (s.doorState == DoorState.CLOSED)
             setViewVisibility(ivDoor, s.doorState.boolean())
         if (s.darkMark)
@@ -476,7 +503,10 @@ class MapViewModel(
 
     private fun teleport(playerId: Int, from: Int, to: Int) {
         if (stepInRoom(getPlayerById(playerId).pos) == from) {
-            stepPlayer(playerId, Position(gameModels.roomList[to].top, gameModels.roomList[to].left))
+            stepPlayer(
+                playerId,
+                Position(gameModels.roomList[to].top, gameModels.roomList[to].left)
+            )
             emptySelectionList()
         }
     }
@@ -567,7 +597,10 @@ class MapViewModel(
         return distances
     }
 
-    private fun mergeDistances(map1: HashMap<Position, Int>, map2: HashMap<Position, Int>? = null): HashMap<Position, Int> {
+    private fun mergeDistances(
+        map1: HashMap<Position, Int>,
+        map2: HashMap<Position, Int>? = null
+    ): HashMap<Position, Int> {
         val intersection: HashMap<Position, Int> = HashMap()
         for (pos in map1.keys) {
             intersection[pos] = map1[pos]!!
@@ -607,8 +640,13 @@ class MapViewModel(
     private fun rollWithDice(playerId: Int) {
         if (player.id != playerId) {
             for (i in diceList.indices) {
-                val row = if (getPlayerById(playerId).pos.row == ROWS) ROWS - 1 else getPlayerById(playerId).pos.row + 1
-                val col = if (getPlayerById(playerId).pos.col == 0) 0 else if (getPlayerById(playerId).pos.col >= COLS - 2) COLS - 2 else getPlayerById(playerId).pos.col - 1
+                val row = if (getPlayerById(playerId).pos.row == ROWS) ROWS - 1 else getPlayerById(
+                    playerId
+                ).pos.row + 1
+                val col =
+                    if (getPlayerById(playerId).pos.col == 0) 0 else if (getPlayerById(playerId).pos.col >= COLS - 2) COLS - 2 else getPlayerById(
+                        playerId
+                    ).pos.col - 1
                 setLayoutConstraintTop(diceList[i], gameModels.rows[row])
                 setLayoutConstraintStart(diceList[i], gameModels.cols[col + i])
                 diceList[i].visibility = ImageView.VISIBLE
@@ -667,12 +705,14 @@ class MapViewModel(
                     }
                 }
             }
-        }
-        else {
+        } else {
             if (distances != null) {
                 val validKeys: MutableList<Position> = ArrayList()
                 for (pos in distances.keys) {
-                    if (!(isFieldOccupied(pos) || distances[pos]!! > stepCount || (stepInRoom(getPlayerById(playerId).pos) != -1 && stepInRoom(pos) != -1)))
+                    if (!(isFieldOccupied(pos) || distances[pos]!! > stepCount || (stepInRoom(
+                            getPlayerById(playerId).pos
+                        ) != -1 && stepInRoom(pos) != -1))
+                    )
                         validKeys.add(pos)
                 }
                 var stepped = false
@@ -690,8 +730,7 @@ class MapViewModel(
                 }
                 if (!stepped)
                     stepPlayer(playerId, validKeys[Random.nextInt(0, validKeys.size)])
-            }
-            else {
+            } else {
                 moveToNextPlayer()
             }
         }
@@ -743,34 +782,17 @@ class MapViewModel(
                         moveCameraToPlayer(playerId)
                         otherPlayerStepsOnStar = true
                         getCard(playerId, CardType.HELPER)
-                    }
-                    else {
+                    } else {
                         moveToNextPlayer()
                     }
-                }
-                else {
+                } else {
                     userFinishedHisTurn = true
-                    if(!starStep) {
+                    if (!starStep) {
                         moveToNextPlayer()
-                    }
-                    else
+                    } else
                         getCard(playerId, CardType.HELPER)
                 }
             }
-
-            /*playerId != player.id -> {
-                if (stepInRoom(getPlayerById(playerId).pos) == -1) {
-                    if (!starStep)
-                        moveToNextPlayer()
-                    else
-                        moveCameraToPlayer(playerId)
-                }
-            }
-            starStep -> userFinishedHisTurn = true
-            else -> {
-                userFinishedHisTurn = true
-                moveToNextPlayer()
-            }*/
         }
     }
 
@@ -783,11 +805,13 @@ class MapViewModel(
     private fun incrimination(playerId: Int, roomId: Int) {
         if (playerId == player.id) {
             if (roomId != 4)
-                IncriminationDialog(gameModels, playerId, roomId, this).show(fm, "DIALOG_INCRIMINATION")
+                IncriminationDialog(gameModels, playerId, roomId, this).show(
+                    fm,
+                    "DIALOG_INCRIMINATION"
+                )
             else
                 AccusationDialog(playerId, this).show(fm, "DIALOG_ACCUSATION")
-        }
-        else {
+        } else {
             val room = gameModels.roomList[roomId].name
             val tool = context.resources.getStringArray(R.array.tools)[Random.nextInt(0, 6)]
             val suspect = context.resources.getStringArray(R.array.suspects)[Random.nextInt(0, 6)]
@@ -802,22 +826,31 @@ class MapViewModel(
     override fun getIncrimination(suspect: Suspect) {
         if (suspect.playerId != player.id) {
             val title = "${getPlayerById(suspect.playerId).card.name} gyanúsít"
-            val message = "Ebben a helyiségben: ${suspect.room}\nEzzel az eszközzel: ${suspect.tool}\nGyanúsított: ${suspect.suspect}"
+            val message =
+                "Ebben a helyiségben: ${suspect.room}\nEzzel az eszközzel: ${suspect.tool}\nGyanúsított: ${suspect.suspect}"
             InformationDialog(suspect, title, message, this).show(fm, "DIALOG_INFORMATION")
-        }
-        else {
+        } else {
             var someoneShowedSomething = false
             var playerIdx = gameModels.playerList.indexOf(getPlayerById(suspect.playerId))
             for (i in 0 until gameModels.playerList.size - 1) {
                 playerIdx--
                 if (playerIdx < 0)
                     playerIdx = gameModels.playerList.lastIndex
-                val cards = revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
+                val cards =
+                    revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
                 if (cards != null) {
                     val revealedCard = cards[Random.nextInt(0, cards.size)]
-                    CardRevealDialog(revealedCard, gameModels.playerList[playerIdx].card.name, this).show(fm, "DIALOG_CARD_REVEAL")
+                    CardRevealDialog(
+                        revealedCard,
+                        gameModels.playerList[playerIdx].card.name,
+                        this
+                    ).show(fm, "DIALOG_CARD_REVEAL")
                     someoneShowedSomething = true
-                    letOtherPlayersKnow(suspect, gameModels.playerList[playerIdx].id, revealedCard.name)
+                    letOtherPlayersKnow(
+                        suspect,
+                        gameModels.playerList[playerIdx].id,
+                        revealedCard.name
+                    )
                 }
                 if (someoneShowedSomething)
                     break
@@ -835,15 +868,20 @@ class MapViewModel(
         if (userHasToIncriminate) {
             Snackbar.make(mapRoot.mapLayout, "Muszáj gyanúsítanod!", Snackbar.LENGTH_LONG).show()
             incrimination(player.id, stepInRoom(player.pos))
-        }
-        else {
-            Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_SHORT).setAction("Kockadobás"){
-                rollWithDice(player.id)
-            }.show()
+        } else {
+            Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_SHORT)
+                .setAction("Kockadobás") {
+                    rollWithDice(player.id)
+                }.show()
         }
     }
 
-    private fun revealMysteryCards(playerIdx: Int, room: String, tool: String, suspect: String): List<MysteryCard>? {
+    private fun revealMysteryCards(
+        playerIdx: Int,
+        room: String,
+        tool: String,
+        suspect: String
+    ): List<MysteryCard>? {
         val cardList: MutableList<MysteryCard> = ArrayList()
         for (card in gameModels.playerList[playerIdx].mysteryCards) {
             if (card.name == room || card.name == tool || card.name == suspect)
@@ -855,7 +893,11 @@ class MapViewModel(
         return null
     }
 
-    private fun letOtherPlayersKnow(suspect: Suspect, playerWhoShowed: Int? = null, revealedMysteryCardName: String? = null) {
+    private fun letOtherPlayersKnow(
+        suspect: Suspect,
+        playerWhoShowed: Int? = null,
+        revealedMysteryCardName: String? = null
+    ) {
         if (playerWhoShowed != null && revealedMysteryCardName != null) {
             for (p in gameModels.playerList) {
                 if (p.id != playerWhoShowed && p.id != player.id) {
@@ -865,8 +907,7 @@ class MapViewModel(
                         p.getSuspicion(suspect, playerWhoShowed)
                 }
             }
-        }
-        else {
+        } else {
             for (p in gameModels.playerList) {
                 if (p.id != player.id)
                     p.getSuspicion(suspect)
@@ -882,24 +923,40 @@ class MapViewModel(
             if (playerIdx < 0)
                 playerIdx = gameModels.playerList.lastIndex
             if (playerIdx == gameModels.playerList.indexOf(player)) {
-                val cards = revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
+                val cards =
+                    revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
                 if (cards != null) {
-                    ShowCardDialog(suspect, getPlayerById(suspect.playerId).card.name, cards, this).show(fm, "DIALOG_SHOW_CARD")
+                    ShowCardDialog(
+                        suspect,
+                        getPlayerById(suspect.playerId).card.name,
+                        cards,
+                        this
+                    ).show(fm, "DIALOG_SHOW_CARD")
                     someoneShowedSomething = true
                 }
-            }
-            else {
-                val cards = revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
+            } else {
+                val cards =
+                    revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
                 if (cards != null) {
                     val revealedCard = cards[Random.nextInt(0, cards.size)]
 
                     val title = "Kártyafelfedés történt"
-                    val message = "${gameModels.playerList[playerIdx].card.name} mutatott valamit neki: ${getPlayerById(suspect.playerId).card.name}\nGyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\t" +
-                            "Eszköz: ${suspect.tool}\n\t" +
-                            "Gyanúsított: ${suspect.suspect}"
-                    InformationDialog(null, title, message, this).show(fm, "DIALOG_SIMPLE_INFORMATION")
+                    val message =
+                        "${gameModels.playerList[playerIdx].card.name} mutatott valamit neki: ${getPlayerById(
+                            suspect.playerId
+                        ).card.name}\nGyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\t" +
+                                "Eszköz: ${suspect.tool}\n\t" +
+                                "Gyanúsított: ${suspect.suspect}"
+                    InformationDialog(null, title, message, this).show(
+                        fm,
+                        "DIALOG_SIMPLE_INFORMATION"
+                    )
                     someoneShowedSomething = true
-                    letOtherPlayersKnow(suspect, gameModels.playerList[playerIdx].id, revealedCard.name)
+                    letOtherPlayersKnow(
+                        suspect,
+                        gameModels.playerList[playerIdx].id,
+                        revealedCard.name
+                    )
                 }
             }
             if (someoneShowedSomething)
@@ -941,7 +998,10 @@ class MapViewModel(
                 correct = false
         }
         val titleId = if (correct) R.string.correct_accusation else R.string.incorrect_accusation
-        EndOfGameDialog(this, getPlayerById(suspect.playerId).card.name, titleId, correct).show(fm, "DIALOG_END_OF_GAME")
+        EndOfGameDialog(this, getPlayerById(suspect.playerId).card.name, titleId, correct).show(
+            fm,
+            "DIALOG_END_OF_GAME"
+        )
         isGameRunning = false
     }
 
@@ -949,13 +1009,16 @@ class MapViewModel(
         activityListener.exitToMenu()
     }
 
-    override fun onLossDialogDismiss() {
-        continueGame()
+    override fun onLossDialogDismiss(playerId: Int?) {
+        if (playerId == null) {
+            continueGame()
+        }
     }
 
     private fun nothingHasBeenShowed(suspect: Suspect) {
         val title = "Senki sem tudott mutatni..."
-        val message = "Gyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\tEszköz: ${suspect.tool}\n\tGyanúsított: ${suspect.suspect}"
+        val message =
+            "Gyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\tEszköz: ${suspect.tool}\n\tGyanúsított: ${suspect.suspect}"
         InformationDialog(null, title, message, this).show(fm, "DIALOG_SIMPLE_INFORMATION")
     }
 
@@ -964,77 +1027,84 @@ class MapViewModel(
             return
         GlobalScope.launch(Dispatchers.IO) {
             val randomCard = when (type) {
-                CardType.HELPER -> gameModels.db.getCardBySuperType(playerId, "HELPER_%") as HelperCard
+                CardType.HELPER -> gameModels.db.getCardBySuperType(
+                    playerId,
+                    "HELPER_%"
+                ) as HelperCard
                 else -> gameModels.db.getCardBySuperType(playerId, "DARK_%") as DarkCard
             }
 
             withContext(Dispatchers.Main) {
                 if (playerId != player.id) {
-                    val cardImage = ImageView(mapRoot.mapLayout.context)
-                    cardImage.layoutParams = ConstraintLayout.LayoutParams(
-                        context.resources.displayMetrics.widthPixels / 3,
-                        3 * context.resources.displayMetrics.heightPixels / 4
-                    )
-                    cardImage.setImageResource(randomCard.imageRes)
-
-                    val mapSizeX = mapRoot.mapLayout.ivMap.right.toFloat()
-                    val mapSizeY = mapRoot.mapLayout.ivMap.bottom.toFloat()
-                    val screenSizeX = context.resources.displayMetrics.widthPixels
-                    val screenSizeY = context.resources.displayMetrics.heightPixels
-                    val panX = mapRoot.panX
-                    val panY = mapRoot.panY
-
-                    val possibleRow =
-                        when {
-                            panY < screenSizeY -> floor(abs(ROWS * panY / mapSizeY)).toInt()
-                            panY > mapSizeY - screenSizeY -> floor(abs((mapSizeY - screenSizeY) / mapSizeY) * ROWS).toInt()
-                            else -> floor(
-                                abs((mapSizeY - panY) / mapSizeY) * ROWS
-                            ).toInt()
-                        }
-                    val possibleCol =
-                        when {
-                            panX < screenSizeX -> floor(abs(COLS * panX / mapSizeX)).toInt()
-                            panX > mapSizeX - screenSizeX -> floor(abs((mapSizeX - screenSizeX) / mapSizeX) * COLS).toInt()
-                            else -> floor(
-                                abs((mapSizeX - panX) / mapSizeX) * COLS
-                            ).toInt()
-                        }
-
-                    setLayoutConstraintTop(cardImage, gameModels.rows[possibleRow + 1])
-                    setLayoutConstraintStart(cardImage, gameModels.cols[possibleCol + 1])
-
-                    cardImage.translationX = -1 * cardImage.width.toFloat()
-                    cardImage.visibility = ImageView.VISIBLE
-
-                    mapRoot.mapLayout.addView(cardImage)
-                    ObjectAnimator.ofFloat(cardImage, "translationX", cardImage.width.toFloat())
-                        .apply {
-                            duration = 1000
-                            start()
-                            doOnEnd {
-                                cardImage.translationX = 0f
-                                ObjectAnimator.ofFloat(
-                                    cardImage,
-                                    "translationX",
-                                    -1 * cardImage.width.toFloat()
-                                ).apply {
-                                    duration = 1000
-                                    startDelay = 2000
-                                    start()
-                                    doOnEnd {
-                                        mapRoot.mapLayout.removeView(cardImage)
-                                        moveCameraToPlayer(playerInTurn)
-                                        evaluateCard(playerId, randomCard, type)
-                                    }
-                                }
-                            }
-                        }
-                }
-                else
+                    showCard(playerId, randomCard, type)
+                } else
                     evaluateCard(playerId, randomCard, type)
             }
         }
+    }
+
+    private fun showCard(playerId: Int, card: Card, type: CardType) {
+        val cardImage = ImageView(mapRoot.mapLayout.context)
+        cardImage.layoutParams = ConstraintLayout.LayoutParams(
+            context.resources.displayMetrics.widthPixels / 3,
+            3 * context.resources.displayMetrics.heightPixels / 4
+        )
+        cardImage.setImageResource(card.imageRes)
+
+        val mapSizeX = mapRoot.mapLayout.ivMap.right.toFloat()
+        val mapSizeY = mapRoot.mapLayout.ivMap.bottom.toFloat()
+        val screenSizeX = context.resources.displayMetrics.widthPixels
+        val screenSizeY = context.resources.displayMetrics.heightPixels
+        val panX = mapRoot.panX
+        val panY = mapRoot.panY
+
+        val possibleRow =
+            when {
+                panY < screenSizeY -> floor(abs(ROWS * panY / mapSizeY)).toInt()
+                panY > mapSizeY - screenSizeY -> floor(abs((mapSizeY - screenSizeY) / mapSizeY) * ROWS).toInt()
+                else -> floor(
+                    abs((mapSizeY - panY) / mapSizeY) * ROWS
+                ).toInt()
+            }
+        val possibleCol =
+            when {
+                panX < screenSizeX -> floor(abs(COLS * panX / mapSizeX)).toInt()
+                panX > mapSizeX - screenSizeX -> floor(abs((mapSizeX - screenSizeX) / mapSizeX) * COLS).toInt()
+                else -> floor(
+                    abs((mapSizeX - panX) / mapSizeX) * COLS
+                ).toInt()
+            }
+
+        setLayoutConstraintTop(cardImage, gameModels.rows[possibleRow + 1])
+        setLayoutConstraintStart(cardImage, gameModels.cols[possibleCol + 1])
+
+        cardImage.translationX = -1 * cardImage.width.toFloat()
+        cardImage.visibility = ImageView.VISIBLE
+
+        mapRoot.mapLayout.addView(cardImage)
+        ObjectAnimator.ofFloat(cardImage, "translationX", cardImage.width.toFloat())
+            .apply {
+                duration = 1000
+                start()
+                doOnEnd {
+                    cardImage.translationX = 0f
+                    ObjectAnimator.ofFloat(
+                        cardImage,
+                        "translationX",
+                        -1 * cardImage.width.toFloat()
+                    ).apply {
+                        duration = 1000
+                        startDelay = 2000
+                        start()
+                        doOnEnd {
+                            mapRoot.mapLayout.removeView(cardImage)
+                            moveCameraToPlayer(playerInTurn)
+                            if (playerId != player.id)
+                                evaluateCard(playerId, card, type)
+                        }
+                    }
+                }
+            }
     }
 
     private fun evaluateCard(playerId: Int, randomCard: Card, type: CardType) {
@@ -1059,7 +1129,8 @@ class MapViewModel(
             }
             else -> {
                 GlobalScope.launch(Dispatchers.IO) {
-                    val helperCards = gameModels.db.getHelperCardsAgainstDarkCard(randomCard as DarkCard)
+                    val helperCards =
+                        gameModels.db.getHelperCardsAgainstDarkCard(randomCard as DarkCard)
                     withContext(Dispatchers.Main) {
                         helperCards?.let {
                             val idList = ArrayList<Int>()
@@ -1159,14 +1230,8 @@ class MapViewModel(
             }
         }
 
-        if (!playerIds.contains(player.id)) {
-            continueGame()
-        }
-
         for (id in playerIds) {
-            if (id == player.id)
-                DarkCardDialog(player, card, this@MapViewModel).show(fm, "DIALOG_DARK")
-            else {
+            if (id != player.id) {
                 val tools: ArrayList<String> = ArrayList()
                 val spells: ArrayList<String> = ArrayList()
                 val allys: ArrayList<String> = ArrayList()
@@ -1175,7 +1240,16 @@ class MapViewModel(
 
                 if (tools.size == 1 && spells.size == 1 && allys.size == 1)
                     getLoss(id, card)
-            }
+                else
+                    (getLoss(id, null))
+            } else
+                DarkCardDialog(player, card, this@MapViewModel).show(fm, "DIALOG_DARK")
+        }
+
+        if (!playerIds.contains(player.id)) {
+            continueGame()
+            if (playerInTurn == player.id)
+                showCard(player.id, card, CardType.DARK)
         }
     }
 
@@ -1183,12 +1257,21 @@ class MapViewModel(
         if (card == null) {
             if (playerId == player.id)
                 RescuedFromDarkCardDialog(this).show(fm, "DIALOG_RESCUED")
+            else
+                RescuedFromDarkCardDialog(this, getPlayerById(playerId)).show(fm, "DIALOG_RESCUED")
         } else {
             when (card.lossType) {
                 LossType.HP -> {
                     getPlayerById(playerId).hp -= card.hpLoss
                     if (playerId == player.id)
                         HpLossDialog(this, card.hpLoss, player.hp).show(fm, "DIALOG_HP_LOSS")
+                    else
+                        HpLossDialog(
+                            this,
+                            card.hpLoss,
+                            getPlayerById(playerId).hp,
+                            getPlayerById(playerId)
+                        ).show(fm, "DIALOG_HP_LOSS")
                 }
                 else -> {
                     if (getPlayerById(playerId).helperCards != null) {
@@ -1209,13 +1292,20 @@ class MapViewModel(
                                     fm,
                                     "DIALOG_CARD_LOSS"
                                 )
-                            else
+                            else {
+                                val cardToThrow =
+                                    properHelperCards[Random.nextInt(0, properHelperCards.size)]
                                 throwCard(
                                     playerId,
-                                    properHelperCards[Random.nextInt(0, properHelperCards.size)]
+                                    cardToThrow
                                 )
-                        }
-                        else {
+                                Snackbar.make(
+                                    mapRoot,
+                                    "${getPlayerById(playerId).card.name} eldobta ezt: ${cardToThrow.name}",
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                        } else {
                             if (playerId == player.id)
                                 continueGame()
                         }
@@ -1253,32 +1343,38 @@ class MapViewModel(
         val dice2Value = Random.nextInt(1, 7)
         val hogwartsDice = Random.nextInt(1, 7)
 
-        diceList[0].setImageResource(when (dice1Value) {
-            1 -> R.drawable.dice1
-            2 -> R.drawable.dice2
-            3 -> R.drawable.dice3
-            4 -> R.drawable.dice4
-            5 -> R.drawable.dice5
-            else -> R.drawable.dice6
-        })
+        diceList[0].setImageResource(
+            when (dice1Value) {
+                1 -> R.drawable.dice1
+                2 -> R.drawable.dice2
+                3 -> R.drawable.dice3
+                4 -> R.drawable.dice4
+                5 -> R.drawable.dice5
+                else -> R.drawable.dice6
+            }
+        )
 
-        diceList[2].setImageResource(when (dice2Value) {
-            1 -> R.drawable.dice1
-            2 -> R.drawable.dice2
-            3 -> R.drawable.dice3
-            4 -> R.drawable.dice4
-            5 -> R.drawable.dice5
-            else -> R.drawable.dice6
-        })
+        diceList[2].setImageResource(
+            when (dice2Value) {
+                1 -> R.drawable.dice1
+                2 -> R.drawable.dice2
+                3 -> R.drawable.dice3
+                4 -> R.drawable.dice4
+                5 -> R.drawable.dice5
+                else -> R.drawable.dice6
+            }
+        )
 
-        diceList[1].setImageResource(when (hogwartsDice) {
-            1 -> R.drawable.helper_card
-            2 -> R.drawable.gryffindor
-            3 -> R.drawable.slytherin
-            4 -> R.drawable.hufflepuff
-            5 -> R.drawable.ravenclaw
-            else -> R.drawable.dark_mark
-        })
+        diceList[1].setImageResource(
+            when (hogwartsDice) {
+                1 -> R.drawable.helper_card
+                2 -> R.drawable.gryffindor
+                3 -> R.drawable.slytherin
+                4 -> R.drawable.hufflepuff
+                5 -> R.drawable.ravenclaw
+                else -> R.drawable.dark_mark
+            }
+        )
 
         var cardType: CardType? = null
         var house: HogwartsHouse? = null
@@ -1322,7 +1418,7 @@ interface DialogDismiss {
     fun onHelperCardDismiss()
     fun onAccusationDismiss(suspect: Suspect?)
     fun onEndOfGameDismiss()
-    fun onLossDialogDismiss()
+    fun onLossDialogDismiss(playerId: Int? = null)
 }
 
 interface MapActivityListener {
