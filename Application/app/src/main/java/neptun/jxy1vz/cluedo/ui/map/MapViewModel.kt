@@ -37,6 +37,8 @@ import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
+import neptun.jxy1vz.cluedo.ui.dialog.player_dies.PlayerDiesDialog
+import neptun.jxy1vz.cluedo.ui.dialog.player_dies.UserDiesDialog
 import neptun.jxy1vz.cluedo.ui.dialog.show_card.ShowCardDialog
 import java.util.*
 import kotlin.collections.ArrayList
@@ -1015,6 +1017,14 @@ class MapViewModel(
         }
     }
 
+    override fun onPlayerDiesDismiss(cards: List<MysteryCard>?) {
+        if (cards == null)
+            activityListener.exitToMenu()
+        else {
+            moveToNextPlayer()
+        }
+    }
+
     private fun nothingHasBeenShowed(suspect: Suspect) {
         val title = "Senki sem tudott mutatni..."
         val message =
@@ -1263,15 +1273,42 @@ class MapViewModel(
             when (card.lossType) {
                 LossType.HP -> {
                     getPlayerById(playerId).hp -= card.hpLoss
-                    if (playerId == player.id)
-                        HpLossDialog(this, card.hpLoss, player.hp).show(fm, "DIALOG_HP_LOSS")
-                    else
-                        HpLossDialog(
-                            this,
-                            card.hpLoss,
-                            getPlayerById(playerId).hp,
-                            getPlayerById(playerId)
-                        ).show(fm, "DIALOG_HP_LOSS")
+                    if (playerId == player.id) {
+                        if (player.hp > 0)
+                            HpLossDialog(this, card.hpLoss, player.hp).show(fm, "DIALOG_HP_LOSS")
+                        else {
+                            UserDiesDialog(this).show(fm, "DIALOG_USER_DIES")
+                        }
+                    }
+                    else {
+                        if (getPlayerById(playerId).hp > 0)
+                            HpLossDialog(
+                                this,
+                                card.hpLoss,
+                                getPlayerById(playerId).hp,
+                                getPlayerById(playerId)
+                            ).show(fm, "DIALOG_HP_LOSS")
+                        else {
+                            PlayerDiesDialog(getPlayerById(playerId), this).show(
+                                fm,
+                                "DIALOG_PLAYER_DIES"
+                            )
+                            val newPlayerList = ArrayList<Player>()
+                            for (p in gameModels.playerList) {
+                                if (p.id != playerId)
+                                    newPlayerList.add(p)
+                            }
+                            gameModels.playerList = newPlayerList
+                            val pair = getPairById(playerId)
+                            mapRoot.mapLayout.removeView(pair.second)
+                            val newPlayerImagePairs = ArrayList<Pair<Player, ImageView>>()
+                            for (pair in playerImagePairs) {
+                                if (pair.first.id != playerId)
+                                    newPlayerImagePairs.add(pair)
+                            }
+                            playerImagePairs = newPlayerImagePairs
+                        }
+                    }
                 }
                 else -> {
                     if (getPlayerById(playerId).helperCards != null) {
@@ -1419,6 +1456,7 @@ interface DialogDismiss {
     fun onAccusationDismiss(suspect: Suspect?)
     fun onEndOfGameDismiss()
     fun onLossDialogDismiss(playerId: Int? = null)
+    fun onPlayerDiesDismiss(cards: List<MysteryCard>?)
 }
 
 interface MapActivityListener {
