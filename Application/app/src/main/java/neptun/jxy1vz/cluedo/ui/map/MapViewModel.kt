@@ -69,6 +69,7 @@ class MapViewModel(
     DialogDismiss, Animation.AnimationListener {
 
     private var otherPlayerStepsOnStar: Boolean = false
+    private var playerInTurnAffected = false
     private var player = getPlayerById(playerId)
     private var mapGraph: Graph<Position>
     private var selectionList: ArrayList<ImageView> = ArrayList()
@@ -1016,8 +1017,22 @@ class MapViewModel(
     }
 
     override fun onLossDialogDismiss(playerId: Int?) {
-        if (playerId == playerInTurn) {
-            continueGame()
+        when {
+            playerId == playerInTurn -> {
+                playerInTurnAffected = false
+                continueGame()
+                return
+            }
+            playerInTurnAffected -> return
+            playerId != null && !playerInTurnAffected -> {
+                continueGame()
+                return
+            }
+            playerId == null && playerInTurn != player.id && !playerInTurnAffected -> {
+                continueGame()
+                return
+            }
+            else -> continueGame()
         }
     }
 
@@ -1258,9 +1273,23 @@ class MapViewModel(
                 }
             }
         }
+        if (playerIds.contains(playerInTurn)) {
+            playerInTurnAffected = true
+
+            val tools: ArrayList<String> = ArrayList()
+            val spells: ArrayList<String> = ArrayList()
+            val allys: ArrayList<String> = ArrayList()
+
+            getHelperObjects(getPlayerById(playerInTurn), card, tools, spells, allys)
+
+            if (tools.size == 1 && spells.size == 1 && allys.size == 1)
+                getLoss(playerInTurn, card)
+            else
+                (getLoss(playerInTurn, null))
+        }
 
         for (id in playerIds) {
-            if (id != player.id) {
+            if (id != player.id && id != playerInTurn) {
                 val tools: ArrayList<String> = ArrayList()
                 val spells: ArrayList<String> = ArrayList()
                 val allys: ArrayList<String> = ArrayList()
