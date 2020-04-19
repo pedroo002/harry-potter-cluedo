@@ -17,10 +17,7 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
 import com.otaliastudios.zoom.ZoomLayout
 import kotlinx.android.synthetic.main.activity_map.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
@@ -188,9 +185,18 @@ class MapViewModel(
             4 -> 70
             else -> 80
         }
-        for (player in gameModels.playerList) {
-            player.hp = initHp
+
+        GlobalScope.launch(Dispatchers.Main) {
+            for (p in gameModels.playerList) {
+                p.hp = initHp
+                if (p.id != player.id) {
+                    getCard(p.id, CardType.HELPER)
+                    delay(5000)
+                }
+            }
+            moveCameraToPlayer(player.id)
             getCard(player.id, CardType.HELPER)
+            letPlayerTurn()
         }
 
         setState(playerId, HogwartsHouse.SLYTHERIN)
@@ -228,8 +234,6 @@ class MapViewModel(
                 mapGraph.addEdge(door.position, Position(door.room.top, door.room.left + i))
             }
         }
-
-        letPlayerTurn()
     }
 
     private fun moveCameraToPlayer(playerId: Int) {
@@ -1061,67 +1065,75 @@ class MapViewModel(
     }
 
     private fun showCard(playerId: Int, card: Card, type: CardType) {
-        val cardImage = ImageView(mapRoot.mapLayout.context)
-        cardImage.layoutParams = ConstraintLayout.LayoutParams(
-            context.resources.displayMetrics.widthPixels / 3,
-            3 * context.resources.displayMetrics.heightPixels / 4
-        )
-        cardImage.setImageResource(card.imageRes)
-
-        val mapSizeX = mapRoot.mapLayout.ivMap.right.toFloat()
-        val mapSizeY = mapRoot.mapLayout.ivMap.bottom.toFloat()
-        val screenSizeX = context.resources.displayMetrics.widthPixels
-        val screenSizeY = context.resources.displayMetrics.heightPixels
-        val panX = mapRoot.panX
-        val panY = mapRoot.panY
-
-        val possibleRow =
-            when {
-                panY < screenSizeY -> floor(abs(ROWS * panY / mapSizeY)).toInt()
-                panY > mapSizeY - screenSizeY -> floor(abs((mapSizeY - screenSizeY) / mapSizeY) * ROWS).toInt()
-                else -> floor(
-                    abs((mapSizeY - panY) / mapSizeY) * ROWS
-                ).toInt()
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                moveCameraToPlayer(playerId)
             }
-        val possibleCol =
-            when {
-                panX < screenSizeX -> floor(abs(COLS * panX / mapSizeX)).toInt()
-                panX > mapSizeX - screenSizeX -> floor(abs((mapSizeX - screenSizeX) / mapSizeX) * COLS).toInt()
-                else -> floor(
-                    abs((mapSizeX - panX) / mapSizeX) * COLS
-                ).toInt()
-            }
+            delay(1000)
 
-        setLayoutConstraintTop(cardImage, gameModels.rows[possibleRow + 1])
-        setLayoutConstraintStart(cardImage, gameModels.cols[possibleCol + 1])
+            val cardImage = ImageView(mapRoot.mapLayout.context)
+            cardImage.layoutParams = ConstraintLayout.LayoutParams(
+                context.resources.displayMetrics.widthPixels / 3,
+                3 * context.resources.displayMetrics.heightPixels / 4
+            )
+            cardImage.setImageResource(card.imageRes)
 
-        cardImage.translationX = -1 * cardImage.width.toFloat()
-        cardImage.visibility = ImageView.VISIBLE
+            val mapSizeX = mapRoot.mapLayout.ivMap.right.toFloat()
+            val mapSizeY = mapRoot.mapLayout.ivMap.bottom.toFloat()
+            val screenSizeX = context.resources.displayMetrics.widthPixels
+            val screenSizeY = context.resources.displayMetrics.heightPixels
+            val panX = mapRoot.panX
+            val panY = mapRoot.panY
 
-        mapRoot.mapLayout.addView(cardImage)
-        ObjectAnimator.ofFloat(cardImage, "translationX", cardImage.width.toFloat())
-            .apply {
-                duration = 1000
-                start()
-                doOnEnd {
-                    cardImage.translationX = 0f
-                    ObjectAnimator.ofFloat(
-                        cardImage,
-                        "translationX",
-                        -1 * cardImage.width.toFloat()
-                    ).apply {
+            val possibleRow =
+                when {
+                    panY < screenSizeY -> floor(abs(ROWS * panY / mapSizeY)).toInt()
+                    panY > mapSizeY - screenSizeY -> floor(abs((mapSizeY - screenSizeY) / mapSizeY) * ROWS).toInt()
+                    else -> floor(
+                        abs((mapSizeY - panY) / mapSizeY) * ROWS
+                    ).toInt()
+                }
+            val possibleCol =
+                when {
+                    panX < screenSizeX -> floor(abs(COLS * panX / mapSizeX)).toInt()
+                    panX > mapSizeX - screenSizeX -> floor(abs((mapSizeX - screenSizeX) / mapSizeX) * COLS).toInt()
+                    else -> floor(
+                        abs((mapSizeX - panX) / mapSizeX) * COLS
+                    ).toInt()
+                }
+
+            setLayoutConstraintTop(cardImage, gameModels.rows[possibleRow + 1])
+            setLayoutConstraintStart(cardImage, gameModels.cols[possibleCol + 1])
+
+            cardImage.translationX = -1 * cardImage.width.toFloat()
+            cardImage.visibility = ImageView.VISIBLE
+
+            withContext(Dispatchers.Main) {
+                mapRoot.mapLayout.addView(cardImage)
+                ObjectAnimator.ofFloat(cardImage, "translationX", cardImage.width.toFloat())
+                    .apply {
                         duration = 1000
-                        startDelay = 2000
                         start()
                         doOnEnd {
-                            mapRoot.mapLayout.removeView(cardImage)
-                            moveCameraToPlayer(playerInTurn)
-                            if (playerId != player.id)
-                                evaluateCard(playerId, card, type)
+                            cardImage.translationX = 0f
+                            ObjectAnimator.ofFloat(
+                                cardImage,
+                                "translationX",
+                                -1 * cardImage.width.toFloat()
+                            ).apply {
+                                duration = 1000
+                                startDelay = 2000
+                                start()
+                                doOnEnd {
+                                    mapRoot.mapLayout.removeView(cardImage)
+                                    if (playerId != player.id)
+                                        evaluateCard(playerId, card, type)
+                                }
+                            }
                         }
                     }
-                }
             }
+        }
     }
 
     private fun evaluateCard(playerId: Int, randomCard: Card, type: CardType) {
