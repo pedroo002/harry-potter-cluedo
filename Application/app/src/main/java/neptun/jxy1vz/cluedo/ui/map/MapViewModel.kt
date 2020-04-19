@@ -1016,7 +1016,7 @@ class MapViewModel(
     }
 
     override fun onLossDialogDismiss(playerId: Int?) {
-        if (playerId == null) {
+        if (playerId == playerInTurn) {
             continueGame()
         }
     }
@@ -1271,15 +1271,18 @@ class MapViewModel(
                     getLoss(id, card)
                 else
                     (getLoss(id, null))
-            } else
-                DarkCardDialog(player, card, this@MapViewModel).show(fm, "DIALOG_DARK")
+            }
         }
 
         if (!playerIds.contains(player.id)) {
-            continueGame()
             if (playerInTurn == player.id)
                 showCard(player.id, card, CardType.DARK)
         }
+        else
+            DarkCardDialog(player, card, this@MapViewModel).show(fm, "DIALOG_DARK")
+
+        if (playerIds.isEmpty())
+            continueGame()
     }
 
     override fun getLoss(playerId: Int, card: DarkCard?) {
