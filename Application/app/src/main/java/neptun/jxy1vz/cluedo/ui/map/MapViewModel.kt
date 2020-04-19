@@ -190,7 +190,7 @@ class MapViewModel(
         }
         for (player in gameModels.playerList) {
             player.hp = initHp
-            //getCard(player.id, CardType.HELPER)
+            getCard(player.id, CardType.HELPER)
         }
 
         setState(playerId, HogwartsHouse.SLYTHERIN)
@@ -447,7 +447,7 @@ class MapViewModel(
                 doOnEnd {
                     if (s.doorState == DoorState.OPENED)
                         setViewVisibility(ivDoor, s.doorState.boolean())
-                    if (!darkMarkAnimation && idx % 3 == 2) {
+                    if (!darkMarkAnimation && gatewayAnimations.isEmpty() && idx % 3 == 2) {
                         if (!pause)
                             moveCameraToPlayer(playerInTurn)
                         continueGame()
@@ -1017,11 +1017,18 @@ class MapViewModel(
         }
     }
 
-    override fun onPlayerDiesDismiss(cards: List<MysteryCard>?) {
-        if (cards == null)
+    override fun onPlayerDiesDismiss(player: Player?) {
+        if (player == null)
             activityListener.exitToMenu()
         else {
-            moveToNextPlayer()
+            if (player.id == playerInTurn)
+                moveToNextPlayer()
+            if (pause) {
+                pause = false
+                savedPlayerId = -1
+                savedDiceValue = 0
+                savedHouse = null
+            }
         }
     }
 
@@ -1456,7 +1463,7 @@ interface DialogDismiss {
     fun onAccusationDismiss(suspect: Suspect?)
     fun onEndOfGameDismiss()
     fun onLossDialogDismiss(playerId: Int? = null)
-    fun onPlayerDiesDismiss(cards: List<MysteryCard>?)
+    fun onPlayerDiesDismiss(player: Player?)
 }
 
 interface MapActivityListener {

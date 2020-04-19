@@ -59,7 +59,7 @@ class PlayerDiesDialog(private val player: Player, private val listener: DialogD
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        listener.onPlayerDiesDismiss(player.mysteryCards)
+        listener.onPlayerDiesDismiss(player)
         super.onDismiss(dialog)
     }
 }
