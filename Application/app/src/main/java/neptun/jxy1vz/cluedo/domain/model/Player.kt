@@ -9,8 +9,7 @@ data class Player(
     var hp: Int = 70,
     var mysteryCards: MutableList<MysteryCard> = ArrayList(),
     var helperCards: MutableList<HelperCard>? = null,
-    var conclusion: HashMap<String, MutableList<Int>>? = null,
-    var diceSum: Int? = null
+    var conclusion: HashMap<String, MutableList<Int>>? = null
 )
 
 fun Player.getConclusion(mysteryName: String, cardHolderPlayerId: Int) {

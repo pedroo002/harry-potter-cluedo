@@ -1,6 +1,7 @@
 package neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -56,7 +57,6 @@ class CardLossDialog(private val playerIdx: Int, private val helperCards: List<H
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
             .setView(dialogCardLossBinding.root).setTitle(title)
             .setNeutralButton(R.string.throw_card) { dialog, _ ->
-                listener.throwCard(playerIdx, helperCards[dialogCardLossBinding.vpCards.currentItem])
                 dialog.dismiss()
             }.create()
     }
@@ -64,5 +64,10 @@ class CardLossDialog(private val playerIdx: Int, private val helperCards: List<H
     override fun onResume() {
         super.onResume()
         dialogCardLossBinding.vpCards.adapter = adapter
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        listener.throwCard(playerIdx, helperCards[dialogCardLossBinding.vpCards.currentItem])
+        super.onDismiss(dialog)
     }
 }

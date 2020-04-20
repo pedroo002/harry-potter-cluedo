@@ -11,6 +11,7 @@ import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.util.Interactor
 import neptun.jxy1vz.cluedo.domain.util.toDatabaseModel
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
+import kotlin.random.Random
 
 class DatabaseAccess(context: Context) {
 
@@ -24,13 +25,30 @@ class DatabaseAccess(context: Context) {
         }
     }
 
-    suspend fun getCardBySuperType(prefix: String): Card? {
-        return when (prefix) {
-            "DARK_%" -> interactor.getCardBySuperType(prefix)?.toDomainModel() as DarkCard
-            "HELPER_%" -> interactor.getCardBySuperType(prefix)?.toDomainModel() as HelperCard
-            "MYSTERY_%" -> interactor.getCardBySuperType(prefix)?.toDomainModel() as MysteryCard
-            else -> interactor.getCardBySuperType(prefix)?.toDomainModel() as PlayerCard
+    suspend fun getCardBySuperType(playerId: Int, prefix: String): Card? {
+        val cards = interactor.getCardBySuperType(prefix)
+        if (cards != null) {
+            val card = cards[Random.nextInt(0, cards.size)]
+            interactor.updateCards(
+                CardDBmodel(
+                    card.id,
+                    card.name,
+                    card.imageRes,
+                    card.versoRes,
+                    card.cardType,
+                    playerId,
+                    card.lossType,
+                    card.hpLoss
+                )
+            )
+            return when (prefix) {
+                "DARK_%" -> card.toDomainModel() as DarkCard
+                "HELPER_%" -> card.toDomainModel() as HelperCard
+                "MYSTERY_%" -> card.toDomainModel() as MysteryCard
+                else -> card.toDomainModel() as PlayerCard
+            }
         }
+        return null
     }
 
     suspend fun getCardByName(name: String): Card? {
@@ -44,13 +62,42 @@ class DatabaseAccess(context: Context) {
         val tools = interactor.getCardsByType(MysteryType.TOOL.toDatabaseModel().string())
         val suspects = interactor.getCardsByType(MysteryType.SUSPECT.toDatabaseModel().string())
         val venues = interactor.getCardsByType(MysteryType.VENUE.toDatabaseModel().string())
+
+        val randomToolIndices = ArrayList<Int>()
+        val randomSuspectIndices = ArrayList<Int>()
+        val randomVenueIndices = ArrayList<Int>()
+        while (randomToolIndices.size + randomSuspectIndices.size + randomVenueIndices.size != playerIds.size * 3) {
+            if (randomToolIndices.size < playerIds.size) {
+                val rnd = Random.nextInt(0, tools!!.size)
+                if (!randomToolIndices.contains(rnd))
+                    randomToolIndices.add(rnd)
+            }
+
+            if (randomSuspectIndices.size < playerIds.size) {
+                val rnd = Random.nextInt(0, suspects!!.size)
+                if (!randomSuspectIndices.contains(rnd))
+                    randomSuspectIndices.add(rnd)
+            }
+
+            if (randomVenueIndices.size < playerIds.size) {
+                val rnd = Random.nextInt(0, venues!!.size)
+                if (!randomVenueIndices.contains(rnd))
+                    randomVenueIndices.add(rnd)
+            }
+        }
+
         for (id in playerIds) {
-            val card1 = tools?.get(id + 1)
-            val card2 = suspects?.get(id + 1)
-            val card3 = venues?.get(id + 1)
+            val card1 = tools?.get(randomToolIndices[0])
+            randomToolIndices.removeAt(0)
+            val card2 = suspects?.get(randomSuspectIndices[0])
+            randomSuspectIndices.removeAt(0)
+            val card3 = venues?.get(randomVenueIndices[0])
+            randomVenueIndices.removeAt(0)
+
             interactor.updateCards(CardDBmodel(card1!!.id, card1.name, card1.imageRes, card1.versoRes, card1.cardType, id, card1.lossType, card1.hpLoss))
             interactor.updateCards(CardDBmodel(card2!!.id, card2.name, card2.imageRes, card2.versoRes, card2.cardType, id, card2.lossType, card2.hpLoss))
             interactor.updateCards(CardDBmodel(card3!!.id, card3.name, card3.imageRes, card3.versoRes, card3.cardType, id, card3.lossType, card3.hpLoss))
+
             mcList.add(Pair(card1.toDomainModel() as MysteryCard, id))
             mcList.add(Pair(card2.toDomainModel() as MysteryCard, id))
             mcList.add(Pair(card3.toDomainModel() as MysteryCard, id))

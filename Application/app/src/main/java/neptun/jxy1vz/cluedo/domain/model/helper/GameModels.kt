@@ -98,16 +98,7 @@ class GameModels(private val context: Context) {
     )
 
     val roomList = listOf(
-        Room(
-            0,
-            "Sötét varázslatok kivédése terem",
-            0,
-            6,
-            5,
-            0,
-            42,
-            R.drawable.selection_room_sotet_varazslatok_kivedese
-        ),
+        Room(0, "Sötét varázslatok kivédése terem", 0, 6, 5, 0, 42, R.drawable.selection_room_sotet_varazslatok_kivedese),
         Room(1, "Nagyterem", 0, 15, 6, 9, 49, R.drawable.selection_room_nagyterem),
         Room(2, "Gyengélkedő", 0, 24, 6, 18, 49, R.drawable.selection_room_gyengelkedo),
         Room(3, "Könyvtár", 8, 6, 11, 0, 28, R.drawable.selection_room_konyvtar),

@@ -38,7 +38,7 @@ class Interactor(private val db: CluedoDatabase) {
         return db.cardDao().getCardsByType(cardType)
     }
 
-    suspend fun getCardBySuperType(prefix: String): CardDBmodel? {
+    suspend fun getCardBySuperType(prefix: String): List<CardDBmodel>? {
         return db.cardDao().getCardBySuperType(prefix)
     }
 
