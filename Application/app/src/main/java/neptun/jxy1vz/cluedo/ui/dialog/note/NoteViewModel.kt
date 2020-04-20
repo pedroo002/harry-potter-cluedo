@@ -1,6 +1,5 @@
 package neptun.jxy1vz.cluedo.ui.dialog.note
 
-import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
@@ -12,7 +11,7 @@ import kotlinx.android.synthetic.main.dialog_note.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogNoteBinding
 
-class NoteViewModel(private val context: Context, private val bind: DialogNoteBinding) :
+class NoteViewModel(private val bind: DialogNoteBinding) :
     BaseObservable(),
     View.OnTouchListener {
 
@@ -22,7 +21,7 @@ class NoteViewModel(private val context: Context, private val bind: DialogNoteBi
     private lateinit var guidelineBottom: Guideline
     private lateinit var guidelineRight: Guideline
 
-    val nameRes = listOf(
+    private val nameRes = listOf(
         R.drawable.gw,
         R.drawable.hg,
         R.drawable.hp,
@@ -31,9 +30,9 @@ class NoteViewModel(private val context: Context, private val bind: DialogNoteBi
         R.drawable.rw
     )
 
-    val names = ArrayList<ImageView>()
+    private val names = ArrayList<ImageView>()
 
-    val rowsVenues = listOf(
+    private val rowsVenues = listOf(
         bind.guidelineVenuesTop,
         bind.guidelineRow13,
         bind.guidelineRow14,
@@ -47,7 +46,7 @@ class NoteViewModel(private val context: Context, private val bind: DialogNoteBi
         bind.guidelineVenuesBottom
     )
 
-    val rowsSuspects = listOf(
+    private val rowsSuspects = listOf(
         bind.guidelineSuspectsTop,
         bind.guidelineRow1,
         bind.guidelineRow2,
@@ -58,7 +57,7 @@ class NoteViewModel(private val context: Context, private val bind: DialogNoteBi
         bind.guidelineSuspectsBottom
     )
 
-    val rowsTools = listOf(
+    private val rowsTools = listOf(
         bind.guidelineToolsTop,
         bind.guidelineRow7,
         bind.guidelineRow8,
@@ -69,7 +68,7 @@ class NoteViewModel(private val context: Context, private val bind: DialogNoteBi
         bind.guidelineToolsBottom
     )
 
-    val cols = listOf(
+    private val cols = listOf(
         bind.guidelineColumn1,
         bind.guidelineColumn2,
         bind.guidelineColumn3,
