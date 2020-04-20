@@ -17,7 +17,7 @@ class NoteDialog(private val listener: DialogDismiss) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         dialogNoteBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_note, null, false)
-        dialogNoteBinding.dialogNoteViewModel = NoteViewModel()
+        dialogNoteBinding.dialogNoteViewModel = NoteViewModel(context!!, dialogNoteBinding)
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_DialogWhenLarge).setView(dialogNoteBinding.root).setTitle(R.string.take_note).setNeutralButton(R.string.ok) {
             dialog, _ ->

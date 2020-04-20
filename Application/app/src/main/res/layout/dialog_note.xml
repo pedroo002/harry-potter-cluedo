@@ -24,6 +24,7 @@
                 android:adjustViewBounds="true"
                 android:id="@+id/ivNotepad"
                 android:src="@drawable/notepad"
+                android:longClickable="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -68,9 +69,23 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.917"/>
 
+            <androidx.constraintlayout.widget.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guidelineRight"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="1"/>
+
             <!-- Rows -->
 
             <!-- Suspects -->
+
+            <androidx.constraintlayout.widget.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guidelineSuspectsTop"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0"/>
 
             <androidx.constraintlayout.widget.Guideline
                 android:layout_width="wrap_content"
@@ -114,7 +129,21 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.232"/>
 
+            <androidx.constraintlayout.widget.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guidelineSuspectsBottom"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.27"/>
+
             <!-- Tools -->
+
+            <androidx.constraintlayout.widget.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guidelineToolsTop"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.307"/>
 
             <androidx.constraintlayout.widget.Guideline
                 android:layout_width="wrap_content"
@@ -158,7 +187,21 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.541"/>
 
+            <androidx.constraintlayout.widget.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guidelineToolsBottom"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.578"/>
+
             <!-- Venues -->
+
+            <androidx.constraintlayout.widget.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guidelineVenuesTop"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.616"/>
 
             <androidx.constraintlayout.widget.Guideline
                 android:layout_width="wrap_content"
@@ -222,6 +265,13 @@
                 android:id="@+id/guidelineRow21"
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.962"/>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guidelineVenuesBottom"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="1"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
