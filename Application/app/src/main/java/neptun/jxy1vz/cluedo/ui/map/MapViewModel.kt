@@ -1350,9 +1350,9 @@ class MapViewModel(
                             val pair = getPairById(playerId)
                             mapRoot.mapLayout.removeView(pair.second)
                             val newPlayerImagePairs = ArrayList<Pair<Player, ImageView>>()
-                            for (pair in playerImagePairs) {
-                                if (pair.first.id != playerId)
-                                    newPlayerImagePairs.add(pair)
+                            for (p in playerImagePairs) {
+                                if (p.first.id != playerId)
+                                    newPlayerImagePairs.add(p)
                             }
                             playerImagePairs = newPlayerImagePairs
                         }
