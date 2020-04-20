@@ -346,7 +346,7 @@ class MapViewModel(
         for (i in gatewayNumbers.indices) {
             mapRoot.mapLayout.findViewById<ImageView>(gateways[visibleGatewaySerialNumbers[i]])
                 .setOnClickListener {
-                    if (it.visibility == View.VISIBLE)
+                    if (it.visibility == View.VISIBLE && playerInTurn == player.id)
                         teleport(
                             playerInTurn,
                             stateList[state * 3 + gatewayNumbers[i]].roomId,
@@ -1042,12 +1042,8 @@ class MapViewModel(
         else {
             if (player.id == playerInTurn)
                 moveToNextPlayer()
-            if (pause) {
-                pause = false
-                savedPlayerId = -1
-                savedDiceValue = 0
-                savedHouse = null
-            }
+            else
+                continueGame()
         }
     }
 
@@ -1066,9 +1062,10 @@ class MapViewModel(
                 CardType.HELPER -> gameModels.db.getCardBySuperType(
                     playerId,
                     "HELPER_%"
-                ) as HelperCard
-                else -> gameModels.db.getCardBySuperType(playerId, "DARK_%") as DarkCard
+                ) as? HelperCard
+                else -> gameModels.db.getCardBySuperType(playerId, "DARK_%") as? DarkCard
             }
+                ?: return@launch
 
             withContext(Dispatchers.Main) {
                 if (playerId != player.id) {
@@ -1273,7 +1270,7 @@ class MapViewModel(
                 }
             }
         }
-        if (playerIds.contains(playerInTurn)) {
+        if (playerIds.contains(playerInTurn) && playerInTurn != player.id) {
             playerInTurnAffected = true
 
             val tools: ArrayList<String> = ArrayList()
