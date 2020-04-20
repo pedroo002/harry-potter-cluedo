@@ -34,6 +34,7 @@ import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
+import neptun.jxy1vz.cluedo.ui.dialog.note.NoteDialog
 import neptun.jxy1vz.cluedo.ui.dialog.player_dies.PlayerDiesDialog
 import neptun.jxy1vz.cluedo.ui.dialog.player_dies.UserDiesDialog
 import neptun.jxy1vz.cluedo.ui.dialog.show_card.ShowCardDialog
@@ -976,11 +977,11 @@ class MapViewModel(
     }
 
     override fun onSimpleInformationDismiss() {
-        moveToNextPlayer()
+        NoteDialog(this).show(fm, "DIALOG_NOTE")
     }
 
     override fun onCardRevealDismiss() {
-        moveToNextPlayer()
+        NoteDialog(this).show(fm, "DIALOG_NOTE")
     }
 
     override fun onCardShowDismiss(suspect: Suspect, card: MysteryCard) {
@@ -1045,6 +1046,10 @@ class MapViewModel(
             else
                 continueGame()
         }
+    }
+
+    override fun onNoteDismiss() {
+        moveToNextPlayer()
     }
 
     private fun nothingHasBeenShowed(suspect: Suspect) {
@@ -1505,6 +1510,7 @@ interface DialogDismiss {
     fun onEndOfGameDismiss()
     fun onLossDialogDismiss(playerId: Int? = null)
     fun onPlayerDiesDismiss(player: Player?)
+    fun onNoteDismiss()
 }
 
 interface MapActivityListener {
