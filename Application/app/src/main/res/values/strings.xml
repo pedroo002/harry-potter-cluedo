@@ -84,6 +84,7 @@
     <string name="obstructo">Obstructo</string>
     <string name="mandragora">Mandragóra</string>
     <string name="altatoital">Altatóital</string>
+    <string name="take_note">Jegyezd fel a történteket!</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
