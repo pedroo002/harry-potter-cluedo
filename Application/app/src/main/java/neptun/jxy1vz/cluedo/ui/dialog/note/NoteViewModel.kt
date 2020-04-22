@@ -9,13 +9,22 @@ import androidx.constraintlayout.widget.Guideline
 import androidx.core.view.isVisible
 import androidx.databinding.BaseObservable
 import kotlinx.android.synthetic.main.dialog_note.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.databinding.DialogNoteBinding
 import neptun.jxy1vz.cluedo.domain.model.Note
 import neptun.jxy1vz.cluedo.domain.model.Player
+import neptun.jxy1vz.cluedo.domain.util.Interactor
+import neptun.jxy1vz.cluedo.domain.util.toDatabaseModel
 
 class NoteViewModel(context: Context, player: Player, private val bind: DialogNoteBinding) :
     BaseObservable() {
+
+    private val interactor = Interactor(CluedoDatabase.getInstance(context))
 
     private var properClick = false
     private lateinit var guidelineTop: Guideline
@@ -76,6 +85,7 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
     )
 
     private val cols = listOf(
+        bind.guidelineColumn0,
         bind.guidelineColumn1,
         bind.guidelineColumn2,
         bind.guidelineColumn3,
@@ -89,14 +99,49 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
             val frame = ImageView(bind.svNotepad.noteLayout.context)
             val params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
             params.setMargins(0, 0, 20, 0)
-            addImageToLayout(frame, R.drawable.frame, params, ImageView.VISIBLE, list[i], cols[0], list[i+1], bind.svNotepad.noteLayout.guidelineColumn0)
+            addImageToLayout(frame, R.drawable.frame, params, ImageView.VISIBLE, list[i], cols[1], list[i+1], cols[0])
             frame.setOnClickListener {
-                noteInCell(ownName, bind.svNotepad.noteLayout.guidelineColumn0, cols[0], list[i], list[i+1], params)
+                noteInCell(ownName, cols[0], cols[1], list[i], list[i+1], params)
             }
         }
     }
 
     init {
+        GlobalScope.launch(Dispatchers.IO) {
+            val dbNotes = interactor.getNotes()
+            withContext(Dispatchers.Main) {
+                dbNotes?.let {
+                    for (note in dbNotes) {
+                        var guidelineTop: Guideline
+                        var guidelineBottom: Guideline
+                        when {
+                            note.row <= 6 -> {
+                                guidelineTop = rowsSuspects[note.row]
+                                guidelineBottom = rowsSuspects[note.row + 1]
+                            }
+                            note.row in 7..12 -> {
+                                guidelineTop = rowsTools[note.row - 6]
+                                guidelineBottom = rowsTools[note.row - 6 + 1]
+                            }
+                            else -> {
+                                guidelineTop = rowsVenues[note.row - 12]
+                                guidelineBottom = rowsVenues[note.row - 12 + 1]
+                            }
+                        }
+                        val guidelineLeft = cols[note.col]
+                        val guidelineRight = cols[note.col + 1]
+
+                        var params: ConstraintLayout.LayoutParams? = null
+                        if (note.col == 0) {
+                            params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
+                            params.setMargins(0, 0, 20, 0)
+                        }
+                        noteInCell(note.res, guidelineLeft, guidelineRight, guidelineTop, guidelineBottom, params)
+                    }
+                }
+            }
+        }
+
         val nameList = context.resources.getStringArray(R.array.characters)
         ownName = nameRes[nameList.indexOf(player.card.name)]
         nameRes.remove(ownName)
@@ -105,14 +150,14 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         addFrames(rowsTools)
         addFrames(rowsVenues)
 
-        bind.svNotepad.noteLayout.ivNotepad.setOnTouchListener { v, event ->
+        bind.svNotepad.noteLayout.ivNotepad.setOnTouchListener { _, event ->
             properClick = false
 
             if (event?.action == MotionEvent.ACTION_DOWN) {
                 val x = event.x
                 val y = event.y
 
-                if (x >= cols.first().x) {
+                if (x >= cols[1].x) {
                     var guideLineLeft: Guideline? = null
                     var guideLineRight: Guideline? = null
                     for (i in 0 until cols.lastIndex) {
@@ -209,12 +254,12 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
                 else -> rowsVenues
             }
 
-            setLayoutConstraintHorizontal(backgrounds[i], cols[i].id, cols[i+1].id)
+            setLayoutConstraintHorizontal(backgrounds[i], cols[i+1].id, cols[i+2].id)
             setLayoutConstraintVertical(backgrounds[i], rowList[rowList.indexOf(top)-1].id, rowList[rowList.indexOf(bottom)-1].id)
             backgrounds[i].visibility = ImageView.VISIBLE
             backgrounds[i].bringToFront()
 
-            setLayoutConstraintHorizontal(names[i], cols[i].id, cols[i+1].id)
+            setLayoutConstraintHorizontal(names[i], cols[i+1].id, cols[i+2].id)
             setLayoutConstraintVertical(names[i], rowList[rowList.indexOf(top)-1].id, rowList[rowList.indexOf(bottom)-1].id)
             names[i].visibility = ImageView.VISIBLE
             names[i].bringToFront()
@@ -285,5 +330,12 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         setLayoutConstraintHorizontal(image, constraintLeft.id, constraintRight.id)
         setLayoutConstraintVertical(image, constraintTop.id, constraintBottom.id)
         bind.svNotepad.noteLayout.addView(image)
+    }
+
+    fun saveNotes() {
+        GlobalScope.launch(Dispatchers.IO) {
+            interactor.eraseNotes()
+            interactor.insertIntoNotes(noteList.map { note -> note.toDatabaseModel() })
+        }
     }
 }

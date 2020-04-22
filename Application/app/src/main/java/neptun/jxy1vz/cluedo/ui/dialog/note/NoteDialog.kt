@@ -27,6 +27,7 @@ class NoteDialog(private val player: Player, private val listener: DialogDismiss
     }
 
     override fun onDismiss(dialog: DialogInterface) {
+        dialogNoteBinding.dialogNoteViewModel!!.saveNotes()
         listener.onNoteDismiss()
         super.onDismiss(dialog)
     }

@@ -25,6 +25,10 @@ class DatabaseAccess(context: Context) {
         }
     }
 
+    suspend fun eraseNotes() {
+        interactor.eraseNotes()
+    }
+
     suspend fun getCardBySuperType(playerId: Int, prefix: String): Card? {
         val cards = interactor.getCardBySuperType(prefix)
         if (cards != null) {
