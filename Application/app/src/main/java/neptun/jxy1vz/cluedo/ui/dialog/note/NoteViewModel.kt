@@ -12,8 +12,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogNoteBinding
 
 class NoteViewModel(private val bind: DialogNoteBinding) :
-    BaseObservable(),
-    View.OnTouchListener {
+    BaseObservable() {
 
     private var properClick = false
     private lateinit var guidelineTop: Guideline
@@ -78,7 +77,65 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
     )
 
     init {
-        bind.svNotepad.noteLayout.ivNotepad.setOnTouchListener(this)
+        bind.svNotepad.noteLayout.ivNotepad.setOnTouchListener { v, event ->
+            properClick = false
+
+            if (event?.action == MotionEvent.ACTION_DOWN) {
+                val x = event.x
+                val y = event.y
+
+                if (x >= cols.first().x) {
+                    var guideLineLeft: Guideline? = null
+                    var guideLineRight: Guideline? = null
+                    for (i in 0 until cols.lastIndex) {
+                        if (cols[i].x <= x && cols[i+1].x >= x) {
+                            guideLineLeft = cols[i]
+                            guideLineRight = cols[i+1]
+                            break
+                        }
+                    }
+
+                    var guideLineTop: Guideline? = null
+                    var guideLineBottom: Guideline? = null
+                    if (y >= rowsSuspects[1].y && y <= rowsSuspects.last().y) {
+                        for (i in 0 until rowsSuspects.lastIndex) {
+                            if (rowsSuspects[i].y <= y && rowsSuspects[i+1].y >= y) {
+                                guideLineTop = rowsSuspects[i]
+                                guideLineBottom = rowsSuspects[i+1]
+                                break
+                            }
+                        }
+                    }
+                    else if (y >= rowsTools[1].y && y <= rowsTools.last().y) {
+                        for (i in 0 until rowsTools.lastIndex) {
+                            if (rowsTools[i].y <= y && rowsTools[i+1].y >= y) {
+                                guideLineTop = rowsTools[i]
+                                guideLineBottom = rowsTools[i+1]
+                                break
+                            }
+                        }
+                    }
+                    else if (y >= rowsVenues[1].y && y <= rowsVenues.last().y) {
+                        for (i in 0 until rowsVenues.lastIndex) {
+                            if (rowsVenues[i].y <= y && rowsVenues[i+1].y >= y) {
+                                guideLineTop = rowsVenues[i]
+                                guideLineBottom = rowsVenues[i+1]
+                                break
+                            }
+                        }
+                    }
+
+                    if (guideLineLeft != null && guideLineRight != null && guideLineTop != null && guideLineBottom != null) {
+                        guidelineTop = guideLineTop
+                        guidelineBottom = guideLineBottom
+                        guidelineLeft = guideLineLeft
+                        guidelineRight = guideLineRight
+                        properClick = true
+                    }
+                }
+            }
+            return@setOnTouchListener false
+        }
         bind.svNotepad.noteLayout.ivNotepad.setOnLongClickListener {
             if (properClick)
                 showOptionsAbove(this@NoteViewModel.guidelineLeft, this@NoteViewModel.guidelineRight, this@NoteViewModel.guidelineTop, this@NoteViewModel.guidelineBottom)
@@ -95,67 +152,6 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
 
             names.add(name)
         }
-    }
-
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        v?.performClick()
-        properClick = false
-
-        if (event?.action == MotionEvent.ACTION_DOWN) {
-            val x = event.x
-            val y = event.y
-
-            if (x >= cols.first().x) {
-                var guideLineLeft: Guideline? = null
-                var guideLineRight: Guideline? = null
-                for (i in 0 until cols.lastIndex) {
-                    if (cols[i].x <= x && cols[i+1].x >= x) {
-                        guideLineLeft = cols[i]
-                        guideLineRight = cols[i+1]
-                        break
-                    }
-                }
-
-                var guideLineTop: Guideline? = null
-                var guideLineBottom: Guideline? = null
-                if (y >= rowsSuspects[1].y && y <= rowsSuspects.last().y) {
-                    for (i in 0 until rowsSuspects.lastIndex) {
-                        if (rowsSuspects[i].y <= y && rowsSuspects[i+1].y >= y) {
-                            guideLineTop = rowsSuspects[i]
-                            guideLineBottom = rowsSuspects[i+1]
-                            break
-                        }
-                    }
-                }
-                else if (y >= rowsTools[1].y && y <= rowsTools.last().y) {
-                    for (i in 0 until rowsTools.lastIndex) {
-                        if (rowsTools[i].y <= y && rowsTools[i+1].y >= y) {
-                            guideLineTop = rowsTools[i]
-                            guideLineBottom = rowsTools[i+1]
-                            break
-                        }
-                    }
-                }
-                else if (y >= rowsVenues[1].y && y <= rowsVenues.last().y) {
-                    for (i in 0 until rowsVenues.lastIndex) {
-                        if (rowsVenues[i].y <= y && rowsVenues[i+1].y >= y) {
-                            guideLineTop = rowsVenues[i]
-                            guideLineBottom = rowsVenues[i+1]
-                            break
-                        }
-                    }
-                }
-
-                if (guideLineLeft != null && guideLineRight != null && guideLineTop != null && guideLineBottom != null) {
-                    guidelineTop = guideLineTop
-                    guidelineBottom = guideLineBottom
-                    guidelineLeft = guideLineLeft
-                    guidelineRight = guideLineRight
-                    properClick = true
-                }
-            }
-        }
-        return true
     }
 
     private fun showOptionsAbove(left: Guideline, right: Guideline, top: Guideline, bottom: Guideline) {
@@ -180,9 +176,13 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
     }
 
     private fun noteInCell(name: ImageView, left: Guideline, right: Guideline, top: Guideline, bottom: Guideline) {
-        setLayoutConstraintHorizontal(name, left.id, right.id)
-        setLayoutConstraintVertical(name, top.id, bottom.id)
-        bind.svNotepad.noteLayout.addView(name)
+        val newName = ImageView(bind.svNotepad.noteLayout.context)
+        newName.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
+        newName.setImageResource(nameRes[names.indexOf(name)])
+        newName.visibility = ImageView.VISIBLE
+        setLayoutConstraintHorizontal(newName, left.id, right.id)
+        setLayoutConstraintVertical(newName, top.id, bottom.id)
+        bind.svNotepad.noteLayout.addView(newName)
     }
 
     private fun setLayoutConstraintVertical(view: View, top: Int, bottom: Int) {
