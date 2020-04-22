@@ -10,6 +10,7 @@ import androidx.databinding.BaseObservable
 import kotlinx.android.synthetic.main.dialog_note.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogNoteBinding
+import neptun.jxy1vz.cluedo.domain.model.Note
 
 class NoteViewModel(private val bind: DialogNoteBinding) :
     BaseObservable() {
@@ -19,6 +20,8 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
     private lateinit var guidelineLeft: Guideline
     private lateinit var guidelineBottom: Guideline
     private lateinit var guidelineRight: Guideline
+
+    private val noteList = ArrayList<Note>()
 
     private val nameRes = listOf(
         R.drawable.gw,
@@ -126,11 +129,23 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
                     }
 
                     if (guideLineLeft != null && guideLineRight != null && guideLineTop != null && guideLineBottom != null) {
+                        val col = cols.indexOf(guideLineLeft)
+                        val row = when {
+                            rowsSuspects.contains(guideLineTop) -> rowsSuspects.indexOf(guideLineTop) - 1
+                            rowsTools.contains(guideLineTop) -> rowsTools.indexOf(guideLineTop) - 1 + 6
+                            else -> rowsVenues.indexOf(guideLineTop) - 1 + 12
+                        }
+
                         guidelineTop = guideLineTop
                         guidelineBottom = guideLineBottom
                         guidelineLeft = guideLineLeft
                         guidelineRight = guideLineRight
                         properClick = true
+
+                        for (note in noteList) {
+                            if (note.row == row && note.col == col)
+                                properClick = false
+                        }
                     }
                 }
             }
@@ -183,6 +198,20 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
         setLayoutConstraintHorizontal(newName, left.id, right.id)
         setLayoutConstraintVertical(newName, top.id, bottom.id)
         bind.svNotepad.noteLayout.addView(newName)
+
+        val row: Int = when {
+            rowsSuspects.contains(top) -> rowsSuspects.indexOf(top) - 1
+            rowsTools.contains(top) -> rowsTools.indexOf(top) - 1 + 6
+            else -> rowsVenues.indexOf(top) - 1 + 12
+        }
+        val note = Note(row, cols.indexOf(left), nameRes[names.indexOf(name)])
+        noteList.add(note)
+
+        newName.setOnLongClickListener {
+            bind.svNotepad.noteLayout.removeView(it)
+            noteList.remove(note)
+            return@setOnLongClickListener true
+        }
     }
 
     private fun setLayoutConstraintVertical(view: View, top: Int, bottom: Int) {
