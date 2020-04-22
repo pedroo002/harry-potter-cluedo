@@ -61,10 +61,10 @@ class IncriminationDialog(
     override fun onIncriminationFinalization(tool: String, suspect: String) {
         this.tool = tool
         this.suspect = suspect
-        dialog!!.dismiss()
+        dialog?.dismiss()
     }
 
     override fun onSkip() {
-        dialog!!.dismiss()
+        dialog?.dismiss()
     }
 }

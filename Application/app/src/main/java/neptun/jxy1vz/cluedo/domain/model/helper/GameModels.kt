@@ -12,6 +12,10 @@ class GameModels(private val context: Context) {
     lateinit var gameSolution: List<MysteryCard>
     lateinit var playerList: List<Player>
 
+    suspend fun eraseNotes() {
+        db.eraseNotes()
+    }
+
     suspend fun keepCurrentPlayers(): List<Player> {
         val allPlayers = loadPlayers()
 

@@ -7,7 +7,6 @@ import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.CardType
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel
 
-
 fun CardDBmodel.toDomainModel(): Card {
     return when (cardType) {
         "HELPER_TOOL", "HELPER_SPELL", "HELPER_ALLY"-> HelperCard(
@@ -133,4 +132,12 @@ fun neptun.jxy1vz.cluedo.domain.model.LossType.toDatabaseModel(): LossType {
         neptun.jxy1vz.cluedo.domain.model.LossType.SPELL -> LossType.SPELL_CARD
         else -> LossType.ALLY_CARD
     }
+}
+
+fun NoteDBmodel.toDomainModel(): Note {
+    return Note(this.row, this.col, this.res)
+}
+
+fun Note.toDatabaseModel(): NoteDBmodel {
+    return NoteDBmodel(0, this.row, this.col, this.nameRes)
 }

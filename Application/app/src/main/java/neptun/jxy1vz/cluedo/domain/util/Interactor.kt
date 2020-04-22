@@ -3,8 +3,33 @@ package neptun.jxy1vz.cluedo.domain.util
 import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.database.model.CardDBmodel
 import neptun.jxy1vz.cluedo.database.model.DarkHelperPairDBmodel
+import neptun.jxy1vz.cluedo.database.model.NoteDBmodel
 
 class Interactor(private val db: CluedoDatabase) {
+
+    suspend fun insertIntoNotes(notes: List<NoteDBmodel>) {
+        return db.noteDao().insertIntoTable(notes)
+    }
+
+    suspend fun insertIntoNotes(note: NoteDBmodel): Long {
+        return db.noteDao().insertIntoTable(note)
+    }
+
+    suspend fun upadateNote(note: NoteDBmodel) {
+        return db.noteDao().updateTable(note)
+    }
+
+    suspend fun deleteNote(note: NoteDBmodel) {
+        return db.noteDao().deleteItem(note)
+    }
+
+    suspend fun getNotes(): List<NoteDBmodel>? {
+        return db.noteDao().getNotes()
+    }
+
+    suspend fun eraseNotes() {
+        return db.noteDao().eraseNotes()
+    }
 
     suspend fun insertIntoCards(card: CardDBmodel): Long {
         return db.cardDao().insertIntoTable(card)
