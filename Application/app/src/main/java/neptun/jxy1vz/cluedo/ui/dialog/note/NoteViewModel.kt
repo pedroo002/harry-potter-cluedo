@@ -103,6 +103,10 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
             frame.setOnClickListener {
                 noteInCell(ownName, cols[0], cols[1], list[i], list[i+1], params)
             }
+            frame.setOnLongClickListener {
+                noteInCell(R.drawable.cross, cols[0], cols[1], list[i], list[i+1], params)
+                return@setOnLongClickListener true
+            }
         }
     }
 
