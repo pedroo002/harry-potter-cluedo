@@ -977,11 +977,11 @@ class MapViewModel(
     }
 
     override fun onSimpleInformationDismiss() {
-        NoteDialog(this).show(fm, "DIALOG_NOTE")
+        NoteDialog(player, this).show(fm, "DIALOG_NOTE")
     }
 
     override fun onCardRevealDismiss() {
-        NoteDialog(this).show(fm, "DIALOG_NOTE")
+        NoteDialog(player, this).show(fm, "DIALOG_NOTE")
     }
 
     override fun onCardShowDismiss(suspect: Suspect, card: MysteryCard) {

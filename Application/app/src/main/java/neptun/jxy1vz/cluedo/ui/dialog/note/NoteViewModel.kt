@@ -1,5 +1,6 @@
 package neptun.jxy1vz.cluedo.ui.dialog.note
 
+import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
@@ -11,8 +12,9 @@ import kotlinx.android.synthetic.main.dialog_note.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogNoteBinding
 import neptun.jxy1vz.cluedo.domain.model.Note
+import neptun.jxy1vz.cluedo.domain.model.Player
 
-class NoteViewModel(private val bind: DialogNoteBinding) :
+class NoteViewModel(context: Context, private val player: Player, private val bind: DialogNoteBinding) :
     BaseObservable() {
 
     private var properClick = false
@@ -23,14 +25,16 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
 
     private val noteList = ArrayList<Note>()
 
-    private val nameRes = listOf(
+    private val nameRes = mutableListOf(
         R.drawable.gw,
-        R.drawable.hg,
         R.drawable.hp,
+        R.drawable.hg,
+        R.drawable.rw,
         R.drawable.ll,
-        R.drawable.nl,
-        R.drawable.rw
+        R.drawable.nl
     )
+
+    private var ownName: Int
 
     private val names = ArrayList<ImageView>()
     private val backgrounds = ArrayList<ImageView>()
@@ -81,6 +85,10 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
     )
 
     init {
+        val nameList = context.resources.getStringArray(R.array.characters)
+        ownName = nameRes[nameList.indexOf(player.card.name)]
+        nameRes.remove(ownName)
+
         bind.svNotepad.noteLayout.ivNotepad.setOnTouchListener { v, event ->
             properClick = false
 
@@ -178,7 +186,7 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
     }
 
     private fun showOptionsAbove(left: Guideline, right: Guideline, top: Guideline, bottom: Guideline) {
-        for (i in 0 until names.lastIndex) {
+        for (i in nameRes.indices) {
             val rowList = when {
                 rowsSuspects.contains(top) -> rowsSuspects
                 rowsTools.contains(top) -> rowsTools
