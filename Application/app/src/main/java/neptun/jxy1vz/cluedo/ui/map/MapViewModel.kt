@@ -83,7 +83,7 @@ class MapViewModel(
     private var gryffindorState = 0
     private var hufflepuffState = 0
 
-    private var isGameRunning = true
+    private var isGameRunning = false
     private var playerInTurn = playerId
     private var userFinishedHisTurn = false
     private var userHasToIncriminate = false
@@ -153,7 +153,30 @@ class MapViewModel(
         }
     }
 
+    private fun handOutHelperCards() {
+        if (!isGameRunning) {
+            GlobalScope.launch(Dispatchers.Main) {
+                for (p in gameModels.playerList) {
+                    if (p.id != player.id) {
+                        getCard(p.id, CardType.HELPER)
+                        delay(5000)
+                    }
+                }
+                moveCameraToPlayer(player.id)
+                getCard(player.id, CardType.HELPER)
+                isGameRunning = true
+                moveToNextPlayer()
+            }
+        }
+    }
+
     init {
+        var idx = gameModels.playerList.indexOf(player)
+        idx++
+        if (idx == gameModels.playerList.size)
+            idx = 0
+        playerInTurn = gameModels.playerList[idx].id
+
         val dice1 = ImageView(mapRoot.mapLayout.context)
         dice1.layoutParams = ConstraintLayout.LayoutParams(100, 100)
         dice1.setImageResource(R.drawable.dice1)
@@ -188,18 +211,11 @@ class MapViewModel(
             else -> 80
         }
 
-        GlobalScope.launch(Dispatchers.Main) {
-            for (p in gameModels.playerList) {
-                p.hp = initHp
-                if (p.id != player.id) {
-                    getCard(p.id, CardType.HELPER)
-                    delay(5000)
-                }
-            }
-            moveCameraToPlayer(player.id)
-            getCard(player.id, CardType.HELPER)
-            letPlayerTurn()
+        for (p in gameModels.playerList) {
+            p.hp = initHp
         }
+
+        NoteDialog(player, this).show(fm, "DIALOG_NOTE")
 
         setState(playerId, HogwartsHouse.SLYTHERIN)
         setState(playerId, HogwartsHouse.RAVENCLAW)
@@ -1049,7 +1065,10 @@ class MapViewModel(
     }
 
     override fun onNoteDismiss() {
-        moveToNextPlayer()
+        if (!isGameRunning)
+            handOutHelperCards()
+        else
+            moveToNextPlayer()
     }
 
     private fun nothingHasBeenShowed(suspect: Suspect) {
