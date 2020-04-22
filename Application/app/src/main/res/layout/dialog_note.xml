@@ -32,6 +32,13 @@
 
             <!-- Guidelines... -->
 
+            <androidx.constraintlayout.widget.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guidelineColumn0"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.4805"/>
+
             <!-- Columns -->
 
             <androidx.constraintlayout.widget.Guideline

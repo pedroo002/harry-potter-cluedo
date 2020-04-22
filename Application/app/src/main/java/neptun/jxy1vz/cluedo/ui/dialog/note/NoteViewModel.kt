@@ -84,10 +84,26 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         bind.guidelineRight
     )
 
+    private fun addFrames(list: List<Guideline>) {
+        for (i in 1 until list.lastIndex) {
+            val frame = ImageView(bind.svNotepad.noteLayout.context)
+            val params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
+            params.setMargins(0, 0, 20, 0)
+            addImageToLayout(frame, R.drawable.frame, params, ImageView.VISIBLE, list[i], cols[0], list[i+1], bind.svNotepad.noteLayout.guidelineColumn0)
+            frame.setOnClickListener {
+                noteInCell(ownName, bind.svNotepad.noteLayout.guidelineColumn0, cols[0], list[i], list[i+1], params)
+            }
+        }
+    }
+
     init {
         val nameList = context.resources.getStringArray(R.array.characters)
         ownName = nameRes[nameList.indexOf(player.card.name)]
         nameRes.remove(ownName)
+
+        addFrames(rowsSuspects)
+        addFrames(rowsTools)
+        addFrames(rowsVenues)
 
         bind.svNotepad.noteLayout.ivNotepad.setOnTouchListener { v, event ->
             properClick = false
@@ -140,9 +156,9 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
                     if (guideLineLeft != null && guideLineRight != null && guideLineTop != null && guideLineBottom != null) {
                         val col = cols.indexOf(guideLineLeft)
                         val row = when {
-                            rowsSuspects.contains(guideLineTop) -> rowsSuspects.indexOf(guideLineTop) - 1
-                            rowsTools.contains(guideLineTop) -> rowsTools.indexOf(guideLineTop) - 1 + 6
-                            else -> rowsVenues.indexOf(guideLineTop) - 1 + 12
+                            rowsSuspects.contains(guideLineTop) -> rowsSuspects.indexOf(guideLineTop)
+                            rowsTools.contains(guideLineTop) -> rowsTools.indexOf(guideLineTop) + 6
+                            else -> rowsVenues.indexOf(guideLineTop) + 12
                         }
 
                         guidelineTop = guideLineTop
@@ -205,7 +221,7 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
 
             names[i].setOnClickListener {
                 if (it.isVisible) {
-                    noteInCell(it as ImageView, left, right, top, bottom)
+                    noteInCell(nameRes[names.indexOf(it)], left, right, top, bottom)
                     for (name in names) {
                         name.visibility = ImageView.GONE
                     }
@@ -217,22 +233,25 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         }
     }
 
-    private fun noteInCell(name: ImageView, left: Guideline, right: Guideline, top: Guideline, bottom: Guideline) {
-        val newName = ImageView(bind.svNotepad.noteLayout.context)
-        newName.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
-        newName.setImageResource(nameRes[names.indexOf(name)])
-        newName.visibility = ImageView.VISIBLE
-        setLayoutConstraintHorizontal(newName, left.id, right.id)
-        setLayoutConstraintVertical(newName, top.id, bottom.id)
-        bind.svNotepad.noteLayout.addView(newName)
-
+    private fun noteInCell(nameRes: Int, left: Guideline, right: Guideline, top: Guideline, bottom: Guideline, layoutParams: ConstraintLayout.LayoutParams? = null) {
         val row: Int = when {
-            rowsSuspects.contains(top) -> rowsSuspects.indexOf(top) - 1
-            rowsTools.contains(top) -> rowsTools.indexOf(top) - 1 + 6
-            else -> rowsVenues.indexOf(top) - 1 + 12
+            rowsSuspects.contains(top) -> rowsSuspects.indexOf(top)
+            rowsTools.contains(top) -> rowsTools.indexOf(top) + 6
+            else -> rowsVenues.indexOf(top) + 12
         }
-        val note = Note(row, cols.indexOf(left), nameRes[names.indexOf(name)])
+        val note = Note(row, cols.indexOf(left), nameRes)
+
+        for (n in noteList) {
+            if (note.row == n.row && note.col == n.col)
+                return
+        }
+
         noteList.add(note)
+
+        val newName = ImageView(bind.svNotepad.noteLayout.context)
+        val params = layoutParams
+            ?: ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
+        addImageToLayout(newName, nameRes, params, ImageView.VISIBLE, top, right, bottom, left)
 
         newName.setOnLongClickListener {
             bind.svNotepad.noteLayout.removeView(it)
@@ -249,11 +268,22 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         view.layoutParams = layoutParams
     }
 
-    private fun setLayoutConstraintHorizontal(view: View, start: Int, end: Int) {
+    private fun setLayoutConstraintHorizontal(view: View, start: Int?, end: Int) {
         val layoutParams: ConstraintLayout.LayoutParams =
             view.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.startToStart = start
+        start?.let {
+            layoutParams.startToStart = start
+        }
         layoutParams.endToEnd = end
         view.layoutParams = layoutParams
+    }
+
+    private fun addImageToLayout(image: ImageView, imgRes: Int, layoutParams: ConstraintLayout.LayoutParams, visibility: Int, constraintTop: Guideline, constraintRight: Guideline, constraintBottom: Guideline, constraintLeft: Guideline) {
+        image.setImageResource(imgRes)
+        image.layoutParams = layoutParams
+        image.visibility = visibility
+        setLayoutConstraintHorizontal(image, constraintLeft.id, constraintRight.id)
+        setLayoutConstraintVertical(image, constraintTop.id, constraintBottom.id)
+        bind.svNotepad.noteLayout.addView(image)
     }
 }
