@@ -33,6 +33,7 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
     )
 
     private val names = ArrayList<ImageView>()
+    private val backgrounds = ArrayList<ImageView>()
 
     private val rowsVenues = listOf(
         bind.guidelineVenuesTop,
@@ -159,6 +160,13 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
         }
 
         for (res in nameRes) {
+            val background = ImageView(bind.svNotepad.noteLayout.context)
+            background.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
+            background.setImageResource(R.drawable.name_background)
+            background.visibility = ImageView.GONE
+            bind.svNotepad.noteLayout.addView(background)
+            backgrounds.add(background)
+
             val name = ImageView(bind.svNotepad.noteLayout.context)
             name.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
             name.setImageResource(res)
@@ -171,19 +179,30 @@ class NoteViewModel(private val bind: DialogNoteBinding) :
 
     private fun showOptionsAbove(left: Guideline, right: Guideline, top: Guideline, bottom: Guideline) {
         for (i in 0 until names.lastIndex) {
-            setLayoutConstraintHorizontal(names[i], cols[i].id, cols[i+1].id)
             val rowList = when {
                 rowsSuspects.contains(top) -> rowsSuspects
                 rowsTools.contains(top) -> rowsTools
                 else -> rowsVenues
             }
+
+            setLayoutConstraintHorizontal(backgrounds[i], cols[i].id, cols[i+1].id)
+            setLayoutConstraintVertical(backgrounds[i], rowList[rowList.indexOf(top)-1].id, rowList[rowList.indexOf(bottom)-1].id)
+            backgrounds[i].visibility = ImageView.VISIBLE
+            backgrounds[i].bringToFront()
+
+            setLayoutConstraintHorizontal(names[i], cols[i].id, cols[i+1].id)
             setLayoutConstraintVertical(names[i], rowList[rowList.indexOf(top)-1].id, rowList[rowList.indexOf(bottom)-1].id)
             names[i].visibility = ImageView.VISIBLE
+            names[i].bringToFront()
+
             names[i].setOnClickListener {
                 if (it.isVisible) {
                     noteInCell(it as ImageView, left, right, top, bottom)
                     for (name in names) {
                         name.visibility = ImageView.GONE
+                    }
+                    for (bg in backgrounds) {
+                        bg.visibility = ImageView.GONE
                     }
                 }
             }
