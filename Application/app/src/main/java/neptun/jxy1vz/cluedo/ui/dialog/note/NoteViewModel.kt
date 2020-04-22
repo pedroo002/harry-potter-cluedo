@@ -14,7 +14,7 @@ import neptun.jxy1vz.cluedo.databinding.DialogNoteBinding
 import neptun.jxy1vz.cluedo.domain.model.Note
 import neptun.jxy1vz.cluedo.domain.model.Player
 
-class NoteViewModel(context: Context, private val player: Player, private val bind: DialogNoteBinding) :
+class NoteViewModel(context: Context, player: Player, private val bind: DialogNoteBinding) :
     BaseObservable() {
 
     private var properClick = false
