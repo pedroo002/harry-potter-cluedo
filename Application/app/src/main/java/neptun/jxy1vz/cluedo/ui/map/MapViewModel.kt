@@ -932,8 +932,13 @@ class MapViewModel(
             }
         } else {
             for (p in gameModels.playerList) {
-                if (p.id != player.id)
+                if (p.id != player.id && suspect.playerId != p.id)
                     p.getSuspicion(suspect)
+                else if (p.id == suspect.playerId) {
+                    for (suspectParam in listOf(suspect.room, suspect.tool, suspect.suspect))
+                        if (!p.ownCard(suspectParam))
+                            p.getConclusion(suspectParam, -1)
+                }
             }
         }
     }
