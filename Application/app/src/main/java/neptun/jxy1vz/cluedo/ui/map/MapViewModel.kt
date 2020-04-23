@@ -837,29 +837,12 @@ class MapViewModel(
                 AccusationDialog(playerId, this).show(fm, "DIALOG_ACCUSATION")
         } else {
             val room = gameModels.roomList[roomId].name
-            var tool: String
-            do {
-                tool = context.resources.getStringArray(R.array.tools)[Random.nextInt(0, 6)]
-                var notOwnCard = true
-                for (mc in getPlayerById(playerId).mysteryCards) {
-                    if (mc.name == tool)
-                        notOwnCard = false
-                }
-            } while (!notOwnCard)
-            var suspect: String
-            do {
-                suspect = context.resources.getStringArray(R.array.suspects)[Random.nextInt(0, 6)]
-                var notOwnCard = true
-                for (mc in getPlayerById(playerId).mysteryCards) {
-                    if (mc.name == suspect)
-                        notOwnCard = false
-                }
-            } while (!notOwnCard)
+            val suspect = getPlayerById(playerId).getRandomSuspect(room, context.resources.getStringArray(R.array.tools), context.resources.getStringArray(R.array.suspects))
 
             if (room != "Dumbledore irodája")
-                getIncrimination(Suspect(playerId, room, tool, suspect))
+                getIncrimination(suspect)
             else
-                onAccusationDismiss(Suspect(playerId, room, tool, suspect))
+                onAccusationDismiss(suspect)
         }
     }
 
