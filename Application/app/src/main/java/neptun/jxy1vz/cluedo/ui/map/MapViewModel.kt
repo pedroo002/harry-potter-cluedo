@@ -252,6 +252,12 @@ class MapViewModel(
                 mapGraph.addEdge(door.position, Position(door.room.top, door.room.left + i))
             }
         }
+
+        for (p in gameModels.playerList) {
+            for (card in p.mysteryCards) {
+                p.getConclusion(card.name, p.id)
+            }
+        }
     }
 
     private fun moveCameraToPlayer(playerId: Int) {
