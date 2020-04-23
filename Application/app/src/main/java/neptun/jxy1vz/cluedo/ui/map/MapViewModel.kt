@@ -22,11 +22,13 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
+import neptun.jxy1vz.cluedo.ui.dialog.ChooseOptionDialog
 import neptun.jxy1vz.cluedo.ui.dialog.RescuedFromDarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.accusation.AccusationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.reveal_mystery_card.CardRevealDialog
+import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.unused_mystery_cards.UnusedMysteryCardsDialog
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
 import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel.CardType
 import neptun.jxy1vz.cluedo.ui.dialog.endgame.EndOfGameDialog
@@ -88,11 +90,14 @@ class MapViewModel(
     private var userFinishedHisTurn = false
     private var userHasToIncriminate = false
     private var userHasToStep = false
+    private var userCanStep = false
 
     private var pause = false
     private var savedPlayerId = -1
     private var savedDiceValue = 0
     private var savedHouse: HogwartsHouse? = null
+
+    private val unusedMysteryCards = ArrayList<MysteryCard>()
 
     enum class HogwartsHouse {
         SLYTHERIN,
@@ -144,8 +149,10 @@ class MapViewModel(
                 userFinishedHisTurn = false
                 userHasToIncriminate = false
                 userHasToStep = false
-                if (stepInRoom(player.pos) != -1)
+                if (stepInRoom(player.pos) != -1) {
+                    userCanStep = true
                     incrimination(player.id, stepInRoom(player.pos))
+                }
                 else {
                     showOptions(player.id)
                 }
@@ -257,6 +264,10 @@ class MapViewModel(
             for (card in p.mysteryCards) {
                 p.getConclusion(card.name, p.id)
             }
+        }
+
+        GlobalScope.launch(Dispatchers.IO) {
+            unusedMysteryCards.addAll(gameModels.db.getUnusedMysteryCards())
         }
     }
 
@@ -670,13 +681,20 @@ class MapViewModel(
     private fun rollWithDice(playerId: Int) {
         if (player.id != playerId) {
             for (i in diceList.indices) {
-                val row = if (getPlayerById(playerId).pos.row == ROWS) ROWS - 1 else getPlayerById(
-                    playerId
-                ).pos.row + 1
-                val col =
-                    if (getPlayerById(playerId).pos.col == 0) 0 else if (getPlayerById(playerId).pos.col >= COLS - 2) COLS - 2 else getPlayerById(
+                val row = when (getPlayerById(playerId).pos.row) {
+                    ROWS -> ROWS - 1
+                    else -> getPlayerById(
                         playerId
-                    ).pos.col - 1
+                    ).pos.row + 1
+                }
+                val col =
+                    when {
+                        getPlayerById(playerId).pos.col == 0 -> 0
+                        getPlayerById(playerId).pos.col >= COLS - 2 -> COLS - 2
+                        else -> getPlayerById(
+                            playerId
+                        ).pos.col - 1
+                    }
                 setLayoutConstraintTop(diceList[i], gameModels.rows[row])
                 setLayoutConstraintStart(diceList[i], gameModels.cols[col + i])
                 diceList[i].visibility = ImageView.VISIBLE
@@ -804,6 +822,7 @@ class MapViewModel(
                 if (playerId == player.id) {
                     userHasToIncriminate = true
                     userHasToStep = false
+                    userCanStep = false
                 }
             }
             stepInRoom(getPlayerById(playerId).pos) == -1 -> {
@@ -839,8 +858,15 @@ class MapViewModel(
                     fm,
                     "DIALOG_INCRIMINATION"
                 )
-            else
-                AccusationDialog(playerId, this).show(fm, "DIALOG_ACCUSATION")
+            else {
+                if (unusedMysteryCards.isNotEmpty())
+                    ChooseOptionDialog(this, userCanStep).show(
+                    fm,
+                    "DIALOG_OPTIONS"
+                )
+                else
+                    AccusationDialog(playerId, this).show(fm, "DIALOG_ACCUSATION")
+            }
         } else {
             val room = gameModels.roomList[roomId].name
             val suspect = getPlayerById(playerId).getRandomSuspect(room, context.resources.getStringArray(R.array.tools), context.resources.getStringArray(R.array.suspects))
@@ -1079,6 +1105,17 @@ class MapViewModel(
             handOutHelperCards()
         else
             moveToNextPlayer()
+    }
+
+    override fun onOptionsDismiss(accusation: Boolean?) {
+        accusation?.let {
+            if (accusation)
+                AccusationDialog(playerInTurn, this).show(fm, "DIALOG_ACCUSACTION")
+            else
+                UnusedMysteryCardsDialog(this, unusedMysteryCards).show(fm, "DIALOG_UNUSED_MYSTERY_CARDS")
+            return
+        }
+        rollWithDice(playerInTurn)
     }
 
     private fun nothingHasBeenShowed(suspect: Suspect) {
@@ -1540,6 +1577,7 @@ interface DialogDismiss {
     fun onLossDialogDismiss(playerId: Int? = null)
     fun onPlayerDiesDismiss(player: Player?)
     fun onNoteDismiss()
+    fun onOptionsDismiss(accusation: Boolean? = null)
 }
 
 interface MapActivityListener {
