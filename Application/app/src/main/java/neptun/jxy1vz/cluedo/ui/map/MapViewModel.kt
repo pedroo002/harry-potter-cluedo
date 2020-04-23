@@ -873,8 +873,21 @@ class MapViewModel(
 
             if (room != "Dumbledore irodája")
                 getIncrimination(suspect)
-            else
-                onAccusationDismiss(suspect)
+            else {
+                var hasConclusionsOfThem = true
+                for (card in unusedMysteryCards) {
+                    if (!getPlayerById(playerId).hasConclusion(card.name))
+                        hasConclusionsOfThem = false
+                }
+                if (hasConclusionsOfThem)
+                    onAccusationDismiss(getPlayerById(playerId).getRandomSuspect(context.resources.getStringArray(R.array.rooms)[Random.nextInt(0, 9)], context.resources.getStringArray(R.array.tools), context.resources.getStringArray(R.array.suspects)))
+                else {
+                    for (card in unusedMysteryCards) {
+                        getPlayerById(playerId).getConclusion(card.name, -2)
+                    }
+                    moveToNextPlayer()
+                }
+            }
         }
     }
 
