@@ -30,7 +30,7 @@ fun Player.getSuspicion(suspect: Suspect, playerWhoShowed: Int? = null) {
         suspicion = HashMap()
     }
     for (suspectParam in suspect.let { listOf(it.room, it.suspect, it.tool) }) {
-        if (!ownCard(suspectParam)) {
+        if (!ownCard(suspectParam) && !hasConclusion(suspectParam)) {
             if (playerWhoShowed != null) {
                 if (suspicion!!.containsKey(suspectParam)) {
                     suspicion!![suspectParam]!!.add(playerWhoShowed)
@@ -38,13 +38,10 @@ fun Player.getSuspicion(suspect: Suspect, playerWhoShowed: Int? = null) {
                     suspicion!![suspectParam] = ArrayList()
                     suspicion!![suspectParam]!!.add(playerWhoShowed)
                 }
-            }
-            else {
-                if (!hasConclusion(suspectParam)) {
-                    suspicion!![suspectParam] = ArrayList()
-                    suspicion!![suspectParam]!!.add(suspect.playerId)
-                    suspicion!![suspectParam]!!.add(-1)
-                }
+            } else {
+                suspicion!![suspectParam] = ArrayList()
+                suspicion!![suspectParam]!!.add(suspect.playerId)
+                suspicion!![suspectParam]!!.add(-1)
             }
         }
     }
