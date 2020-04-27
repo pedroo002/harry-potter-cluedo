@@ -1,7 +1,5 @@
 package neptun.jxy1vz.cluedo.domain.model
 
-import kotlin.random.Random
-
 data class Player(
     val id: Int,
     val card: PlayerCard,
@@ -11,14 +9,30 @@ data class Player(
     var hp: Int = 70,
     var mysteryCards: MutableList<MysteryCard> = ArrayList(),
     var helperCards: MutableList<HelperCard>? = null,
-    var conclusion: ArrayList<Pair<String, Int>>? = null,
-    var suspicion: HashMap<String, MutableList<Int>>? = null
+    var conclusion: HashMap<String, Int>? = null,
+    var suspicion: HashMap<String, Int>? = null,
+    var solution: Suspect? = null
 )
+
+fun Player.fillSolution(type: MysteryType, mysteryName: String) {
+    if (solution == null)
+        solution = Suspect(id, "", "", "")
+    when (type) {
+        MysteryType.VENUE -> solution!!.room = mysteryName
+        MysteryType.SUSPECT -> solution!!.suspect = mysteryName
+        else -> solution!!.tool = mysteryName
+    }
+}
+
+fun Player.hasSolution(): Boolean {
+    return solution != null && solution!!.room.isNotEmpty() && solution!!.suspect.isNotEmpty() && solution!!.tool.isNotEmpty()
+}
 
 fun Player.getConclusion(mysteryName: String, cardHolderPlayerId: Int) {
     if (conclusion.isNullOrEmpty())
-        conclusion = ArrayList()
-    conclusion!!.add(Pair(mysteryName, cardHolderPlayerId))
+        conclusion = HashMap()
+
+    conclusion!![mysteryName] = cardHolderPlayerId
     suspicion?.let {
         if (suspicion!!.containsKey(mysteryName))
             suspicion!!.remove(mysteryName)
@@ -29,19 +43,33 @@ fun Player.getSuspicion(suspect: Suspect, playerWhoShowed: Int? = null) {
     if (suspicion.isNullOrEmpty()) {
         suspicion = HashMap()
     }
-    for (suspectParam in suspect.let { listOf(it.room, it.suspect, it.tool) }) {
+    val suspectParams = suspect.let { listOf(it.room, it.suspect, it.tool) }
+    for (suspectParam in suspectParams) {
+        if (!ownCard(suspectParam)) {
+            val otherTwo = ArrayList<String>()
+            for (param in suspectParams) {
+                if (param != suspectParam)
+                    otherTwo.add(param)
+            }
+            if (hasConclusion(otherTwo[0]) && hasConclusion(otherTwo[1])) {
+                if (playerWhoShowed == null) {
+                    val type = when (suspectParam) {
+                        suspect.room -> MysteryType.VENUE
+                        suspect.suspect -> MysteryType.SUSPECT
+                        else -> MysteryType.TOOL
+                    }
+                    fillSolution(type, suspectParam)
+                }
+                else
+                    getConclusion(suspectParam, playerWhoShowed)
+            }
+        }
         if (!ownCard(suspectParam) && !hasConclusion(suspectParam)) {
             if (playerWhoShowed != null) {
-                if (suspicion!!.containsKey(suspectParam)) {
-                    suspicion!![suspectParam]!!.add(playerWhoShowed)
-                } else {
-                    suspicion!![suspectParam] = ArrayList()
-                    suspicion!![suspectParam]!!.add(playerWhoShowed)
-                }
+                suspicion!![suspectParam] = playerWhoShowed
             } else {
-                suspicion!![suspectParam] = ArrayList()
-                suspicion!![suspectParam]!!.add(suspect.playerId)
-                suspicion!![suspectParam]!!.add(-1)
+                suspicion!![suspectParam] = -1
+                suspicion!![suspectParam] = suspect.playerId
             }
         }
     }
@@ -50,11 +78,13 @@ fun Player.getSuspicion(suspect: Suspect, playerWhoShowed: Int? = null) {
 fun Player.hasConclusion(name: String): Boolean {
     if (conclusion.isNullOrEmpty())
         return false
-    for (pair in conclusion!!) {
-        if (pair.first == name)
-            return true
-    }
-    return false
+    return conclusion!!.containsKey(name)
+}
+
+fun Player.hasSuspicion(name: String): Boolean {
+    if (suspicion.isNullOrEmpty())
+        return false
+    return suspicion!!.containsKey(name)
 }
 
 fun Player.ownCard(name: String): Boolean {
@@ -71,23 +101,20 @@ fun Player.getRandomSuspect(
     suspectList: Array<String>
 ): Suspect {
     var tool: String
-    do {
-        tool = toolList[Random.nextInt(0, 6)]
-        var notOwnCard = true
-        for (mc in mysteryCards) {
-            if (mc.name == tool)
-                notOwnCard = false
-        }
-    } while (!notOwnCard)
+    if (solution != null && solution!!.tool.isNotEmpty())
+        tool = solution!!.tool
+    else
+        do {
+            tool = toolList.random()
+        } while (hasConclusion(tool))
+
     var suspect: String
-    do {
-        suspect = suspectList[Random.nextInt(0, 6)]
-        var notOwnCard = true
-        for (mc in mysteryCards) {
-            if (mc.name == suspect)
-                notOwnCard = false
-        }
-    } while (!notOwnCard)
+    if (solution != null && solution!!.suspect.isNotEmpty())
+        suspect = solution!!.suspect
+    else
+        do {
+            suspect = suspectList.random()
+        } while (hasConclusion(suspect))
 
     return Suspect(id, room, tool, suspect)
 }

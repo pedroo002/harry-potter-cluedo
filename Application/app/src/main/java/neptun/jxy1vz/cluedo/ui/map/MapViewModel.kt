@@ -45,6 +45,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.List
 import kotlin.collections.MutableList
+import kotlin.collections.contains
 import kotlin.collections.elementAt
 import kotlin.collections.indices
 import kotlin.collections.isNotEmpty
@@ -53,6 +54,9 @@ import kotlin.collections.iterator
 import kotlin.collections.lastIndex
 import kotlin.collections.listOf
 import kotlin.collections.set
+import kotlin.collections.sortedBy
+import kotlin.collections.toList
+import kotlin.collections.toMap
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.min
@@ -607,6 +611,14 @@ class MapViewModel(
         return false
     }
 
+    private fun typeOf(mysteryName: String): MysteryType {
+        return when {
+            context.resources.getStringArray(R.array.rooms).contains(mysteryName) -> MysteryType.VENUE
+            context.resources.getStringArray(R.array.suspects).contains(mysteryName) -> MysteryType.SUSPECT
+            else -> MysteryType.TOOL
+        }
+    }
+
     private fun dijkstra(current: Position): HashMap<Position, Int> {
         val distances = HashMap<Position, Int>()
         val unvisited = HashSet<Position>()
@@ -755,27 +767,97 @@ class MapViewModel(
             }
         } else {
             if (distances != null) {
-                val validKeys: MutableList<Position> = ArrayList()
+                val validKeys = ArrayList<Position>()
+                val playerPos = getPlayerById(playerId).pos
                 for (pos in distances.keys) {
-                    if (!(isFieldOccupied(pos) || distances[pos]!! > stepCount || (stepInRoom(
-                            getPlayerById(playerId).pos
-                        ) != -1 && stepInRoom(pos) != -1))
+                    if (stepInRoom(pos) != -1 && (stepInRoom(playerPos) == -1 || stepInRoom(playerPos) == stepInRoom(pos))) {
+                        val roomId = stepInRoom(pos)
+                        for (door in gameModels.doorList) {
+                            if (door.room.id == roomId) {
+                                if (!validKeys.contains(pos) && distances[door.position]!! < limit && (door.state == DoorState.OPENED || stepInRoom(playerPos) == stepInRoom(pos)))
+                                    validKeys.add(pos)
+                            }
+                        }
+                    }
+                    else if (stepInRoom(pos) == -1 && !(
+                                ((isFieldOccupied(pos) && stepInRoom(playerPos) == -1)
+                                                || (isFieldOccupied(pos) && stepInRoom(playerPos) != -1 && playerPos != pos))
+                                        || distances[pos]!! > limit)
                     )
                         validKeys.add(pos)
                 }
-                var stepped = false
-                for (pos in validKeys) {
-                    if (stepInRoom(pos) != -1) {
-                        stepPlayer(playerId, pos)
-                        stepped = true
+
+                val desiredRooms = ArrayList<Room>()
+                for (room in gameModels.roomList) {
+                    if (getPlayerById(playerId).hasSolution() && room.id == 4) {
+                        desiredRooms.add(room)
                         break
                     }
-                    if (stepOnStar(pos)) {
-                        stepPlayer(playerId, pos)
-                        stepped = true
-                        break
+                    else if (!getPlayerById(playerId).hasConclusion(room.name) && room.id != 4) {
+                        desiredRooms.add(room)
                     }
                 }
+
+                val roomDistances = HashMap<Room, Int>()
+                for (room in desiredRooms) {
+                    for (door in gameModels.doorList) {
+                        if (door.room.id == room.id && door.state == DoorState.OPENED) {
+                            if (roomDistances.containsKey(room))
+                                roomDistances[room] = min(roomDistances[room]!!, distances[door.position]!! + 1)
+                            else
+                                roomDistances[room] = distances[door.position]!! + 1
+                        }
+                    }
+                }
+                val sortedDistances = roomDistances.toList().sortedBy { (_, distance) -> distance }.toMap()
+
+                var stepped = false
+                for (roomDistance in sortedDistances) {
+                    for (i in 0..4) {
+                        val roomPos = Position(roomDistance.key.top, roomDistance.key.left + i)
+                        if (validKeys.contains(roomPos)) {
+                            stepPlayer(playerId, roomPos)
+                            stepped = true
+                            break
+                        }
+                    }
+                    if (stepped)
+                        break
+                }
+
+                if (!stepped && sortedDistances.isNotEmpty()) {
+                    for (i in sortedDistances.keys.toList().indices) {
+                        var distancesFromRoom = HashMap<Position, Int>()
+                        val roomId = sortedDistances.keys.toList()[i].id
+                        for (door in gameModels.doorList) {
+                            if (door.room.id == roomId && door.state == DoorState.OPENED) {
+                                distancesFromRoom =
+                                    mergeDistances(dijkstra(door.position), distancesFromRoom)
+                            }
+                        }
+                        val sortedMap = distancesFromRoom.toList().sortedBy { (_, distance) -> distance }.toMap()
+                        for (distance in sortedMap) {
+                            if (validKeys.contains(distance.key)) {
+                                stepPlayer(playerId, distance.key)
+                                stepped = true
+                                break
+                            }
+                        }
+                        if (stepped)
+                            break
+                    }
+                }
+
+                if (!stepped) {
+                    for (pos in validKeys) {
+                        if (stepOnStar(pos)) {
+                            stepPlayer(playerId, pos)
+                            stepped = true
+                            break
+                        }
+                    }
+                }
+
                 if (!stepped)
                     stepPlayer(playerId, validKeys[Random.nextInt(0, validKeys.size)])
             } else {
@@ -869,10 +951,27 @@ class MapViewModel(
             }
         } else {
             val room = gameModels.roomList[roomId].name
-            val suspect = getPlayerById(playerId).getRandomSuspect(room, context.resources.getStringArray(R.array.tools), context.resources.getStringArray(R.array.suspects))
+
+            val tools = context.resources.getStringArray(R.array.tools)
+            val suspects = context.resources.getStringArray(R.array.suspects)
+            val suspect = getPlayerById(playerId).getRandomSuspect(room, tools, suspects)
+
+            for (t in tools) {
+                if (getPlayerById(playerId).hasSuspicion(t)) {
+                    suspect.tool = t
+                    break
+                }
+            }
+
+            for (s in suspects) {
+                if (getPlayerById(playerId).hasSuspicion(s)) {
+                    suspect.suspect = s
+                    break
+                }
+            }
 
             if (room != "Dumbledore irodája")
-                getIncrimination(suspect)
+                getIncrimination(getPlayerById(playerId).solution ?: suspect)
             else {
                 var hasConclusionsOfThem = true
                 for (card in unusedMysteryCards) {
@@ -981,8 +1080,10 @@ class MapViewModel(
                     p.getSuspicion(suspect)
                 else if (p.id == suspect.playerId) {
                     for (suspectParam in listOf(suspect.room, suspect.tool, suspect.suspect))
-                        if (!p.ownCard(suspectParam))
+                        if (!p.ownCard(suspectParam)) {
                             p.getConclusion(suspectParam, -1)
+                            p.fillSolution(typeOf(suspectParam), suspectParam)
+                        }
                 }
             }
         }
@@ -1106,16 +1207,15 @@ class MapViewModel(
         if (player == null)
             activityListener.exitToMenu()
         else {
-            if (player.id == playerInTurn)
-                moveToNextPlayer()
-            else
-                continueGame()
+            NoteDialog(this@MapViewModel.player, this).show(fm, "DIALOG_NOTE")
         }
     }
 
     override fun onNoteDismiss() {
         if (!isGameRunning)
             handOutHelperCards()
+        else if (pause)
+            continueGame()
         else
             moveToNextPlayer()
     }
