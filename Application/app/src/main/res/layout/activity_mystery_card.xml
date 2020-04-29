@@ -32,127 +32,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
+                android:onClick="@{()->mysteryCardViewModel.openHogwarts()}"
                 android:text="@string/go_forward"
-                app:layout_constraintBottom_toTopOf="@id/guidelineRow1Top"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:onClick="@{()->mysteryCardViewModel.openHogwarts()}"/>
+                app:layout_constraintTop_toTopOf="@id/tvLabelMysteryCards"
+                app:layout_constraintBottom_toBottomOf="@+id/tvLabelMysteryCards"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guidelineColumn1Left"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.026"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guidelineColumn1Right"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.326"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guidelineColumn2Left"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.35"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guidelineColumn2Right"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.65"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guidelineColumn3Left"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.673"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guidelineColumn3Right"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.974"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guidelineRow1Top"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.13"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guidelineRow1Bottom"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.55"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guidelineRow2Top"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.58"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guidelineRow2Bottom"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="1"/>
-
-            <!--ImageView
-                android:id="@+id/ivMysteryCardTool"
-                android:layout_width="0dp"
+            <androidx.viewpager.widget.ViewPager
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:src="@drawable/rejtely_hatlap"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="40dp"
-                app:layout_constraintWidth_percent="0.3"
-                app:layout_constraintHeight_percent="0.85"
+                android:id="@+id/cardPager"
+                app:layout_constraintTop_toBottomOf="@id/btnGo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/card_tool" />
-
-            <ImageView
-                android:id="@+id/ivMysteryCardSuspect"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="40dp"
-                android:src="@drawable/rejtely_hatlap"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ivMysteryCardVenue"
-                app:layout_constraintHeight_percent="0.85"
-                app:layout_constraintStart_toEndOf="@id/ivMysteryCardTool"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.3"
-                android:contentDescription="@string/card_suspect" />
-
-            <ImageView
-                android:id="@+id/ivMysteryCardVenue"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="40dp"
-                android:src="@drawable/rejtely_hatlap"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHeight_percent="0.85"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.3"
-                android:contentDescription="@string/card_venue" /-->
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_margin="20dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

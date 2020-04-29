@@ -1,32 +1,31 @@
 package neptun.jxy1vz.cluedo.ui.mystery_cards
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.content.Context
 import android.content.Intent
-import android.view.View
-import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.animation.doOnEnd
+import android.widget.Toast
 import androidx.databinding.BaseObservable
+import androidx.fragment.app.FragmentManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
+import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
+import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
 import neptun.jxy1vz.cluedo.ui.map.MapActivity
 
 class MysteryCardViewModel(
     private val gameModel: GameModels,
     private val context: Context,
     private val playerId: Int,
-    private val bind: ActivityMysteryCardBinding
+    private val bind: ActivityMysteryCardBinding,
+    private val fm: FragmentManager
 ) : BaseObservable() {
 
     private lateinit var player: Player
+    private lateinit var adpater: CardPagerAdapter
 
     init {
         bind.btnGo.isEnabled = false
@@ -50,58 +49,17 @@ class MysteryCardViewModel(
         val cards = gameModel.db.getMysteryCardsForPlayers(playerIds)
 
         withContext(Dispatchers.Main) {
-            val cols = listOf(
-                bind.guidelineColumn1Left,
-                bind.guidelineColumn1Right,
-                bind.guidelineColumn2Left,
-                bind.guidelineColumn2Right,
-                bind.guidelineColumn3Left,
-                bind.guidelineColumn3Right
-            )
-            val rows = listOf(
-                bind.guidelineRow1Top,
-                bind.guidelineRow1Bottom,
-                bind.guidelineRow2Top,
-                bind.guidelineRow2Bottom
-            )
+            Toast.makeText(context, "Lapozz oldalra a többiért!", Toast.LENGTH_LONG).show()
 
-            var i = 0
-            var gatheredCards = 0
+            val fragmentList = ArrayList<CardFragment>()
             for (card in cards) {
                 if (card.second == playerId)
-                    gatheredCards++
+                    fragmentList.add(CardFragment(card.first.imageRes))
             }
-            for (card in cards) {
-                if (card.second == playerId) {
-                    val iv = ImageView(bind.cardImages.context)
-                    iv.setImageResource(card.first.verso)
-                    iv.layoutParams = ConstraintLayout.LayoutParams(
-                        ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                        ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-                    )
-                    iv.visibility = ImageView.VISIBLE
-                    val row = i / 3
-                    val col = i % 3
-                    val rowAddition = if (gatheredCards == 3) 3 else 1
-                    setLayoutConstraintHorizontal(iv, cols[col * 2].id, cols[col * 2 + 1].id)
-                    setLayoutConstraintVertical(iv, rows[row * 2].id, rows[row * 2 + rowAddition].id)
-                    bind.cardImages.addView(iv)
-                    i++
+            adpater = CardPagerAdapter(fm, fragmentList)
+            bind.cardPager.adapter = adpater
 
-                    (AnimatorInflater.loadAnimator(
-                        context,
-                        R.animator.card_flip
-                    ) as AnimatorSet).apply {
-                        setTarget(iv)
-                        start()
-                        doOnEnd {
-                            iv.setImageResource(card.first.imageRes)
-                            if (i == gatheredCards)
-                                bind.btnGo.isEnabled = true
-                        }
-                    }
-                }
-            }
+            bind.btnGo.isEnabled = true
         }
     }
 
@@ -122,23 +80,5 @@ class MysteryCardViewModel(
         }
         idList.add(-1)
         getMysteryCards(idList)
-    }
-
-    private fun setLayoutConstraintVertical(view: View, top: Int, bottom: Int) {
-        val layoutParams: ConstraintLayout.LayoutParams =
-            view.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.topToTop = top
-        layoutParams.bottomToBottom = bottom
-        view.layoutParams = layoutParams
-    }
-
-    private fun setLayoutConstraintHorizontal(view: View, start: Int?, end: Int) {
-        val layoutParams: ConstraintLayout.LayoutParams =
-            view.layoutParams as ConstraintLayout.LayoutParams
-        start?.let {
-            layoutParams.startToStart = start
-        }
-        layoutParams.endToEnd = end
-        view.layoutParams = layoutParams
     }
 }
