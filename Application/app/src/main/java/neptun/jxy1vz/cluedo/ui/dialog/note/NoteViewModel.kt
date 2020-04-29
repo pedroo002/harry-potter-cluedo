@@ -43,9 +43,12 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         R.drawable.nl
     )
 
+    private val conclusionTypes = ArrayList<Int>()
+
     private var ownName: Int
 
     private val names = ArrayList<ImageView>()
+    private val conclusionList = ArrayList<ImageView>()
     private val backgrounds = ArrayList<ImageView>()
 
     private val rowsVenues = listOf(
@@ -94,17 +97,30 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         bind.guidelineRight
     )
 
+    enum class NoteType {
+        NAME,
+        CONCLUSION
+    }
+
     private fun addFrames(list: List<Guideline>) {
         for (i in 1 until list.lastIndex) {
             val frame = ImageView(bind.svNotepad.noteLayout.context)
-            val params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
+            val params = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+            )
             params.setMargins(0, 0, 20, 0)
-            addImageToLayout(frame, R.drawable.frame, params, ImageView.VISIBLE, list[i], cols[1], list[i+1], cols[0])
-            frame.setOnClickListener {
-                noteInCell(ownName, cols[0], cols[1], list[i], list[i+1], params)
-            }
+            addImageToLayout(
+                frame,
+                R.drawable.frame,
+                params,
+                list[i],
+                cols[1],
+                list[i + 1],
+                cols[0]
+            )
             frame.setOnLongClickListener {
-                noteInCell(R.drawable.cross, cols[0], cols[1], list[i], list[i+1], params)
+                showOptionsAbove(cols[0], cols[1], list[i], list[i + 1], conclusionTypes, NoteType.CONCLUSION)
                 return@setOnLongClickListener true
             }
         }
@@ -137,10 +153,20 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
 
                         var params: ConstraintLayout.LayoutParams? = null
                         if (note.col == 0) {
-                            params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
+                            params = ConstraintLayout.LayoutParams(
+                                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+                            )
                             params.setMargins(0, 0, 20, 0)
                         }
-                        noteInCell(note.res, guidelineLeft, guidelineRight, guidelineTop, guidelineBottom, params)
+                        noteInCell(
+                            note.res,
+                            guidelineLeft,
+                            guidelineRight,
+                            guidelineTop,
+                            guidelineBottom,
+                            params
+                        )
                     }
                 }
             }
@@ -149,6 +175,10 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         val nameList = context.resources.getStringArray(R.array.characters)
         ownName = nameRes[nameList.indexOf(player.card.name)]
         nameRes.remove(ownName)
+
+        conclusionTypes.add(ownName)
+        conclusionTypes.add(R.drawable.cross)
+        conclusionTypes.add(R.drawable.tick)
 
         addFrames(rowsSuspects)
         addFrames(rowsTools)
@@ -165,9 +195,9 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
                     var guideLineLeft: Guideline? = null
                     var guideLineRight: Guideline? = null
                     for (i in 0 until cols.lastIndex) {
-                        if (cols[i].x <= x && cols[i+1].x >= x) {
+                        if (cols[i].x <= x && cols[i + 1].x >= x) {
                             guideLineLeft = cols[i]
-                            guideLineRight = cols[i+1]
+                            guideLineRight = cols[i + 1]
                             break
                         }
                     }
@@ -176,27 +206,25 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
                     var guideLineBottom: Guideline? = null
                     if (y >= rowsSuspects[1].y && y <= rowsSuspects.last().y) {
                         for (i in 0 until rowsSuspects.lastIndex) {
-                            if (rowsSuspects[i].y <= y && rowsSuspects[i+1].y >= y) {
+                            if (rowsSuspects[i].y <= y && rowsSuspects[i + 1].y >= y) {
                                 guideLineTop = rowsSuspects[i]
-                                guideLineBottom = rowsSuspects[i+1]
+                                guideLineBottom = rowsSuspects[i + 1]
                                 break
                             }
                         }
-                    }
-                    else if (y >= rowsTools[1].y && y <= rowsTools.last().y) {
+                    } else if (y >= rowsTools[1].y && y <= rowsTools.last().y) {
                         for (i in 0 until rowsTools.lastIndex) {
-                            if (rowsTools[i].y <= y && rowsTools[i+1].y >= y) {
+                            if (rowsTools[i].y <= y && rowsTools[i + 1].y >= y) {
                                 guideLineTop = rowsTools[i]
-                                guideLineBottom = rowsTools[i+1]
+                                guideLineBottom = rowsTools[i + 1]
                                 break
                             }
                         }
-                    }
-                    else if (y >= rowsVenues[1].y && y <= rowsVenues.last().y) {
+                    } else if (y >= rowsVenues[1].y && y <= rowsVenues.last().y) {
                         for (i in 0 until rowsVenues.lastIndex) {
-                            if (rowsVenues[i].y <= y && rowsVenues[i+1].y >= y) {
+                            if (rowsVenues[i].y <= y && rowsVenues[i + 1].y >= y) {
                                 guideLineTop = rowsVenues[i]
-                                guideLineBottom = rowsVenues[i+1]
+                                guideLineBottom = rowsVenues[i + 1]
                                 break
                             }
                         }
@@ -227,52 +255,96 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         }
         bind.svNotepad.noteLayout.ivNotepad.setOnLongClickListener {
             if (properClick)
-                showOptionsAbove(this@NoteViewModel.guidelineLeft, this@NoteViewModel.guidelineRight, this@NoteViewModel.guidelineTop, this@NoteViewModel.guidelineBottom)
+                showOptionsAbove(
+                    this@NoteViewModel.guidelineLeft,
+                    this@NoteViewModel.guidelineRight,
+                    this@NoteViewModel.guidelineTop,
+                    this@NoteViewModel.guidelineBottom,
+                    nameRes, NoteType.NAME)
 
             return@setOnLongClickListener true
         }
 
         for (res in nameRes) {
             val background = ImageView(bind.svNotepad.noteLayout.context)
-            background.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
+            background.layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+            )
             background.setImageResource(R.drawable.name_background)
             background.visibility = ImageView.GONE
             bind.svNotepad.noteLayout.addView(background)
             backgrounds.add(background)
 
             val name = ImageView(bind.svNotepad.noteLayout.context)
-            name.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
+            name.layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+            )
             name.setImageResource(res)
             name.visibility = ImageView.GONE
             bind.svNotepad.noteLayout.addView(name)
-
             names.add(name)
+        }
+
+        for (img in conclusionTypes) {
+            val iv = ImageView(bind.svNotepad.noteLayout.context)
+            val params = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+            )
+            params.setMargins(0, 0, 20, 0)
+            iv.layoutParams = params
+            iv.setImageResource(img)
+            iv.visibility = ImageView.GONE
+            bind.svNotepad.noteLayout.addView(iv)
+            conclusionList.add(iv)
         }
     }
 
-    private fun showOptionsAbove(left: Guideline, right: Guideline, top: Guideline, bottom: Guideline) {
-        for (i in nameRes.indices) {
+    private fun showOptionsAbove(
+        left: Guideline,
+        right: Guideline,
+        top: Guideline,
+        bottom: Guideline,
+        optionList: List<Int>,
+        type: NoteType
+    ) {
+        for (i in optionList.indices) {
             val rowList = when {
                 rowsSuspects.contains(top) -> rowsSuspects
                 rowsTools.contains(top) -> rowsTools
                 else -> rowsVenues
             }
 
-            setLayoutConstraintHorizontal(backgrounds[i], cols[i+1].id, cols[i+2].id)
-            setLayoutConstraintVertical(backgrounds[i], rowList[rowList.indexOf(top)-1].id, rowList[rowList.indexOf(bottom)-1].id)
+            setLayoutConstraintHorizontal(backgrounds[i], cols[i + 1].id, cols[i + 2].id)
+            setLayoutConstraintVertical(
+                backgrounds[i],
+                rowList[rowList.indexOf(top) - 1].id,
+                rowList[rowList.indexOf(bottom) - 1].id
+            )
             backgrounds[i].visibility = ImageView.VISIBLE
             backgrounds[i].bringToFront()
 
-            setLayoutConstraintHorizontal(names[i], cols[i+1].id, cols[i+2].id)
-            setLayoutConstraintVertical(names[i], rowList[rowList.indexOf(top)-1].id, rowList[rowList.indexOf(bottom)-1].id)
-            names[i].visibility = ImageView.VISIBLE
-            names[i].bringToFront()
+            val targetList = when (type) {
+                NoteType.NAME -> names
+                else -> conclusionList
+            }
 
-            names[i].setOnClickListener {
+            setLayoutConstraintHorizontal(targetList[i], cols[i + 1].id, cols[i + 2].id)
+            setLayoutConstraintVertical(
+                targetList[i],
+                rowList[rowList.indexOf(top) - 1].id,
+                rowList[rowList.indexOf(bottom) - 1].id
+            )
+            targetList[i].visibility = ImageView.VISIBLE
+            targetList[i].bringToFront()
+
+            targetList[i].setOnClickListener {
                 if (it.isVisible) {
-                    noteInCell(nameRes[names.indexOf(it)], left, right, top, bottom)
-                    for (name in names) {
-                        name.visibility = ImageView.GONE
+                    noteInCell(optionList[i], left, right, top, bottom)
+                    for (iv in targetList) {
+                        iv.visibility = ImageView.GONE
                     }
                     for (bg in backgrounds) {
                         bg.visibility = ImageView.GONE
@@ -282,13 +354,20 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         }
     }
 
-    private fun noteInCell(nameRes: Int, left: Guideline, right: Guideline, top: Guideline, bottom: Guideline, layoutParams: ConstraintLayout.LayoutParams? = null) {
+    private fun noteInCell(
+        imgRes: Int,
+        left: Guideline,
+        right: Guideline,
+        top: Guideline,
+        bottom: Guideline,
+        layoutParams: ConstraintLayout.LayoutParams? = null
+    ) {
         val row: Int = when {
             rowsSuspects.contains(top) -> rowsSuspects.indexOf(top)
             rowsTools.contains(top) -> rowsTools.indexOf(top) + 6
             else -> rowsVenues.indexOf(top) + 12
         }
-        val note = Note(row, cols.indexOf(left), nameRes)
+        val note = Note(row, cols.indexOf(left), imgRes)
 
         for (n in noteList) {
             if (note.row == n.row && note.col == n.col)
@@ -297,12 +376,17 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
 
         noteList.add(note)
 
-        val newName = ImageView(bind.svNotepad.noteLayout.context)
+        val newNote = ImageView(bind.svNotepad.noteLayout.context)
         val params = layoutParams
-            ?: ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT)
-        addImageToLayout(newName, nameRes, params, ImageView.VISIBLE, top, right, bottom, left)
+            ?: ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+            )
+        if (cols.indexOf(left) == 0)
+            params.marginEnd = 20
+        addImageToLayout(newNote, imgRes, params, top, right, bottom, left)
 
-        newName.setOnLongClickListener {
+        newNote.setOnLongClickListener {
             bind.svNotepad.noteLayout.removeView(it)
             noteList.remove(note)
             return@setOnLongClickListener true
@@ -327,10 +411,18 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         view.layoutParams = layoutParams
     }
 
-    private fun addImageToLayout(image: ImageView, imgRes: Int, layoutParams: ConstraintLayout.LayoutParams, visibility: Int, constraintTop: Guideline, constraintRight: Guideline, constraintBottom: Guideline, constraintLeft: Guideline) {
+    private fun addImageToLayout(
+        image: ImageView,
+        imgRes: Int,
+        layoutParams: ConstraintLayout.LayoutParams,
+        constraintTop: Guideline,
+        constraintRight: Guideline,
+        constraintBottom: Guideline,
+        constraintLeft: Guideline
+    ) {
         image.setImageResource(imgRes)
         image.layoutParams = layoutParams
-        image.visibility = visibility
+        image.visibility = ImageView.VISIBLE
         setLayoutConstraintHorizontal(image, constraintLeft.id, constraintRight.id)
         setLayoutConstraintVertical(image, constraintTop.id, constraintBottom.id)
         bind.svNotepad.noteLayout.addView(image)
