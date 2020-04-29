@@ -93,7 +93,7 @@ class MapViewModel(
     private var playerInTurn = playerId
     private var userFinishedHisTurn = false
     private var userHasToIncriminate = false
-    private var userHasToStep = false
+    private var userHasToStepOrIncriminate = false
     private var userCanStep = false
 
     private var pause = false
@@ -152,14 +152,12 @@ class MapViewModel(
             else {
                 userFinishedHisTurn = false
                 userHasToIncriminate = false
-                userHasToStep = false
+                userHasToStepOrIncriminate = false
                 if (stepInRoom(player.pos) != -1) {
                     userCanStep = true
-                    incrimination(player.id, stepInRoom(player.pos))
+                    //incrimination(player.id, stepInRoom(player.pos))
                 }
-                else {
-                    showOptions(player.id)
-                }
+                showOptions(player.id)
             }
         }
     }
@@ -579,6 +577,17 @@ class MapViewModel(
         return playerImagePairs[0]
     }
 
+    private fun hasKnowledgeOfUnusedCards(playerId: Int): Boolean {
+        if (unusedMysteryCards.isNullOrEmpty())
+            return true
+        val p = getPlayerById(playerId)
+        for (unusedCard in unusedMysteryCards) {
+            if (!p.hasConclusion(unusedCard.name))
+                return false
+        }
+        return true
+    }
+
     private fun stepInRoom(pos: Position): Int {
         for (room: Room in gameModels.roomList) {
             if (pos.row >= room.top && pos.row <= room.bottom && pos.col >= room.left && pos.col <= room.right)
@@ -672,19 +681,17 @@ class MapViewModel(
     fun showOptions(playerId: Int) {
         if (isGameRunning) {
             if (playerId == player.id && playerId == playerInTurn) {
-                if (!userHasToStep) {
-                    val roomId = stepInRoom(player.pos)
-                    val snackbar = Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_LONG)
-                        .setAction("Kockadobás") {
-                            rollWithDice(playerId)
-                        }
-                    if (roomId != -1) {
-                        snackbar.setAction("Gyanúsítás") {
-                            incrimination(playerId, roomId)
-                        }
-                    }
+                val roomId = stepInRoom(player.pos)
+                val snackbar = Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_LONG)
+                if (!userHasToStepOrIncriminate) {
+                    snackbar.setAction("Kockadobás") { rollWithDice(playerId) }
                     snackbar.show()
-                } else
+                } else if (roomId != -1) {
+                    val title = if (roomId == 4) "Lehetőségek" else "Gyanúsítás"
+                    snackbar.setAction(title) { incrimination(playerId, roomId) }
+                    snackbar.show()
+                }
+                else
                     Snackbar.make(mapRoot.mapLayout, "Muszáj lépned!", Snackbar.LENGTH_LONG).show()
             }
         }
@@ -725,7 +732,7 @@ class MapViewModel(
         if (!pause)
             calculateMovingOptions(playerId, sum)
         if (playerId == player.id)
-            userHasToStep = true
+            userHasToStepOrIncriminate = true
     }
 
     private fun calculateMovingOptions(playerId: Int, stepCount: Int) {
@@ -796,6 +803,8 @@ class MapViewModel(
                     else if (!getPlayerById(playerId).hasConclusion(room.name) && room.id != 4) {
                         desiredRooms.add(room)
                     }
+                    else if (!hasKnowledgeOfUnusedCards(playerId) && room.id == 4)
+                        desiredRooms.add(room)
                 }
 
                 val roomDistances = HashMap<Room, Int>()
@@ -903,7 +912,7 @@ class MapViewModel(
                 incrimination(playerId, stepInRoom(getPlayerById(playerId).pos))
                 if (playerId == player.id) {
                     userHasToIncriminate = true
-                    userHasToStep = false
+                    userHasToStepOrIncriminate = false
                     userCanStep = false
                 }
             }
@@ -991,6 +1000,8 @@ class MapViewModel(
     }
 
     override fun getIncrimination(suspect: Suspect) {
+        emptySelectionList()
+
         if (suspect.playerId != player.id) {
             val title = "${getPlayerById(suspect.playerId).card.name} gyanúsít"
             val message =
