@@ -26,11 +26,10 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
 
     private val interactor = Interactor(CluedoDatabase.getInstance(context))
 
-    private var properClick = false
-    private lateinit var guidelineTop: Guideline
-    private lateinit var guidelineLeft: Guideline
-    private lateinit var guidelineBottom: Guideline
-    private lateinit var guidelineRight: Guideline
+    private var guidelineTop: Guideline? = null
+    private var guidelineLeft: Guideline? = null
+    private var guidelineBottom: Guideline? = null
+    private var guidelineRight: Guideline? = null
 
     private val noteList = ArrayList<Note>()
 
@@ -120,7 +119,14 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
                 cols[0]
             )
             frame.setOnLongClickListener {
-                showOptionsAbove(cols[0], cols[1], list[i], list[i + 1], conclusionTypes, NoteType.CONCLUSION)
+                showOptionsAbove(
+                    cols[0],
+                    cols[1],
+                    list[i],
+                    list[i + 1],
+                    conclusionTypes,
+                    NoteType.CONCLUSION
+                )
                 return@setOnLongClickListener true
             }
         }
@@ -185,8 +191,6 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
         addFrames(rowsVenues)
 
         bind.svNotepad.noteLayout.ivNotepad.setOnTouchListener { _, event ->
-            properClick = false
-
             if (event?.action == MotionEvent.ACTION_DOWN) {
                 val x = event.x
                 val y = event.y
@@ -230,37 +234,29 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
                         }
                     }
 
-                    if (guideLineLeft != null && guideLineRight != null && guideLineTop != null && guideLineBottom != null) {
-                        val col = cols.indexOf(guideLineLeft)
-                        val row = when {
-                            rowsSuspects.contains(guideLineTop) -> rowsSuspects.indexOf(guideLineTop)
-                            rowsTools.contains(guideLineTop) -> rowsTools.indexOf(guideLineTop) + 6
-                            else -> rowsVenues.indexOf(guideLineTop) + 12
-                        }
-
-                        guidelineTop = guideLineTop
-                        guidelineBottom = guideLineBottom
-                        guidelineLeft = guideLineLeft
-                        guidelineRight = guideLineRight
-                        properClick = true
-
-                        for (note in noteList) {
-                            if (note.row == row && note.col == col)
-                                properClick = false
-                        }
-                    }
+                    guidelineTop = guideLineTop
+                    guidelineBottom = guideLineBottom
+                    guidelineLeft = guideLineLeft
+                    guidelineRight = guideLineRight
+                }
+                else {
+                    guidelineTop = null
+                    guidelineBottom = null
+                    guidelineLeft = null
+                    guidelineRight = null
                 }
             }
             return@setOnTouchListener false
         }
         bind.svNotepad.noteLayout.ivNotepad.setOnLongClickListener {
-            if (properClick)
+            if (guidelineTop != null && guidelineBottom != null && guidelineLeft != null && guidelineRight != null)
                 showOptionsAbove(
-                    this@NoteViewModel.guidelineLeft,
-                    this@NoteViewModel.guidelineRight,
-                    this@NoteViewModel.guidelineTop,
-                    this@NoteViewModel.guidelineBottom,
-                    nameRes, NoteType.NAME)
+                    guidelineLeft!!,
+                    guidelineRight!!,
+                    guidelineTop!!,
+                    guidelineBottom!!,
+                    nameRes, NoteType.NAME
+                )
 
             return@setOnLongClickListener true
         }
