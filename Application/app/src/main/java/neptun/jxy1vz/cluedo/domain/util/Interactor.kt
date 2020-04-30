@@ -62,4 +62,8 @@ class Interactor(private val db: CluedoDatabase) {
     suspend fun getHelperCardsToDarkCard(darkId: Long): List<Long>? {
         return db.darkHelperDao().getHelperCardsToDarkCard(darkId)
     }
+
+    suspend fun getAllMysteryCards(): List<CardDBmodel>? {
+        return db.cardDao().getAllMysteryCards()
+    }
 }

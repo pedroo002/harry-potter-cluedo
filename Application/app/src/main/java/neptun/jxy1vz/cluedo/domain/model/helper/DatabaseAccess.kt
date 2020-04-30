@@ -33,6 +33,10 @@ class DatabaseAccess(context: Context) {
         return interactor.getCardBySuperType("MYSTERY_%")!!.map { cardDBmodel -> cardDBmodel.toDomainModel() as MysteryCard }
     }
 
+    suspend fun getAllMysteryCards(): List<MysteryCard> {
+        return interactor.getAllMysteryCards()!!.map { cardDBmodel -> cardDBmodel.toDomainModel() as MysteryCard }
+    }
+
     suspend fun getCardBySuperType(playerId: Int, prefix: String): Card? {
         val cards = interactor.getCardBySuperType(prefix)
         if (cards != null) {

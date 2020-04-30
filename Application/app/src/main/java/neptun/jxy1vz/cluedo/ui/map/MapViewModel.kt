@@ -993,6 +993,9 @@ class MapViewModel(
                     for (card in unusedMysteryCards) {
                         getPlayerById(playerId).getConclusion(card.name, -2)
                     }
+                    GlobalScope.launch(Dispatchers.IO) {
+                        getPlayerById(playerId).updateConclusions(gameModels.db.getAllMysteryCards())
+                    }
                     moveToNextPlayer()
                 }
             }
@@ -1092,8 +1095,16 @@ class MapViewModel(
                 else if (p.id == suspect.playerId) {
                     for (suspectParam in listOf(suspect.room, suspect.tool, suspect.suspect))
                         if (!p.ownCard(suspectParam)) {
-                            p.getConclusion(suspectParam, -1)
-                            p.fillSolution(typeOf(suspectParam), suspectParam)
+                            GlobalScope.launch(Dispatchers.IO) {
+                                if (hasKnowledgeOfUnusedCards(p.id) && !unusedMysteryCards.contains(
+                                        gameModels.db.getCardByName(suspectParam)
+                                    )
+                                ) {
+                                    p.getConclusion(suspectParam, -1)
+                                    p.fillSolution(typeOf(suspectParam), suspectParam)
+                                } else
+                                    p.getConclusion(suspectParam, -1)
+                            }
                         }
                 }
             }

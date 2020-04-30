@@ -9,8 +9,8 @@ data class Player(
     var hp: Int = 70,
     var mysteryCards: MutableList<MysteryCard> = ArrayList(),
     var helperCards: MutableList<HelperCard>? = null,
-    var conclusion: HashMap<String, Int>? = null,
-    var suspicion: HashMap<String, Int>? = null,
+    var conclusions: HashMap<String, Int>? = null,
+    var suspicions: HashMap<String, Int>? = null,
     var solution: Suspect? = null
 )
 
@@ -28,20 +28,39 @@ fun Player.hasSolution(): Boolean {
     return solution != null && solution!!.room.isNotEmpty() && solution!!.suspect.isNotEmpty() && solution!!.tool.isNotEmpty()
 }
 
-fun Player.getConclusion(mysteryName: String, cardHolderPlayerId: Int) {
-    if (conclusion.isNullOrEmpty())
-        conclusion = HashMap()
+fun Player.updateConclusions(allMysteryCards: List<MysteryCard>) {
+    for (conclusion in conclusions!!) {
+        if (conclusion.value == -1) {
+            for (card in allMysteryCards) {
+                if (card.name == conclusion.key) {
+                    fillSolution(card.type as MysteryType, card.name)
+                    break
+                }
+            }
+        }
+    }
+}
 
-    conclusion!![mysteryName] = cardHolderPlayerId
-    suspicion?.let {
-        if (suspicion!!.containsKey(mysteryName))
-            suspicion!!.remove(mysteryName)
+fun Player.getConclusion(mysteryName: String, cardHolderPlayerId: Int) {
+    if (conclusions.isNullOrEmpty())
+        conclusions = HashMap()
+
+    if (cardHolderPlayerId == -2) {
+        for (conclusion in conclusions!!) {
+            if (conclusion.key == mysteryName)
+                conclusion.setValue(cardHolderPlayerId)
+        }
+    }
+    conclusions!![mysteryName] = cardHolderPlayerId
+    suspicions?.let {
+        if (suspicions!!.containsKey(mysteryName))
+            suspicions!!.remove(mysteryName)
     }
 }
 
 fun Player.getSuspicion(suspect: Suspect, playerWhoShowed: Int? = null) {
-    if (suspicion.isNullOrEmpty()) {
-        suspicion = HashMap()
+    if (suspicions.isNullOrEmpty()) {
+        suspicions = HashMap()
     }
     val suspectParams = suspect.let { listOf(it.room, it.suspect, it.tool) }
     for (suspectParam in suspectParams) {
@@ -66,25 +85,25 @@ fun Player.getSuspicion(suspect: Suspect, playerWhoShowed: Int? = null) {
         }
         if (!ownCard(suspectParam) && !hasConclusion(suspectParam)) {
             if (playerWhoShowed != null) {
-                suspicion!![suspectParam] = playerWhoShowed
+                suspicions!![suspectParam] = playerWhoShowed
             } else {
-                suspicion!![suspectParam] = -1
-                suspicion!![suspectParam] = suspect.playerId
+                suspicions!![suspectParam] = -1
+                suspicions!![suspectParam] = suspect.playerId
             }
         }
     }
 }
 
 fun Player.hasConclusion(name: String): Boolean {
-    if (conclusion.isNullOrEmpty())
+    if (conclusions.isNullOrEmpty())
         return false
-    return conclusion!!.containsKey(name)
+    return conclusions!!.containsKey(name)
 }
 
 fun Player.hasSuspicion(name: String): Boolean {
-    if (suspicion.isNullOrEmpty())
+    if (suspicions.isNullOrEmpty())
         return false
-    return suspicion!!.containsKey(name)
+    return suspicions!!.containsKey(name)
 }
 
 fun Player.ownCard(name: String): Boolean {
