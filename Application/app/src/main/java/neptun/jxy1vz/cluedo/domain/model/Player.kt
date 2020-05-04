@@ -14,20 +14,6 @@ class Player(
     var solution: Suspect? = null
 ) {
 
-    fun fillSolution(type: MysteryType, mysteryName: String) {
-        if (solution == null)
-            solution = Suspect(id, "", "", "")
-        when (type) {
-            MysteryType.VENUE -> solution!!.room = mysteryName
-            MysteryType.SUSPECT -> solution!!.suspect = mysteryName
-            else -> solution!!.tool = mysteryName
-        }
-    }
-
-    fun hasSolution(): Boolean {
-        return solution != null && solution!!.room.isNotEmpty() && solution!!.suspect.isNotEmpty() && solution!!.tool.isNotEmpty()
-    }
-
     fun updateConclusions(allMysteryCards: List<MysteryCard>) {
         for (conclusion in conclusions!!) {
             if (conclusion.value == -1) {
@@ -55,6 +41,14 @@ class Player(
         suspicions?.let {
             if (suspicions!!.containsKey(mysteryName))
                 suspicions!!.remove(mysteryName)
+        }
+
+        solution?.let {
+            when {
+                solution!!.room == mysteryName -> solution!!.room = ""
+                solution!!.tool == mysteryName -> solution!!.tool = ""
+                solution!!.suspect == mysteryName -> solution!!.suspect = ""
+            }
         }
     }
 
@@ -135,6 +129,20 @@ class Player(
             } while (hasConclusion(suspect))
 
         return Suspect(id, room, tool, suspect)
+    }
+
+    fun fillSolution(type: MysteryType, mysteryName: String) {
+        if (solution == null)
+            solution = Suspect(id, "", "", "")
+        when (type) {
+            MysteryType.VENUE -> solution!!.room = mysteryName
+            MysteryType.SUSPECT -> solution!!.suspect = mysteryName
+            else -> solution!!.tool = mysteryName
+        }
+    }
+
+    fun hasSolution(): Boolean {
+        return solution != null && solution!!.room.isNotEmpty() && solution!!.suspect.isNotEmpty() && solution!!.tool.isNotEmpty()
     }
 
     enum class Gender {
