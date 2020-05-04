@@ -107,6 +107,16 @@ class Player(
         return false
     }
 
+    private fun containsAny(list: Array<String>): Boolean {
+        if (conclusions.isNullOrEmpty())
+            return false
+        for (item in list) {
+            if (conclusions!!.containsKey(item))
+                return true
+        }
+        return false
+    }
+
     fun getRandomSuspect(
         room: String,
         toolList: Array<String>,
@@ -115,18 +125,22 @@ class Player(
         var tool: String
         if (solution != null && solution!!.tool.isNotEmpty())
             tool = solution!!.tool
-        else
+        else if (containsAny(toolList))
             do {
                 tool = toolList.random()
             } while (hasConclusion(tool))
+        else
+            tool = toolList.random()
 
         var suspect: String
         if (solution != null && solution!!.suspect.isNotEmpty())
             suspect = solution!!.suspect
-        else
+        else if (containsAny(suspectList))
             do {
                 suspect = suspectList.random()
             } while (hasConclusion(suspect))
+        else
+            suspect = suspectList.random()
 
         return Suspect(id, room, tool, suspect)
     }
