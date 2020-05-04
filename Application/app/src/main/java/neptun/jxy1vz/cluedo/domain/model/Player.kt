@@ -134,6 +134,8 @@ class Player(
     fun fillSolution(type: MysteryType, mysteryName: String) {
         if (solution == null)
             solution = Suspect(id, "", "", "")
+        if (hasConclusion(mysteryName) && conclusions!![mysteryName] != -1)
+            return
         when (type) {
             MysteryType.VENUE -> solution!!.room = mysteryName
             MysteryType.SUSPECT -> solution!!.suspect = mysteryName
