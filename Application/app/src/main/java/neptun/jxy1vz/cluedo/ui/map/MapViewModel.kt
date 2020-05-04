@@ -1071,12 +1071,9 @@ class MapViewModel(
         if (userHasToIncriminate) {
             Snackbar.make(mapRoot.mapLayout, "Muszáj gyanúsítanod!", Snackbar.LENGTH_LONG).show()
             incrimination(player.id, stepInRoom(player.pos))
-        } else {
-            Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_SHORT)
-                .setAction("Kockadobás") {
-                    rollWithDice(player.id)
-                }.show()
         }
+        else
+            Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_SHORT).show()
     }
 
     private fun revealMysteryCards(
