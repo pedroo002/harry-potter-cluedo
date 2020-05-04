@@ -85,6 +85,11 @@
     <string name="mandragora">Mandragóra</string>
     <string name="altatoital">Altatóital</string>
     <string name="take_note">Jegyezd fel a történteket!</string>
+    <string name="purpose_in_room">Mi a célod Dumbledore irodájában?</string>
+    <string name="choose_option">Válassz egy lehetőséget!</string>
+    <string name="check_cards">Kártyák megtekintése</string>
+    <string name="step">Lépek</string>
+    <string name="unused_cards">Ki nem osztott rejtélykártyák</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>

@@ -19,7 +19,7 @@ class MysteryCardActivity : AppCompatActivity() {
         playerId = intent.getIntExtra("Player ID", 0)
 
         activityMysteryCardBinding = DataBindingUtil.setContentView(this, R.layout.activity_mystery_card)
-        activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(gameModel, applicationContext, playerId, activityMysteryCardBinding)
+        activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(gameModel, applicationContext, playerId, activityMysteryCardBinding, supportFragmentManager)
         activityMysteryCardBinding.executePendingBindings()
     }
 }

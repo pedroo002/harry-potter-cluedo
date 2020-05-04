@@ -29,4 +29,7 @@ interface CardDAO : BaseDAO<CardDBmodel> {
 
     @Query("SELECT * FROM Cards WHERE owner IS NOT NULL AND type LIKE 'MYSTERY_%'")
     suspend fun getUsedMysteryCards(): List<CardDBmodel>?
+
+    @Query("SELECT * FROM Cards WHERE type LIKE 'MYSTERY_%'")
+    suspend fun getAllMysteryCards(): List<CardDBmodel>?
 }

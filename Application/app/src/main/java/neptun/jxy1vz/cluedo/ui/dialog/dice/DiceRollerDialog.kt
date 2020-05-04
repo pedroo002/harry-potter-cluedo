@@ -10,7 +10,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDiceRollerBinding
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 
-class DiceRollerDialog(private val listener: DiceResultInterface, private val playerId: Int) :
+class DiceRollerDialog(private val listener: DiceResultInterface, private val playerId: Int, private val felixFelicis: Boolean) :
     DialogFragment() {
 
     interface DiceResultInterface {
@@ -29,7 +29,7 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
         )
 
         dialogDiceRollerBinding.dialogViewModel =
-            DiceRollerViewModel(dialogDiceRollerBinding, context!!)
+            DiceRollerViewModel(dialogDiceRollerBinding, context!!, felixFelicis)
         dialogDiceRollerBinding.executePendingBindings()
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_DialogWhenLarge)

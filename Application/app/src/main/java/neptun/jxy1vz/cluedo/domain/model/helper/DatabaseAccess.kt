@@ -29,6 +29,14 @@ class DatabaseAccess(context: Context) {
         interactor.eraseNotes()
     }
 
+    suspend fun getUnusedMysteryCards(): List<MysteryCard> {
+        return interactor.getCardBySuperType("MYSTERY_%")!!.map { cardDBmodel -> cardDBmodel.toDomainModel() as MysteryCard }
+    }
+
+    suspend fun getAllMysteryCards(): List<MysteryCard> {
+        return interactor.getAllMysteryCards()!!.map { cardDBmodel -> cardDBmodel.toDomainModel() as MysteryCard }
+    }
+
     suspend fun getCardBySuperType(playerId: Int, prefix: String): Card? {
         val cards = interactor.getCardBySuperType(prefix)
         if (cards != null) {
@@ -67,10 +75,17 @@ class DatabaseAccess(context: Context) {
         val suspects = interactor.getCardsByType(MysteryType.SUSPECT.toDatabaseModel().string())
         val venues = interactor.getCardsByType(MysteryType.VENUE.toDatabaseModel().string())
 
+        val MYSTERY_CARDS_COUNT = 21
+        val CARD_TYPES_COUNT = 3
+        val PLAYERS_COUNT = playerIds.size - 1
+        val LEFTOVER_COUNT = ((MYSTERY_CARDS_COUNT - playerIds.size * CARD_TYPES_COUNT) / PLAYERS_COUNT)
+
         val randomToolIndices = ArrayList<Int>()
         val randomSuspectIndices = ArrayList<Int>()
         val randomVenueIndices = ArrayList<Int>()
-        while (randomToolIndices.size + randomSuspectIndices.size + randomVenueIndices.size != playerIds.size * 3) {
+        val leftoverCards = ArrayList<CardDBmodel>()
+
+        while (randomToolIndices.size + randomSuspectIndices.size + randomVenueIndices.size != playerIds.size * CARD_TYPES_COUNT) {
             if (randomToolIndices.size < playerIds.size) {
                 val rnd = Random.nextInt(0, tools!!.size)
                 if (!randomToolIndices.contains(rnd))
@@ -87,6 +102,31 @@ class DatabaseAccess(context: Context) {
                 val rnd = Random.nextInt(0, venues!!.size)
                 if (!randomVenueIndices.contains(rnd))
                     randomVenueIndices.add(rnd)
+            }
+
+            if (randomToolIndices.size + randomSuspectIndices.size + randomVenueIndices.size == playerIds.size * CARD_TYPES_COUNT) {
+                for (i in tools!!.indices) {
+                    if (!randomToolIndices.contains(i))
+                        leftoverCards.add(tools[i])
+                }
+                for (i in suspects!!.indices) {
+                    if (!randomSuspectIndices.contains(i))
+                        leftoverCards.add(suspects[i])
+                }
+                for (i in venues!!.indices) {
+                    if (!randomVenueIndices.contains(i))
+                        leftoverCards.add(venues[i])
+                }
+            }
+        }
+
+        for (i in 1..LEFTOVER_COUNT) {
+            for (id in playerIds) {
+                if (id != -1) {
+                    interactor.updateCards(CardDBmodel(leftoverCards[0].id, leftoverCards[0].name, leftoverCards[0].imageRes, leftoverCards[0].versoRes, leftoverCards[0].cardType, id, leftoverCards[0].lossType, leftoverCards[0].hpLoss))
+                    mcList.add(Pair(leftoverCards[0].toDomainModel() as MysteryCard, id))
+                    leftoverCards.removeAt(0)
+                }
             }
         }
 

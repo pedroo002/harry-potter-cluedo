@@ -9,7 +9,7 @@
     </data>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/scrollViewImages"
+            android:id="@+id/cardImages"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -32,57 +32,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
+                android:onClick="@{()->mysteryCardViewModel.openHogwarts()}"
                 android:text="@string/go_forward"
-                app:layout_constraintBottom_toTopOf="@+id/ivMysteryCardVenue"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:onClick="@{()->mysteryCardViewModel.openHogwarts()}"/>
+                app:layout_constraintTop_toTopOf="@id/tvLabelMysteryCards"
+                app:layout_constraintBottom_toBottomOf="@+id/tvLabelMysteryCards"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-            <ImageView
-                android:id="@+id/ivMysteryCardTool"
-                android:layout_width="0dp"
+            <androidx.viewpager.widget.ViewPager
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:src="@drawable/rejtely_hatlap"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="40dp"
-                app:layout_constraintWidth_percent="0.3"
-                app:layout_constraintHeight_percent="0.85"
+                android:id="@+id/cardPager"
+                app:layout_constraintTop_toBottomOf="@id/btnGo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/card_tool" />
-
-            <ImageView
-                android:id="@+id/ivMysteryCardSuspect"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="40dp"
-                android:src="@drawable/rejtely_hatlap"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ivMysteryCardVenue"
-                app:layout_constraintHeight_percent="0.85"
-                app:layout_constraintStart_toEndOf="@id/ivMysteryCardTool"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.3"
-                android:contentDescription="@string/card_suspect" />
-
-            <ImageView
-                android:id="@+id/ivMysteryCardVenue"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="40dp"
-                android:src="@drawable/rejtely_hatlap"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHeight_percent="0.85"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.3"
-                android:contentDescription="@string/card_venue" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_margin="20dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

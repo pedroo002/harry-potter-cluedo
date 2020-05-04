@@ -54,7 +54,7 @@ class GameModels(private val context: Context) {
                     playerCards[0],
                     Position(0, 17),
                     R.id.ivBluePlayer,
-                    Gender.WOMAN
+                    Player.Gender.WOMAN
                 )
             )
             listItems.add(
@@ -63,17 +63,17 @@ class GameModels(private val context: Context) {
                     playerCards[1],
                     Position(24, 17),
                     R.id.ivPurplePlayer,
-                    Gender.MAN
+                    Player.Gender.MAN
                 )
             )
-            listItems.add(Player(2, playerCards[2], Position(0, 7), R.id.ivRedPlayer, Gender.WOMAN))
+            listItems.add(Player(2, playerCards[2], Position(0, 7), R.id.ivRedPlayer, Player.Gender.WOMAN))
             listItems.add(
                 Player(
                     3,
                     playerCards[3],
                     Position(24, 7),
                     R.id.ivYellowPlayer,
-                    Gender.MAN
+                    Player.Gender.MAN
                 )
             )
             listItems.add(
@@ -82,10 +82,10 @@ class GameModels(private val context: Context) {
                     playerCards[4],
                     Position(17, 24),
                     R.id.ivWhitePlayer,
-                    Gender.WOMAN
+                    Player.Gender.WOMAN
                 )
             )
-            listItems.add(Player(5, playerCards[5], Position(7, 0), R.id.ivGreenPlayer, Gender.MAN))
+            listItems.add(Player(5, playerCards[5], Position(7, 0), R.id.ivGreenPlayer, Player.Gender.MAN))
 
             playerList = listItems
         }
@@ -259,7 +259,7 @@ class GameModels(private val context: Context) {
         State(15, 3, 7, DoorState.CLOSED, false)
     )
 
-    val ravencalwStates = listOf(
+    val ravenclawStates = listOf(
         State(0, 2, 6, DoorState.CLOSED, false, 7),
         State(0, 1, 4, DoorState.OPENED, false),
         State(0, 5, 12, DoorState.CLOSED, false),

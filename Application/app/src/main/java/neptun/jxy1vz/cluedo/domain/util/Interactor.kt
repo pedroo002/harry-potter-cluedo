@@ -11,18 +11,6 @@ class Interactor(private val db: CluedoDatabase) {
         return db.noteDao().insertIntoTable(notes)
     }
 
-    suspend fun insertIntoNotes(note: NoteDBmodel): Long {
-        return db.noteDao().insertIntoTable(note)
-    }
-
-    suspend fun upadateNote(note: NoteDBmodel) {
-        return db.noteDao().updateTable(note)
-    }
-
-    suspend fun deleteNote(note: NoteDBmodel) {
-        return db.noteDao().deleteItem(note)
-    }
-
     suspend fun getNotes(): List<NoteDBmodel>? {
         return db.noteDao().getNotes()
     }
@@ -73,5 +61,9 @@ class Interactor(private val db: CluedoDatabase) {
 
     suspend fun getHelperCardsToDarkCard(darkId: Long): List<Long>? {
         return db.darkHelperDao().getHelperCardsToDarkCard(darkId)
+    }
+
+    suspend fun getAllMysteryCards(): List<CardDBmodel>? {
+        return db.cardDao().getAllMysteryCards()
     }
 }

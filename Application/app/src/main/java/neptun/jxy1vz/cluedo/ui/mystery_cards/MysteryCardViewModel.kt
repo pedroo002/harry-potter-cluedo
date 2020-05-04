@@ -1,30 +1,31 @@
 package neptun.jxy1vz.cluedo.ui.mystery_cards
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.content.Context
 import android.content.Intent
-import androidx.core.animation.doOnEnd
+import android.widget.Toast
 import androidx.databinding.BaseObservable
+import androidx.fragment.app.FragmentManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
-import neptun.jxy1vz.cluedo.domain.model.MysteryType
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
+import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
+import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
 import neptun.jxy1vz.cluedo.ui.map.MapActivity
 
 class MysteryCardViewModel(
     private val gameModel: GameModels,
     private val context: Context,
     private val playerId: Int,
-    private val bind: ActivityMysteryCardBinding
+    private val bind: ActivityMysteryCardBinding,
+    private val fm: FragmentManager
 ) : BaseObservable() {
 
     private lateinit var player: Player
+    private lateinit var adpater: CardPagerAdapter
 
     init {
         bind.btnGo.isEnabled = false
@@ -48,29 +49,17 @@ class MysteryCardViewModel(
         val cards = gameModel.db.getMysteryCardsForPlayers(playerIds)
 
         withContext(Dispatchers.Main) {
-            var i = 0
+            Toast.makeText(context, "Lapozz oldalra a többiért!", Toast.LENGTH_LONG).show()
+
+            val fragmentList = ArrayList<CardFragment>()
             for (card in cards) {
-                if (card.second == playerId) {
-                    val iv = when (card.first.type) {
-                        MysteryType.TOOL -> bind.ivMysteryCardTool
-                        MysteryType.SUSPECT -> bind.ivMysteryCardSuspect
-                        else -> bind.ivMysteryCardVenue
-                    }
-                    (AnimatorInflater.loadAnimator(
-                        context,
-                        R.animator.card_flip
-                    ) as AnimatorSet).apply {
-                        setTarget(iv)
-                        start()
-                        doOnEnd {
-                            iv.setImageResource(card.first.imageRes)
-                            i++
-                            if (i == 3)
-                                bind.btnGo.isEnabled = true
-                        }
-                    }
-                }
+                if (card.second == playerId)
+                    fragmentList.add(CardFragment(card.first.imageRes))
             }
+            adpater = CardPagerAdapter(fm, fragmentList)
+            bind.cardPager.adapter = adpater
+
+            bind.btnGo.isEnabled = true
         }
     }
 
@@ -78,7 +67,10 @@ class MysteryCardViewModel(
         val idList = ArrayList<Int>()
         idList.add(playerId)
 
-        var playerCount = context.getSharedPreferences("Game params", Context.MODE_PRIVATE).getInt("player_count", 0) - 1
+        var playerCount = context.getSharedPreferences("Game params", Context.MODE_PRIVATE).getInt(
+            "player_count",
+            0
+        ) - 1
 
         for (p in gameModel.playerList) {
             if (p.id != player.id && playerCount > 0) {
