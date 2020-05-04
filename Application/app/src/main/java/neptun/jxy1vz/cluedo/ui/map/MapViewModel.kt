@@ -718,7 +718,7 @@ class MapViewModel(
                 diceList[i].startAnimation(anim)
             }
         } else
-            DiceRollerDialog(this, playerId).show(fm, "DIALOG_DICE")
+            DiceRollerDialog(this, playerId, player.hasFelixFelicis()).show(fm, "DIALOG_DICE")
     }
 
     override fun onDiceRoll(playerId: Int, sum: Int, house: HogwartsHouse?) {
@@ -1651,9 +1651,14 @@ class MapViewModel(
     override fun onAnimationRepeat(animation: Animation?) {}
 
     override fun onAnimationEnd(animation: Animation?) {
-        val dice1Value = Random.nextInt(1, 7)
-        val dice2Value = Random.nextInt(1, 7)
+        var dice1Value = Random.nextInt(1, 7)
+        var dice2Value = Random.nextInt(1, 7)
         val hogwartsDice = Random.nextInt(1, 7)
+
+        if (getPlayerById(playerInTurn).hasFelixFelicis()) {
+            dice1Value = 6
+            dice2Value = 6
+        }
 
         diceList[0].setImageResource(
             when (dice1Value) {

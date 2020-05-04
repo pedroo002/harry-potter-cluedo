@@ -13,7 +13,8 @@ import kotlin.random.Random
 
 class DiceRollerViewModel(
     private val bind: DialogDiceRollerBinding,
-    private val context: Context
+    private val context: Context,
+    private val felixFelicis: Boolean
 ) : BaseObservable(),
     Animation.AnimationListener {
 
@@ -105,6 +106,11 @@ class DiceRollerViewModel(
         num1 = Random.nextInt(1, 7)
         num2 = Random.nextInt(1, 7)
         num3 = Random.nextInt(1, 7)
+
+        if (felixFelicis) {
+            num1 = 6
+            num2 = 6
+        }
     }
 
     private fun setDice3(dice3: Int) {

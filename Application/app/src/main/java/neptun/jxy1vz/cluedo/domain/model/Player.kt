@@ -147,6 +147,22 @@ class Player(
         return solution != null && solution!!.room.isNotEmpty() && solution!!.suspect.isNotEmpty() && solution!!.tool.isNotEmpty()
     }
 
+    fun hasAlohomora(): Boolean {
+        for (mc in mysteryCards) {
+            if (mc.name == "Alohomora")
+                return true
+        }
+        return false
+    }
+
+    fun hasFelixFelicis(): Boolean {
+        for (mc in mysteryCards) {
+            if (mc.name == "Felix Felicis")
+                return true
+        }
+        return false
+    }
+
     enum class Gender {
         MAN,
         WOMAN
