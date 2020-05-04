@@ -148,16 +148,20 @@ class Player(
     }
 
     fun hasAlohomora(): Boolean {
-        for (mc in mysteryCards) {
-            if (mc.name == "Alohomora")
+        if (helperCards.isNullOrEmpty())
+            return false
+        for (card in helperCards!!) {
+            if (card.name == "Alohomora")
                 return true
         }
         return false
     }
 
     fun hasFelixFelicis(): Boolean {
-        for (mc in mysteryCards) {
-            if (mc.name == "Felix Felicis")
+        if (helperCards.isNullOrEmpty())
+            return false
+        for (card in helperCards!!) {
+            if (card.name == "Felix Felicis")
                 return true
         }
         return false
