@@ -980,7 +980,7 @@ class MapViewModel(
             }
 
             if (room != "Dumbledore irodája")
-                getIncrimination(getPlayerById(playerId).solution ?: suspect)
+                getIncrimination(suspect)
             else {
                 var hasConclusionsOfThem = true
                 for (card in unusedMysteryCards) {
@@ -988,7 +988,7 @@ class MapViewModel(
                         hasConclusionsOfThem = false
                 }
                 if (hasConclusionsOfThem)
-                    onAccusationDismiss(getPlayerById(playerId).getRandomSuspect(context.resources.getStringArray(R.array.rooms)[Random.nextInt(0, 9)], context.resources.getStringArray(R.array.tools), context.resources.getStringArray(R.array.suspects)))
+                    onAccusationDismiss(getPlayerById(playerId).solution)
                 else {
                     for (card in unusedMysteryCards) {
                         getPlayerById(playerId).getConclusion(card.name, -2)
