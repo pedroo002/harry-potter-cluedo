@@ -153,9 +153,7 @@ class MapViewModel(
                 userFinishedHisTurn = false
                 userHasToIncriminate = false
                 userHasToStepOrIncriminate = false
-                if (stepInRoom(player.pos) != -1) {
-                    userCanStep = true
-                }
+                userCanStep = true
                 showOptions(player.id)
             }
         }
@@ -682,7 +680,7 @@ class MapViewModel(
             if (playerId == player.id && playerId == playerInTurn) {
                 val roomId = stepInRoom(player.pos)
                 val snackbar = Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_LONG)
-                if (!userHasToStepOrIncriminate) {
+                if (!userHasToStepOrIncriminate && userCanStep) {
                     snackbar.setAction("Kockadobás") { rollWithDice(playerId) }
                     snackbar.show()
                 } else if (roomId != -1) {
@@ -975,7 +973,7 @@ class MapViewModel(
                 )
             else {
                 if (unusedMysteryCards.isNotEmpty())
-                    ChooseOptionDialog(this, userCanStep).show(
+                    ChooseOptionDialog(this, userCanStep && !userHasToStepOrIncriminate).show(
                     fm,
                     "DIALOG_OPTIONS"
                 )
@@ -1274,7 +1272,6 @@ class MapViewModel(
                 UnusedMysteryCardsDialog(this, unusedMysteryCards).show(fm, "DIALOG_UNUSED_MYSTERY_CARDS")
             return
         }
-        rollWithDice(playerInTurn)
     }
 
     private fun nothingHasBeenShowed(suspect: Suspect) {
