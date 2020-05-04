@@ -744,7 +744,7 @@ class MapViewModel(
             limit--
             val roomId = stepInRoom(getPlayerById(playerId).pos)
             for (door in gameModels.doorList) {
-                if (door.room.id == roomId && door.state == DoorState.OPENED) {
+                if (door.room.id == roomId && (door.state == DoorState.OPENED || getPlayerById(playerId).hasAlohomora())) {
                     distances = mergeDistances(dijkstra(door.position), distances)
                 }
             }
@@ -764,7 +764,7 @@ class MapViewModel(
 
             if (stepInRoom(getPlayerById(playerId).pos) == -1) {
                 for (door in gameModels.doorList) {
-                    if (distances!![door.position]!! <= limit - 1 && door.state == DoorState.OPENED) {
+                    if (distances!![door.position]!! <= limit - 1 && (door.state == DoorState.OPENED || getPlayerById(playerId).hasAlohomora())) {
                         drawSelection(door.room.selection, door.room.top, door.room.left, playerId)
                     }
                 }
@@ -778,7 +778,7 @@ class MapViewModel(
                         val roomId = stepInRoom(pos)
                         for (door in gameModels.doorList) {
                             if (door.room.id == roomId) {
-                                if (!validKeys.contains(pos) && distances[door.position]!! < limit && (door.state == DoorState.OPENED || stepInRoom(playerPos) == stepInRoom(pos)))
+                                if (!validKeys.contains(pos) && distances[door.position]!! < limit && (door.state == DoorState.OPENED || getPlayerById(playerId).hasAlohomora() || stepInRoom(playerPos) == stepInRoom(pos)))
                                     validKeys.add(pos)
                             }
                         }
@@ -807,7 +807,7 @@ class MapViewModel(
                 val roomDistances = HashMap<Room, Int>()
                 for (room in desiredRooms) {
                     for (door in gameModels.doorList) {
-                        if (door.room.id == room.id && door.state == DoorState.OPENED) {
+                        if (door.room.id == room.id && (door.state == DoorState.OPENED || getPlayerById(playerId).hasAlohomora())) {
                             if (roomDistances.containsKey(room))
                                 roomDistances[room] = min(roomDistances[room]!!, distances[door.position]!! + 1)
                             else
@@ -861,7 +861,7 @@ class MapViewModel(
                         var distancesFromRoom = HashMap<Position, Int>()
                         val roomId = sortedDistances.keys.toList()[i].id
                         for (door in gameModels.doorList) {
-                            if (door.room.id == roomId && door.state == DoorState.OPENED) {
+                            if (door.room.id == roomId && (door.state == DoorState.OPENED || getPlayerById(playerId).hasAlohomora())) {
                                 distancesFromRoom =
                                     mergeDistances(dijkstra(door.position), distancesFromRoom)
                             }
