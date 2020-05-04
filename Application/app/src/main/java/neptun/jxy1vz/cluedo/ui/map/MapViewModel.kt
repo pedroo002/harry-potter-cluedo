@@ -155,7 +155,6 @@ class MapViewModel(
                 userHasToStepOrIncriminate = false
                 if (stepInRoom(player.pos) != -1) {
                     userCanStep = true
-                    //incrimination(player.id, stepInRoom(player.pos))
                 }
                 showOptions(player.id)
             }
@@ -319,7 +318,7 @@ class MapViewModel(
             HogwartsHouse.RAVENCLAW -> {
                 setChanges(
                     playerId,
-                    gameModels.ravencalwStates,
+                    gameModels.ravenclawStates,
                     gameModels.passageWayListRavenclaw,
                     gameModels.passageWayVisibilitiesRavenclaw,
                     ravenclawState,
@@ -834,6 +833,31 @@ class MapViewModel(
                         break
                 }
 
+                if (!stepped) {
+                    val roomOfPlayer = stepInRoom(playerPos)
+                    val listOfStateLists = listOf(gameModels.slytherinStates, gameModels.ravenclawStates, gameModels.gryffindorStates, gameModels.hufflepuffStates)
+                    val currentStates = listOf(slytherinState, ravenclawState, gryffindorState, hufflepuffState)
+                    for (list in listOfStateLists) {
+                        for (state in list) {
+                            if (state.serialNum == currentStates[listOfStateLists.indexOf(list)] && state.roomId == roomOfPlayer) {
+                                state.passageWay?.let {
+                                    for (room in desiredRooms) {
+                                        if (room.id == it) {
+                                            stepPlayer(playerId, Position(room.top, room.left))
+                                            stepped = true
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                            if (stepped)
+                                break
+                        }
+                        if (stepped)
+                            break
+                    }
+                }
+
                 if (!stepped && sortedDistances.isNotEmpty()) {
                     for (i in sortedDistances.keys.toList().indices) {
                         var distancesFromRoom = HashMap<Position, Int>()
@@ -909,12 +933,12 @@ class MapViewModel(
 
         when {
             stepInRoom(getPlayerById(playerId).pos) != -1 -> {
-                incrimination(playerId, stepInRoom(getPlayerById(playerId).pos))
                 if (playerId == player.id) {
                     userHasToIncriminate = true
                     userHasToStepOrIncriminate = false
                     userCanStep = false
                 }
+                incrimination(playerId, stepInRoom(getPlayerById(playerId).pos))
             }
             stepInRoom(getPlayerById(playerId).pos) == -1 -> {
                 if (playerId != player.id) {

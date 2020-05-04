@@ -259,7 +259,7 @@ class GameModels(private val context: Context) {
         State(15, 3, 7, DoorState.CLOSED, false)
     )
 
-    val ravencalwStates = listOf(
+    val ravenclawStates = listOf(
         State(0, 2, 6, DoorState.CLOSED, false, 7),
         State(0, 1, 4, DoorState.OPENED, false),
         State(0, 5, 12, DoorState.CLOSED, false),
