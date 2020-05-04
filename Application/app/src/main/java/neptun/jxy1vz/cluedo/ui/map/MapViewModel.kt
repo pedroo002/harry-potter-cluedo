@@ -1465,13 +1465,13 @@ class MapViewModel(
             }
             DarkType.GENDER_MEN -> {
                 for (player in gameModels.playerList) {
-                    if (player.gender == Gender.MAN)
+                    if (player.gender == Player.Gender.MAN)
                         playerIds.add(player.id)
                 }
             }
             DarkType.GENDER_WOMEN -> {
                 for (player in gameModels.playerList) {
-                    if (player.gender == Gender.WOMAN)
+                    if (player.gender == Player.Gender.WOMAN)
                         playerIds.add(player.id)
                 }
             }
