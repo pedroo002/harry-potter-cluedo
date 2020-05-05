@@ -27,13 +27,6 @@ class MapViewModel(
     fragmentManager: FragmentManager
 ) : BaseObservable() {
 
-    enum class HogwartsHouse {
-        SLYTHERIN,
-        RAVENCLAW,
-        GRYFFINDOR,
-        HUFFLEPUFF
-    }
-
     companion object {
         const val ROWS = 24
         const val COLS = 24
@@ -83,7 +76,7 @@ class MapViewModel(
         var pause = false
         var savedPlayerId = -1
         var savedDiceValue = 0
-        var savedHouse: HogwartsHouse? = null
+        var savedHouse: StateMachineHandler.HogwartsHouse? = null
 
         val unusedMysteryCards = ArrayList<MysteryCard>()
     }
@@ -143,10 +136,10 @@ class MapViewModel(
 
         NoteDialog(player, dialogHandler).show(fm, "DIALOG_NOTE")
 
-        stateMachineHandler.setState(playerId, HogwartsHouse.SLYTHERIN)
-        stateMachineHandler.setState(playerId, HogwartsHouse.RAVENCLAW)
-        stateMachineHandler.setState(playerId, HogwartsHouse.GRYFFINDOR)
-        stateMachineHandler.setState(playerId, HogwartsHouse.HUFFLEPUFF)
+        stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.SLYTHERIN)
+        stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.RAVENCLAW)
+        stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.GRYFFINDOR)
+        stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.HUFFLEPUFF)
 
         for (pair in playerImagePairs) {
             uiHandler.setLayoutConstraintStart(pair.second, gameModels.cols[pair.first.pos.col])
@@ -188,5 +181,9 @@ class MapViewModel(
         GlobalScope.launch(Dispatchers.IO) {
             unusedMysteryCards.addAll(gameModels.db.getUnusedMysteryCards())
         }
+    }
+
+    fun showOptions(playerId: Int) {
+        interactionHandler.showOptions(playerId)
     }
 }

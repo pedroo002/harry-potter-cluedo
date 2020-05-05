@@ -23,7 +23,7 @@ class StateMachineHandler(private val map: MapViewModel.Companion) {
         HUFFLEPUFF
     }
 
-    fun setState(playerId: Int, house: MapViewModel.HogwartsHouse) {
+    fun setState(playerId: Int, house: HogwartsHouse) {
         map.cameraHandler.moveCameraToCorner(house)
 
         when (house) {
