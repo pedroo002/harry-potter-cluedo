@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogAccusationBinding
 import neptun.jxy1vz.cluedo.domain.model.Suspect
-import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class AccusationDialog(private val playerId: Int, private val listener: DialogDismiss) : DialogFragment(), AccusationViewModel.FinalizationListener {
 

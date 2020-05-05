@@ -15,7 +15,7 @@ import neptun.jxy1vz.cluedo.domain.model.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
 import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
-import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class ShowCardDialog(private val suspect: Suspect, private val forWho: String, private val cardList: List<MysteryCard>, private val listener: DialogDismiss) : DialogFragment() {
 

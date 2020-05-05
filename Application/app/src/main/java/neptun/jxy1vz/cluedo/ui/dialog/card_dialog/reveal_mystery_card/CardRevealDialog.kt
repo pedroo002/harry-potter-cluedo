@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogCardRevealBinding
 import neptun.jxy1vz.cluedo.domain.model.MysteryCard
-import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class CardRevealDialog(private val card: MysteryCard, private val playerName: String, private val listener: DialogDismiss) : DialogFragment() {
 

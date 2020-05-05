@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogEndOfGameBinding
-import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class EndOfGameDialog(private val listener: DialogDismiss, private val playerName: String, private val titleId: Int, private val correct: Boolean) : DialogFragment() {
 

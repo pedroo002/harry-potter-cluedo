@@ -14,7 +14,7 @@ import neptun.jxy1vz.cluedo.databinding.DialogPlayerDiesBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
 import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
-import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class PlayerDiesDialog(private val player: Player, private val listener: DialogDismiss) :
     DialogFragment() {

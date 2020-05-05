@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogHpLossBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
-import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class HpLossDialog(private val listener: DialogDismiss, private val hp_loss: Int, private val hp: Int, private val player: Player? = null) : DialogFragment() {
 

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.Player
-import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class RescuedFromDarkCardDialog(private val listener: DialogDismiss, private val player: Player? = null) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogNoteBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
-import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class NoteDialog(private val player: Player, private val listener: DialogDismiss) : DialogFragment() {
 
