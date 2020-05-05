@@ -14,7 +14,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
 
 class GameSequenceHandler(private val map: MapViewModel.Companion) {
-    fun pause(playerId: Int, diceSum: Int, house: MapViewModel.HogwartsHouse?) {
+    fun pause(playerId: Int, diceSum: Int, house: StateMachineHandler.HogwartsHouse?) {
         map.pause = true
         savedPlayerId = playerId
         savedDiceValue = diceSum

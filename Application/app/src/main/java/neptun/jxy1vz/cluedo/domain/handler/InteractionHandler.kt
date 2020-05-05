@@ -82,7 +82,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
             DiceRollerDialog(this, playerId, player.hasFelixFelicis()).show(fm, "DIALOG_DICE")
     }
 
-    override fun onDiceRoll(playerId: Int, sum: Int, house: MapViewModel.HogwartsHouse?) {
+    override fun onDiceRoll(playerId: Int, sum: Int, house: StateMachineHandler.HogwartsHouse?) {
         house?.let {
             if (playerId == player.id)
                 map.stateMachineHandler.setState(playerId, it)

@@ -15,17 +15,17 @@ class CameraHandler(private val map: MapViewModel.Companion) {
         mapRoot.panTo(-x, -y, true)
     }
 
-    fun moveCameraToCorner(house: MapViewModel.HogwartsHouse) {
+    fun moveCameraToCorner(house: StateMachineHandler.HogwartsHouse) {
         val x = when (house) {
-            MapViewModel.HogwartsHouse.SLYTHERIN -> mapRoot.mapLayout.ivMap.left.toFloat()
-            MapViewModel.HogwartsHouse.RAVENCLAW -> mapRoot.mapLayout.ivMap.right.toFloat()
-            MapViewModel.HogwartsHouse.GRYFFINDOR -> mapRoot.mapLayout.ivMap.right.toFloat()
+            StateMachineHandler.HogwartsHouse.SLYTHERIN -> mapRoot.mapLayout.ivMap.left.toFloat()
+            StateMachineHandler.HogwartsHouse.RAVENCLAW -> mapRoot.mapLayout.ivMap.right.toFloat()
+            StateMachineHandler.HogwartsHouse.GRYFFINDOR -> mapRoot.mapLayout.ivMap.right.toFloat()
             else -> mapRoot.mapLayout.ivMap.left.toFloat()
         }
         val y = when (house) {
-            MapViewModel.HogwartsHouse.SLYTHERIN -> mapRoot.mapLayout.ivMap.top.toFloat()
-            MapViewModel.HogwartsHouse.RAVENCLAW -> mapRoot.mapLayout.ivMap.top.toFloat()
-            MapViewModel.HogwartsHouse.GRYFFINDOR -> mapRoot.mapLayout.ivMap.bottom.toFloat()
+            StateMachineHandler.HogwartsHouse.SLYTHERIN -> mapRoot.mapLayout.ivMap.top.toFloat()
+            StateMachineHandler.HogwartsHouse.RAVENCLAW -> mapRoot.mapLayout.ivMap.top.toFloat()
+            StateMachineHandler.HogwartsHouse.GRYFFINDOR -> mapRoot.mapLayout.ivMap.bottom.toFloat()
             else -> mapRoot.mapLayout.ivMap.bottom.toFloat()
         }
 

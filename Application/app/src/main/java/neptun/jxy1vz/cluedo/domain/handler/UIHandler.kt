@@ -203,13 +203,13 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
         )
 
         var cardType: DiceRollerViewModel.CardType? = null
-        var house: MapViewModel.HogwartsHouse? = null
+        var house: StateMachineHandler.HogwartsHouse? = null
         when (hogwartsDice) {
             1 -> cardType = DiceRollerViewModel.CardType.HELPER
-            2 -> house = MapViewModel.HogwartsHouse.GRYFFINDOR
-            3 -> house = MapViewModel.HogwartsHouse.SLYTHERIN
-            4 -> house = MapViewModel.HogwartsHouse.HUFFLEPUFF
-            5 -> house = MapViewModel.HogwartsHouse.RAVENCLAW
+            2 -> house = StateMachineHandler.HogwartsHouse.GRYFFINDOR
+            3 -> house = StateMachineHandler.HogwartsHouse.SLYTHERIN
+            4 -> house = StateMachineHandler.HogwartsHouse.HUFFLEPUFF
+            5 -> house = StateMachineHandler.HogwartsHouse.RAVENCLAW
             6 -> cardType = DiceRollerViewModel.CardType.DARK
         }
 
