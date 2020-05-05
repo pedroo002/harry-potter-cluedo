@@ -1,6 +1,7 @@
 package neptun.jxy1vz.cluedo.ui.map
 
 import android.content.Context
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -54,12 +55,12 @@ class MapViewModel(
 
         var otherPlayerStepsOnStar: Boolean = false
         var playerInTurnAffected = false
-        var player = playerHandler.getPlayerById(mPlayerId!!)
+        lateinit var player: Player
         lateinit var mapGraph: Graph<Position>
         var selectionList: ArrayList<ImageView> = ArrayList()
         lateinit var diceList: List<ImageView>
 
-        val anim = AnimationUtils.loadAnimation(mContext!!, R.anim.shake)
+        lateinit var anim: Animation
 
         var slytherinState = 0
         var ravenclawState = 0
@@ -67,7 +68,7 @@ class MapViewModel(
         var hufflepuffState = 0
 
         var isGameRunning = false
-        var playerInTurn = mPlayerId
+        var playerInTurn: Int = 0
         var userFinishedHisTurn = false
         var userHasToIncriminate = false
         var userHasToStepOrIncriminate = false
@@ -89,6 +90,9 @@ class MapViewModel(
         playerImagePairs = pairs
         fm = fragmentManager
         activityListener = listener
+        player = playerHandler.getPlayerById(mPlayerId!!)
+        anim = AnimationUtils.loadAnimation(mContext!!, R.anim.shake)
+        playerInTurn = mPlayerId!!
 
         var idx = gameModels.playerList.indexOf(player)
         idx++
