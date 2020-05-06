@@ -82,7 +82,7 @@ class StateMachineHandler(private val map: MapViewModel.Companion) {
         }
     }
 
-    fun setChanges(
+    private fun setChanges(
         playerId: Int,
         stateList: List<State>,
         gateways: List<Int>,
@@ -107,7 +107,7 @@ class StateMachineHandler(private val map: MapViewModel.Companion) {
             mapRoot.mapLayout.findViewById<ImageView>(gateways[visibleGatewaySerialNumbers[i]])
                 .setOnClickListener {
                     if (it.visibility == View.VISIBLE && playerInTurn == player.id)
-                        map.playerHandler.teleport(
+                        map.playerHandler.useGateway(
                             playerInTurn,
                             stateList[state * 3 + gatewayNumbers[i]].roomId,
                             stateList[state * 3 + gatewayNumbers[i]].passageWay!!

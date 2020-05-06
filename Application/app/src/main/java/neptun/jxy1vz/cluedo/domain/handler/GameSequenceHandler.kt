@@ -42,7 +42,7 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
         letPlayerTurn()
     }
 
-    fun letPlayerTurn() {
+    private fun letPlayerTurn() {
         if (isGameRunning) {
             map.cameraHandler.moveCameraToPlayer(playerInTurn)
 

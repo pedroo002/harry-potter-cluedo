@@ -53,7 +53,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
         return false
     }
 
-    fun isDoor(pos: Position): Boolean {
+    private fun isDoor(pos: Position): Boolean {
         for (door in gameModels.doorList) {
             if (door.position == pos)
                 return true
@@ -61,7 +61,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
         return false
     }
 
-    fun dijkstra(current: Position): HashMap<Position, Int> {
+    private fun dijkstra(current: Position): HashMap<Position, Int> {
         val distances = HashMap<Position, Int>()
         val unvisited = HashSet<Position>()
 
@@ -92,7 +92,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
         return distances
     }
 
-    fun mergeDistances(
+    private fun mergeDistances(
         map1: HashMap<Position, Int>,
         map2: HashMap<Position, Int>? = null
     ): HashMap<Position, Int> {

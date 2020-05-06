@@ -29,7 +29,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncrimi
 import kotlin.random.Random
 
 class PlayerHandler(private val map: MapViewModel.Companion) : DarkCardDialog.DarkCardDialogListener, CardLossDialog.CardLossDialogListener {
-    fun teleport(playerId: Int, from: Int, to: Int) {
+    fun useGateway(playerId: Int, from: Int, to: Int) {
         if (map.mapHandler.stepInRoom(getPlayerById(playerId).pos) == from) {
             stepPlayer(
                 playerId,
