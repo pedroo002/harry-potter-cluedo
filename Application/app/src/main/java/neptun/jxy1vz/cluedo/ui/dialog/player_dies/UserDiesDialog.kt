@@ -10,6 +10,10 @@ import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class UserDiesDialog(private val listener: DialogDismiss) : DialogFragment() {
 
+    companion object {
+        const val TAG = "DIALOG_USER_DIES"
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
             .setTitle(getString(R.string.you_died)).setMessage(getString(R.string.you_lost_your_hps) + "\n" + getString(

@@ -153,7 +153,7 @@ class CardHandler(private val map: MapViewModel.Companion) {
                 if (playerId == player.id)
                     HelperCardDialog(randomCard.imageRes, map.dialogHandler).show(
                         fm,
-                        "DIALOG_HELPER"
+                        HelperCardDialog.TAG
                     )
             }
             else -> {

@@ -13,6 +13,10 @@ import neptun.jxy1vz.cluedo.domain.handler.StateMachineHandler
 class DiceRollerDialog(private val listener: DiceResultInterface, private val playerId: Int, private val felixFelicis: Boolean) :
     DialogFragment() {
 
+    companion object {
+        const val TAG = "DIALOG_DICE"
+    }
+
     interface DiceResultInterface {
         fun onDiceRoll(playerId: Int, sum: Int, house: StateMachineHandler.HogwartsHouse?)
         fun getCard(playerId: Int, type: DiceRollerViewModel.CardType?)

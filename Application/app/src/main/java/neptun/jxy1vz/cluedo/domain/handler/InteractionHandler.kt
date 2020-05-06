@@ -79,7 +79,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                 diceList[i].startAnimation(map.anim)
             }
         } else
-            DiceRollerDialog(this, playerId, player.hasFelixFelicis()).show(fm, "DIALOG_DICE")
+            DiceRollerDialog(this, playerId, player.hasFelixFelicis()).show(fm, DiceRollerDialog.TAG)
     }
 
     override fun onDiceRoll(playerId: Int, sum: Int, house: StateMachineHandler.HogwartsHouse?) {
@@ -120,16 +120,16 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
             if (roomId != 4)
                 IncriminationDialog(gameModels, playerId, roomId, this).show(
                     fm,
-                    "DIALOG_INCRIMINATION"
+                    IncriminationDialog.TAG
                 )
             else {
                 if (unusedMysteryCards.isNotEmpty())
                     ChooseOptionDialog(map.dialogHandler, userCanStep && !userHasToStepOrIncriminate).show(
                         fm,
-                        "DIALOG_OPTIONS"
+                        ChooseOptionDialog.TAG
                     )
                 else
-                    AccusationDialog(playerId, map.dialogHandler).show(fm, "DIALOG_ACCUSATION")
+                    AccusationDialog(playerId, map.dialogHandler).show(fm, AccusationDialog.TAG)
             }
         } else {
             val room = gameModels.roomList[roomId].name
@@ -185,7 +185,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                 mContext!!.getString(R.string.in_this_room) + suspect.room + "\n" + mContext!!.getString(
                                     R.string.with_this_tool) + suspect.tool + "\n" + mContext!!.getString(
                                                         R.string.suspect_person) + suspect.suspect
-            InformationDialog(suspect, title, message, map.dialogHandler).show(fm, "DIALOG_INFORMATION")
+            InformationDialog(suspect, title, message, map.dialogHandler).show(fm, InformationDialog.TAG)
         } else {
             var someoneShowedSomething = false
             var playerIdx = gameModels.playerList.indexOf(map.playerHandler.getPlayerById(suspect.playerId))
@@ -201,7 +201,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                         revealedCard,
                         gameModels.playerList[playerIdx].card.name,
                         map.dialogHandler
-                    ).show(fm, "DIALOG_CARD_REVEAL")
+                    ).show(fm, CardRevealDialog.TAG)
                     someoneShowedSomething = true
                     letOtherPlayersKnow(
                         suspect,
@@ -272,6 +272,6 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
         val message =
             mContext!!.getString(R.string.incrimination_params) + "\n\t" + mContext!!.getString(R.string.current_room) + "${suspect.room}\n\t" + mContext!!.getString(
                             R.string.current_tool) + "${suspect.tool}\n\t" + mContext!!.resources.getString(R.string.suspect_person) + suspect.suspect
-        InformationDialog(null, title, message, map.dialogHandler).show(fm, "DIALOG_SIMPLE_INFORMATION")
+        InformationDialog(null, title, message, map.dialogHandler).show(fm, InformationDialog.TAG)
     }
 }

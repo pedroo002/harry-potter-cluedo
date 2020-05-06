@@ -14,6 +14,10 @@ import neptun.jxy1vz.cluedo.domain.model.Player
 
 class HpLossDialog(private val listener: DialogDismiss, private val hp_loss: Int, private val hp: Int, private val player: Player? = null) : DialogFragment() {
 
+    companion object {
+        const val TAG = "DIALOG_HP_LOSS"
+    }
+
     private lateinit var dialogHPLossBinding: DialogHpLossBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

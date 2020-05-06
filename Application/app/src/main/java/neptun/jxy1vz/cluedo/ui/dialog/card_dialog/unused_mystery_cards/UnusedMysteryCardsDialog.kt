@@ -11,12 +11,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogUnusedMysteryCardsBinding
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.MysteryCard
 import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
 import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
-import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class UnusedMysteryCardsDialog(private val listener: DialogDismiss, private val cardList: List<MysteryCard>) : DialogFragment() {
+
+    companion object {
+        const val TAG = "DIALOG_UNUSED_MYSTERY_CARDS"
+    }
 
     private lateinit var dialogUnusedMysteryCardsBinding: DialogUnusedMysteryCardsBinding
     private lateinit var adapter: CardPagerAdapter

@@ -13,6 +13,10 @@ import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class HelperCardDialog(private val cardResource: Int, private val listener: DialogDismiss) : DialogFragment() {
 
+    companion object {
+        const val TAG = "DIALOG_HELPER"
+    }
+
     private lateinit var dialogHelperCardBinding: DialogHelperCardBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

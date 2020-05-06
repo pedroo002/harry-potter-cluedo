@@ -44,7 +44,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
                         map.playerHandler.getPlayerById(suspect.playerId).card.name,
                         cards,
                         this
-                    ).show(fm, "DIALOG_SHOW_CARD")
+                    ).show(fm, ShowCardDialog.TAG)
                     someoneShowedSomething = true
                 }
             } else {
@@ -62,7 +62,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
                                 mContext!!.resources.getString(R.string.suspect_person) + suspect.suspect
                     InformationDialog(null, title, message, this).show(
                         fm,
-                        "DIALOG_SIMPLE_INFORMATION"
+                        InformationDialog.TAG
                     )
                     someoneShowedSomething = true
                     map.interactionHandler.letOtherPlayersKnow(
@@ -82,11 +82,11 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onSimpleInformationDismiss() {
-        NoteDialog(player, this).show(fm, "DIALOG_NOTE")
+        NoteDialog(player, this).show(fm, NoteDialog.TAG)
     }
 
     override fun onCardRevealDismiss() {
-        NoteDialog(player, this).show(fm, "DIALOG_NOTE")
+        NoteDialog(player, this).show(fm, NoteDialog.TAG)
     }
 
     override fun onCardShowDismiss(suspect: Suspect, card: MysteryCard) {
@@ -102,7 +102,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onAccusationDismiss(suspect: Suspect?) {
         if (suspect == null) {
             Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.make_your_accusation), Snackbar.LENGTH_LONG).show()
-            AccusationDialog(playerInTurn, this).show(fm, "DIALOG_ACCUSATION")
+            AccusationDialog(playerInTurn, this).show(fm, AccusationDialog.TAG)
             return
         }
         var correct = true
@@ -113,7 +113,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         val titleId = if (correct) R.string.correct_accusation else R.string.incorrect_accusation
         EndOfGameDialog(this, map.playerHandler.getPlayerById(suspect.playerId).card.name, titleId, correct).show(
             fm,
-            "DIALOG_END_OF_GAME"
+            EndOfGameDialog.TAG
         )
         isGameRunning = false
     }
@@ -146,7 +146,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         if (player == null)
             activityListener.exitToMenu()
         else {
-            NoteDialog(map.player, this).show(fm, "DIALOG_NOTE")
+            NoteDialog(map.player, this).show(fm, NoteDialog.TAG)
         }
     }
 
@@ -162,9 +162,9 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onOptionsDismiss(accusation: Boolean?) {
         accusation?.let {
             if (accusation)
-                AccusationDialog(playerInTurn, this).show(fm, "DIALOG_ACCUSATION")
+                AccusationDialog(playerInTurn, this).show(fm, AccusationDialog.TAG)
             else
-                UnusedMysteryCardsDialog(this, unusedMysteryCards).show(fm, "DIALOG_UNUSED_MYSTERY_CARDS")
+                UnusedMysteryCardsDialog(this, unusedMysteryCards).show(fm, UnusedMysteryCardsDialog.TAG)
             return
         }
     }

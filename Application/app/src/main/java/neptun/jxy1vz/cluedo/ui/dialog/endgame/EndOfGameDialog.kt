@@ -13,6 +13,10 @@ import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class EndOfGameDialog(private val listener: DialogDismiss, private val playerName: String, private val titleId: Int, private val correct: Boolean) : DialogFragment() {
 
+    companion object {
+        const val TAG = "DIALOG_END_OF_GAME"
+    }
+
     private lateinit var dialogEndOfGameBinding: DialogEndOfGameBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

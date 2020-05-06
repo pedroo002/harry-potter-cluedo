@@ -228,7 +228,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) : DarkCardDialog.Da
                 map.cardHandler.showCard(player.id, card, DiceRollerViewModel.CardType.DARK)
         }
         else
-            DarkCardDialog(player, card, this).show(fm, "DIALOG_DARK")
+            DarkCardDialog(player, card, this).show(fm, DarkCardDialog.TAG)
 
         if (playerIds.isEmpty())
             map.gameSequenceHandler.continueGame()
@@ -237,18 +237,18 @@ class PlayerHandler(private val map: MapViewModel.Companion) : DarkCardDialog.Da
     override fun getLoss(playerId: Int, card: DarkCard?) {
         if (card == null) {
             if (playerId == player.id)
-                RescuedFromDarkCardDialog(map.dialogHandler).show(fm, "DIALOG_RESCUED")
+                RescuedFromDarkCardDialog(map.dialogHandler).show(fm, RescuedFromDarkCardDialog.TAG)
             else
-                RescuedFromDarkCardDialog(map.dialogHandler, getPlayerById(playerId)).show(fm, "DIALOG_RESCUED")
+                RescuedFromDarkCardDialog(map.dialogHandler, getPlayerById(playerId)).show(fm, RescuedFromDarkCardDialog.TAG)
         } else {
             when (card.lossType) {
                 LossType.HP -> {
                     getPlayerById(playerId).hp -= card.hpLoss
                     if (playerId == player.id) {
                         if (player.hp > 0)
-                            HpLossDialog(map.dialogHandler, card.hpLoss, player.hp).show(fm, "DIALOG_HP_LOSS")
+                            HpLossDialog(map.dialogHandler, card.hpLoss, player.hp).show(fm, HpLossDialog.TAG)
                         else {
-                            UserDiesDialog(map.dialogHandler).show(fm, "DIALOG_USER_DIES")
+                            UserDiesDialog(map.dialogHandler).show(fm, UserDiesDialog.TAG)
                         }
                     }
                     else {
@@ -258,11 +258,11 @@ class PlayerHandler(private val map: MapViewModel.Companion) : DarkCardDialog.Da
                                 card.hpLoss,
                                 getPlayerById(playerId).hp,
                                 getPlayerById(playerId)
-                            ).show(fm, "DIALOG_HP_LOSS")
+                            ).show(fm, HpLossDialog.TAG)
                         else {
                             PlayerDiesDialog(getPlayerById(playerId), map.dialogHandler).show(
                                 fm,
-                                "DIALOG_PLAYER_DIES"
+                                PlayerDiesDialog.TAG
                             )
                             val newPlayerList = ArrayList<Player>()
                             for (p in gameModels.playerList) {
@@ -298,7 +298,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) : DarkCardDialog.Da
                                     this
                                 ).show(
                                     fm,
-                                    "DIALOG_CARD_LOSS"
+                                    CardLossDialog.TAG
                                 )
                             else {
                                 val cardToThrow =

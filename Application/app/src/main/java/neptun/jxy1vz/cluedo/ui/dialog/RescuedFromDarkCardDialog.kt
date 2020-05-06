@@ -10,6 +10,11 @@ import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Player
 
 class RescuedFromDarkCardDialog(private val listener: DialogDismiss, private val player: Player? = null) : DialogFragment() {
+
+    companion object {
+        const val TAG = "DIALOG_RESCUED"
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val title = if (player != null)
             player.card.name + getString(R.string.has_been_rescued)

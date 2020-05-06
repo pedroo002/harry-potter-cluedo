@@ -11,6 +11,10 @@ import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 class ChooseOptionDialog(private val listener: DialogDismiss, private val canStep: Boolean) :
     DialogFragment() {
 
+    companion object {
+        const val TAG = "DIALOG_OPTIONS"
+    }
+
     private var accusation: Boolean? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

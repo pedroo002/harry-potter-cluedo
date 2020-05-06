@@ -20,6 +20,10 @@ class IncriminationDialog(
 ) : DialogFragment(),
     IncriminationViewModel.IncriminationDialogInterface {
 
+    companion object {
+        const val TAG = "DIALOG_INCRIMINATION"
+    }
+
     interface MapInterface {
         fun getIncrimination(suspect: Suspect)
         fun onIncriminationSkip()

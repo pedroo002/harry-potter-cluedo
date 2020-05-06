@@ -19,6 +19,10 @@ import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
 class PlayerDiesDialog(private val player: Player, private val listener: DialogDismiss) :
     DialogFragment() {
 
+    companion object {
+        const val TAG = "DIALOG_PLAYER_DIES"
+    }
+
     private lateinit var dialogPlayerDiesBinding: DialogPlayerDiesBinding
     private lateinit var adapter: CardPagerAdapter
 

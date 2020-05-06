@@ -18,6 +18,10 @@ import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
 
 class CardLossDialog(private val playerIdx: Int, private val helperCards: List<HelperCard>, private val loss_type: LossType, private val listener: CardLossDialogListener) : DialogFragment() {
 
+    companion object {
+        const val TAG = "DIALOG_CARD_LOSS"
+    }
+
     interface CardLossDialogListener {
         fun throwCard(playerId: Int, card: HelperCard)
     }
