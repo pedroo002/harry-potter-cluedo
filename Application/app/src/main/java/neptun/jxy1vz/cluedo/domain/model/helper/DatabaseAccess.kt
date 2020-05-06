@@ -313,8 +313,7 @@ class DatabaseAccess(context: Context) {
             R.drawable.mento_felix_felicis,
             R.drawable.mento_hatlap,
             HelperType.TOOL,
-            3,
-            "12-es dobás"
+            3
         ),
         HelperCard(
             10,
@@ -434,8 +433,7 @@ class DatabaseAccess(context: Context) {
             R.drawable.mento_alohomora,
             R.drawable.mento_hatlap,
             HelperType.SPELL,
-            5,
-            "Zárt ajtón bemenni"
+            5
         )
     )
 

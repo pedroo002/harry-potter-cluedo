@@ -13,8 +13,7 @@ data class HelperCard(
     override val imageRes: Int,
     override val verso: Int,
     val type: CardType,
-    var count: Int = 1,
-    val extra: String? = null
+    var count: Int = 1
 ) : Card(id, name, imageRes, verso)
 
 data class MysteryCard(
