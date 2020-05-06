@@ -81,15 +81,6 @@ enum class LossType {
     SPELL
 }
 
-enum class PlayerColor {
-    BLUE,
-    PURPLE,
-    RED,
-    WHITE,
-    GREEN,
-    YELLOW
-}
-
 fun HelperType.compareTo(lossType: LossType): Boolean {
     return (this == HelperType.TOOL && lossType == LossType.TOOL) || (this == HelperType.SPELL && lossType == LossType.SPELL) || (this == HelperType.ALLY && lossType == LossType.ALLY)
 }

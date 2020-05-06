@@ -25,7 +25,7 @@ class MysteryCardViewModel(
 ) : BaseObservable() {
 
     private lateinit var player: Player
-    private lateinit var adpater: CardPagerAdapter
+    private lateinit var adapter: CardPagerAdapter
 
     init {
         bind.btnGo.isEnabled = false
@@ -56,8 +56,8 @@ class MysteryCardViewModel(
                 if (card.second == playerId)
                     fragmentList.add(CardFragment(card.first.imageRes))
             }
-            adpater = CardPagerAdapter(fm, fragmentList)
-            bind.cardPager.adapter = adpater
+            adapter = CardPagerAdapter(fm, fragmentList)
+            bind.cardPager.adapter = adapter
 
             bind.btnGo.isEnabled = true
         }

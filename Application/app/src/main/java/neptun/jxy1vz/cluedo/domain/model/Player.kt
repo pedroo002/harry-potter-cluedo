@@ -9,8 +9,8 @@ class Player(
     var hp: Int = 70,
     var mysteryCards: MutableList<MysteryCard> = ArrayList(),
     var helperCards: MutableList<HelperCard>? = null,
-    var conclusions: HashMap<String, Int>? = null,
-    var suspicions: HashMap<String, Int>? = null,
+    private var conclusions: HashMap<String, Int>? = null,
+    private var suspicions: HashMap<String, Int>? = null,
     var solution: Suspect? = null
 ) {
 
