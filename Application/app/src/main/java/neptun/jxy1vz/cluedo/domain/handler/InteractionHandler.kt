@@ -152,7 +152,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                 }
             }
 
-            if (room != "Dumbledore irodája")
+            if (room != mContext!!.resources.getString(R.string.room_dumbledore))
                 getIncrimination(suspect)
             else {
                 var hasConclusionsOfThem = true

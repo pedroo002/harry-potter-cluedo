@@ -126,6 +126,7 @@
     <string name="card_reveal_happened">Kártyafelfedés történt</string>
     <string name="showed_something">mutatott valamit neki:</string>
     <string name="make_your_accusation">Add le a gyanúdat!</string>
+    <string name="room_dumbledore">Dumbledore irodája</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>

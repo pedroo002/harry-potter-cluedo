@@ -101,17 +101,19 @@ class GameModels(private val context: Context) {
         R.id.ivGreenPlayer
     )
 
+    private val roomNameList: Array<String> = context.resources.getStringArray(R.array.rooms)
+
     val roomList = listOf(
-        Room(0, "Sötét varázslatok kivédése terem", 0, 6, 5, 0, 42, R.drawable.selection_room_sotet_varazslatok_kivedese),
-        Room(1, "Nagyterem", 0, 15, 6, 9, 49, R.drawable.selection_room_nagyterem),
-        Room(2, "Gyengélkedő", 0, 24, 6, 18, 49, R.drawable.selection_room_gyengelkedo),
-        Room(3, "Könyvtár", 8, 6, 11, 0, 28, R.drawable.selection_room_konyvtar),
-        Room(4, "Dumbledore irodája", 10, 14, 15, 10, 30, R.drawable.selection_room_dumbledore),
-        Room(5, "Szükség szobája", 9, 24, 15, 18, 49, R.drawable.selection_room_szukseg_szobaja),
-        Room(6, "Bagolyház", 13, 6, 16, 0, 28, R.drawable.selection_room_bagolyhaz),
-        Room(7, "Jóslástan terem", 19, 6, 24, 0, 42, R.drawable.selection_room_joslastan_terem),
-        Room(8, "Serleg terem", 18, 15, 24, 9, 49, R.drawable.selection_room_serleg_terem),
-        Room(9, "Bájitaltan terem", 18, 24, 24, 18, 49, R.drawable.selection_room_bajitaltan_terem)
+        Room(0, roomNameList[7], 0, 6, 5, 0, 42, R.drawable.selection_room_sotet_varazslatok_kivedese),
+        Room(1, roomNameList[5], 0, 15, 6, 9, 49, R.drawable.selection_room_nagyterem),
+        Room(2, roomNameList[2], 0, 24, 6, 18, 49, R.drawable.selection_room_gyengelkedo),
+        Room(3, roomNameList[4], 8, 6, 11, 0, 28, R.drawable.selection_room_konyvtar),
+        Room(4, context.resources.getString(R.string.room_dumbledore), 10, 14, 15, 10, 30, R.drawable.selection_room_dumbledore),
+        Room(5, roomNameList[8], 9, 24, 15, 18, 49, R.drawable.selection_room_szukseg_szobaja),
+        Room(6, roomNameList[0], 13, 6, 16, 0, 28, R.drawable.selection_room_bagolyhaz),
+        Room(7, roomNameList[3], 19, 6, 24, 0, 42, R.drawable.selection_room_joslastan_terem),
+        Room(8, roomNameList[6], 18, 15, 24, 9, 49, R.drawable.selection_room_serleg_terem),
+        Room(9, roomNameList[1], 18, 24, 24, 18, 49, R.drawable.selection_room_bajitaltan_terem)
     )
 
     val doorList = listOf(
