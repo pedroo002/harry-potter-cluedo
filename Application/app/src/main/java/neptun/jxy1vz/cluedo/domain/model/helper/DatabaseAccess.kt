@@ -13,7 +13,7 @@ import neptun.jxy1vz.cluedo.domain.util.toDatabaseModel
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
 import kotlin.random.Random
 
-class DatabaseAccess(context: Context) {
+class DatabaseAccess(private val context: Context) {
 
     private val interactor = Interactor(CluedoDatabase.getInstance(context))
 
@@ -30,7 +30,7 @@ class DatabaseAccess(context: Context) {
     }
 
     suspend fun getUnusedMysteryCards(): List<MysteryCard> {
-        return interactor.getCardBySuperType("MYSTERY_%")!!.map { cardDBmodel -> cardDBmodel.toDomainModel() as MysteryCard }
+        return interactor.getCardBySuperType(context.getString(R.string.mystery_prefix))!!.map { cardDBmodel -> cardDBmodel.toDomainModel() as MysteryCard }
     }
 
     suspend fun getAllMysteryCards(): List<MysteryCard> {
@@ -54,9 +54,9 @@ class DatabaseAccess(context: Context) {
                 )
             )
             return when (prefix) {
-                "DARK_%" -> card.toDomainModel() as DarkCard
-                "HELPER_%" -> card.toDomainModel() as HelperCard
-                "MYSTERY_%" -> card.toDomainModel() as MysteryCard
+                context.getString(R.string.dark_prefix) -> card.toDomainModel() as DarkCard
+                context.getString(R.string.helper_prefix) -> card.toDomainModel() as HelperCard
+                context.getString(R.string.mystery_prefix) -> card.toDomainModel() as MysteryCard
                 else -> card.toDomainModel() as PlayerCard
             }
         }

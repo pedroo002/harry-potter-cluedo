@@ -171,6 +171,9 @@
     </string-array>
 
     <string name="room_dumbledore">Dumbledore irodája</string>
+    <string name="mystery_prefix">MYSTERY_%</string>
+    <string name="dark_prefix">DARK_%</string>
+    <string name="helper_prefix">HELPER_%</string>
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>

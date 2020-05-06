@@ -100,9 +100,9 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
             val randomCard = when (type) {
                 DiceRollerViewModel.CardType.HELPER -> gameModels.db.getCardBySuperType(
                     playerId,
-                    "HELPER_%"
+                    mContext!!.getString(R.string.helper_prefix)
                 ) as? HelperCard
-                else -> gameModels.db.getCardBySuperType(playerId, "DARK_%") as? DarkCard
+                else -> gameModels.db.getCardBySuperType(playerId, mContext!!.getString(R.string.dark_prefix)) as? DarkCard
             }
                 ?: return@launch
 
