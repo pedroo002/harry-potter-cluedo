@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
@@ -40,7 +41,7 @@ class MysteryCardViewModel(
 
     fun openHogwarts() {
         val mapIntent = Intent(context, MapActivity::class.java)
-        mapIntent.putExtra("Player ID", player.id)
+        mapIntent.putExtra(context.getString(R.string.player_id), player.id)
         mapIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(mapIntent)
     }
@@ -49,7 +50,7 @@ class MysteryCardViewModel(
         val cards = gameModel.db.getMysteryCardsForPlayers(playerIds)
 
         withContext(Dispatchers.Main) {
-            Toast.makeText(context, "Lapozz oldalra a többiért!", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context.getString(R.string.slide_for_more), Toast.LENGTH_LONG).show()
 
             val fragmentList = ArrayList<CardFragment>()
             for (card in cards) {
@@ -67,8 +68,8 @@ class MysteryCardViewModel(
         val idList = ArrayList<Int>()
         idList.add(playerId)
 
-        var playerCount = context.getSharedPreferences("Game params", Context.MODE_PRIVATE).getInt(
-            "player_count",
+        var playerCount = context.getSharedPreferences(context.getString(R.string.game_params_pref), Context.MODE_PRIVATE).getInt(
+            context.getString(R.string.player_count_key),
             0
         ) - 1
 

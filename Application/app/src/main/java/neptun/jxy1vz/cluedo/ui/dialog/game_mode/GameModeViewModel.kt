@@ -6,6 +6,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.BaseObservable
 import androidx.fragment.app.FragmentManager
+import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogGameModeBinding
 import neptun.jxy1vz.cluedo.ui.dialog.character_selector.CharacterSelectorDialog
 
@@ -17,7 +18,7 @@ class GameModeViewModel(private val context: Context, private val fm: FragmentMa
 
     init {
         bind.spinnerPlayMode.adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, context.resources.getStringArray(
-            neptun.jxy1vz.cluedo.R.array.playmodes))
+            R.array.playmodes))
 
         val playerCounts = listOf("3", "4", "5").toTypedArray()
         bind.spinnerPlayerCount.adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, playerCounts)
@@ -31,10 +32,10 @@ class GameModeViewModel(private val context: Context, private val fm: FragmentMa
     }
 
     fun setGameMode() {
-        val pref = context.getSharedPreferences("Game params", Context.MODE_PRIVATE)
+        val pref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
         val editor = pref.edit()
-        editor.putString("game_mode", gameMode)
-        editor.putInt("player_count", playerCount)
+        editor.putString(context.resources.getString(R.string.game_mode), gameMode)
+        editor.putInt(context.resources.getString(R.string.player_count_key), playerCount)
         editor.apply()
 
         openCharacterSelector()

@@ -8,11 +8,9 @@ class Graph<T> {
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun addEdge(sourceVertex: T, destinationVertex: T) {
-        // Add edge to source vertex / node.
         adjacencyMap
             .computeIfAbsent(sourceVertex) { HashSet() }
             .add(destinationVertex)
-        // Add edge to destination vertex / node.
         adjacencyMap
             .computeIfAbsent(destinationVertex) { HashSet() }
             .add(sourceVertex)

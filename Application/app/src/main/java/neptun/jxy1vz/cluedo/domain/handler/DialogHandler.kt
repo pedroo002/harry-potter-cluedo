@@ -17,6 +17,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.activityListener
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameRunning
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.pause
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
@@ -52,13 +53,13 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
                 if (cards != null) {
                     val revealedCard = cards[Random.nextInt(0, cards.size)]
 
-                    val title = "Kártyafelfedés történt"
+                    val title = mContext!!.getString(R.string.card_reveal_happened)
                     val message =
-                        "${gameModels.playerList[playerIdx].card.name} mutatott valamit neki: ${map.playerHandler.getPlayerById(
+                        gameModels.playerList[playerIdx].card.name + mContext!!.getString(R.string.showed_something) + map.playerHandler.getPlayerById(
                             suspect.playerId
-                        ).card.name}\nGyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\t" +
-                                "Eszköz: ${suspect.tool}\n\t" +
-                                "Gyanúsított: ${suspect.suspect}"
+                        ).card.name + "\n" + mContext!!.resources.getString(R.string.incrimination_params) + "\n\t" + mContext!!.resources.getString(R.string.current_room) + suspect.room + "\n\t" +
+                                mContext!!.resources.getString(R.string.current_tool) + "${suspect.tool}\n\t" +
+                                mContext!!.resources.getString(R.string.suspect_person) + suspect.suspect
                     InformationDialog(null, title, message, this).show(
                         fm,
                         "DIALOG_SIMPLE_INFORMATION"
@@ -100,7 +101,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
 
     override fun onAccusationDismiss(suspect: Suspect?) {
         if (suspect == null) {
-            Snackbar.make(mapRoot.mapLayout, "Add le a gyanúdat!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.make_your_accusation), Snackbar.LENGTH_LONG).show()
             AccusationDialog(playerInTurn, this).show(fm, "DIALOG_ACCUSATION")
             return
         }
@@ -161,7 +162,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onOptionsDismiss(accusation: Boolean?) {
         accusation?.let {
             if (accusation)
-                AccusationDialog(playerInTurn, this).show(fm, "DIALOG_ACCUSACTION")
+                AccusationDialog(playerInTurn, this).show(fm, "DIALOG_ACCUSATION")
             else
                 UnusedMysteryCardsDialog(this, unusedMysteryCards).show(fm, "DIALOG_UNUSED_MYSTERY_CARDS")
             return

@@ -12,7 +12,8 @@ class UserDiesDialog(private val listener: DialogDismiss) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
-            .setTitle("Meghaltál!").setMessage("Elvesztetted házpontjaidat.\nA játéknak vége.")
+            .setTitle(getString(R.string.you_died)).setMessage(getString(R.string.you_lost_your_hps) + "\n" + getString(
+                            R.string.game_over))
             .setNeutralButton(R.string.ok) { dialog, _ ->
                 dialog.dismiss()
             }.create()

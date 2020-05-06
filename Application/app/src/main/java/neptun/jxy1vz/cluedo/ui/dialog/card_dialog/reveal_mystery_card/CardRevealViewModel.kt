@@ -8,10 +8,10 @@ import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogCardRevealBinding
 
-class CardRevealViewModel(private val bind: DialogCardRevealBinding, context: Context, private val cardResource: Int, private val name: String) : BaseObservable() {
+class CardRevealViewModel(private val bind: DialogCardRevealBinding, private val context: Context, private val cardResource: Int, private val name: String) : BaseObservable() {
 
     fun getDialogTitle(): String {
-        return "$name ezt a kártyát mutatja neked:"
+        return name + context.getString(R.string.someone_shows_you_this_card)
     }
 
     init {

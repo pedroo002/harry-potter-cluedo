@@ -3,6 +3,7 @@ package neptun.jxy1vz.cluedo.domain.handler
 import android.widget.ImageView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_map.view.*
+import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.ui.dialog.RescuedFromDarkCardDialog
@@ -15,6 +16,7 @@ import neptun.jxy1vz.cluedo.ui.dialog.player_dies.UserDiesDialog
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.otherPlayerStepsOnStar
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
@@ -307,7 +309,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) : DarkCardDialog.Da
                                 )
                                 Snackbar.make(
                                     mapRoot,
-                                    "${getPlayerById(playerId).card.name} eldobta ezt: ${cardToThrow.name}",
+                                    getPlayerById(playerId).card.name + mContext!!.getString(R.string.someone_threw_card) + cardToThrow.name,
                                     Snackbar.LENGTH_LONG
                                 ).show()
                             }

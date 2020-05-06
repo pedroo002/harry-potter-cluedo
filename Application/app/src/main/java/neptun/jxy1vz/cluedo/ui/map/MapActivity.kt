@@ -52,7 +52,7 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
                     gameModel,
                     this@MapActivity,
                     applicationContext,
-                    intent.getIntExtra("Player ID", 0),
+                    intent.getIntExtra(applicationContext.resources.getString(R.string.player_id), 0),
                     playerImagePairs,
                     mapRoot,
                     supportFragmentManager

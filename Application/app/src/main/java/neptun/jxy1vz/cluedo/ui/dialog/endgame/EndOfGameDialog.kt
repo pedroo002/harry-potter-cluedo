@@ -17,7 +17,7 @@ class EndOfGameDialog(private val listener: DialogDismiss, private val playerNam
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         dialogEndOfGameBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_end_of_game, null, false)
-        dialogEndOfGameBinding.dialogEndOfGameViewModel = EndOfGameViewModel(playerName, correct)
+        dialogEndOfGameBinding.dialogEndOfGameViewModel = EndOfGameViewModel(playerName, correct, context!!)
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog).setView(dialogEndOfGameBinding.root).setTitle(titleId).setNeutralButton(R.string.back_to_menu) {
             dialog, _ ->

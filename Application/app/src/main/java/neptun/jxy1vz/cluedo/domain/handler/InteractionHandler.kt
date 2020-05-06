@@ -40,17 +40,17 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
         if (isGameRunning) {
             if (playerId == player.id && playerId == playerInTurn) {
                 val roomId = map.mapHandler.stepInRoom(player.pos)
-                val snackbar = Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_LONG)
+                val snackbar = Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.make_a_movement), Snackbar.LENGTH_LONG)
                 if (!userHasToStepOrIncriminate && userCanStep) {
-                    snackbar.setAction("Kockadobás") { rollWithDice(playerId) }
+                    snackbar.setAction(mContext!!.getString(R.string.dice_rolling)) { rollWithDice(playerId) }
                     snackbar.show()
                 } else if (roomId != -1) {
-                    val title = if (roomId == 4) "Lehetőségek" else "Gyanúsítás"
+                    val title = if (roomId == 4) mContext!!.getString(R.string.your_options) else mContext!!.resources.getString(R.string.incrimination)
                     snackbar.setAction(title) { incrimination(playerId, roomId) }
                     snackbar.show()
                 }
                 else
-                    Snackbar.make(mapRoot.mapLayout, "Muszáj lépned!", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.you_have_to_step), Snackbar.LENGTH_LONG).show()
             }
         }
     }
@@ -179,9 +179,12 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
         map.uiHandler.emptySelectionList()
 
         if (suspect.playerId != player.id) {
-            val title = "${map.playerHandler.getPlayerById(suspect.playerId).card.name} gyanúsít"
+            val title = map.playerHandler.getPlayerById(suspect.playerId).card.name + mContext!!.getString(
+                            R.string.some_one_incriminates)
             val message =
-                "Ebben a helyiségben: ${suspect.room}\nEzzel az eszközzel: ${suspect.tool}\nGyanúsított: ${suspect.suspect}"
+                mContext!!.getString(R.string.in_this_room) + suspect.room + "\n" + mContext!!.getString(
+                                    R.string.with_this_tool) + suspect.tool + "\n" + mContext!!.getString(
+                                                        R.string.suspect_person) + suspect.suspect
             InformationDialog(suspect, title, message, map.dialogHandler).show(fm, "DIALOG_INFORMATION")
         } else {
             var someoneShowedSomething = false
@@ -220,11 +223,11 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
 
     override fun onIncriminationSkip() {
         if (userHasToIncriminate) {
-            Snackbar.make(mapRoot.mapLayout, "Muszáj gyanúsítanod!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.you_have_to_incriminate), Snackbar.LENGTH_LONG).show()
             incrimination(player.id, map.mapHandler.stepInRoom(player.pos))
         }
         else
-            Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(mapRoot.mapLayout, mContext!!.resources.getString(R.string.make_a_movement), Snackbar.LENGTH_SHORT).show()
     }
 
     fun letOtherPlayersKnow(
@@ -265,9 +268,10 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
     }
 
     fun nothingHasBeenShowed(suspect: Suspect) {
-        val title = "Senki sem tudott mutatni..."
+        val title = mContext!!.getString(R.string.no_one_could_show)
         val message =
-            "Gyanúsítás paraméterei:\n\tHelyiség: ${suspect.room}\n\tEszköz: ${suspect.tool}\n\tGyanúsított: ${suspect.suspect}"
+            mContext!!.getString(R.string.incrimination_params) + "\n\t" + mContext!!.getString(R.string.current_room) + "${suspect.room}\n\t" + mContext!!.getString(
+                            R.string.current_tool) + "${suspect.tool}\n\t" + mContext!!.resources.getString(R.string.suspect_person) + suspect.suspect
         InformationDialog(null, title, message, map.dialogHandler).show(fm, "DIALOG_SIMPLE_INFORMATION")
     }
 }

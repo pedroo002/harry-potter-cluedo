@@ -11,10 +11,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogPlayerDiesBinding
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
 import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
-import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class PlayerDiesDialog(private val player: Player, private val listener: DialogDismiss) :
     DialogFragment() {
@@ -47,8 +47,8 @@ class PlayerDiesDialog(private val player: Player, private val listener: DialogD
 
         return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_Dialog)
             .setView(dialogPlayerDiesBinding.root)
-            .setTitle("${player.card.name} elvesztette házpontjait, kiesett")
-            .setMessage("Rejtély kártyái ezek voltak:").setNeutralButton(R.string.ok) { dialog, _ ->
+            .setTitle(player.card.name + getString(R.string.he_lost_his_hps))
+            .setMessage(getString(R.string.his_mystery_cards)).setNeutralButton(R.string.ok) { dialog, _ ->
             dialog.dismiss()
         }.create()
     }

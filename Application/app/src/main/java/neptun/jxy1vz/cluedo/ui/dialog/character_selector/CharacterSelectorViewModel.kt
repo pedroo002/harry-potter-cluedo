@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
+import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogCharacterSelectorBinding
 import neptun.jxy1vz.cluedo.ui.mystery_cards.MysteryCardActivity
 
@@ -25,7 +26,7 @@ class CharacterSelectorViewModel(private val bind: DialogCharacterSelectorBindin
         bind.spinnerCharacter.adapter = ArrayAdapter<String>(
             context,
             android.R.layout.simple_spinner_dropdown_item,
-            context.resources.getStringArray(neptun.jxy1vz.cluedo.R.array.characters)
+            context.resources.getStringArray(R.array.characters)
         )
         bind.spinnerCharacter.onItemSelectedListener = this
 
@@ -35,7 +36,7 @@ class CharacterSelectorViewModel(private val bind: DialogCharacterSelectorBindin
 
     fun startGame() {
         val mysteryCardIntent = Intent(context, MysteryCardActivity::class.java)
-        mysteryCardIntent.putExtra("Player ID", playerId)
+        mysteryCardIntent.putExtra(context.resources.getString(R.string.player_id), playerId)
         mysteryCardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(mysteryCardIntent)
 
@@ -44,31 +45,31 @@ class CharacterSelectorViewModel(private val bind: DialogCharacterSelectorBindin
 
     private fun setPlayer(id: Int) {
         playerId = id
-        val pref = context.getSharedPreferences("Game params", Context.MODE_PRIVATE)
+        val pref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
         val editor = pref.edit()
-        editor.putInt("player_id", id)
+        editor.putInt(context.resources.getString(R.string.player_id_key), id)
         editor.apply()
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        bind.ivCharacterCard.setImageResource(neptun.jxy1vz.cluedo.R.drawable.szereplo_hatlap)
+        bind.ivCharacterCard.setImageResource(R.drawable.szereplo_hatlap)
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        bind.ivCharacterCard.setImageResource(neptun.jxy1vz.cluedo.R.drawable.szereplo_hatlap)
-        (AnimatorInflater.loadAnimator(context, neptun.jxy1vz.cluedo.R.animator.card_flip) as AnimatorSet).apply {
+        bind.ivCharacterCard.setImageResource(R.drawable.szereplo_hatlap)
+        (AnimatorInflater.loadAnimator(context, R.animator.card_flip) as AnimatorSet).apply {
             setTarget(bind.ivCharacterCard)
             start()
             doOnEnd {
                 bind.dialogViewModel!!.setPlayer(position)
 
                 val img = when (position) {
-                    0 -> neptun.jxy1vz.cluedo.R.drawable.szereplo_ginny
-                    1 -> neptun.jxy1vz.cluedo.R.drawable.szereplo_harry
-                    2 -> neptun.jxy1vz.cluedo.R.drawable.szereplo_hermione
-                    3 -> neptun.jxy1vz.cluedo.R.drawable.szereplo_ron
-                    4 -> neptun.jxy1vz.cluedo.R.drawable.szereplo_luna
-                    else -> neptun.jxy1vz.cluedo.R.drawable.szereplo_neville
+                    0 -> R.drawable.szereplo_ginny
+                    1 -> R.drawable.szereplo_harry
+                    2 -> R.drawable.szereplo_hermione
+                    3 -> R.drawable.szereplo_ron
+                    4 -> R.drawable.szereplo_luna
+                    else -> R.drawable.szereplo_neville
                 }
                 bind.ivCharacterCard.setImageResource(img)
             }
