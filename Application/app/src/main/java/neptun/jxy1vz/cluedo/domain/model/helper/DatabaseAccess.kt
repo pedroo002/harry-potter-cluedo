@@ -200,112 +200,116 @@ class DatabaseAccess(context: Context) {
         }
     }
 
+    private val playerNameList: Array<String> = context.resources.getStringArray(R.array.characters)
+
     private val playerCards = listOf(
         PlayerCard(
             0,
-            "Ginny Weasley",
+            playerNameList[0],
             R.drawable.szereplo_ginny,
             R.drawable.szereplo_hatlap
         ),
         PlayerCard(
             1,
-            "Harry Potter",
+            playerNameList[1],
             R.drawable.szereplo_harry,
             R.drawable.szereplo_hatlap
         ),
         PlayerCard(
             2,
-            "Hermione Granger",
+            playerNameList[2],
             R.drawable.szereplo_hermione,
             R.drawable.szereplo_hatlap
         ),
         PlayerCard(
             3,
-            "Ron Weasley",
+            playerNameList[3],
             R.drawable.szereplo_ron,
             R.drawable.szereplo_hatlap
         ),
         PlayerCard(
             4,
-            "Luna Lovegood",
+            playerNameList[4],
             R.drawable.szereplo_luna,
             R.drawable.szereplo_hatlap
         ),
         PlayerCard(
             5,
-            "Neville Longbottom",
+            playerNameList[5],
             R.drawable.szereplo_neville,
             R.drawable.szereplo_hatlap
         )
     )
 
+    private val helperCardNames: Array<String> = context.resources.getStringArray(R.array.helper_cards)
+
     private val helperCards = listOf(
         HelperCard(
             0,
-            "Bezoár",
+            helperCardNames[0],
             R.drawable.mento_bezoar,
             R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             1,
-            "Seprű",
+            helperCardNames[1],
             R.drawable.mento_sepru,
             R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             2,
-            "Álságdetektor",
+            helperCardNames[2],
             R.drawable.mento_alsagdetektor,
             R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             3,
-            "Önoltó",
+            helperCardNames[3],
             R.drawable.mento_onolto,
             R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             4,
-            "Varangydudva",
+            helperCardNames[4],
             R.drawable.mento_varangydudva,
             R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             5,
-            "Láthatatlanná tévő köpeny",
+            helperCardNames[5],
             R.drawable.mento_lathatatlanna_tevo_kopeny,
             R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             6,
-            "Mandragórás gyógyszirup",
+            helperCardNames[6],
             R.drawable.mento_mandragoras_gyogyszirup,
             R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             7,
-            "Tekergők térképe",
+            helperCardNames[7],
             R.drawable.mento_tekergok_terkepe,
             R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             8,
-            "Zsupszkulcs",
+            helperCardNames[8],
             R.drawable.mento_zsupszkulcs,
             R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             9,
-            "Felix Felicis",
+            helperCardNames[9],
             R.drawable.mento_felix_felicis,
             R.drawable.mento_hatlap,
             HelperType.TOOL,
@@ -314,119 +318,119 @@ class DatabaseAccess(context: Context) {
         ),
         HelperCard(
             10,
-            "Albus Dumbledore",
+            helperCardNames[10],
             R.drawable.mento_albus_dumbledore,
             R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             11,
-            "Dobby",
+            helperCardNames[11],
             R.drawable.mento_dobby,
             R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             12,
-            "Fawkes",
+            helperCardNames[12],
             R.drawable.mento_fawkes,
             R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             13,
-            "Madam Pomfrey",
+            helperCardNames[13],
             R.drawable.mento_madam_pomfrey,
             R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             14,
-            "McGalagony professzor",
+            helperCardNames[14],
             R.drawable.mento_mcgalagony_professzor,
             R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             15,
-            "Piton professzor",
+            helperCardNames[15],
             R.drawable.mento_piton_professzor,
             R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             16,
-            "Rubeus Hagrid",
+            helperCardNames[16],
             R.drawable.mento_rubeus_hagrid,
             R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             17,
-            "Weasley ikrek",
+            helperCardNames[17],
             R.drawable.mento_weasley_ikrek,
             R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             18,
-            "Capitulatus",
+            helperCardNames[18],
             R.drawable.mento_capitulatus,
             R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             19,
-            "Immobilus",
+            helperCardNames[19],
             R.drawable.mento_immobilus,
             R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             20,
-            "Lumos",
+            helperCardNames[20],
             R.drawable.mento_lumos,
             R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             21,
-            "Petrificus Totalus",
+            helperCardNames[21],
             R.drawable.mento_petrificus_totalus,
             R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             22,
-            "Protego",
+            helperCardNames[22],
             R.drawable.mento_protego,
             R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             23,
-            "Commikulissimus",
+            helperCardNames[23],
             R.drawable.mento_commikulissimus,
             R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             24,
-            "Stupor",
+            helperCardNames[24],
             R.drawable.mento_stupor,
             R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             25,
-            "Vingardium Leviosa",
+            helperCardNames[25],
             R.drawable.mento_vingardium_leviosa,
             R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             26,
-            "Alohomora",
+            helperCardNames[26],
             R.drawable.mento_alohomora,
             R.drawable.mento_hatlap,
             HelperType.SPELL,
@@ -435,150 +439,154 @@ class DatabaseAccess(context: Context) {
         )
     )
 
+    private val toolNames = context.resources.getStringArray(R.array.tools)
+    private val suspectNames = context.resources.getStringArray(R.array.suspects)
+    private val roomNames = context.resources.getStringArray(R.array.rooms)
+
     private val mysteryCards = listOf(
         MysteryCard(
             0,
-            "Altatóital",
+            toolNames[0],
             R.drawable.rejtely_altatoital,
             R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             1,
-            "Mandragóra",
+            toolNames[1],
             R.drawable.rejtely_mandragora,
             R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             2,
-            "Impedimenta Obstructo",
+            toolNames[2],
             R.drawable.rejtely_obstructo,
             R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             3,
-            "Petrificus Totalus",
+            toolNames[3],
             R.drawable.rejtely_petrificus_totalus,
             R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             4,
-            "Volt-nincs szekrény",
+            toolNames[4],
             R.drawable.rejtely_volt_nincs,
             R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             5,
-            "Zsupszkulcs",
+            toolNames[5],
             R.drawable.rejtely_zsupszkulcs,
             R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             6,
-            "Bellatrix Lestrange",
+            suspectNames[0],
             R.drawable.rejtely_bellatrix_lestrange,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             7,
-            "Crak és Monstro",
+            suspectNames[1],
             R.drawable.rejtely_crak_es_monstro,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             8,
-            "Dolores Umbridge",
+            suspectNames[2],
             R.drawable.rejtely_dolores_umbridge,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             9,
-            "Draco Malfoy",
+            suspectNames[3],
             R.drawable.rejtely_draco_malfoy,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             10,
-            "Lucius Malfoy",
+            suspectNames[4],
             R.drawable.rejtely_lucius_malfoy,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             11,
-            "Peter Pettigrew",
+            suspectNames[5],
             R.drawable.rejtely_peter_pettigrew,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             12,
-            "Bagolyház",
+            roomNames[0],
             R.drawable.rejtely_bagolyhaz,
             R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             13,
-            "Bájitaltan terem",
+            roomNames[1],
             R.drawable.rejtely_bajitaltan,
             R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             14,
-            "Gyengélkedő",
+            roomNames[2],
             R.drawable.rejtely_gyengelkedo,
             R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             15,
-            "Jóslástan terem",
+            roomNames[3],
             R.drawable.rejtely_joslastan,
             R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             16,
-            "Könyvtár",
+            roomNames[4],
             R.drawable.rejtely_konyvtar,
             R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             17,
-            "Nagyterem",
+            roomNames[5],
             R.drawable.rejtely_nagyterem,
             R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             18,
-            "Serleg terem",
+            roomNames[6],
             R.drawable.rejtely_serleg,
             R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             19,
-            "Sötét varázslatok kivédése terem",
+            roomNames[7],
             R.drawable.rejtely_svk,
             R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             20,
-            "Szükség szobája",
+            roomNames[8],
             R.drawable.rejtely_szukseg_szobaja,
             R.drawable.rejtely_hatlap,
             MysteryType.VENUE
@@ -588,7 +596,7 @@ class DatabaseAccess(context: Context) {
     private val darkCards = listOf(
         DarkCard(
             0,
-            "Különös csomagot kapsz: a tartalmát megátkozták.",
+            context.getString(R.string.dark_card1),
             R.drawable.sotet_pakli_corridor_1,
             R.drawable.sotet_pakli_hatlap,
             DarkType.CORRIDOR,
@@ -598,7 +606,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             1,
-            "Valaki megmérgezte a Vajsörödet... nem érzed jól magad.",
+            context.getString(R.string.dark_card2),
             R.drawable.sotet_pakli_corridor_2,
             R.drawable.sotet_pakli_hatlap,
             DarkType.CORRIDOR,
@@ -608,7 +616,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             2,
-            "Kővé dermesztettek.",
+            context.getString(R.string.dark_card3),
             R.drawable.sotet_pakli_corridor_3,
             R.drawable.sotet_pakli_hatlap,
             DarkType.CORRIDOR,
@@ -618,7 +626,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             3,
-            "Miközben elhaladsz az udvari szökőkút mellett, a kiemelkedő vízoszlop foglyul ejt és nem kapsz levegőt.",
+            context.getString(R.string.dark_card4),
             R.drawable.sotet_pakli_corridor_4,
             R.drawable.sotet_pakli_hatlap,
             DarkType.CORRIDOR,
@@ -628,7 +636,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             4,
-            "Egy Mumus annak a képében közeledik, amitől a legjobban félsz...",
+            context.getString(R.string.dark_card5),
             R.drawable.sotet_pakli_corridor_5,
             R.drawable.sotet_pakli_hatlap,
             DarkType.CORRIDOR,
@@ -638,7 +646,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             5,
-            "A klubhelyiségbe nem tudsz bemenni.",
+            context.getString(R.string.dark_card6),
             R.drawable.sotet_pakli_corridor_6,
             R.drawable.sotet_pakli_hatlap,
             DarkType.CORRIDOR,
@@ -648,7 +656,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             6,
-            "Kábító átok fog sújtani hamarosan.",
+            context.getString(R.string.dark_card7),
             R.drawable.sotet_pakli_corridor_7,
             R.drawable.sotet_pakli_hatlap,
             DarkType.CORRIDOR,
@@ -658,7 +666,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             7,
-            "Egy bébi Mandragórát találsz a táskádban - és éppen felébredt. Nincs rajtad fülvédő.",
+            context.getString(R.string.dark_card8),
             R.drawable.sotet_pakli_picker_1,
             R.drawable.sotet_pakli_hatlap,
             DarkType.PLAYER_IN_TURN,
@@ -668,7 +676,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             8,
-            "Befordulsz a sarkon és egyenesen egy Ördöghurok bozótba esel.",
+            context.getString(R.string.dark_card9),
             R.drawable.sotet_pakli_picker_2,
             R.drawable.sotet_pakli_hatlap,
             DarkType.PLAYER_IN_TURN,
@@ -678,7 +686,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             9,
-            "Valaki a közelben Önoltót használt, sötétben tapogatózol.",
+            context.getString(R.string.dark_card10),
             R.drawable.sotet_pakli_picker_3,
             R.drawable.sotet_pakli_hatlap,
             DarkType.PLAYER_IN_TURN,
@@ -688,7 +696,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             10,
-            "Az édességedet Rókázó Rágcsára cserélték - és későn vetted észre.",
+            context.getString(R.string.dark_card11),
             R.drawable.sotet_pakli_picker_4,
             R.drawable.sotet_pakli_hatlap,
             DarkType.PLAYER_IN_TURN,
@@ -698,7 +706,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             11,
-            "A kviddicsmérkőzés alatt megátkozzák a seprűd.",
+            context.getString(R.string.dark_card12),
             R.drawable.sotet_pakli_picker_5,
             R.drawable.sotet_pakli_hatlap,
             DarkType.PLAYER_IN_TURN,
@@ -708,7 +716,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             12,
-            "Sürgős üzenetet kellene kézbesítened, de a baglyod eltűnt.",
+            context.getString(R.string.dark_card13),
             R.drawable.sotet_pakli_bagolyhaz,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ROOM_BAGOLYHAZ,
@@ -718,7 +726,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             13,
-            "Valaki beletett valamit az üstödbe; a füsttől kába leszel.",
+            context.getString(R.string.dark_card14),
             R.drawable.sotet_pakli_bajitaltan,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ROOM_BAJITALTAN,
@@ -728,7 +736,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             14,
-            "A Bogoly Berti féle Drazsét megbabrálták. Nagyon lebetegedsz.",
+            context.getString(R.string.dark_card15),
             R.drawable.sotet_pakli_gyengelkedo,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ROOM_GYENGELKEDO,
@@ -738,7 +746,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             15,
-            "A tea levelek a Zordót mutatják. Pánikba esel.",
+            context.getString(R.string.dark_card16),
             R.drawable.sotet_pakli_joslastan,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ROOM_JOSLASTAN,
@@ -748,7 +756,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             16,
-            "Lépéseket hallasz, miközben a Zárolt Részben leemelsz egy könyvet.",
+            context.getString(R.string.dark_card17),
             R.drawable.sotet_pakli_konyvtar,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ROOM_KONYVTAR,
@@ -758,7 +766,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             17,
-            "A Párbajszakkör alatt a Mardekáros ellenfeled egy kígyót varázsol...",
+            context.getString(R.string.dark_card18),
             R.drawable.sotet_pakli_nagyterem,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ROOM_NAGYTEREM,
@@ -768,7 +776,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             18,
-            "Felkapsz egy serleget, de későn veszed észre, hogy az egy Zsupszkulcs.",
+            context.getString(R.string.dark_card19),
             R.drawable.sotet_pakli_serleg,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ROOM_SERLEG,
@@ -777,7 +785,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             19,
-            "Kelta Tündérmanók egy ártalmas csoportja tart feléd.",
+            context.getString(R.string.dark_card20),
             R.drawable.sotet_pakli_svk,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ROOM_SVK,
@@ -787,7 +795,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             20,
-            "Egy fal összeomlását hangos robaj kíséri. Valaki közeleg.",
+            context.getString(R.string.dark_card21),
             R.drawable.sotet_pakli_szukseg_szobaja,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ROOM_SZUKSEG_SZOBAJA,
@@ -797,7 +805,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             21,
-            "Dumbledore elhagyta a kastélyt, pedig információd van a Halálfalókról.",
+            context.getString(R.string.dark_card22),
             R.drawable.sotet_pakli_all_players_1,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ALL_PLAYERS,
@@ -806,7 +814,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             22,
-            "Egyik elvarázsolt osztálytársad egy Főbenjáró Átkot készül rád szórni.",
+            context.getString(R.string.dark_card23),
             R.drawable.sotet_pakli_all_players_2,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ALL_PLAYERS,
@@ -816,7 +824,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             23,
-            "A kastélyban elszabadult kis sárkány meglát és tüzet okád rád.",
+            context.getString(R.string.dark_card24),
             R.drawable.sotet_pakli_all_players_3,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ALL_PLAYERS,
@@ -826,7 +834,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             24,
-            "Draco Malfoy és barátai kelepcébe csalnak, hogy párbajt kezdhessetek.",
+            context.getString(R.string.dark_card25),
             R.drawable.sotet_pakli_all_players_4,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ALL_PLAYERS,
@@ -836,7 +844,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             25,
-            "Dementorok szállták meg az iskolát.",
+            context.getString(R.string.dark_card26),
             R.drawable.sotet_pakli_all_players_5,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ALL_PLAYERS,
@@ -845,7 +853,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             26,
-            "Valaki levette a csatot a Szörnyek Szörnyű Könyvéről és az megtámad.",
+            context.getString(R.string.dark_card27),
             R.drawable.sotet_pakli_all_players_6,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ALL_PLAYERS,
@@ -855,7 +863,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             27,
-            "Egy ismert vérfarkas zsákmányt keres a termekben... telihold van.",
+            context.getString(R.string.dark_card28),
             R.drawable.sotet_pakli_all_players_7,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ALL_PLAYERS,
@@ -865,7 +873,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             28,
-            "A kastélyban szabadon kószáló, kifejlett hegyi trollal találkozol.",
+            context.getString(R.string.dark_card29),
             R.drawable.sotet_pakli_all_players_8,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ALL_PLAYERS,
@@ -875,7 +883,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             29,
-            "Halálfaló Lucius Malfoy meglátogatja a fiát, Dracot.",
+            context.getString(R.string.dark_card30),
             R.drawable.sotet_pakli_all_players_9,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ALL_PLAYERS,
@@ -885,7 +893,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             30,
-            "Frics úr - a szokásosnál is gorombább hangulatban - befordul a sarkon.",
+            context.getString(R.string.dark_card31),
             R.drawable.sotet_pakli_all_players_10,
             R.drawable.sotet_pakli_hatlap,
             DarkType.ALL_PLAYERS,
@@ -894,7 +902,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             31,
-            "A Griffendéles fiúk hálótermét kifosztották. Értékes dolgok tűntek el.",
+            context.getString(R.string.dark_card32),
             R.drawable.sotet_pakli_ferfiaknak,
             R.drawable.sotet_pakli_hatlap,
             DarkType.GENDER_MEN,
@@ -904,7 +912,7 @@ class DatabaseAccess(context: Context) {
         ),
         DarkCard(
             32,
-            "Cormac McLaggen szerelmi bájitallal átitatott édességet evett - és csak rád tud gondolni.",
+            context.getString(R.string.dark_card33),
             R.drawable.sotet_pakli_noknek,
             R.drawable.sotet_pakli_hatlap,
             DarkType.GENDER_WOMEN,

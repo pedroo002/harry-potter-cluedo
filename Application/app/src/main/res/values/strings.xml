@@ -126,7 +126,40 @@
     <string name="card_reveal_happened">Kártyafelfedés történt</string>
     <string name="showed_something">mutatott valamit neki:</string>
     <string name="make_your_accusation">Add le a gyanúdat!</string>
-    <string name="room_dumbledore">Dumbledore irodája</string>
+
+    <string name="dark_card1">Különös csomagot kapsz: a tartalmát megátkozták.</string>
+    <string name="dark_card2">Valaki megmérgezte a Vajsörödet… nem érzed jól magad.</string>
+    <string name="dark_card3">Kővé dermesztettek.</string>
+    <string name="dark_card4">Miközben elhaladsz az udvari szökőkút mellett, a kiemelkedő vízoszlop foglyul ejt és nem kapsz levegőt.</string>
+    <string name="dark_card5">Egy Mumus annak a képében közeledik, amitől a legjobban félsz…</string>
+    <string name="dark_card6">A klubhelyiségbe nem tudsz bemenni.</string>
+    <string name="dark_card7">Kábító átok fog sújtani hamarosan.</string>
+    <string name="dark_card8">Egy bébi Mandragórát találsz a táskádban - és éppen felébredt. Nincs rajtad fülvédő.</string>
+    <string name="dark_card9">Befordulsz a sarkon és egyenesen egy Ördöghurok bozótba esel.</string>
+    <string name="dark_card10">Valaki a közelben Önoltót használt, sötétben tapogatózol.</string>
+    <string name="dark_card11">Az édességedet Rókázó Rágcsára cserélték - és későn vetted észre.</string>
+    <string name="dark_card12">A kviddicsmérkőzés alatt megátkozzák a seprűd.</string>
+    <string name="dark_card13">Sürgős üzenetet kellene kézbesítened, de a baglyod eltűnt.</string>
+    <string name="dark_card14">Valaki beletett valamit az üstödbe; a füsttől kába leszel.</string>
+    <string name="dark_card15">A Bogoly Berti féle Drazsét megbabrálták. Nagyon lebetegedsz.</string>
+    <string name="dark_card16">A tea levelek a Zordót mutatják. Pánikba esel.</string>
+    <string name="dark_card17">Lépéseket hallasz, miközben a Zárolt Részben leemelsz egy könyvet.</string>
+    <string name="dark_card18">A Párbajszakkör alatt a Mardekáros ellenfeled egy kígyót varázsol…</string>
+    <string name="dark_card19">Felkapsz egy serleget, de későn veszed észre, hogy az egy Zsupszkulcs.</string>
+    <string name="dark_card20">Kelta Tündérmanók egy ártalmas csoportja tart feléd.</string>
+    <string name="dark_card21">Egy fal összeomlását hangos robaj kíséri. Valaki közeleg.</string>
+    <string name="dark_card22">Dumbledore elhagyta a kastélyt, pedig információd van a Halálfalókról.</string>
+    <string name="dark_card23">Egyik elvarázsolt osztálytársad egy Főbenjáró Átkot készül rád szórni.</string>
+    <string name="dark_card24">A kastélyban elszabadult kis sárkány meglát és tüzet okád rád.</string>
+    <string name="dark_card25">Draco Malfoy és barátai kelepcébe csalnak, hogy párbajt kezdhessetek.</string>
+    <string name="dark_card26">Dementorok szállták meg az iskolát.</string>
+    <string name="dark_card27">Valaki levette a csatot a Szörnyek Szörnyű Könyvéről és az megtámad.</string>
+    <string name="dark_card28">Egy ismert vérfarkas zsákmányt keres a termekben… telihold van.</string>
+    <string name="dark_card29">A kastélyban szabadon kószáló, kifejlett hegyi trollal találkozol.</string>
+    <string name="dark_card30">Halálfaló Lucius Malfoy meglátogatja a fiát, Dracot.</string>
+    <string name="dark_card31">Frics úr - a szokásosnál is gorombább hangulatban - befordul a sarkon.</string>
+    <string name="dark_card32">A Griffendéles fiúk hálótermét kifosztották. Értékes dolgok tűntek el.</string>
+    <string name="dark_card33">Cormac McLaggen szerelmi bájitallal átitatott édességet evett - és csak rád tud gondolni.</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
@@ -137,11 +170,7 @@
         <item>Neville Longbottom</item>
     </string-array>
 
-    <string-array name="playmodes">
-        <item>Egyjátékos mód</item>
-        <item>Többjátékos mód</item>
-    </string-array>
-
+    <string name="room_dumbledore">Dumbledore irodája</string>
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>
@@ -170,5 +199,40 @@
         <item>Draco Malfoy</item>
         <item>Lucius Malfoy</item>
         <item>Peter Pettigrew</item>
+    </string-array>
+
+    <string-array name="helper_cards">
+        <item>Bezoár</item>
+        <item>Seprű</item>
+        <item>Álságdetektor</item>
+        <item>Önoltó</item>
+        <item>Varangydudva</item>
+        <item>Láthatatlanná tévő köpeny</item>
+        <item>Mandragórás gyógyszirup</item>
+        <item>Tekergők térképe</item>
+        <item>Zsupszkulcs</item>
+        <item>Felix Felicis</item>
+        <item>Albus Dumbledore</item>
+        <item>Dobby</item>
+        <item>Fawkes</item>
+        <item>Madam Pomfrey</item>
+        <item>McGalagony professzor</item>
+        <item>Piton professzor</item>
+        <item>Rubeus Hagrid</item>
+        <item>Weasley ikrek</item>
+        <item>Capitulatus</item>
+        <item>Immobilus</item>
+        <item>Lumos</item>
+        <item>Petrificus Totalus</item>
+        <item>Protego</item>
+        <item>Commikulissimus</item>
+        <item>Stupor</item>
+        <item>Vingardium Leviosa</item>
+        <item>Alohomora</item>
+    </string-array>
+
+    <string-array name="playmodes">
+        <item>Egyjátékos mód</item>
+        <item>Többjátékos mód</item>
     </string-array>
 </resources>
