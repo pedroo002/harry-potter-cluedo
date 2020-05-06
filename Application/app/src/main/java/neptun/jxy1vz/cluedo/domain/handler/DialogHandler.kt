@@ -101,7 +101,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onAccusationDismiss(suspect: Suspect?) {
         if (suspect == null) {
             Snackbar.make(mapRoot.mapLayout, "Add le a gyanúdat!", Snackbar.LENGTH_LONG).show()
-            AccusationDialog(playerInTurn!!, this).show(fm, "DIALOG_ACCUSATION")
+            AccusationDialog(playerInTurn, this).show(fm, "DIALOG_ACCUSATION")
             return
         }
         var correct = true
@@ -161,7 +161,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onOptionsDismiss(accusation: Boolean?) {
         accusation?.let {
             if (accusation)
-                AccusationDialog(playerInTurn!!, this).show(fm, "DIALOG_ACCUSACTION")
+                AccusationDialog(playerInTurn, this).show(fm, "DIALOG_ACCUSACTION")
             else
                 UnusedMysteryCardsDialog(this, unusedMysteryCards).show(fm, "DIALOG_UNUSED_MYSTERY_CARDS")
             return

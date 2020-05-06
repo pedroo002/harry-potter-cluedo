@@ -117,7 +117,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) : DarkCardDialog.Da
                 }
             }
             DarkType.PLAYER_IN_TURN -> {
-                playerIds.add(playerInTurn!!)
+                playerIds.add(playerInTurn)
             }
             DarkType.ROOM_BAGOLYHAZ -> {
                 for (player in gameModels.playerList) {
@@ -198,12 +198,12 @@ class PlayerHandler(private val map: MapViewModel.Companion) : DarkCardDialog.Da
             val spells: ArrayList<String> = ArrayList()
             val allys: ArrayList<String> = ArrayList()
 
-            getHelperObjects(getPlayerById(playerInTurn!!), card, tools, spells, allys)
+            getHelperObjects(getPlayerById(playerInTurn), card, tools, spells, allys)
 
             if (tools.size == 1 && spells.size == 1 && allys.size == 1)
-                getLoss(playerInTurn!!, card)
+                getLoss(playerInTurn, card)
             else
-                (getLoss(playerInTurn!!, null))
+                (getLoss(playerInTurn, null))
         }
 
         for (id in playerIds) {

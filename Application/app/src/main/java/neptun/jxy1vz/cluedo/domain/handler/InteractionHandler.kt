@@ -38,7 +38,7 @@ import kotlin.random.Random
 class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationDialog.MapInterface, DiceRollerDialog.DiceResultInterface {
     fun showOptions(playerId: Int) {
         if (isGameRunning) {
-            if (playerId == player.id && playerId == playerInTurn!!) {
+            if (playerId == player.id && playerId == playerInTurn) {
                 val roomId = map.mapHandler.stepInRoom(player.pos)
                 val snackbar = Snackbar.make(mapRoot.mapLayout, "Lépj!", Snackbar.LENGTH_LONG)
                 if (!userHasToStepOrIncriminate && userCanStep) {

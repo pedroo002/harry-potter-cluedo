@@ -54,7 +54,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
                         setViewVisibility(ivDoor, s.doorState.boolean())
                     if (!darkMarkAnimation && gatewayAnimations.isEmpty() && idx % 3 == 2) {
                         if (!map.pause)
-                            map.cameraHandler.moveCameraToPlayer(playerInTurn!!)
+                            map.cameraHandler.moveCameraToPlayer(playerInTurn)
                         map.gameSequenceHandler.continueGame()
                     }
                 }
@@ -77,7 +77,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
                     if (gatewayAnimations.isEmpty()) {
                         if (!s.darkMark && idx % 3 == 2) {
                             if (!map.pause)
-                                map.cameraHandler.moveCameraToPlayer(playerInTurn!!)
+                                map.cameraHandler.moveCameraToPlayer(playerInTurn)
                             map.gameSequenceHandler.continueGame()
                         }
                     }
@@ -96,7 +96,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
                     doOnEnd {
                         if (gatewayAnimations.indexOf(pair) == gatewayAnimations.lastIndex) {
                             if (!map.pause)
-                                map.cameraHandler.moveCameraToPlayer(playerInTurn!!)
+                                map.cameraHandler.moveCameraToPlayer(playerInTurn)
                             if (!s.darkMark && idx % 3 == 2)
                                 map.gameSequenceHandler.continueGame()
                         }
@@ -164,7 +164,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
         var dice2Value = Random.nextInt(1, 7)
         val hogwartsDice = Random.nextInt(1, 7)
 
-        if (map.playerHandler.getPlayerById(playerInTurn!!).hasFelixFelicis()) {
+        if (map.playerHandler.getPlayerById(playerInTurn).hasFelixFelicis()) {
             dice1Value = 6
             dice2Value = 6
         }
@@ -220,12 +220,12 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
                 doOnEnd {
                     dice.visibility = ImageView.GONE
                     if (diceList.indexOf(dice) == 2) {
-                        map.gameSequenceHandler.pause(playerInTurn!!, dice1Value + dice2Value, house)
+                        map.gameSequenceHandler.pause(playerInTurn, dice1Value + dice2Value, house)
                         cardType?.let {
-                            map.interactionHandler.getCard(playerInTurn!!, cardType)
+                            map.interactionHandler.getCard(playerInTurn, cardType)
                         }
                         house?.let {
-                            map.stateMachineHandler.setState(playerInTurn!!, house)
+                            map.stateMachineHandler.setState(playerInTurn, house)
                         }
                     }
                 }

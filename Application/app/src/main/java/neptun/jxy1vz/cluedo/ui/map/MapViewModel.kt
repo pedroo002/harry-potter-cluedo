@@ -125,7 +125,7 @@ class MapViewModel(
         anim.setAnimationListener(uiHandler)
 
         mapRoot.mapLayout.setOnClickListener {
-            cameraHandler.moveCameraToPlayer(playerInTurn!!)
+            cameraHandler.moveCameraToPlayer(playerInTurn)
         }
 
         val initHp = when (gameModels.playerList.size) {

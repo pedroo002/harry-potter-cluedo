@@ -33,7 +33,7 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
     }
 
     fun moveToNextPlayer() {
-        var idx = gameModels.playerList.indexOf(map.playerHandler.getPlayerById(playerInTurn!!))
+        var idx = gameModels.playerList.indexOf(map.playerHandler.getPlayerById(playerInTurn))
         idx--
         if (idx < 0)
             idx = gameModels.playerList.lastIndex
@@ -44,10 +44,10 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
 
     fun letPlayerTurn() {
         if (isGameRunning) {
-            map.cameraHandler.moveCameraToPlayer(playerInTurn!!)
+            map.cameraHandler.moveCameraToPlayer(playerInTurn)
 
             if (playerInTurn != player.id)
-                map.interactionHandler.rollWithDice(playerInTurn!!)
+                map.interactionHandler.rollWithDice(playerInTurn)
             else {
                 userFinishedHisTurn = false
                 userHasToIncriminate = false

@@ -106,9 +106,9 @@ class StateMachineHandler(private val map: MapViewModel.Companion) {
         for (i in gatewayNumbers.indices) {
             mapRoot.mapLayout.findViewById<ImageView>(gateways[visibleGatewaySerialNumbers[i]])
                 .setOnClickListener {
-                    if (it.visibility == View.VISIBLE && playerInTurn!! == player.id)
+                    if (it.visibility == View.VISIBLE && playerInTurn == player.id)
                         map.playerHandler.teleport(
-                            playerInTurn!!,
+                            playerInTurn,
                             stateList[state * 3 + gatewayNumbers[i]].roomId,
                             stateList[state * 3 + gatewayNumbers[i]].passageWay!!
                         )
