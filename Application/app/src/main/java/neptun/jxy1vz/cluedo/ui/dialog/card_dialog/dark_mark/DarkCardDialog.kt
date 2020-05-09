@@ -18,6 +18,10 @@ class DarkCardDialog(
     private val darkListener: DarkCardDialogListener
 ) : DialogFragment() {
 
+    companion object {
+        const val TAG = "DIALOG_DARK"
+    }
+
     interface DarkCardDialogListener {
         fun getLoss(playerId: Int, card: DarkCard?)
     }

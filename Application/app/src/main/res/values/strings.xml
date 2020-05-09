@@ -30,22 +30,22 @@
     <string name="helper_cards_tools">Eszközeid</string>
     <string name="helper_cards_spells">Varázsigéid</string>
     <string name="helper_cards_allys">Szövetségeseid</string>
-    <string name="helper_cards_against_this_dark_card">Mentő kártyáid ez ellen a lap ellen:</string>
+    <string name="helper_cards_against_this_dark_card">Mentő kártyáid ez ellen a lap ellen: </string>
     <string name="hp_loss">Házpontokat vesztettél!</string>
-    <string name="hp_loss_amount">Veszített mennyiség:</string>
+    <string name="hp_loss_amount">Veszített mennyiség: </string>
     <string name="tool_loss">El kell dobnod egy eszköz kártyát!</string>
     <string name="spell_loss">El kell dobnod egy varázsige kártyát!</string>
     <string name="ally_loss">El kell dobnod egy szövetséges kártyát!</string>
     <string name="throw_card">Eldobás</string>
     <string name="rescued">Megmenekültél!</string>
     <string name="your_card_helped_you">A mentő kártyád segítségedre volt a sötét erőkkel szemben.</string>
-    <string name="remaining_hp">Megmaradt házpontok:</string>
+    <string name="remaining_hp">Megmaradt házpontok: </string>
     <string name="mystery_cards">Rejtélykártyák sorsolása</string>
-    <string name="your_mystery_cards">A te rejtély kártyáid:</string>
+    <string name="your_mystery_cards">A te rejtély kártyáid: </string>
     <string name="go_forward">Tovább</string>
     <string name="game_mode">Válaszd ki a játék paramétereit!</string>
-    <string name="player_mode">Játékos mód:</string>
-    <string name="player_count">Játékosok száma:</string>
+    <string name="player_mode">Játékos mód: </string>
+    <string name="player_count">Játékosok száma: </string>
     <string name="game_logo">Game logo</string>
     <string name="settings_icon">Settings icon</string>
     <string name="card_tool">Mystery card tool</string>
@@ -90,6 +90,76 @@
     <string name="check_cards">Kártyák megtekintése</string>
     <string name="step">Lépek</string>
     <string name="unused_cards">Ki nem osztott rejtélykártyák</string>
+    <string name="player_id">Player ID</string>
+    <string name="slide_for_more">Lapozz oldalra a többiért!</string>
+    <string name="game_params_pref">Game params</string>
+    <string name="player_count_key">player_count</string>
+    <string name="database_name">CluedoDatabase</string>
+    <string name="first_start_pref">FirstStart</string>
+    <string name="helper_card_saved_him">Mentőkártyája megvédte őt a sötét erőkkel szemben.</string>
+    <string name="has_been_rescued">megmenekült</string>
+    <string name="you_died">Meghaltál!</string>
+    <string name="you_lost_your_hps">Elvesztetted házpontjaidat.</string>
+    <string name="game_over">A játéknak vége.</string>
+    <string name="he_lost_his_hps">elvesztette házpontjait, kiesett</string>
+    <string name="his_mystery_cards">Rejtély kártyái ezek voltak: </string>
+    <string name="someone_lost_hps">házpontokat vesztett</string>
+    <string name="select_from_every_parameter">Válassz minden sorból egyet!</string>
+    <string name="someone_solved_the_mystery">megoldotta a rejtélyt.</string>
+    <string name="wrong_solution">rossz megoldást adott.</string>
+    <string name="player_id_key">player_id</string>
+    <string name="someone_shows_you_this_card">ezt a kártyát mutatja neked: </string>
+    <string name="someone_threw_card">eldobta ezt: </string>
+    <string name="make_a_movement">Lépj!</string>
+    <string name="dice_rolling">Kockadobás</string>
+    <string name="your_options">Lehetőségek</string>
+    <string name="you_have_to_step">Muszáj lépned!</string>
+    <string name="some_one_incriminates"> gyanúsít</string>
+    <string name="in_this_room">Ebben a helyiségben: </string>
+    <string name="with_this_tool">Ezzel az eszközzel: </string>
+    <string name="suspect_person">Gyanúsított: </string>
+    <string name="you_have_to_incriminate">Muszáj gyanúsítanod!</string>
+    <string name="no_one_could_show">Senki sem tudott mutatni…</string>
+    <string name="incrimination_params">Gyanúsítás paraméterei: </string>
+    <string name="current_room">Helyiség: </string>
+    <string name="current_tool">Eszköz: </string>
+    <string name="card_reveal_happened">Kártyafelfedés történt</string>
+    <string name="showed_something">mutatott valamit neki: </string>
+    <string name="make_your_accusation">Add le a gyanúdat!</string>
+
+    <string name="dark_card1">Különös csomagot kapsz: a tartalmát megátkozták.</string>
+    <string name="dark_card2">Valaki megmérgezte a Vajsörödet… nem érzed jól magad.</string>
+    <string name="dark_card3">Kővé dermesztettek.</string>
+    <string name="dark_card4">Miközben elhaladsz az udvari szökőkút mellett, a kiemelkedő vízoszlop foglyul ejt és nem kapsz levegőt.</string>
+    <string name="dark_card5">Egy Mumus annak a képében közeledik, amitől a legjobban félsz…</string>
+    <string name="dark_card6">A klubhelyiségbe nem tudsz bemenni.</string>
+    <string name="dark_card7">Kábító átok fog sújtani hamarosan.</string>
+    <string name="dark_card8">Egy bébi Mandragórát találsz a táskádban - és éppen felébredt. Nincs rajtad fülvédő.</string>
+    <string name="dark_card9">Befordulsz a sarkon és egyenesen egy Ördöghurok bozótba esel.</string>
+    <string name="dark_card10">Valaki a közelben Önoltót használt, sötétben tapogatózol.</string>
+    <string name="dark_card11">Az édességedet Rókázó Rágcsára cserélték - és későn vetted észre.</string>
+    <string name="dark_card12">A kviddicsmérkőzés alatt megátkozzák a seprűd.</string>
+    <string name="dark_card13">Sürgős üzenetet kellene kézbesítened, de a baglyod eltűnt.</string>
+    <string name="dark_card14">Valaki beletett valamit az üstödbe; a füsttől kába leszel.</string>
+    <string name="dark_card15">A Bogoly Berti féle Drazsét megbabrálták. Nagyon lebetegedsz.</string>
+    <string name="dark_card16">A tea levelek a Zordót mutatják. Pánikba esel.</string>
+    <string name="dark_card17">Lépéseket hallasz, miközben a Zárolt Részben leemelsz egy könyvet.</string>
+    <string name="dark_card18">A Párbajszakkör alatt a Mardekáros ellenfeled egy kígyót varázsol…</string>
+    <string name="dark_card19">Felkapsz egy serleget, de későn veszed észre, hogy az egy Zsupszkulcs.</string>
+    <string name="dark_card20">Kelta Tündérmanók egy ártalmas csoportja tart feléd.</string>
+    <string name="dark_card21">Egy fal összeomlását hangos robaj kíséri. Valaki közeleg.</string>
+    <string name="dark_card22">Dumbledore elhagyta a kastélyt, pedig információd van a Halálfalókról.</string>
+    <string name="dark_card23">Egyik elvarázsolt osztálytársad egy Főbenjáró Átkot készül rád szórni.</string>
+    <string name="dark_card24">A kastélyban elszabadult kis sárkány meglát és tüzet okád rád.</string>
+    <string name="dark_card25">Draco Malfoy és barátai kelepcébe csalnak, hogy párbajt kezdhessetek.</string>
+    <string name="dark_card26">Dementorok szállták meg az iskolát.</string>
+    <string name="dark_card27">Valaki levette a csatot a Szörnyek Szörnyű Könyvéről és az megtámad.</string>
+    <string name="dark_card28">Egy ismert vérfarkas zsákmányt keres a termekben… telihold van.</string>
+    <string name="dark_card29">A kastélyban szabadon kószáló, kifejlett hegyi trollal találkozol.</string>
+    <string name="dark_card30">Halálfaló Lucius Malfoy meglátogatja a fiát, Dracot.</string>
+    <string name="dark_card31">Frics úr - a szokásosnál is gorombább hangulatban - befordul a sarkon.</string>
+    <string name="dark_card32">A Griffendéles fiúk hálótermét kifosztották. Értékes dolgok tűntek el.</string>
+    <string name="dark_card33">Cormac McLaggen szerelmi bájitallal átitatott édességet evett - és csak rád tud gondolni.</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
@@ -100,11 +170,10 @@
         <item>Neville Longbottom</item>
     </string-array>
 
-    <string-array name="playmodes">
-        <item>Egyjátékos mód</item>
-        <item>Többjátékos mód</item>
-    </string-array>
-
+    <string name="room_dumbledore">Dumbledore irodája</string>
+    <string name="mystery_prefix">MYSTERY_%</string>
+    <string name="dark_prefix">DARK_%</string>
+    <string name="helper_prefix">HELPER_%</string>
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>
@@ -133,5 +202,40 @@
         <item>Draco Malfoy</item>
         <item>Lucius Malfoy</item>
         <item>Peter Pettigrew</item>
+    </string-array>
+
+    <string-array name="helper_cards">
+        <item>Bezoár</item>
+        <item>Seprű</item>
+        <item>Álságdetektor</item>
+        <item>Önoltó</item>
+        <item>Varangydudva</item>
+        <item>Láthatatlanná tévő köpeny</item>
+        <item>Mandragórás gyógyszirup</item>
+        <item>Tekergők térképe</item>
+        <item>Zsupszkulcs</item>
+        <item>Felix Felicis</item>
+        <item>Albus Dumbledore</item>
+        <item>Dobby</item>
+        <item>Fawkes</item>
+        <item>Madam Pomfrey</item>
+        <item>McGalagony professzor</item>
+        <item>Piton professzor</item>
+        <item>Rubeus Hagrid</item>
+        <item>Weasley ikrek</item>
+        <item>Capitulatus</item>
+        <item>Immobilus</item>
+        <item>Lumos</item>
+        <item>Petrificus Totalus</item>
+        <item>Protego</item>
+        <item>Commikulissimus</item>
+        <item>Stupor</item>
+        <item>Vingardium Leviosa</item>
+        <item>Alohomora</item>
+    </string-array>
+
+    <string-array name="playmodes">
+        <item>Egyjátékos mód</item>
+        <item>Többjátékos mód</item>
     </string-array>
 </resources>

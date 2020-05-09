@@ -38,7 +38,7 @@ class AccusationViewModel(private val playerId: Int, private val bind: DialogAcc
 
     fun finalize() {
         if (selectedRoom.isEmpty() || selectedTool.isEmpty() || selectedSuspect.isEmpty()) {
-            Snackbar.make(bind.root, "Válassz minden sorból egyet!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(bind.root, context.resources.getString(R.string.select_from_every_parameter), Snackbar.LENGTH_LONG).show()
         }
         else
             listener.onFinalized(Suspect(playerId, selectedRoom, selectedTool, selectedSuspect))

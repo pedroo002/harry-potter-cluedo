@@ -9,9 +9,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogHelperCardBinding
-import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 
 class HelperCardDialog(private val cardResource: Int, private val listener: DialogDismiss) : DialogFragment() {
+
+    companion object {
+        const val TAG = "DIALOG_HELPER"
+    }
 
     private lateinit var dialogHelperCardBinding: DialogHelperCardBinding
 

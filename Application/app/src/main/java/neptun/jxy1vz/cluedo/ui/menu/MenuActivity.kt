@@ -16,17 +16,17 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val pref = applicationContext.getSharedPreferences("CluedoDatabase", Context.MODE_PRIVATE)
+        val pref = applicationContext.getSharedPreferences(getString(R.string.database_name), Context.MODE_PRIVATE)
         val editor = pref.edit()
-        if (!pref.contains("FirstStart")) {
-            editor.putBoolean("FirstStart", true)
+        if (!pref.contains(getString(R.string.first_start_pref))) {
+            editor.putBoolean(getString(R.string.first_start_pref), true)
             GlobalScope.launch(Dispatchers.IO) {
                 val db = DatabaseAccess(applicationContext)
                 db.uploadDatabase()
             }
         }
         else
-            editor.putBoolean("FirstStart", false)
+            editor.putBoolean(getString(R.string.first_start_pref), false)
         editor.apply()
 
         val activityMenuBinding = DataBindingUtil.setContentView<ActivityMenuBinding>(this, R.layout.activity_menu)

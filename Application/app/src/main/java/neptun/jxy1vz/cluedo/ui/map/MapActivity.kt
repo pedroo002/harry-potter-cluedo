@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMapBinding
+import neptun.jxy1vz.cluedo.domain.handler.MapActivityListener
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 
@@ -51,7 +52,7 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
                     gameModel,
                     this@MapActivity,
                     applicationContext,
-                    intent.getIntExtra("Player ID", 0),
+                    intent.getIntExtra(applicationContext.resources.getString(R.string.player_id), 0),
                     playerImagePairs,
                     mapRoot,
                     supportFragmentManager
@@ -63,5 +64,10 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
 
     override fun exitToMenu() {
         finish()
+    }
+
+    override fun onDestroy() {
+        MapViewModel.onDestroy()
+        super.onDestroy()
     }
 }

@@ -9,10 +9,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogCardRevealBinding
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.MysteryCard
-import neptun.jxy1vz.cluedo.ui.map.DialogDismiss
 
 class CardRevealDialog(private val card: MysteryCard, private val playerName: String, private val listener: DialogDismiss) : DialogFragment() {
+
+    companion object {
+        const val TAG = "DIALOG_CARD_REVEAL"
+    }
 
     private lateinit var dialogCardRevealBinding: DialogCardRevealBinding
 

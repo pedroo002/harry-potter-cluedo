@@ -16,7 +16,7 @@ class MysteryCardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val gameModel = GameModels(applicationContext)
-        playerId = intent.getIntExtra("Player ID", 0)
+        playerId = intent.getIntExtra(applicationContext.resources.getString(R.string.player_id), 0)
 
         activityMysteryCardBinding = DataBindingUtil.setContentView(this, R.layout.activity_mystery_card)
         activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(gameModel, applicationContext, playerId, activityMysteryCardBinding, supportFragmentManager)

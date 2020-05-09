@@ -1,5 +1,8 @@
 package neptun.jxy1vz.cluedo.domain.model
 
+import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
+
 class Player(
     val id: Int,
     val card: PlayerCard,
@@ -9,8 +12,8 @@ class Player(
     var hp: Int = 70,
     var mysteryCards: MutableList<MysteryCard> = ArrayList(),
     var helperCards: MutableList<HelperCard>? = null,
-    var conclusions: HashMap<String, Int>? = null,
-    var suspicions: HashMap<String, Int>? = null,
+    private var conclusions: HashMap<String, Int>? = null,
+    private var suspicions: HashMap<String, Int>? = null,
     var solution: Suspect? = null
 ) {
 
@@ -165,7 +168,7 @@ class Player(
         if (helperCards.isNullOrEmpty())
             return false
         for (card in helperCards!!) {
-            if (card.name == "Alohomora")
+            if (card.name == mContext!!.resources.getStringArray(R.array.helper_cards)[26])
                 return true
         }
         return false
@@ -175,7 +178,7 @@ class Player(
         if (helperCards.isNullOrEmpty())
             return false
         for (card in helperCards!!) {
-            if (card.name == "Felix Felicis")
+            if (card.name == mContext!!.resources.getStringArray(R.array.helper_cards)[9])
                 return true
         }
         return false

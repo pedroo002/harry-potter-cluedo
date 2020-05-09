@@ -8,13 +8,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDiceRollerBinding
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
+import neptun.jxy1vz.cluedo.domain.handler.StateMachineHandler
 
 class DiceRollerDialog(private val listener: DiceResultInterface, private val playerId: Int, private val felixFelicis: Boolean) :
     DialogFragment() {
 
+    companion object {
+        const val TAG = "DIALOG_DICE"
+    }
+
     interface DiceResultInterface {
-        fun onDiceRoll(playerId: Int, sum: Int, house: MapViewModel.HogwartsHouse?)
+        fun onDiceRoll(playerId: Int, sum: Int, house: StateMachineHandler.HogwartsHouse?)
         fun getCard(playerId: Int, type: DiceRollerViewModel.CardType?)
     }
 

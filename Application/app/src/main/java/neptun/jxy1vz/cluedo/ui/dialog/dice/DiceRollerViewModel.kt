@@ -8,7 +8,7 @@ import androidx.annotation.DrawableRes
 import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogDiceRollerBinding
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
+import neptun.jxy1vz.cluedo.domain.handler.StateMachineHandler
 import kotlin.random.Random
 
 class DiceRollerViewModel(
@@ -24,13 +24,13 @@ class DiceRollerViewModel(
     }
 
     private var cardType: CardType? = null
-    private var house: MapViewModel.HogwartsHouse? = null
+    private var house: StateMachineHandler.HogwartsHouse? = null
 
     fun getCardType(): CardType? {
         return cardType
     }
 
-    fun getHouse(): MapViewModel.HogwartsHouse? {
+    fun getHouse(): StateMachineHandler.HogwartsHouse? {
         return house
     }
 
@@ -116,10 +116,10 @@ class DiceRollerViewModel(
     private fun setDice3(dice3: Int) {
         when (dice3) {
             1 -> cardType = CardType.HELPER
-            2 -> house = MapViewModel.HogwartsHouse.GRYFFINDOR
-            3 -> house = MapViewModel.HogwartsHouse.SLYTHERIN
-            4 -> house = MapViewModel.HogwartsHouse.HUFFLEPUFF
-            5 -> house = MapViewModel.HogwartsHouse.RAVENCLAW
+            2 -> house = StateMachineHandler.HogwartsHouse.GRYFFINDOR
+            3 -> house = StateMachineHandler.HogwartsHouse.SLYTHERIN
+            4 -> house = StateMachineHandler.HogwartsHouse.HUFFLEPUFF
+            5 -> house = StateMachineHandler.HogwartsHouse.RAVENCLAW
             6 -> cardType = CardType.DARK
         }
     }
