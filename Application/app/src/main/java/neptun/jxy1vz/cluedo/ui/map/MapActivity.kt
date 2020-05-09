@@ -65,4 +65,9 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
     override fun exitToMenu() {
         finish()
     }
+
+    override fun onDestroy() {
+        MapViewModel.onDestroy()
+        super.onDestroy()
+    }
 }

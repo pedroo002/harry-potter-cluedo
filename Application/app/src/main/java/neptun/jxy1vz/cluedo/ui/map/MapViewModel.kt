@@ -32,15 +32,15 @@ class MapViewModel(
         const val ROWS = 24
         const val COLS = 24
 
-        val cameraHandler = CameraHandler(this)
-        val cardHandler = CardHandler(this)
-        val dialogHandler = DialogHandler(this)
-        val gameSequenceHandler = GameSequenceHandler(this)
-        val interactionHandler = InteractionHandler(this)
-        val mapHandler = MapHandler(this)
-        val playerHandler = PlayerHandler(this)
-        val stateMachineHandler = StateMachineHandler(this)
-        val uiHandler = UIHandler(this)
+        var cameraHandler = CameraHandler(this)
+        var cardHandler = CardHandler(this)
+        var dialogHandler = DialogHandler(this)
+        var gameSequenceHandler = GameSequenceHandler(this)
+        var interactionHandler = InteractionHandler(this)
+        var mapHandler = MapHandler(this)
+        var playerHandler = PlayerHandler(this)
+        var stateMachineHandler = StateMachineHandler(this)
+        var uiHandler = UIHandler(this)
 
         var mPlayerId: Int? = null
         var mContext: Context? = null
@@ -79,7 +79,25 @@ class MapViewModel(
         var savedDiceValue = 0
         var savedHouse: StateMachineHandler.HogwartsHouse? = null
 
-        val unusedMysteryCards = ArrayList<MysteryCard>()
+        lateinit var unusedMysteryCards: ArrayList<MysteryCard>
+
+        fun onDestroy() {
+            otherPlayerStepsOnStar = false
+            playerInTurnAffected = false
+            isGameRunning = false
+            userFinishedHisTurn = false
+            userHasToStepOrIncriminate = false
+            userHasToIncriminate = false
+            userCanStep = false
+            pause = false
+            savedDiceValue = 0
+            savedPlayerId = -1
+            savedHouse = null
+            slytherinState = 0
+            ravenclawState = 0
+            gryffindorState = 0
+            hufflepuffState = 0
+        }
     }
 
     init {
@@ -183,6 +201,7 @@ class MapViewModel(
         }
 
         GlobalScope.launch(Dispatchers.IO) {
+            unusedMysteryCards = ArrayList()
             unusedMysteryCards.addAll(gameModels.db.getUnusedMysteryCards())
         }
     }

@@ -120,6 +120,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
 
     override fun onEndOfGameDismiss() {
         activityListener.exitToMenu()
+        map.onDestroy()
     }
 
     override fun onLossDialogDismiss(playerId: Int?) {
