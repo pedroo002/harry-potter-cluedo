@@ -13,8 +13,8 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogCardLossBinding
 import neptun.jxy1vz.cluedo.domain.model.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.LossType
-import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
-import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
+import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
+import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 
 class CardLossDialog(private val playerIdx: Int, private val helperCards: List<HelperCard>, private val loss_type: LossType, private val listener: CardLossDialogListener) : DialogFragment() {
 
@@ -48,7 +48,11 @@ class CardLossDialog(private val playerIdx: Int, private val helperCards: List<H
 
         fragmentList = ArrayList()
         for (card in helperCards) {
-            fragmentList.add(CardFragment(card.imageRes))
+            fragmentList.add(
+                CardFragment(
+                    card.imageRes
+                )
+            )
         }
         adapter = CardPagerAdapter(childFragmentManager, fragmentList)
 

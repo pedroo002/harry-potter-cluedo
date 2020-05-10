@@ -13,8 +13,8 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogPlayerDiesBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Player
-import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
-import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
+import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
+import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 
 class PlayerDiesDialog(private val player: Player, private val listener: DialogDismiss) :
     DialogFragment() {
@@ -45,7 +45,11 @@ class PlayerDiesDialog(private val player: Player, private val listener: DialogD
 
         val fragmentList = ArrayList<CardFragment>()
         for (card in player.mysteryCards) {
-            fragmentList.add(CardFragment(card.imageRes))
+            fragmentList.add(
+                CardFragment(
+                    card.imageRes
+                )
+            )
         }
         adapter = CardPagerAdapter(childFragmentManager, fragmentList)
 

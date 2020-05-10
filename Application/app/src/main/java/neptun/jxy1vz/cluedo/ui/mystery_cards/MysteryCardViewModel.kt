@@ -13,8 +13,8 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
-import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
-import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
+import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
+import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.cluedo.ui.map.MapActivity
 
 class MysteryCardViewModel(
@@ -55,7 +55,11 @@ class MysteryCardViewModel(
             val fragmentList = ArrayList<CardFragment>()
             for (card in cards) {
                 if (card.second == playerId)
-                    fragmentList.add(CardFragment(card.first.imageRes))
+                    fragmentList.add(
+                        CardFragment(
+                            card.first.imageRes
+                        )
+                    )
             }
             adapter = CardPagerAdapter(fm, fragmentList)
             bind.cardPager.adapter = adapter

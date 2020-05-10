@@ -13,8 +13,8 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogUnusedMysteryCardsBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.MysteryCard
-import neptun.jxy1vz.cluedo.ui.card_pager.adapter.CardPagerAdapter
-import neptun.jxy1vz.cluedo.ui.card_pager.fragment.CardFragment
+import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
+import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 
 class UnusedMysteryCardsDialog(private val listener: DialogDismiss, private val cardList: List<MysteryCard>) : DialogFragment() {
 
@@ -39,7 +39,11 @@ class UnusedMysteryCardsDialog(private val listener: DialogDismiss, private val 
 
         val fragmentList = ArrayList<CardFragment>()
         for (card in cardList) {
-            fragmentList.add(CardFragment(card.imageRes))
+            fragmentList.add(
+                CardFragment(
+                    card.imageRes
+                )
+            )
         }
         adapter = CardPagerAdapter(childFragmentManager, fragmentList)
 
