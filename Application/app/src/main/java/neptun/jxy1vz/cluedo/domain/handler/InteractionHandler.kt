@@ -14,10 +14,10 @@ import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.dialog.ChooseOptionDialog
 import neptun.jxy1vz.cluedo.ui.dialog.accusation.AccusationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.reveal_mystery_card.CardRevealDialog
-import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
-import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerFragment
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.diceList
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
@@ -35,7 +35,8 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
 import kotlin.random.Random
 
-class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationDialog.MapInterface, DiceRollerDialog.DiceResultInterface {
+class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationDialog.MapInterface,
+    DiceRollerFragment.DiceResultInterface {
     fun showOptions(playerId: Int) {
         if (isGameRunning) {
             if (playerId == player.id && playerId == playerInTurn) {
@@ -78,11 +79,14 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
 
                 diceList[i].startAnimation(map.anim)
             }
-        } else
-            DiceRollerDialog(this, playerId, player.hasFelixFelicis()).show(fm, DiceRollerDialog.TAG)
+        } else {
+            val fragment = DiceRollerFragment(this, playerId, player.hasFelixFelicis())
+            map.insertFragment(fragment)
+        }
     }
 
     override fun onDiceRoll(playerId: Int, sum: Int, house: StateMachineHandler.HogwartsHouse?) {
+        mapRoot.setScrollEnabled(true)
         house?.let {
             if (playerId == player.id)
                 map.stateMachineHandler.setState(playerId, it)

@@ -15,7 +15,7 @@ import neptun.jxy1vz.cluedo.domain.model.DoorState
 import neptun.jxy1vz.cluedo.domain.model.Position
 import neptun.jxy1vz.cluedo.domain.model.State
 import neptun.jxy1vz.cluedo.domain.model.boolean
-import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.diceList
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels

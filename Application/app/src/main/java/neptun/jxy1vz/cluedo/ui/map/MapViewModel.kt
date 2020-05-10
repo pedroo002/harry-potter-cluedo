@@ -6,6 +6,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.otaliastudios.zoom.ZoomLayout
 import kotlinx.android.synthetic.main.activity_map.view.*
@@ -17,6 +18,7 @@ import neptun.jxy1vz.cluedo.domain.handler.*
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.cluedo.ui.dialog.note.NoteDialog
+import kotlin.math.abs
 
 class MapViewModel(
     gm: GameModels,
@@ -97,6 +99,15 @@ class MapViewModel(
             ravenclawState = 0
             gryffindorState = 0
             hufflepuffState = 0
+        }
+
+        fun insertFragment(fragment: Fragment) {
+            val layoutParams = ConstraintLayout.LayoutParams(mContext!!.resources.displayMetrics.widthPixels, mContext!!.resources.displayMetrics.heightPixels)
+            mapRoot.dialogFrame.layoutParams = layoutParams
+            mapRoot.dialogFrame.x = abs(mapRoot.panX)
+            mapRoot.dialogFrame.y = abs(mapRoot.panY)
+            fm.beginTransaction().replace(R.id.dialogFrame, fragment).commit()
+            mapRoot.setScrollEnabled(false)
         }
     }
 

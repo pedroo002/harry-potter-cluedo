@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.dialog.dice
+package neptun.jxy1vz.cluedo.ui.fragment.dice_roller
 
 import android.content.Context
 import android.view.animation.Animation
@@ -7,16 +7,21 @@ import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.databinding.DialogDiceRollerBinding
+import neptun.jxy1vz.cluedo.databinding.FragmentDiceRollerBinding
 import neptun.jxy1vz.cluedo.domain.handler.StateMachineHandler
 import kotlin.random.Random
 
 class DiceRollerViewModel(
-    private val bind: DialogDiceRollerBinding,
+    private val bind: FragmentDiceRollerBinding,
     private val context: Context,
-    private val felixFelicis: Boolean
+    private val felixFelicis: Boolean,
+    private val listener: DiceFragmentListener
 ) : BaseObservable(),
     Animation.AnimationListener {
+
+    interface DiceFragmentListener {
+        fun onFinish()
+    }
 
     enum class CardType {
         HELPER,
@@ -126,5 +131,9 @@ class DiceRollerViewModel(
 
     private fun disableButton() {
         bind.btnRoll.isEnabled = false
+    }
+
+    fun finish() {
+        listener.onFinish()
     }
 }

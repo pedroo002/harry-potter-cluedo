@@ -9,7 +9,7 @@ import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
-import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
@@ -64,7 +64,7 @@ class CardHandler(private val map: MapViewModel.Companion) {
         return null
     }
 
-    fun showCard(playerId: Int, card: Card, type: DiceRollerViewModel.CardType) {
+    fun showCard(playerId: Int, card: Card, type: DiceRollerViewModel.CardType?) {
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 map.cameraHandler.moveCameraToPlayer(playerId)
@@ -136,7 +136,7 @@ class CardHandler(private val map: MapViewModel.Companion) {
         }
     }
 
-    fun evaluateCard(playerId: Int, randomCard: Card, type: DiceRollerViewModel.CardType) {
+    fun evaluateCard(playerId: Int, randomCard: Card, type: DiceRollerViewModel.CardType?) {
         when (type) {
             DiceRollerViewModel.CardType.HELPER -> {
                 map.gameSequenceHandler.continueGame()

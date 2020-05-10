@@ -8,7 +8,7 @@ import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.ui.dialog.RescuedFromDarkCardDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
-import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.player_dies.PlayerDiesDialog
