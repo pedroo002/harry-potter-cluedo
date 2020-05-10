@@ -4,12 +4,12 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Suspect
-import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.unused_mystery_cards.UnusedMysteryCardsDialog
 import neptun.jxy1vz.cluedo.ui.dialog.endgame.EndOfGameDialog
 import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.note.NoteDialog
 import neptun.jxy1vz.cluedo.ui.dialog.show_card.ShowCardDialog
 import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
+import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.unused.UnusedMysteryCardsFragment
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.activityListener
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
@@ -84,6 +84,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onCardRevealDismiss() {
+        mapRoot.setScrollEnabled(true)
         NoteDialog(player, this).show(fm, NoteDialog.TAG)
     }
 
@@ -93,6 +94,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onHelperCardDismiss() {
+        mapRoot.setScrollEnabled(true)
         if (userFinishedHisTurn)
             map.gameSequenceHandler.moveToNextPlayer()
     }
@@ -160,8 +162,10 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
                 val fragment = AccusationFragment(playerInTurn, this)
                 map.insertFragment(fragment)
             }
-            else
-                UnusedMysteryCardsDialog(this, unusedMysteryCards).show(fm, UnusedMysteryCardsDialog.TAG)
+            else {
+                val fragment = UnusedMysteryCardsFragment(this, unusedMysteryCards)
+                map.insertFragment(fragment)
+            }
             return
         }
     }

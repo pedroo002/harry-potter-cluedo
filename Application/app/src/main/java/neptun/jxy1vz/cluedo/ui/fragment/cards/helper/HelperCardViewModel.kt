@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper
+package neptun.jxy1vz.cluedo.ui.fragment.cards.helper
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
@@ -6,9 +6,10 @@ import android.content.Context
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.databinding.DialogHelperCardBinding
+import neptun.jxy1vz.cluedo.databinding.FragmentHelperCardBinding
+import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class HelperCardViewModel(private val bind: DialogHelperCardBinding, context: Context, private val cardResource: Int) : BaseObservable() {
+class HelperCardViewModel(bind: FragmentHelperCardBinding, context: Context, cardResource: Int, private val listener: ViewModelListener) : BaseObservable() {
 
     init {
         val scale = context.resources.displayMetrics.density
@@ -21,5 +22,9 @@ class HelperCardViewModel(private val bind: DialogHelperCardBinding, context: Co
                 bind.ivHelperCard.setImageResource(cardResource)
             }
         }
+    }
+
+    fun close() {
+        listener.onFinish()
     }
 }

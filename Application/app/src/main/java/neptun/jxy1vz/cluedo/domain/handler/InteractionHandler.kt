@@ -12,10 +12,10 @@ import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.dialog.ChooseOptionDialog
-import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.reveal_mystery_card.CardRevealDialog
 import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
 import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
+import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.reveal.RevealMysteryCardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
@@ -203,11 +203,8 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                     map.cardHandler.revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
                 if (cards != null) {
                     val revealedCard = cards[Random.nextInt(0, cards.size)]
-                    CardRevealDialog(
-                        revealedCard,
-                        gameModels.playerList[playerIdx].card.name,
-                        map.dialogHandler
-                    ).show(fm, CardRevealDialog.TAG)
+                    val fragment = RevealMysteryCardFragment(revealedCard, gameModels.playerList[playerIdx].card.name, map.dialogHandler)
+                    map.insertFragment(fragment)
                     someoneShowedSomething = true
                     letOtherPlayersKnow(
                         suspect,

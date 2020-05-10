@@ -7,12 +7,12 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.ui.dialog.RescuedFromDarkCardDialog
-import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark.DarkCardDialog
-import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.hp_loss.HpLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.player_dies.PlayerDiesDialog
 import neptun.jxy1vz.cluedo.ui.dialog.player_dies.UserDiesDialog
+import neptun.jxy1vz.cluedo.ui.fragment.cards.dark.DarkCardFragment
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
@@ -30,7 +30,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
 import kotlin.random.Random
 
-class PlayerHandler(private val map: MapViewModel.Companion) : DarkCardDialog.DarkCardDialogListener, CardLossDialog.CardLossDialogListener {
+class PlayerHandler(private val map: MapViewModel.Companion) : DarkCardFragment.DarkCardListener, CardLossDialog.CardLossDialogListener {
     fun useGateway(playerId: Int, from: Int, to: Int) {
         if (map.mapHandler.stepInRoom(getPlayerById(playerId).pos) == from) {
             stepPlayer(
@@ -227,14 +227,17 @@ class PlayerHandler(private val map: MapViewModel.Companion) : DarkCardDialog.Da
             if (playerInTurn == player.id)
                 map.cardHandler.showCard(player.id, card, DiceRollerViewModel.CardType.DARK)
         }
-        else
-            DarkCardDialog(player, card, this).show(fm, DarkCardDialog.TAG)
+        else {
+            val fragment = DarkCardFragment(player, card, this)
+            map.insertFragment(fragment)
+        }
 
         if (playerIds.isEmpty())
             map.gameSequenceHandler.continueGame()
     }
 
     override fun getLoss(playerId: Int, card: DarkCard?) {
+        mapRoot.setScrollEnabled(true)
         if (card == null) {
             if (playerId == player.id)
                 RescuedFromDarkCardDialog(map.dialogHandler).show(fm, RescuedFromDarkCardDialog.TAG)

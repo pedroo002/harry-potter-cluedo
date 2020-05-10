@@ -8,10 +8,9 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
-import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.helper.HelperCardDialog
+import neptun.jxy1vz.cluedo.ui.fragment.cards.helper.HelperCardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
@@ -150,11 +149,10 @@ class CardHandler(private val map: MapViewModel.Companion) {
                 }
                 map.playerHandler.getPlayerById(playerId).helperCards!!.add(randomCard as HelperCard)
 
-                if (playerId == player.id)
-                    HelperCardDialog(randomCard.imageRes, map.dialogHandler).show(
-                        fm,
-                        HelperCardDialog.TAG
-                    )
+                if (playerId == player.id) {
+                    val fragment = HelperCardFragment(randomCard.imageRes, map.dialogHandler)
+                    map.insertFragment(fragment)
+                }
             }
             else -> {
                 GlobalScope.launch(Dispatchers.IO) {

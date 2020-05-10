@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.dialog.card_dialog.dark_mark
+package neptun.jxy1vz.cluedo.ui.fragment.cards.dark
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
@@ -9,12 +9,13 @@ import android.widget.ArrayAdapter
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.databinding.DialogDarkCardBinding
+import neptun.jxy1vz.cluedo.databinding.FragmentDarkCardBinding
 import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
+import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class DarkCardViewModel(private val bind: DialogDarkCardBinding, private val context: Context, private val player: Player, private val darkCard: DarkCard) : BaseObservable(),
+class DarkCardViewModel(private val bind: FragmentDarkCardBinding, private val context: Context, private val player: Player, private val darkCard: DarkCard, private val listener: ViewModelListener) : BaseObservable(),
     AdapterView.OnItemSelectedListener {
 
     private val tools: ArrayList<String> = ArrayList()
@@ -102,5 +103,9 @@ class DarkCardViewModel(private val bind: DialogDarkCardBinding, private val con
                     }
                 }
             }
+    }
+
+    fun close() {
+        listener.onFinish()
     }
 }
