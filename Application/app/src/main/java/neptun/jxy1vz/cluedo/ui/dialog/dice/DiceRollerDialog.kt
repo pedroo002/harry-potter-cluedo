@@ -36,7 +36,7 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
             DiceRollerViewModel(dialogDiceRollerBinding, context!!, felixFelicis)
         dialogDiceRollerBinding.executePendingBindings()
 
-        return AlertDialog.Builder(context!!, R.style.CluedoDialog)
+        return AlertDialog.Builder(context!!, R.style.Theme_AppCompat_Light_DialogWhenLarge)
             .setView(dialogDiceRollerBinding.root).setTitle(resources.getString(R.string.dobj))
             .setNeutralButton(
                 resources.getString(R.string.ok)
@@ -50,10 +50,5 @@ class DiceRollerDialog(private val listener: DiceResultInterface, private val pl
                     listener.onDiceRoll(playerId, sum, house)
                 dialog.dismiss()
             }.create()
-    }
-
-    override fun onResume() {
-        dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        super.onResume()
     }
 }
