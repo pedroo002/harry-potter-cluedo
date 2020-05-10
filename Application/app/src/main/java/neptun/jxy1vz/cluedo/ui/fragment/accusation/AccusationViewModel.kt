@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.dialog.accusation
+package neptun.jxy1vz.cluedo.ui.fragment.accusation
 
 import android.content.Context
 import android.widget.ImageView
@@ -6,11 +6,11 @@ import androidx.core.view.children
 import androidx.databinding.BaseObservable
 import com.google.android.material.snackbar.Snackbar
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.databinding.DialogAccusationBinding
+import neptun.jxy1vz.cluedo.databinding.FragmentAccusationBinding
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.domain.model.helper.*
 
-class AccusationViewModel(private val playerId: Int, private val bind: DialogAccusationBinding, private val context: Context, private val listener: FinalizationListener) : BaseObservable() {
+class AccusationViewModel(private val playerId: Int, private val bind: FragmentAccusationBinding, private val context: Context, private val listener: FinalizationListener) : BaseObservable() {
 
     interface FinalizationListener {
         fun onFinalized(suspect: Suspect)

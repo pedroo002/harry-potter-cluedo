@@ -12,10 +12,10 @@ import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.dialog.ChooseOptionDialog
-import neptun.jxy1vz.cluedo.ui.dialog.accusation.AccusationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.reveal_mystery_card.CardRevealDialog
 import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
+import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
@@ -132,8 +132,10 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                         fm,
                         ChooseOptionDialog.TAG
                     )
-                else
-                    AccusationDialog(playerId, map.dialogHandler).show(fm, AccusationDialog.TAG)
+                else {
+                    val fragment = AccusationFragment(playerId, map.dialogHandler)
+                    map.insertFragment(fragment)
+                }
             }
         } else {
             val room = gameModels.roomList[roomId].name
@@ -165,7 +167,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                         hasConclusionsOfThem = false
                 }
                 if (hasConclusionsOfThem)
-                    map.dialogHandler.onAccusationDismiss(map.playerHandler.getPlayerById(playerId).solution)
+                    map.dialogHandler.onAccusationDismiss(map.playerHandler.getPlayerById(playerId).solution!!)
                 else {
                     for (card in unusedMysteryCards) {
                         map.playerHandler.getPlayerById(playerId).getConclusion(card.name, -2)

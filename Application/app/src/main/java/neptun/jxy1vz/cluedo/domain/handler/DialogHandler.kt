@@ -1,17 +1,15 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_map.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Suspect
-import neptun.jxy1vz.cluedo.ui.dialog.accusation.AccusationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.unused_mystery_cards.UnusedMysteryCardsDialog
 import neptun.jxy1vz.cluedo.ui.dialog.endgame.EndOfGameDialog
 import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.note.NoteDialog
 import neptun.jxy1vz.cluedo.ui.dialog.show_card.ShowCardDialog
+import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.activityListener
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
@@ -99,12 +97,8 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
             map.gameSequenceHandler.moveToNextPlayer()
     }
 
-    override fun onAccusationDismiss(suspect: Suspect?) {
-        if (suspect == null) {
-            Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.make_your_accusation), Snackbar.LENGTH_LONG).show()
-            AccusationDialog(playerInTurn, this).show(fm, AccusationDialog.TAG)
-            return
-        }
+    override fun onAccusationDismiss(suspect: Suspect) {
+        mapRoot.setScrollEnabled(true)
         var correct = true
         for (card in gameModels.gameSolution) {
             if (card.name != suspect.room && card.name != suspect.tool && card.name != suspect.suspect)
@@ -162,8 +156,10 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
 
     override fun onOptionsDismiss(accusation: Boolean?) {
         accusation?.let {
-            if (accusation)
-                AccusationDialog(playerInTurn, this).show(fm, AccusationDialog.TAG)
+            if (accusation) {
+                val fragment = AccusationFragment(playerInTurn, this)
+                map.insertFragment(fragment)
+            }
             else
                 UnusedMysteryCardsDialog(this, unusedMysteryCards).show(fm, UnusedMysteryCardsDialog.TAG)
             return

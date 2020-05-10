@@ -10,7 +10,7 @@ interface DialogDismiss {
     fun onCardRevealDismiss()
     fun onCardShowDismiss(suspect: Suspect, card: MysteryCard)
     fun onHelperCardDismiss()
-    fun onAccusationDismiss(suspect: Suspect?)
+    fun onAccusationDismiss(suspect: Suspect)
     fun onEndOfGameDismiss()
     fun onLossDialogDismiss(playerId: Int? = null)
     fun onPlayerDiesDismiss(player: Player?)
