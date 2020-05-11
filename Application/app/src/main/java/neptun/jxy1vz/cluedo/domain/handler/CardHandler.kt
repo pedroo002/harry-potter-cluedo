@@ -18,7 +18,6 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.otherPlayerStepsOnStar
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
 import kotlin.math.abs
-import kotlin.math.floor
 
 class CardHandler(private val map: MapViewModel.Companion) {
     fun handOutHelperCards() {
@@ -78,48 +77,31 @@ class CardHandler(private val map: MapViewModel.Companion) {
             )
             cardImage.setImageResource(card.imageRes)
 
-            val mapSizeX = mapRoot.mapLayout.ivMap.right.toFloat()
-            val mapSizeY = mapRoot.mapLayout.ivMap.bottom.toFloat()
-            val screenSizeX = mContext!!.resources.displayMetrics.widthPixels
-            val screenSizeY = mContext!!.resources.displayMetrics.heightPixels
-            val panX = mapRoot.panX
-            val panY = mapRoot.panY
+            map.uiHandler.setLayoutConstraintTop(cardImage, gameModels.rows[0])
+            map.uiHandler.setLayoutConstraintStart(cardImage, gameModels.cols[0])
+            cardImage.translationX = abs(mapRoot.panX)
+            cardImage.translationY = abs(mapRoot.panY)
 
-            val possibleRow =
-                when {
-                    panY < screenSizeY -> floor(abs(MapViewModel.ROWS * panY / mapSizeY)).toInt()
-                    panY > mapSizeY - screenSizeY -> floor(abs((mapSizeY - screenSizeY) / mapSizeY) * MapViewModel.ROWS).toInt()
-                    else -> floor(
-                        abs((mapSizeY - panY) / mapSizeY) * MapViewModel.ROWS
-                    ).toInt()
-                }
-            val possibleCol =
-                when {
-                    panX < screenSizeX -> floor(abs(MapViewModel.COLS * panX / mapSizeX)).toInt()
-                    panX > mapSizeX - screenSizeX -> floor(abs((mapSizeX - screenSizeX) / mapSizeX) * MapViewModel.COLS).toInt()
-                    else -> floor(
-                        abs((mapSizeX - panX) / mapSizeX) * MapViewModel.COLS
-                    ).toInt()
-                }
-
-            map.uiHandler.setLayoutConstraintTop(cardImage, gameModels.rows[possibleRow + 1])
-            map.uiHandler.setLayoutConstraintStart(cardImage, gameModels.cols[possibleCol + 1])
-
-            cardImage.translationX = -1 * cardImage.width.toFloat()
+            cardImage.translationX -= cardImage.width.toFloat()
             cardImage.visibility = ImageView.VISIBLE
 
             withContext(Dispatchers.Main) {
                 mapRoot.mapLayout.addView(cardImage)
-                ObjectAnimator.ofFloat(cardImage, "translationX", cardImage.width.toFloat())
+                ObjectAnimator.ofFloat(
+                    cardImage,
+                    "translationX",
+                    cardImage.translationX,
+                    cardImage.translationX + cardImage.width.toFloat()
+                )
                     .apply {
                         duration = 1000
                         start()
                         doOnEnd {
-                            cardImage.translationX = 0f
                             ObjectAnimator.ofFloat(
                                 cardImage,
                                 "translationX",
-                                -1 * cardImage.width.toFloat()
+                                cardImage.translationX,
+                                cardImage.translationX - cardImage.width.toFloat()
                             ).apply {
                                 duration = 1000
                                 startDelay = 2000
