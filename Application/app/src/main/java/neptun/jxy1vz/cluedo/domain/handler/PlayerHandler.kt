@@ -1,21 +1,12 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
 import android.widget.ImageView
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_map.view.*
-import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
-import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
-import neptun.jxy1vz.cluedo.ui.dialog.player_dies.PlayerDiesDialog
-import neptun.jxy1vz.cluedo.ui.dialog.player_dies.UserDiesDialog
 import neptun.jxy1vz.cluedo.ui.fragment.cards.dark.DarkCardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.otherPlayerStepsOnStar
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerImagePairs
@@ -25,7 +16,6 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userCanStep
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
-import kotlin.random.Random
 
 class PlayerHandler(private val map: MapViewModel.Companion) :
     CardLossDialog.CardLossDialogListener {
@@ -210,96 +200,8 @@ class PlayerHandler(private val map: MapViewModel.Companion) :
             }
         }
 
-        for (id in playerIds) {
-            val tools: ArrayList<String> = ArrayList()
-            val spells: ArrayList<String> = ArrayList()
-            val allys: ArrayList<String> = ArrayList()
-
-            getHelperObjects(getPlayerById(id), card, tools, spells, allys)
-
-            if (tools.size == 1 && spells.size == 1 && allys.size == 1)
-                getLoss(id, card)
-            else
-                (getLoss(id, null))
-        }
-
         val fragment = DarkCardFragment(player.id, card, gameModels.playerList, playerIds, map.dialogHandler)
         map.insertFragment(fragment)
-    }
-
-    private fun getLoss(playerId: Int, card: DarkCard?) {
-        if (card != null) {
-            when (card.lossType) {
-                LossType.HP -> {
-                    getPlayerById(playerId).hp -= card.hpLoss
-                    if (playerId == player.id) {
-                        if (player.hp <= 0)
-                            UserDiesDialog(map.dialogHandler).show(fm, UserDiesDialog.TAG)
-                    } else {
-                        if (getPlayerById(playerId).hp <= 0) {
-                            PlayerDiesDialog(getPlayerById(playerId), map.dialogHandler).show(
-                                fm,
-                                PlayerDiesDialog.TAG
-                            )
-                            val newPlayerList = ArrayList<Player>()
-                            for (p in gameModels.playerList) {
-                                if (p.id != playerId)
-                                    newPlayerList.add(p)
-                            }
-                            gameModels.playerList = newPlayerList
-                            val pair = getPairById(playerId)
-                            mapRoot.mapLayout.removeView(pair.second)
-                            val newPlayerImagePairs = ArrayList<Pair<Player, ImageView>>()
-                            for (p in playerImagePairs) {
-                                if (p.first.id != playerId)
-                                    newPlayerImagePairs.add(p)
-                            }
-                            playerImagePairs = newPlayerImagePairs
-                        }
-                    }
-                }
-                else -> {
-                    if (playerId != player.id && getPlayerById(playerId).helperCards != null) {
-                        val properHelperCards = getProperHelperCards(playerId, card.lossType)
-
-                        if (properHelperCards.isNotEmpty()) {
-                            if (playerId == player.id)
-                                CardLossDialog(
-                                    playerId,
-                                    properHelperCards,
-                                    card.lossType,
-                                    this
-                                ).show(
-                                    fm,
-                                    CardLossDialog.TAG
-                                )
-                            else {
-                                val cardToThrow =
-                                    properHelperCards[Random.nextInt(0, properHelperCards.size)]
-                                throwCard(
-                                    playerId,
-                                    cardToThrow
-                                )
-                                Snackbar.make(
-                                    mapRoot,
-                                    getPlayerById(playerId).card.name + mContext!!.getString(R.string.someone_threw_card) + cardToThrow.name,
-                                    Snackbar.LENGTH_LONG
-                                ).show()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fun getProperHelperCards(playerId: Int, lossType: LossType): List<HelperCard> {
-        val properHelperCards: ArrayList<HelperCard> = ArrayList()
-        for (helperCard in getPlayerById(playerId).helperCards!!) {
-            if ((helperCard.type as HelperType).compareTo(lossType))
-                properHelperCards.add(helperCard)
-        }
-        return properHelperCards
     }
 
     override fun throwCard(playerId: Int, card: HelperCard) {

@@ -14,15 +14,19 @@ import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONS
 import androidx.core.animation.doOnEnd
 import androidx.core.view.marginBottom
 import androidx.databinding.BaseObservable
+import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.fragment_dark_card.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentDarkCardBinding
-import neptun.jxy1vz.cluedo.domain.model.DarkCard
-import neptun.jxy1vz.cluedo.domain.model.LossType
-import neptun.jxy1vz.cluedo.domain.model.Player
+import neptun.jxy1vz.cluedo.domain.model.*
+import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.domain.model.helper.safeIcons
 import neptun.jxy1vz.cluedo.domain.model.helper.unsafeIcons
+import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
+import neptun.jxy1vz.cluedo.ui.dialog.player_dies.PlayerDiesDialog
+import neptun.jxy1vz.cluedo.ui.dialog.player_dies.UserDiesDialog
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -39,6 +43,8 @@ class DarkCardViewModel(
     private val safePlayerIcons = HashMap<String, Int>()
     private val playerIcons = HashMap<String, Int>()
 
+    private val thrownCards = HashMap<String, Int>()
+
     init {
         val playerNameList = context.resources.getStringArray(R.array.characters)
         for (playerName in playerNameList) {
@@ -46,18 +52,40 @@ class DarkCardViewModel(
             playerIcons[playerName] = unsafeIcons[playerNameList.indexOf(playerName)]
         }
 
-        val radius = (context.resources.displayMetrics.heightPixels - (bind.darkCardRoot.btnClose.height + bind.darkCardRoot.btnClose.marginBottom)) / 4
+        val radius =
+            (context.resources.displayMetrics.heightPixels - (bind.darkCardRoot.btnClose.height + bind.darkCardRoot.btnClose.marginBottom)) / 4
 
         for (player in playerList) {
             val i = playerList.indexOf(player)
-            val imgRes =
-                if (playerIds.contains(player.id))
-                    playerIcons[player.card.name]!!
-                else
-                    safePlayerIcons[player.card.name]!!
+
+            var imgRes: Int
+
+            if (playerIds.contains(player.id)) {
+                val tools: ArrayList<String> = ArrayList()
+                val spells: ArrayList<String> = ArrayList()
+                val allys: ArrayList<String> = ArrayList()
+
+                getHelperObjects(player, card, tools, spells, allys)
+
+                if (tools.size == 1 && spells.size == 1 && allys.size == 1) {
+                    getLoss(player, card)
+                    imgRes = playerIcons[player.card.name]!!
+                } else {
+                    val mergedHelperNames = ArrayList<String>()
+                    mergedHelperNames.addAll(tools)
+                    mergedHelperNames.addAll(spells)
+                    mergedHelperNames.addAll(allys)
+                    for (tool in mergedHelperNames)
+                        for (helperCard in player.helperCards!!)
+                            if (helperCard.name == tool)
+                                helperCard.numberOfHelpingCases++
+                    imgRes = safePlayerIcons[player.card.name]!!
+                }
+            } else
+                imgRes = safePlayerIcons[player.card.name]!!
 
             var lossTextView: TextView? = null
-            if (card.lossType == LossType.HP && playerIds.contains(player.id)) {
+            if (card.lossType == LossType.HP && playerIds.contains(player.id) && imgRes != safePlayerIcons[player.card.name]!!) {
                 val lossString = "-${card.hpLoss} HP"
                 lossTextView = TextView(bind.darkCardRoot.context)
                 lossTextView.text = lossString
@@ -65,16 +93,31 @@ class DarkCardViewModel(
                 lossTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
             }
 
+            var thrownCard: ImageView? = null
+            if (thrownCards.containsKey(player.card.name)) {
+                thrownCard = ImageView(bind.darkCardRoot.context)
+                thrownCard.setImageResource(thrownCards[player.card.name]!!)
+            }
+
             drawImage(
                 imgRes,
                 radius * sin(i * (2 * PI / playerList.size)),
                 radius * cos(i * (2 * PI / playerList.size)),
-                lossTextView
+                lossTextView,
+                thrownCard,
+                player
             )
         }
     }
 
-    private fun drawImage(imgRes: Int, tranX: Double, tranY: Double, lossTextView: TextView? = null) {
+    private fun drawImage(
+        imgRes: Int,
+        tranX: Double,
+        tranY: Double,
+        lossTextView: TextView?,
+        thrownCard: ImageView?,
+        player: Player
+    ) {
         val layoutParams = ConstraintLayout.LayoutParams(MATCH_CONSTRAINT, MATCH_CONSTRAINT)
         layoutParams.matchConstraintPercentWidth = 0.15f
         layoutParams.matchConstraintPercentHeight = 0.15f
@@ -102,15 +145,26 @@ class DarkCardViewModel(
             lossTextView.visibility = TextView.VISIBLE
             bind.darkCardRoot.addView(lossTextView)
 
-            (AnimatorInflater.loadAnimator(bind.darkCardRoot.context, R.animator.appear) as AnimatorSet).apply {
+            (AnimatorInflater.loadAnimator(
+                bind.darkCardRoot.context,
+                R.animator.appear
+            ) as AnimatorSet).apply {
                 setTarget(lossTextView)
                 start()
-                ObjectAnimator.ofFloat(lossTextView as TextView, "translationY", lossTextView.translationY, lossTextView.translationY - 30f)
+                ObjectAnimator.ofFloat(
+                    lossTextView as TextView,
+                    "translationY",
+                    lossTextView.translationY,
+                    lossTextView.translationY - 30f
+                )
                     .apply {
                         duration = 2000
                         start()
                         doOnEnd {
-                            (AnimatorInflater.loadAnimator(bind.darkCardRoot.context, R.animator.disappear) as AnimatorSet).apply {
+                            (AnimatorInflater.loadAnimator(
+                                bind.darkCardRoot.context,
+                                R.animator.disappear
+                            ) as AnimatorSet).apply {
                                 setTarget(lossTextView)
                                 start()
                                 doOnEnd {
@@ -118,10 +172,161 @@ class DarkCardViewModel(
                                     bind.darkCardRoot.removeView(lossTextView)
                                 }
                             }
+                            if (player.hp <= 0)
+                                (AnimatorInflater.loadAnimator(
+                                    bind.darkCardRoot.context,
+                                    R.animator.disappear
+                                ) as AnimatorSet).apply {
+                                    setTarget(image)
+                                    start()
+                                    doOnEnd {
+                                        image.visibility = ImageView.GONE
+                                        bind.darkCardRoot.removeView(image)
+
+                                        if (player.id == MapViewModel.player.id) {
+                                            UserDiesDialog(MapViewModel.dialogHandler).show(
+                                                MapViewModel.fm,
+                                                UserDiesDialog.TAG
+                                            )
+                                        }
+                                        else {
+                                            PlayerDiesDialog(
+                                                player,
+                                                MapViewModel.dialogHandler
+                                            ).show(
+                                                MapViewModel.fm,
+                                                PlayerDiesDialog.TAG
+                                            )
+                                            val newPlayerList = ArrayList<Player>()
+                                            for (p in MapViewModel.gameModels.playerList) {
+                                                if (p.id != player.id)
+                                                    newPlayerList.add(p)
+                                            }
+                                            MapViewModel.gameModels.playerList = newPlayerList
+                                            val pair =
+                                                MapViewModel.playerHandler.getPairById(player.id)
+                                            MapViewModel.mapRoot.mapLayout.removeView(pair.second)
+                                            val newPlayerImagePairs =
+                                                ArrayList<Pair<Player, ImageView>>()
+                                            for (p in MapViewModel.playerImagePairs) {
+                                                if (p.first.id != player.id)
+                                                    newPlayerImagePairs.add(p)
+                                            }
+                                            MapViewModel.playerImagePairs = newPlayerImagePairs
+                                        }
+                                    }
+                                }
                         }
                     }
             }
         }
+
+        thrownCard?.let {
+            val cardLayoutParams = ConstraintLayout.LayoutParams(200, 400)
+            cardLayoutParams.topToTop = bind.darkCardRoot.ivDarkMark.id
+            cardLayoutParams.bottomToBottom = bind.darkCardRoot.ivDarkMark.id
+            cardLayoutParams.startToStart = bind.darkCardRoot.ivDarkMark.id
+            cardLayoutParams.endToEnd = bind.darkCardRoot.ivDarkMark.id
+            thrownCard.layoutParams = cardLayoutParams
+            thrownCard.translationX = image.translationX + thrownCard.width / 2
+            thrownCard.translationY = image.translationY
+            thrownCard.visibility = ImageView.VISIBLE
+            bind.darkCardRoot.addView(thrownCard)
+
+            (AnimatorInflater.loadAnimator(
+                bind.darkCardRoot.context,
+                R.animator.appear
+            ) as AnimatorSet).apply {
+                setTarget(lossTextView)
+                start()
+                ObjectAnimator.ofFloat(
+                    thrownCard as ImageView,
+                    "translationY",
+                    thrownCard.translationY,
+                    thrownCard.translationY - 30f
+                )
+                    .apply {
+                        duration = 2000
+                        start()
+                        doOnEnd {
+                            (AnimatorInflater.loadAnimator(
+                                bind.darkCardRoot.context,
+                                R.animator.disappear
+                            ) as AnimatorSet).apply {
+                                setTarget(thrownCard)
+                                start()
+                                doOnEnd {
+                                    thrownCard.visibility = ImageView.GONE
+                                    bind.darkCardRoot.removeView(thrownCard)
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+    private fun getLoss(player: Player, card: DarkCard) {
+        when (card.lossType) {
+            LossType.HP -> {
+                player.hp -= card.hpLoss
+            }
+            else -> {
+                if (player.helperCards != null) {
+                    val properHelperCards = getProperHelperCards(player, card.lossType)
+
+                    if (properHelperCards.isNotEmpty()) {
+                        if (player.id == MapViewModel.player.id)
+                            CardLossDialog(
+                                player.id,
+                                properHelperCards,
+                                card.lossType,
+                                MapViewModel.playerHandler
+                            ).show(
+                                MapViewModel.fm,
+                                CardLossDialog.TAG
+                            )
+                        else {
+                            val cardToThrow = chooseWisely(properHelperCards)
+                            thrownCards[player.card.name] = cardToThrow.imageRes
+                            MapViewModel.playerHandler.throwCard(
+                                player.id,
+                                cardToThrow
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getProperHelperCards(player: Player, lossType: LossType): List<HelperCard> {
+        val properHelperCards: ArrayList<HelperCard> = ArrayList()
+        for (helperCard in player.helperCards!!) {
+            if ((helperCard.type as HelperType).compareTo(lossType))
+                properHelperCards.add(helperCard)
+        }
+        return properHelperCards
+    }
+
+    private fun chooseWisely(cardList: List<HelperCard>): HelperCard {
+        for (card in cardList) {
+            if (countOccurrences(card, cardList) > 1)
+                return card
+        }
+        cardList.sortedBy {
+            it.numberOfHelpingCases
+        }
+        return cardList[0]
+    }
+
+    private fun countOccurrences(card: HelperCard, list: List<HelperCard>): Int {
+        var count = 0
+        for (c in list) {
+            if (c.name == card.name)
+                count++
+        }
+        return count
     }
 
     fun close() {

@@ -7,7 +7,6 @@ import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.dialog.endgame.EndOfGameDialog
 import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
-import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.note.NoteDialog
 import neptun.jxy1vz.cluedo.ui.dialog.show_card.ShowCardDialog
 import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
@@ -103,23 +102,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
 
     override fun onDarkCardDismiss(card: DarkCard?) {
         mapRoot.setScrollEnabled(true)
-        if (card != null) {
-            val properCards = map.playerHandler.getProperHelperCards(player.id, card.lossType)
-            if (properCards.isNotEmpty())
-                CardLossDialog(
-                    player.id,
-                    properCards,
-                    card.lossType,
-                    map.playerHandler
-                ).show(
-                    fm,
-                    CardLossDialog.TAG
-                )
-            else
-                map.gameSequenceHandler.continueGame()
-        }
-        else
-            map.gameSequenceHandler.continueGame()
+        map.gameSequenceHandler.continueGame()
     }
 
     override fun onAccusationDismiss(suspect: Suspect) {
@@ -170,6 +153,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         }
     }
 
+    //Ha játékosmeghalás után vagyunk, jó lenne, ha nem menne kövi játékosra
     override fun onNoteDismiss() {
         if (!isGameRunning)
             map.cardHandler.handOutHelperCards()
