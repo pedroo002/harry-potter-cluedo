@@ -52,7 +52,7 @@ class CardHandler(private val map: MapViewModel.Companion) {
         tool: String,
         suspect: String
     ): List<MysteryCard>? {
-        val cardList: MutableList<MysteryCard> = ArrayList()
+        val cardList: ArrayList<MysteryCard> = ArrayList()
         for (card in gameModels.playerList[playerIdx].mysteryCards) {
             if (card.name == room || card.name == tool || card.name == suspect)
                 cardList.add(card)
@@ -125,8 +125,7 @@ class CardHandler(private val map: MapViewModel.Companion) {
                                 start()
                                 doOnEnd {
                                     mapRoot.mapLayout.removeView(cardImage)
-                                    if (playerId != player.id)
-                                        evaluateCard(playerId, card, type)
+                                    evaluateCard(playerId, card, type)
                                 }
                             }
                         }

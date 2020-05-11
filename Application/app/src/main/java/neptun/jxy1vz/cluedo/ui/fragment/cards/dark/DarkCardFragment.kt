@@ -8,16 +8,20 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentDarkCardBinding
+import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.DarkCard
+import neptun.jxy1vz.cluedo.domain.model.LossType
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class DarkCardFragment(private val player: Player, private val darkCard: DarkCard, private val listener: DarkCardListener): Fragment(),
+class DarkCardFragment(
+    private val playerId: Int,
+    private val card: DarkCard,
+    private val playerList: List<Player>,
+    private val affectedPlayerIds: List<Int>,
+    private val listener: DialogDismiss
+): Fragment(),
     ViewModelListener {
-
-    interface DarkCardListener {
-        fun getLoss(playerId: Int, card: DarkCard?)
-    }
 
     private lateinit var fragmentDarkCardBinding: FragmentDarkCardBinding
 
@@ -27,12 +31,19 @@ class DarkCardFragment(private val player: Player, private val darkCard: DarkCar
         savedInstanceState: Bundle?
     ): View? {
         fragmentDarkCardBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_dark_card, container, false)
-        fragmentDarkCardBinding.darkCardViewModel = DarkCardViewModel(fragmentDarkCardBinding, context!!, player, darkCard, this)
+        fragmentDarkCardBinding.darkCardViewModel = DarkCardViewModel(
+            fragmentDarkCardBinding,
+            context!!,
+            playerList,
+            affectedPlayerIds,
+            this
+        )
         return fragmentDarkCardBinding.root
     }
 
     override fun onFinish() {
-        listener.getLoss(player.id, fragmentDarkCardBinding.darkCardViewModel!!.getLoss())
+        val passedCard: DarkCard? = if (affectedPlayerIds.contains(playerId) && card.lossType != LossType.HP) card else null
+        listener.onDarkCardDismiss(passedCard)
         activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
     }
 }

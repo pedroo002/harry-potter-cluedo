@@ -1,11 +1,13 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.dialog.endgame.EndOfGameDialog
 import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
+import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.note.NoteDialog
 import neptun.jxy1vz.cluedo.ui.dialog.show_card.ShowCardDialog
 import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
@@ -97,6 +99,25 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         mapRoot.setScrollEnabled(true)
         if (userFinishedHisTurn)
             map.gameSequenceHandler.moveToNextPlayer()
+    }
+
+    override fun onDarkCardDismiss(card: DarkCard?) {
+        mapRoot.setScrollEnabled(true)
+        if (card != null) {
+            val properCards = map.playerHandler.getProperHelperCards(player.id, card.lossType)
+            if (properCards.isNotEmpty())
+                CardLossDialog(
+                    player.id,
+                    properCards,
+                    card.lossType,
+                    map.playerHandler
+                ).show(
+                    fm,
+                    CardLossDialog.TAG
+                )
+        }
+        else
+            map.gameSequenceHandler.continueGame()
     }
 
     override fun onAccusationDismiss(suspect: Suspect) {

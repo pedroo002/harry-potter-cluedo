@@ -1,108 +1,72 @@
 package neptun.jxy1vz.cluedo.ui.fragment.cards.dark
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.content.Context
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import androidx.core.animation.doOnEnd
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+import androidx.core.view.marginBottom
 import androidx.databinding.BaseObservable
+import kotlinx.android.synthetic.main.fragment_dark_card.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentDarkCardBinding
-import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.Player
-import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
+import neptun.jxy1vz.cluedo.domain.model.helper.safeIcons
+import neptun.jxy1vz.cluedo.domain.model.helper.unsafeIcons
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
-class DarkCardViewModel(private val bind: FragmentDarkCardBinding, private val context: Context, private val player: Player, private val darkCard: DarkCard, private val listener: ViewModelListener) : BaseObservable(),
-    AdapterView.OnItemSelectedListener {
+class DarkCardViewModel(
+    private val bind: FragmentDarkCardBinding,
+    context: Context,
+    playerList: List<Player>,
+    playerIds: List<Int>,
+    private val listener: ViewModelListener
+) : BaseObservable() {
 
-    private val tools: ArrayList<String> = ArrayList()
-    private val spells: ArrayList<String> = ArrayList()
-    private val allys: ArrayList<String> = ArrayList()
-
-    private var hatlap: Int = R.drawable.mento_hatlap
-
-    fun getLoss(): DarkCard? {
-        return if (tools.size > 1 || spells.size > 1 || allys.size > 1)
-            null
-        else
-            darkCard
-    }
+    private val safePlayerIcons = HashMap<String, Int>()
+    private val playerIcons = HashMap<String, Int>()
 
     init {
-        getHelperObjects(player, darkCard, tools, spells, allys)
-
-        if (tools.size == 1 && spells.size == 1 && allys.size == 1)
-            hatlap = R.drawable.no_mento_hatlap
-
-        bind.ivHelperAgainstDarkCard.setImageResource(hatlap)
-
-        val scale = context.resources.displayMetrics.density
-        bind.ivDarkCard.cameraDistance = 8000 * scale
-
-        (AnimatorInflater.loadAnimator(context, R.animator.card_flip) as AnimatorSet).apply {
-            setTarget(bind.ivDarkCard)
-            start()
-            doOnEnd {
-                bind.ivDarkCard.setImageResource(darkCard.imageRes)
-            }
+        val playerNameList = context.resources.getStringArray(R.array.characters)
+        for (playerName in playerNameList) {
+            safePlayerIcons[playerName] = safeIcons[playerNameList.indexOf(playerName)]
+            playerIcons[playerName] = unsafeIcons[playerNameList.indexOf(playerName)]
         }
 
-        bind.spinnerTools.adapter = ArrayAdapter<String>(
-            context,
-            android.R.layout.simple_spinner_dropdown_item,
-            tools
-        )
-        bind.spinnerTools.onItemSelectedListener = this
-        bind.spinnerTools.setSelection(0)
+        val radius = (context.resources.displayMetrics.heightPixels - (bind.darkCardRoot.btnClose.height + bind.darkCardRoot.btnClose.marginBottom)) / 4
 
-        bind.spinnerSpells.adapter = ArrayAdapter<String>(
-            context,
-            android.R.layout.simple_spinner_dropdown_item,
-            spells
-        )
-        bind.spinnerSpells.onItemSelectedListener = this
-        bind.spinnerSpells.setSelection(0)
-
-        bind.spinnerAllys.adapter = ArrayAdapter<String>(
-            context,
-            android.R.layout.simple_spinner_dropdown_item,
-            allys
-        )
-        bind.spinnerAllys.onItemSelectedListener = this
-        bind.spinnerAllys.setSelection(0)
+        for (player in playerList) {
+            val i = playerList.indexOf(player)
+            val imgRes =
+                if (playerIds.contains(player.id))
+                    playerIcons[player.card.name]!!
+                else
+                    safePlayerIcons[player.card.name]!!
+            drawImage(
+                imgRes,
+                radius * sin(i * (2 * PI / playerList.size)),
+                radius * cos(i * (2 * PI / playerList.size))
+            )
+        }
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val name = parent!!.selectedItem
-
-        if (bind.spinnerTools != parent && bind.spinnerTools.selectedItemId != 0L)
-            bind.spinnerTools.setSelection(0)
-        if (bind.spinnerSpells != parent && bind.spinnerSpells.selectedItemId != 0L)
-            bind.spinnerSpells.setSelection(0)
-        if (bind.spinnerAllys != parent && bind.spinnerAllys.selectedItemId != 0L)
-            bind.spinnerAllys.setSelection(0)
-
-        if (!player.helperCards.isNullOrEmpty())
-            for (card in player.helperCards!!) {
-                if (card.name == name) {
-                    bind.ivHelperAgainstDarkCard.setImageResource(hatlap)
-                    (AnimatorInflater.loadAnimator(
-                        context,
-                        R.animator.card_flip
-                    ) as AnimatorSet).apply {
-                        setTarget(bind.ivHelperAgainstDarkCard)
-                        start()
-                        doOnEnd {
-                            bind.ivHelperAgainstDarkCard.setImageResource(card.imageRes)
-                        }
-                    }
-                }
-            }
+    private fun drawImage(imgRes: Int, tranX: Double, tranY: Double) {
+        val layoutParams = ConstraintLayout.LayoutParams(MATCH_CONSTRAINT, MATCH_CONSTRAINT)
+        layoutParams.matchConstraintPercentWidth = 0.15f
+        layoutParams.matchConstraintPercentHeight = 0.15f
+        layoutParams.topToTop = bind.darkCardRoot.ivDarkMark.id
+        layoutParams.bottomToBottom = bind.darkCardRoot.ivDarkMark.id
+        layoutParams.startToStart = bind.darkCardRoot.ivDarkMark.id
+        layoutParams.endToEnd = bind.darkCardRoot.ivDarkMark.id
+        val image = ImageView(bind.darkCardRoot.context)
+        image.setImageResource(imgRes)
+        image.visibility = ImageView.VISIBLE
+        image.layoutParams = layoutParams
+        image.translationX = tranX.toFloat() - image.width / 2
+        image.translationY = tranY.toFloat() - image.height / 2
+        bind.darkCardRoot.addView(image)
     }
 
     fun close() {

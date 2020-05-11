@@ -102,12 +102,15 @@ class MapViewModel(
         }
 
         fun insertFragment(fragment: Fragment) {
-            val layoutParams = ConstraintLayout.LayoutParams(mContext!!.resources.displayMetrics.widthPixels, mContext!!.resources.displayMetrics.heightPixels)
-            mapRoot.dialogFrame.layoutParams = layoutParams
-            mapRoot.dialogFrame.x = abs(mapRoot.panX)
-            mapRoot.dialogFrame.y = abs(mapRoot.panY)
-            fm.beginTransaction().replace(R.id.dialogFrame, fragment).commit()
-            mapRoot.setScrollEnabled(false)
+            mapRoot.postOnAnimation {
+                val layoutParams = ConstraintLayout.LayoutParams(mContext!!.resources.displayMetrics.widthPixels, mContext!!.resources.displayMetrics.heightPixels)
+                mapRoot.dialogFrame.layoutParams = layoutParams
+                mapRoot.dialogFrame.x = abs(mapRoot.panX)
+                mapRoot.dialogFrame.y = abs(mapRoot.panY)
+                fm.beginTransaction().replace(R.id.dialogFrame, fragment).commit()
+                mapRoot.dialogFrame.bringToFront()
+                mapRoot.setScrollEnabled(false)
+            }
         }
     }
 
