@@ -286,9 +286,6 @@ class PlayerHandler(private val map: MapViewModel.Companion) :
                                     Snackbar.LENGTH_LONG
                                 ).show()
                             }
-                        } else {
-                            if (playerId == player.id)
-                                map.gameSequenceHandler.continueGame()
                         }
                     }
                 }
@@ -307,6 +304,5 @@ class PlayerHandler(private val map: MapViewModel.Companion) :
 
     override fun throwCard(playerId: Int, card: HelperCard) {
         getPlayerById(playerId).helperCards!!.remove(card)
-        map.gameSequenceHandler.continueGame()
     }
 }

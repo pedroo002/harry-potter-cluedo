@@ -31,6 +31,7 @@ class CardHandler(private val map: MapViewModel.Companion) {
                     }
                 }
                 map.cameraHandler.moveCameraToPlayer(player.id)
+                delay(1000)
                 map.interactionHandler.getCard(player.id, DiceRollerViewModel.CardType.HELPER)
                 isGameRunning = true
                 map.gameSequenceHandler.moveToNextPlayer()

@@ -115,6 +115,8 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
                     fm,
                     CardLossDialog.TAG
                 )
+            else
+                map.gameSequenceHandler.continueGame()
         }
         else
             map.gameSequenceHandler.continueGame()

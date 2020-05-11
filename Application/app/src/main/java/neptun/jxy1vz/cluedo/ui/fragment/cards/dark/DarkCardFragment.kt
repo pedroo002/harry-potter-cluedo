@@ -36,6 +36,7 @@ class DarkCardFragment(
             context!!,
             playerList,
             affectedPlayerIds,
+            card,
             this
         )
         return fragmentDarkCardBinding.root
