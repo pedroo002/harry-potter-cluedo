@@ -15,7 +15,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 class RevealMysteryCardFragment(private val card: MysteryCard, private val playerName: String, private val listener: DialogDismiss) : Fragment(),
     ViewModelListener {
 
-    lateinit var fragmentRevealMysteryCardBinding: FragmentRevealMysteryCardBinding
+    private lateinit var fragmentRevealMysteryCardBinding: FragmentRevealMysteryCardBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,

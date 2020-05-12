@@ -12,12 +12,12 @@ import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.dialog.ChooseOptionDialog
-import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
 import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
 import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
 import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.reveal.RevealMysteryCardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
+import neptun.jxy1vz.cluedo.ui.fragment.incrimination.IncriminationFragment
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.diceList
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
@@ -35,7 +35,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
 import kotlin.random.Random
 
-class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationDialog.MapInterface,
+class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationFragment.MapInterface,
     DiceRollerFragment.DiceResultInterface {
     fun showOptions(playerId: Int) {
         if (isGameRunning) {
@@ -121,11 +121,10 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
 
     fun incrimination(playerId: Int, roomId: Int) {
         if (playerId == player.id) {
-            if (roomId != 4)
-                IncriminationDialog(gameModels, playerId, roomId, this).show(
-                    fm,
-                    IncriminationDialog.TAG
-                )
+            if (roomId != 4) {
+                val fragment = IncriminationFragment(gameModels, playerId, roomId, this)
+                map.insertFragment(fragment)
+            }
             else {
                 if (unusedMysteryCards.isNotEmpty())
                     ChooseOptionDialog(map.dialogHandler, userCanStep && !userHasToStepOrIncriminate).show(

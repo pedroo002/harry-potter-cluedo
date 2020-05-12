@@ -17,7 +17,7 @@ class DiceRollerFragment(private val listener: DiceResultInterface, private val 
         fun getCard(playerId: Int, type: DiceRollerViewModel.CardType?)
     }
 
-    lateinit var fragmentDiceRollerBinding: FragmentDiceRollerBinding
+    private lateinit var fragmentDiceRollerBinding: FragmentDiceRollerBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,

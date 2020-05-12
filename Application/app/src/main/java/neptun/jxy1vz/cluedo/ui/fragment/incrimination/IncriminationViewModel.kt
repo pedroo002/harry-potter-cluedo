@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.dialog.incrimination
+package neptun.jxy1vz.cluedo.ui.fragment.incrimination
 
 import android.content.Context
 import android.widget.ImageView
@@ -6,15 +6,16 @@ import androidx.core.view.children
 import androidx.databinding.BaseObservable
 import com.google.android.material.snackbar.Snackbar
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.databinding.DialogIncriminationBinding
+import neptun.jxy1vz.cluedo.databinding.FragmentIncriminationBinding
 import neptun.jxy1vz.cluedo.domain.model.helper.suspectTokens
 import neptun.jxy1vz.cluedo.domain.model.helper.suspectTokensBW
 import neptun.jxy1vz.cluedo.domain.model.helper.toolTokens
 import neptun.jxy1vz.cluedo.domain.model.helper.toolTokensBW
 
 class IncriminationViewModel(
-    private val bind: DialogIncriminationBinding,
+    private val bind: FragmentIncriminationBinding,
     private val context: Context,
+    roomName: String,
     private val listener: IncriminationDialogInterface
 ) : BaseObservable() {
 
@@ -23,9 +24,10 @@ class IncriminationViewModel(
         fun onSkip()
     }
 
-    private val toolList: MutableList<ImageView> = ArrayList()
-    private val suspectList: MutableList<ImageView> = ArrayList()
+    private val toolList: ArrayList<ImageView> = ArrayList()
+    private val suspectList: ArrayList<ImageView> = ArrayList()
 
+    private var room = ""
     private var tool = ""
     private var suspect = ""
 
@@ -41,6 +43,8 @@ class IncriminationViewModel(
     }
 
     init {
+        room = "Gyanúsítás itt: $roomName"
+
         for (child in bind.layoutToolImages.children.asSequence()) {
             toolList.add(child as ImageView)
         }
@@ -69,5 +73,9 @@ class IncriminationViewModel(
             else
                 suspectList[i].setImageResource(suspectTokensBW[i])
         }
+    }
+
+    fun getRoom(): String {
+        return room
     }
 }

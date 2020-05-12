@@ -14,7 +14,7 @@ import neptun.jxy1vz.cluedo.domain.model.Suspect
 class AccusationFragment(private val playerId: Int, private val listener: DialogDismiss) : Fragment(),
     AccusationViewModel.FinalizationListener {
 
-    lateinit var fragmentAccusationBinding: FragmentAccusationBinding
+    private lateinit var fragmentAccusationBinding: FragmentAccusationBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
