@@ -76,6 +76,9 @@ class MapViewModel(
         var userHasToStepOrIncriminate = false
         var userCanStep = false
 
+        var isGameAbleToContinue = true
+        var playerInTurnDied = false
+
         var pause = false
         var savedPlayerId = -1
         var savedDiceValue = 0
@@ -92,6 +95,8 @@ class MapViewModel(
             userHasToIncriminate = false
             userCanStep = false
             pause = false
+            isGameAbleToContinue = true
+            playerInTurnDied = false
             savedDiceValue = 0
             savedPlayerId = -1
             savedHouse = null

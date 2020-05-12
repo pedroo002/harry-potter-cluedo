@@ -15,6 +15,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.activityListener
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameAbleToContinue
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
@@ -22,6 +23,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.pause
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurnAffected
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurnDied
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.unusedMysteryCards
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
 import kotlin.random.Random
@@ -102,7 +104,12 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
 
     override fun onDarkCardDismiss(card: DarkCard?) {
         mapRoot.setScrollEnabled(true)
-        map.gameSequenceHandler.continueGame()
+        isGameAbleToContinue = true
+        if (playerInTurnDied)
+            map.gameSequenceHandler.moveToNextPlayer()
+        else
+            map.gameSequenceHandler.continueGame()
+        playerInTurnDied = false
     }
 
     override fun onAccusationDismiss(suspect: Suspect) {
@@ -153,8 +160,9 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         }
     }
 
-    //Ha játékosmeghalás után vagyunk, jó lenne, ha nem menne kövi játékosra
     override fun onNoteDismiss() {
+        if (!isGameAbleToContinue)
+            return
         if (!isGameRunning)
             map.cardHandler.handOutHelperCards()
         else if (pause)

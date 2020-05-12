@@ -190,6 +190,9 @@ class DarkCardViewModel(
                                             )
                                         }
                                         else {
+                                            MapViewModel.isGameAbleToContinue = false
+                                            if (MapViewModel.playerInTurn == player.id)
+                                                MapViewModel.playerInTurnDied = true
                                             PlayerDiesDialog(
                                                 player,
                                                 MapViewModel.dialogHandler
