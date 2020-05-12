@@ -33,7 +33,6 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userCanStep
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
-import kotlin.random.Random
 
 class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationFragment.MapInterface,
     DiceRollerFragment.DiceResultInterface {
@@ -201,7 +200,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                 val cards =
                     map.cardHandler.revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
                 if (cards != null) {
-                    val revealedCard = cards[Random.nextInt(0, cards.size)]
+                    val revealedCard = gameModels.playerList[playerIdx].revealCardToPlayer(suspect.playerId, cards)
                     val fragment = RevealMysteryCardFragment(revealedCard, gameModels.playerList[playerIdx].card.name, map.dialogHandler)
                     map.insertFragment(fragment)
                     someoneShowedSomething = true

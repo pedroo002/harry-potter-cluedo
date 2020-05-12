@@ -14,6 +14,7 @@ class Player(
     var helperCards: MutableList<HelperCard>? = null,
     private var conclusions: HashMap<String, Int>? = null,
     private var suspicions: HashMap<String, Int>? = null,
+    private var revealedMysteryCards: HashMap<Int, String>? = null,
     var solution: Suspect? = null
 ) {
 
@@ -162,6 +163,27 @@ class Player(
 
     fun hasSolution(): Boolean {
         return solution != null && solution!!.room.isNotEmpty() && solution!!.suspect.isNotEmpty() && solution!!.tool.isNotEmpty()
+    }
+
+    fun revealCardToPlayer(playerId: Int, cardOptions: List<MysteryCard>): MysteryCard {
+        if (revealedMysteryCards.isNullOrEmpty()) {
+            revealedMysteryCards = HashMap()
+            val cardToReveal = cardOptions.random()
+            revealedMysteryCards!![playerId] = cardToReveal.name
+            return cardToReveal
+        }
+
+        if (revealedMysteryCards!!.containsKey(playerId)) {
+            for (card in cardOptions) {
+                for (entry in revealedMysteryCards!!.entries) {
+                    if (entry.key == playerId && entry.value == card.name)
+                        return card
+                }
+            }
+        }
+        val cardToReveal = cardOptions.random()
+        revealedMysteryCards!![playerId] = cardToReveal.name
+        return cardToReveal
     }
 
     fun hasAlohomora(): Boolean {
