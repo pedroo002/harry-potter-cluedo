@@ -67,9 +67,9 @@ class DarkCardViewModel(
 
                 getHelperObjects(player, card, tools, spells, allys)
 
-                if (tools.size == 1 && spells.size == 1 && allys.size == 1) {
+                imgRes = if (tools.size == 1 && spells.size == 1 && allys.size == 1) {
                     getLoss(player, card)
-                    imgRes = playerIcons[player.card.name]!!
+                    playerIcons[player.card.name]!!
                 } else {
                     val mergedHelperNames = ArrayList<String>()
                     mergedHelperNames.addAll(tools)
@@ -79,7 +79,7 @@ class DarkCardViewModel(
                         for (helperCard in player.helperCards!!)
                             if (helperCard.name == tool)
                                 helperCard.numberOfHelpingCases++
-                    imgRes = safePlayerIcons[player.card.name]!!
+                    safePlayerIcons[player.card.name]!!
                 }
             } else
                 imgRes = safePlayerIcons[player.card.name]!!
@@ -152,7 +152,7 @@ class DarkCardViewModel(
                 setTarget(lossTextView)
                 start()
                 ObjectAnimator.ofFloat(
-                    lossTextView as TextView,
+                    lossTextView,
                     "translationY",
                     lossTextView.translationY,
                     lossTextView.translationY - 30f
@@ -243,7 +243,7 @@ class DarkCardViewModel(
                 setTarget(lossTextView)
                 start()
                 ObjectAnimator.ofFloat(
-                    thrownCard as ImageView,
+                    thrownCard,
                     "translationY",
                     thrownCard.translationY,
                     thrownCard.translationY - 30f
