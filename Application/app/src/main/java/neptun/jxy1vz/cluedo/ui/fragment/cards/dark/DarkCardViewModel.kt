@@ -33,7 +33,7 @@ import kotlin.math.sin
 
 class DarkCardViewModel(
     private val bind: FragmentDarkCardBinding,
-    context: Context,
+    private val context: Context,
     playerList: List<Player>,
     playerIds: List<Int>,
     card: DarkCard,
@@ -139,9 +139,13 @@ class DarkCardViewModel(
             textLayoutParams.bottomToBottom = bind.darkCardRoot.ivDarkMark.id
             textLayoutParams.startToStart = bind.darkCardRoot.ivDarkMark.id
             textLayoutParams.endToEnd = bind.darkCardRoot.ivDarkMark.id
+            textLayoutParams.marginStart = 5
+            textLayoutParams.bottomMargin = 10
             lossTextView.layoutParams = textLayoutParams
-            lossTextView.translationX = image.translationX
-            lossTextView.translationY = image.translationY
+            val imgW = (image.layoutParams as ConstraintLayout.LayoutParams).matchConstraintPercentWidth * context.resources.displayMetrics.widthPixels
+            val imgH = (image.layoutParams as ConstraintLayout.LayoutParams).matchConstraintPercentHeight * context.resources.displayMetrics.heightPixels
+            lossTextView.translationX = image.translationX + imgW / 3
+            lossTextView.translationY = image.translationY - imgH / 3
             lossTextView.visibility = TextView.VISIBLE
             bind.darkCardRoot.addView(lossTextView)
 
