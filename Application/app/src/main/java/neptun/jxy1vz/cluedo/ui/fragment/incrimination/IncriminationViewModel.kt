@@ -31,11 +31,15 @@ class IncriminationViewModel(
     private var tool = ""
     private var suspect = ""
 
+    private var finished = false
+
     fun finalize() {
         if (tool.isEmpty() || suspect.isEmpty())
             Snackbar.make(bind.root, context.getString(R.string.select_from_every_parameter), Snackbar.LENGTH_LONG).show()
-        else
+        else if (!finished) {
             listener.onIncriminationFinalization(tool, suspect)
+            finished = true
+        }
     }
 
     fun skip() {

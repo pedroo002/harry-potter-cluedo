@@ -23,8 +23,6 @@ class IncriminationFragment(private val gameModels: GameModels,
     }
 
     private lateinit var fragmentIncriminationBinding: FragmentIncriminationBinding
-    private var tool: String = ""
-    private var suspect: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,18 +36,12 @@ class IncriminationFragment(private val gameModels: GameModels,
     }
 
     override fun onIncriminationFinalization(tool: String, suspect: String) {
-        if (tool.isNotEmpty() && suspect.isNotEmpty())
-            listener.getIncrimination(Suspect(playerId, gameModels.roomList[roomId].name, tool, suspect))
-        else
-            listener.onIncriminationSkip()
-
-        this.tool = tool
-        this.suspect = suspect
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        listener.getIncrimination(Suspect(playerId, gameModels.roomList[roomId].name, tool, suspect))
+        activity?.supportFragmentManager!!.beginTransaction().remove(this).commit()
     }
 
     override fun onSkip() {
         listener.onIncriminationSkip()
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        activity?.supportFragmentManager!!.beginTransaction().remove(this).commit()
     }
 }
