@@ -43,7 +43,7 @@ class IncriminationViewModel(
     }
 
     init {
-        room = "Gyanúsítás itt: $roomName"
+        room = roomName
 
         for (child in bind.layoutToolImages.children.asSequence()) {
             toolList.add(child as ImageView)
@@ -62,6 +62,8 @@ class IncriminationViewModel(
             else
                 toolList[i].setImageResource(toolTokensBW[i])
         }
+
+        notifyChange()
     }
 
     fun selectSuspect(idx: Int) {
@@ -73,9 +75,19 @@ class IncriminationViewModel(
             else
                 suspectList[i].setImageResource(suspectTokensBW[i])
         }
+
+        notifyChange()
     }
 
     fun getRoom(): String {
-        return room
+        return "Gyanúsítás itt: $room"
+    }
+
+    fun getTool(): String {
+        return "Eszköz:\n$tool"
+    }
+
+    fun getSuspect(): String {
+        return "Gyanúsított:\n$suspect"
     }
 }

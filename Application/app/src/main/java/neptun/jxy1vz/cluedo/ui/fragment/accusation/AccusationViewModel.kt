@@ -53,6 +53,8 @@ class AccusationViewModel(private val playerId: Int, private val bind: FragmentA
             else
                 roomList[i].setImageResource(roomTokensBW[i])
         }
+
+        notifyChange()
     }
 
     fun selectTool(idx: Int) {
@@ -64,6 +66,8 @@ class AccusationViewModel(private val playerId: Int, private val bind: FragmentA
             else
                 toolList[i].setImageResource(toolTokensBW[i])
         }
+
+        notifyChange()
     }
 
     fun selectSuspect(idx: Int) {
@@ -75,5 +79,19 @@ class AccusationViewModel(private val playerId: Int, private val bind: FragmentA
             else
                 suspectList[i].setImageResource(suspectTokensBW[i])
         }
+
+        notifyChange()
+    }
+
+    fun getRoom(): String {
+        return "Helyiség:\n$selectedRoom"
+    }
+
+    fun getTool(): String {
+        return "Eszköz:\n$selectedTool"
+    }
+
+    fun getSuspect(): String {
+        return "Gyanúsított:\n$selectedSuspect"
     }
 }
