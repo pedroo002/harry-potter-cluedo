@@ -86,6 +86,14 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         NoteDialog(player, this).show(fm, NoteDialog.TAG)
     }
 
+    override fun onIncriminationDetailsDismiss(needToTakeNotes: Boolean) {
+        mapRoot.setScrollEnabled(true)
+        if (needToTakeNotes)
+            NoteDialog(player, this).show(fm, NoteDialog.TAG)
+        else
+            map.gameSequenceHandler.moveToNextPlayer()
+    }
+
     override fun onCardRevealDismiss() {
         mapRoot.setScrollEnabled(true)
         NoteDialog(player, this).show(fm, NoteDialog.TAG)
@@ -93,7 +101,6 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
 
     override fun onCardShowDismiss(suspect: Suspect, card: MysteryCard) {
         map.interactionHandler.letOtherPlayersKnow(suspect, player.id, card.name)
-        map.gameSequenceHandler.moveToNextPlayer()
     }
 
     override fun onHelperCardDismiss() {

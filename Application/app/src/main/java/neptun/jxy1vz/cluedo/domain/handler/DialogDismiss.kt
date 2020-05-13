@@ -8,6 +8,7 @@ import neptun.jxy1vz.cluedo.domain.model.Suspect
 interface DialogDismiss {
     fun onSuspectInformationDismiss(suspect: Suspect)
     fun onSimpleInformationDismiss()
+    fun onIncriminationDetailsDismiss(needToTakeNotes: Boolean)
     fun onCardRevealDismiss()
     fun onCardShowDismiss(suspect: Suspect, card: MysteryCard)
     fun onHelperCardDismiss()

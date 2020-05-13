@@ -3,10 +3,7 @@ package neptun.jxy1vz.cluedo.domain.handler
 import android.widget.ImageView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_map.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.HelperCard
@@ -18,6 +15,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.reveal.RevealMysteryCardFr
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.incrimination.IncriminationFragment
+import neptun.jxy1vz.cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsFragment
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.diceList
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
@@ -181,15 +179,12 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
 
     override fun getIncrimination(suspect: Suspect) {
         map.uiHandler.emptySelectionList()
-
         if (suspect.playerId != player.id) {
-            val title = map.playerHandler.getPlayerById(suspect.playerId).card.name + mContext!!.getString(
-                            R.string.some_one_incriminates)
-            val message =
-                mContext!!.getString(R.string.in_this_room) + suspect.room + "\n" + mContext!!.getString(
-                                    R.string.with_this_tool) + suspect.tool + "\n" + mContext!!.getString(
-                                                        R.string.suspect_person) + suspect.suspect
-            InformationDialog(suspect, title, message, map.dialogHandler).show(fm, InformationDialog.TAG)
+            GlobalScope.launch(Dispatchers.Main) {
+                delay(1000)
+                val detailsFragment = IncriminationDetailsFragment(suspect, map.dialogHandler)
+                map.insertFragment(detailsFragment)
+            }
         } else {
             var someoneShowedSomething = false
             var playerIdx = gameModels.playerList.indexOf(map.playerHandler.getPlayerById(suspect.playerId))
