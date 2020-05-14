@@ -71,8 +71,8 @@ class DatabaseAccess(private val context: Context) {
         resetCards()
 
         val mcList = ArrayList<Pair<MysteryCard, Int>>()
-        val tools = interactor.getCardsByType(MysteryType.TOOL.toDatabaseModel().string())
         val suspects = interactor.getCardsByType(MysteryType.SUSPECT.toDatabaseModel().string())
+        val tools = interactor.getCardsByType(MysteryType.TOOL.toDatabaseModel().string())
         val venues = interactor.getCardsByType(MysteryType.VENUE.toDatabaseModel().string())
 
         val MYSTERY_CARDS_COUNT = 21
@@ -80,22 +80,22 @@ class DatabaseAccess(private val context: Context) {
         val PLAYERS_COUNT = playerIds.size - 1
         val LEFTOVER_COUNT = ((MYSTERY_CARDS_COUNT - playerIds.size * CARD_TYPES_COUNT) / PLAYERS_COUNT)
 
-        val randomToolIndices = ArrayList<Int>()
         val randomSuspectIndices = ArrayList<Int>()
+        val randomToolIndices = ArrayList<Int>()
         val randomVenueIndices = ArrayList<Int>()
         val leftoverCards = ArrayList<CardDBmodel>()
 
         while (randomToolIndices.size + randomSuspectIndices.size + randomVenueIndices.size != playerIds.size * CARD_TYPES_COUNT) {
-            if (randomToolIndices.size < playerIds.size) {
-                val rnd = Random.nextInt(0, tools!!.size)
-                if (!randomToolIndices.contains(rnd))
-                    randomToolIndices.add(rnd)
-            }
-
             if (randomSuspectIndices.size < playerIds.size) {
                 val rnd = Random.nextInt(0, suspects!!.size)
                 if (!randomSuspectIndices.contains(rnd))
                     randomSuspectIndices.add(rnd)
+            }
+
+            if (randomToolIndices.size < playerIds.size) {
+                val rnd = Random.nextInt(0, tools!!.size)
+                if (!randomToolIndices.contains(rnd))
+                    randomToolIndices.add(rnd)
             }
 
             if (randomVenueIndices.size < playerIds.size) {
@@ -131,10 +131,10 @@ class DatabaseAccess(private val context: Context) {
         }
 
         for (id in playerIds) {
-            val card1 = tools?.get(randomToolIndices[0])
-            randomToolIndices.removeAt(0)
-            val card2 = suspects?.get(randomSuspectIndices[0])
+            val card1 = suspects?.get(randomSuspectIndices[0])
             randomSuspectIndices.removeAt(0)
+            val card2 = tools?.get(randomToolIndices[0])
+            randomToolIndices.removeAt(0)
             val card3 = venues?.get(randomVenueIndices[0])
             randomVenueIndices.removeAt(0)
 
