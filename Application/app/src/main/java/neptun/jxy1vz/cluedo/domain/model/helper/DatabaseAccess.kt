@@ -105,27 +105,17 @@ class DatabaseAccess(private val context: Context) {
             }
 
             if (randomToolIndices.size + randomSuspectIndices.size + randomVenueIndices.size == playerIds.size * CARD_TYPES_COUNT) {
-                for (i in tools!!.indices) {
-                    if (!randomToolIndices.contains(i))
-                        leftoverCards.add(tools[i])
-                }
                 for (i in suspects!!.indices) {
                     if (!randomSuspectIndices.contains(i))
                         leftoverCards.add(suspects[i])
                 }
+                for (i in tools!!.indices) {
+                    if (!randomToolIndices.contains(i))
+                        leftoverCards.add(tools[i])
+                }
                 for (i in venues!!.indices) {
                     if (!randomVenueIndices.contains(i))
                         leftoverCards.add(venues[i])
-                }
-            }
-        }
-
-        for (i in 1..LEFTOVER_COUNT) {
-            for (id in playerIds) {
-                if (id != -1) {
-                    interactor.updateCards(CardDBmodel(leftoverCards[0].id, leftoverCards[0].name, leftoverCards[0].imageRes, leftoverCards[0].versoRes, leftoverCards[0].cardType, id, leftoverCards[0].lossType, leftoverCards[0].hpLoss))
-                    mcList.add(Pair(leftoverCards[0].toDomainModel() as MysteryCard, id))
-                    leftoverCards.removeAt(0)
                 }
             }
         }
@@ -146,6 +136,17 @@ class DatabaseAccess(private val context: Context) {
             mcList.add(Pair(card2.toDomainModel() as MysteryCard, id))
             mcList.add(Pair(card3.toDomainModel() as MysteryCard, id))
         }
+
+        for (i in 1..LEFTOVER_COUNT) {
+            for (id in playerIds) {
+                if (id != -1) {
+                    interactor.updateCards(CardDBmodel(leftoverCards[0].id, leftoverCards[0].name, leftoverCards[0].imageRes, leftoverCards[0].versoRes, leftoverCards[0].cardType, id, leftoverCards[0].lossType, leftoverCards[0].hpLoss))
+                    mcList.add(Pair(leftoverCards[0].toDomainModel() as MysteryCard, id))
+                    leftoverCards.removeAt(0)
+                }
+            }
+        }
+
         return mcList
     }
 
