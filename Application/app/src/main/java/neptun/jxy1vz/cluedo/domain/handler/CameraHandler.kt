@@ -1,5 +1,6 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
+import android.widget.ImageView
 import kotlinx.android.synthetic.main.activity_map.view.*
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
@@ -30,5 +31,11 @@ class CameraHandler(private val map: MapViewModel.Companion) {
         }
 
         mapRoot.panTo(-x, -y, true)
+    }
+
+    fun moveCameraToPosition(iv: ImageView) {
+        val x = iv.left.toFloat() - mContext!!.resources.displayMetrics.widthPixels / 2
+        val y = iv.top.toFloat() - mContext!!.resources.displayMetrics.heightPixels / 2
+        mapRoot.panTo(-x, -y, false)
     }
 }

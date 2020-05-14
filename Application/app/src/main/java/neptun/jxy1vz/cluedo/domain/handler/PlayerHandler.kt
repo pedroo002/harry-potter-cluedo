@@ -1,23 +1,20 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
 import android.widget.ImageView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.DarkType
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Position
 import neptun.jxy1vz.cluedo.ui.fragment.cards.dark.DarkCardFragment
-import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.otherPlayerStepsOnStar
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerImagePairs
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.unusedMysteryCards
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userCanStep
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
 
 class PlayerHandler(private val map: MapViewModel.Companion) {
     fun useGateway(playerId: Int, from: Int, to: Int) {
@@ -58,61 +55,10 @@ class PlayerHandler(private val map: MapViewModel.Companion) {
     }
 
     fun stepPlayer(playerId: Int, targetPosition: Position) {
-        while (map.mapHandler.stepInRoom(targetPosition) != -1 && map.mapHandler.isFieldOccupied(
-                targetPosition
-            )
-        )
+        while (map.mapHandler.stepInRoom(targetPosition) != -1 && map.mapHandler.isFieldOccupied(targetPosition))
             targetPosition.col++
-        getPlayerById(playerId).pos = targetPosition
-        map.cameraHandler.moveCameraToPlayer(playerId)
-
-        val starStep = map.mapHandler.stepOnStar(targetPosition)
-
-        val pair = getPairById(playerId)
-        map.uiHandler.setLayoutConstraintStart(
-            pair.second,
-            gameModels.cols[getPlayerById(playerId).pos.col]
-        )
-        map.uiHandler.setLayoutConstraintTop(
-            pair.second,
-            gameModels.rows[getPlayerById(playerId).pos.row]
-        )
-
-        when {
-            map.mapHandler.stepInRoom(getPlayerById(playerId).pos) != -1 -> {
-                if (playerId == player.id) {
-                    userHasToIncriminate = true
-                    userHasToStepOrIncriminate = false
-                    userCanStep = false
-                }
-                map.interactionHandler.incrimination(
-                    playerId,
-                    map.mapHandler.stepInRoom(getPlayerById(playerId).pos)
-                )
-            }
-            map.mapHandler.stepInRoom(getPlayerById(playerId).pos) == -1 -> {
-                if (playerId != player.id) {
-                    if (starStep) {
-                        map.cameraHandler.moveCameraToPlayer(playerId)
-                        otherPlayerStepsOnStar = true
-                        map.interactionHandler.getCard(
-                            playerId,
-                            DiceRollerViewModel.CardType.HELPER
-                        )
-                    } else {
-                        map.gameSequenceHandler.moveToNextPlayer()
-                    }
-                } else {
-                    userFinishedHisTurn = true
-                    if (!starStep) {
-                        map.gameSequenceHandler.moveToNextPlayer()
-                    } else
-                        map.interactionHandler.getCard(
-                            playerId,
-                            DiceRollerViewModel.CardType.HELPER
-                        )
-                }
-            }
+        GlobalScope.launch(Dispatchers.Main) {
+            map.uiHandler.animatePlayerWalking(playerId, getPlayerById(playerId).pos, targetPosition)
         }
     }
 

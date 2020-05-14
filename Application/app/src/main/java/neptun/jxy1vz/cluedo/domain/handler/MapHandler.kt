@@ -61,7 +61,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
         return false
     }
 
-    private fun dijkstra(current: Position): HashMap<Position, Int> {
+    fun dijkstra(current: Position): HashMap<Position, Int> {
         val distances = HashMap<Position, Int>()
         val unvisited = HashSet<Position>()
 
@@ -92,7 +92,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
         return distances
     }
 
-    private fun mergeDistances(
+    fun mergeDistances(
         map1: HashMap<Position, Int>,
         map2: HashMap<Position, Int>? = null
     ): HashMap<Position, Int> {
