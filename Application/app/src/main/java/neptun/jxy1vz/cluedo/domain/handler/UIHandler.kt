@@ -396,7 +396,6 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
         selectionList = ArrayList()
     }
 
-    @BindingAdapter("app:layout_constraintTop_toTopOf")
     fun setLayoutConstraintTop(view: View, row: Int) {
         val layoutParams: ConstraintLayout.LayoutParams =
             view.layoutParams as ConstraintLayout.LayoutParams
@@ -404,7 +403,6 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
         view.layoutParams = layoutParams
     }
 
-    @BindingAdapter("app:layout_constraintStart_toStartOf")
     fun setLayoutConstraintStart(view: View, col: Int) {
         val layoutParams: ConstraintLayout.LayoutParams =
             view.layoutParams as ConstraintLayout.LayoutParams
