@@ -19,6 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:textColor="@color/white"
             android:text="@{incriminationViewModel.room}" />
 
         <LinearLayout
@@ -36,6 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:textColor="@color/white"
                     android:text="@{incriminationViewModel.tool}" />
 
                 <ScrollView
@@ -112,6 +114,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:textColor="@color/white"
                     android:text="@{incriminationViewModel.suspect}" />
 
                 <ScrollView
