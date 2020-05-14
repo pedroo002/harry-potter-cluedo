@@ -237,6 +237,7 @@ class IncriminationDetailsViewModel(
             layoutParams.topToTop = bind.ivPlayerWhoShows.id
             layoutParams.bottomToBottom = bind.ivPlayerWhoShows.id
             crossImage.setImageResource(R.drawable.cross)
+            crossImage.layoutParams = layoutParams
             bind.detailsRoot.addView(crossImage)
 
             (AnimatorInflater.loadAnimator(
@@ -245,6 +246,11 @@ class IncriminationDetailsViewModel(
             ) as AnimatorSet).apply {
                 setTarget(crossImage)
                 start()
+                doOnEnd {
+                    bind.ivRoomToken.setImageResource(roomTokensBW[roomList.indexOf(suspect.room)])
+                    bind.ivToolToken.setImageResource(toolTokensBW[toolList.indexOf(suspect.tool)])
+                    bind.ivSuspectToken.setImageResource(suspectTokensBW[suspectList.indexOf(suspect.suspect)])
+                }
             }
         }
 
