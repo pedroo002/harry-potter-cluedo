@@ -9,9 +9,7 @@ import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.dialog.ChooseOptionDialog
-import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
 import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
-import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.reveal.RevealMysteryCardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.incrimination.IncriminationFragment
@@ -28,7 +26,6 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.unusedMysteryCards
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userCanStep
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
 
@@ -179,41 +176,10 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
 
     override fun getIncrimination(suspect: Suspect) {
         map.uiHandler.emptySelectionList()
-        if (suspect.playerId != player.id) {
-            GlobalScope.launch(Dispatchers.Main) {
-                delay(1000)
-                val detailsFragment = IncriminationDetailsFragment(suspect, map.dialogHandler)
-                map.insertFragment(detailsFragment)
-            }
-        } else {
-            var someoneShowedSomething = false
-            var playerIdx = gameModels.playerList.indexOf(map.playerHandler.getPlayerById(suspect.playerId))
-            for (i in 0 until gameModels.playerList.size - 1) {
-                playerIdx--
-                if (playerIdx < 0)
-                    playerIdx = gameModels.playerList.lastIndex
-                val cards =
-                    map.cardHandler.revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
-                if (cards != null) {
-                    val revealedCard = gameModels.playerList[playerIdx].revealCardToPlayer(suspect.playerId, cards)
-                    val fragment = RevealMysteryCardFragment(revealedCard, gameModels.playerList[playerIdx].card.name, map.dialogHandler)
-                    map.insertFragment(fragment)
-                    someoneShowedSomething = true
-                    letOtherPlayersKnow(
-                        suspect,
-                        gameModels.playerList[playerIdx].id,
-                        revealedCard.name
-                    )
-                }
-                if (someoneShowedSomething)
-                    break
-            }
-            if (!someoneShowedSomething) {
-                nothingHasBeenShowed(suspect)
-                letOtherPlayersKnow(suspect)
-            }
-
-            userFinishedHisTurn = true
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(1000)
+            val detailsFragment = IncriminationDetailsFragment(suspect, map.dialogHandler)
+            map.insertFragment(detailsFragment)
         }
     }
 
@@ -261,13 +227,5 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                 }
             }
         }
-    }
-
-    fun nothingHasBeenShowed(suspect: Suspect) {
-        val title = mContext!!.getString(R.string.no_one_could_show)
-        val message =
-            mContext!!.getString(R.string.incrimination_params) + "\n\t" + mContext!!.getString(R.string.current_room) + "${suspect.room}\n\t" + mContext!!.getString(
-                            R.string.current_tool) + "${suspect.tool}\n\t" + mContext!!.resources.getString(R.string.suspect_person) + suspect.suspect
-        InformationDialog(null, title, message, map.dialogHandler).show(fm, InformationDialog.TAG)
     }
 }
