@@ -1,8 +1,10 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
 import android.widget.ImageView
-import neptun.jxy1vz.cluedo.domain.model.*
-import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
+import neptun.jxy1vz.cluedo.domain.model.DarkCard
+import neptun.jxy1vz.cluedo.domain.model.DarkType
+import neptun.jxy1vz.cluedo.domain.model.Player
+import neptun.jxy1vz.cluedo.domain.model.Position
 import neptun.jxy1vz.cluedo.ui.fragment.cards.dark.DarkCardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
@@ -17,8 +19,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
 
-class PlayerHandler(private val map: MapViewModel.Companion) :
-    CardLossDialog.CardLossDialogListener {
+class PlayerHandler(private val map: MapViewModel.Companion) {
     fun useGateway(playerId: Int, from: Int, to: Int) {
         if (map.mapHandler.stepInRoom(getPlayerById(playerId).pos) == from) {
             stepPlayer(
@@ -202,9 +203,5 @@ class PlayerHandler(private val map: MapViewModel.Companion) :
 
         val fragment = DarkCardFragment(player.id, card, gameModels.playerList, playerIds, map.dialogHandler)
         map.insertFragment(fragment)
-    }
-
-    override fun throwCard(playerId: Int, card: HelperCard) {
-        getPlayerById(playerId).helperCards!!.remove(card)
     }
 }

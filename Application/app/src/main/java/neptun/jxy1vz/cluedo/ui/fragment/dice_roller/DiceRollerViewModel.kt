@@ -28,6 +28,10 @@ class DiceRollerViewModel(
         DARK
     }
 
+    init {
+        bind.btnSubmit.isEnabled = false
+    }
+
     private var cardType: CardType? = null
     private var house: StateMachineHandler.HogwartsHouse? = null
 
@@ -105,6 +109,8 @@ class DiceRollerViewModel(
         diceImageList[2].setImageResource(diceValue3)
 
         setDice3(num3)
+
+        bind.btnSubmit.isEnabled = true
     }
 
     override fun onAnimationStart(animation: Animation?) {

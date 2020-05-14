@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONS
 import androidx.core.animation.doOnEnd
 import androidx.core.view.marginBottom
 import androidx.databinding.BaseObservable
+import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.fragment_dark_card.view.*
 import neptun.jxy1vz.cluedo.R
@@ -22,10 +23,10 @@ import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.domain.model.helper.safeIcons
 import neptun.jxy1vz.cluedo.domain.model.helper.unsafeIcons
-import neptun.jxy1vz.cluedo.ui.dialog.loss_dialog.card_loss.CardLossDialog
 import neptun.jxy1vz.cluedo.ui.dialog.player_dies.PlayerDiesDialog
 import neptun.jxy1vz.cluedo.ui.dialog.player_dies.UserDiesDialog
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
+import neptun.jxy1vz.cluedo.ui.fragment.cards.card_loss.CardLossFragment
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import kotlin.math.PI
 import kotlin.math.cos
@@ -37,8 +38,9 @@ class DarkCardViewModel(
     playerList: List<Player>,
     playerIds: List<Int>,
     card: DarkCard,
-    private val listener: ViewModelListener
-) : BaseObservable() {
+    private val listener: ViewModelListener,
+    private val fm: FragmentManager
+) : BaseObservable(), CardLossFragment.ThrowCardListener {
 
     private val safePlayerIcons = HashMap<String, Int>()
     private val playerIcons = HashMap<String, Int>()
@@ -119,8 +121,8 @@ class DarkCardViewModel(
         player: Player
     ) {
         val layoutParams = ConstraintLayout.LayoutParams(MATCH_CONSTRAINT, MATCH_CONSTRAINT)
-        layoutParams.matchConstraintPercentWidth = 0.15f
-        layoutParams.matchConstraintPercentHeight = 0.15f
+        layoutParams.matchConstraintPercentWidth = 0.2f
+        layoutParams.matchConstraintPercentHeight = 0.2f
         layoutParams.topToTop = bind.darkCardRoot.ivDarkMark.id
         layoutParams.bottomToBottom = bind.darkCardRoot.ivDarkMark.id
         layoutParams.startToStart = bind.darkCardRoot.ivDarkMark.id
@@ -234,8 +236,10 @@ class DarkCardViewModel(
             cardLayoutParams.bottomToBottom = bind.darkCardRoot.ivDarkMark.id
             cardLayoutParams.startToStart = bind.darkCardRoot.ivDarkMark.id
             cardLayoutParams.endToEnd = bind.darkCardRoot.ivDarkMark.id
+            cardLayoutParams.marginEnd = 300
+            cardLayoutParams.bottomMargin = 250
             thrownCard.layoutParams = cardLayoutParams
-            thrownCard.translationX = image.translationX + thrownCard.width / 2
+            thrownCard.translationX = image.translationX
             thrownCard.translationY = image.translationY
             thrownCard.visibility = ImageView.VISIBLE
             bind.darkCardRoot.addView(thrownCard)
@@ -283,23 +287,19 @@ class DarkCardViewModel(
                     val properHelperCards = getProperHelperCards(player, card.lossType)
 
                     if (properHelperCards.isNotEmpty()) {
-                        if (player.id == MapViewModel.player.id)
-                            CardLossDialog(
-                                player.id,
-                                properHelperCards,
-                                card.lossType,
-                                MapViewModel.playerHandler
-                            ).show(
-                                MapViewModel.fm,
-                                CardLossDialog.TAG
-                            )
+                        if (player.id == MapViewModel.player.id) {
+                            val title = when (card.lossType) {
+                                LossType.TOOL -> context.resources.getString(R.string.tool_loss)
+                                LossType.SPELL -> context.resources.getString(R.string.spell_loss)
+                                else -> context.resources.getString(R.string.ally_loss)
+                            }
+                            fm.beginTransaction().replace(R.id.cardLossFrame, CardLossFragment(title, properHelperCards, this)).commit()
+                            bind.darkCardRoot.btnClose.isEnabled = false
+                        }
                         else {
                             val cardToThrow = chooseWisely(properHelperCards)
                             thrownCards[player.card.name] = cardToThrow.imageRes
-                            MapViewModel.playerHandler.throwCard(
-                                player.id,
-                                cardToThrow
-                            )
+                            MapViewModel.playerHandler.getPlayerById(player.id).helperCards!!.remove(cardToThrow)
                         }
                     }
                 }
@@ -338,5 +338,9 @@ class DarkCardViewModel(
 
     fun close() {
         listener.onFinish()
+    }
+
+    override fun onThrow() {
+        bind.darkCardRoot.btnClose.isEnabled = true
     }
 }

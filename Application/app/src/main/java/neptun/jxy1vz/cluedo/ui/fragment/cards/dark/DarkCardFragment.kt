@@ -37,7 +37,8 @@ class DarkCardFragment(
             playerList,
             affectedPlayerIds,
             card,
-            this
+            this,
+            activity!!.supportFragmentManager
         )
         return fragmentDarkCardBinding.root
     }

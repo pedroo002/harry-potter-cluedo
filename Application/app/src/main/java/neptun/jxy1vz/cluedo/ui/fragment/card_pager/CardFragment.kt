@@ -14,7 +14,7 @@ class CardFragment(private val cardImage: Int) : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_card_loss, container, false)
+        val view = inflater.inflate(R.layout.fragment_lost_card, container, false)
         view.findViewById<ImageView>(R.id.ivLostCard).setImageResource(cardImage)
         return view
     }

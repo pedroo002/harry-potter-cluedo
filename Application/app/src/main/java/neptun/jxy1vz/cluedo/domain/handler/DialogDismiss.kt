@@ -6,7 +6,6 @@ import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 
 interface DialogDismiss {
-    fun onSimpleInformationDismiss()
     fun onIncriminationDetailsDismiss(needToTakeNotes: Boolean)
     fun onCardRevealDismiss()
     fun onCardShowDismiss(suspect: Suspect, card: MysteryCard)
@@ -14,7 +13,6 @@ interface DialogDismiss {
     fun onDarkCardDismiss(card: DarkCard?)
     fun onAccusationDismiss(suspect: Suspect)
     fun onEndOfGameDismiss()
-    fun onLossDialogDismiss(playerId: Int? = null)
     fun onPlayerDiesDismiss(player: Player?)
     fun onNoteDismiss()
     fun onOptionsDismiss(accusation: Boolean? = null)

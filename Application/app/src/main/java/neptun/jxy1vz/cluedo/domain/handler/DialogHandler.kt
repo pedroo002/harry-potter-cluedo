@@ -19,16 +19,11 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.pause
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurnAffected
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurnDied
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.unusedMysteryCards
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
 
 class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
-    override fun onSimpleInformationDismiss() {
-        NoteDialog(player, this).show(fm, NoteDialog.TAG)
-    }
-
     override fun onIncriminationDetailsDismiss(needToTakeNotes: Boolean) {
         mapRoot.setScrollEnabled(true)
         if (needToTakeNotes)
@@ -80,26 +75,6 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onEndOfGameDismiss() {
         activityListener.exitToMenu()
         map.onDestroy()
-    }
-
-    override fun onLossDialogDismiss(playerId: Int?) {
-        when {
-            playerId == playerInTurn -> {
-                playerInTurnAffected = false
-                map.gameSequenceHandler.continueGame()
-                return
-            }
-            playerInTurnAffected -> return
-            playerId != null && !playerInTurnAffected -> {
-                map.gameSequenceHandler.continueGame()
-                return
-            }
-            playerId == null && playerInTurn != player.id && !playerInTurnAffected -> {
-                map.gameSequenceHandler.continueGame()
-                return
-            }
-            else -> map.gameSequenceHandler.continueGame()
-        }
     }
 
     override fun onPlayerDiesDismiss(player: Player?) {
