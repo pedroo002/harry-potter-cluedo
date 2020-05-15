@@ -62,9 +62,6 @@ class DarkCardViewModel(
 
             var imgRes: Int
 
-            if (player.id != MapViewModel.mPlayerId)
-                player.hp -= 50
-
             if (playerIds.contains(player.id)) {
                 val tools: ArrayList<String> = ArrayList()
                 val spells: ArrayList<String> = ArrayList()
