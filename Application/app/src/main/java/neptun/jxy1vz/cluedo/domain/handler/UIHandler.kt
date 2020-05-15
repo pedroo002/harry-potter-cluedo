@@ -13,10 +13,7 @@ import androidx.core.animation.doOnEnd
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.delay
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.domain.model.DoorState
-import neptun.jxy1vz.cluedo.domain.model.Position
-import neptun.jxy1vz.cluedo.domain.model.State
-import neptun.jxy1vz.cluedo.domain.model.boolean
+import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.diceList
@@ -25,6 +22,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.selectionList
+import kotlin.math.abs
 import kotlin.random.Random
 
 class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationListener {
@@ -177,6 +175,17 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             }
         }
 
+        if (map.mapHandler.stepInRoom(start) != -1) {
+            for (entry in distancesFromOrigin.entries) {
+                val pos = entry.key
+                if (map.mapHandler.isDoor(pos) && ((pos.row == origin.row && abs(pos.col - origin.col) == 1) || (pos.col == origin.col && abs(pos.row - origin.row) == 1))) {
+                    origin = pos
+                    break
+                }
+            }
+            path.add(0, origin)
+        }
+
         val forwardFeet = listOf(
             R.drawable.footprints_forward1,
             R.drawable.footprints_forward2,
@@ -201,12 +210,56 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
         var currentPosition = origin
         for (position in path) {
             val i = path.indexOf(position)
-            val direction = getDirection(currentPosition, position)
+            var direction = getDirection(currentPosition, position)
             var colConstraintLeft: Int
             var rowConstraintTop: Int
             var colConstraintRight: Int
             var rowConstraintBottom: Int
             var imgRes = 0
+
+            if (path.indexOf(position) == 0) {
+                if (map.mapHandler.stepInRoom(start) != -1) {
+                    for (room in map.gameModels.roomList) {
+                        if (room.left <= start.col && room.right >= start.col) {
+                            val roomPos = Position(room.top, room.left)
+                            direction = when {
+                                origin.col < roomPos.col -> "A"
+                                origin.col >= roomPos.col && origin.col <= roomPos.col + room.right - room.left && origin.row < roomPos.row -> "W"
+                                origin.col >= roomPos.col && origin.col <= roomPos.col + room.right - room.left && origin.row > roomPos.row -> "S"
+                                origin.col > roomPos.col + room.right - room.left -> "D"
+                                else -> "S"
+                            }
+                            imgRes = when (direction) {
+                                "W" -> forwardFeet[2]
+                                "A" -> leftFeet[2]
+                                "S" -> backwardFeet[2]
+                                else -> rightFeet[2]
+                            }
+                        }
+                    }
+                } else {
+                    direction = when {
+                        path.size > 1 -> getDirection(position, path[1])
+                        origin.row > position.row -> "W"
+                        origin.row < position.row -> "S"
+                        origin.col > position.col -> "A"
+                        else -> "D"
+                    }
+                    imgRes = when (direction) {
+                        "W" -> forwardFeet[2]
+                        "A" -> leftFeet[2]
+                        "S" -> backwardFeet[2]
+                        else -> rightFeet[2]
+                    }
+                }
+            } else {
+                imgRes = when (direction) {
+                    "W" -> forwardFeet[i % 2]
+                    "A" -> leftFeet[i % 2]
+                    "S" -> backwardFeet[i % 2]
+                    else -> rightFeet[i % 2]
+                }
+            }
 
             when (direction) {
                 "W" -> {
@@ -241,50 +294,6 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
                 }
             }
 
-            if (path.indexOf(position) == 0) {
-                if (map.mapHandler.stepInRoom(start) != -1) {
-                    for (room in map.gameModels.roomList) {
-                        if (Position(room.top, room.left) == origin) {
-                            val roomPos = Position(room.top, room.left)
-                            val dir = when {
-                                origin.col < roomPos.col -> "A"
-                                origin.col >= roomPos.col && origin.col <= roomPos.col + room.right - room.left && origin.row < roomPos.row -> "W"
-                                origin.col >= roomPos.col && origin.col <= roomPos.col + room.right - room.left && origin.row > roomPos.row -> "S"
-                                origin.col > roomPos.col + room.right - room.left -> "D"
-                                else -> ""
-                            }
-                            imgRes = when (dir) {
-                                "W" -> forwardFeet[2]
-                                "A" -> leftFeet[2]
-                                "S" -> backwardFeet[2]
-                                else -> rightFeet[2]
-                            }
-                        }
-                    }
-                } else {
-                    val dir = when {
-                        path.size > 1 -> getDirection(position, path[1])
-                        position.row > destination.row -> "W"
-                        position.row < destination.row -> "S"
-                        position.col > destination.col -> "A"
-                        else -> "D"
-                    }
-                    imgRes = when (dir) {
-                        "W" -> forwardFeet[2]
-                        "A" -> leftFeet[2]
-                        "S" -> backwardFeet[2]
-                        else -> rightFeet[2]
-                    }
-                }
-            } else {
-                imgRes = when (direction) {
-                    "W" -> forwardFeet[i % 2]
-                    "A" -> leftFeet[i % 2]
-                    "S" -> backwardFeet[i % 2]
-                    else -> rightFeet[i % 2]
-                }
-            }
-
             val footImage = ImageView(mapRoot.mapLayout.context)
             footImage.setImageResource(imgRes)
             val layoutParams =
@@ -305,6 +314,56 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
 
             currentPosition = position
         }
+
+        if (currentPosition == destination || map.mapHandler.isDoor(currentPosition)) {
+            val pos1 = if (path.size > 1) path[path.lastIndex - 1] else start
+            val pos2 = when {
+                path.size == 0 -> destination
+                path.size == 1 -> currentPosition
+                map.mapHandler.isDoor(currentPosition) -> destination
+                else -> currentPosition
+            }
+            val dir = when {
+                map.mapHandler.isDoor(currentPosition) -> {
+                    var roomPos = Position(-1, -1)
+                    var roomWidth = 0
+                    for (door in map.gameModels.doorList) {
+                        if (door.position == currentPosition) {
+                            roomPos = Position(door.room.top, door.room.left)
+                            roomWidth = door.room.right - door.room.left
+                        }
+                    }
+                    when {
+                        currentPosition.col < roomPos.col -> "D"
+                        currentPosition.col >= roomPos.col && currentPosition.col <= roomPos.col + roomWidth && currentPosition.row < roomPos.row -> "S"
+                        currentPosition.col >= roomPos.col && currentPosition.col <= roomPos.col + roomWidth && currentPosition.row > roomPos.row -> "W"
+                        currentPosition.col > roomPos.col + roomWidth -> "A"
+                        else -> "S"
+                    }
+                }
+                else -> getDirection(pos1, pos2)
+            }
+            val imgRes = when (dir) {
+                "W" -> forwardFeet[2]
+                "A" -> leftFeet[2]
+                "S" -> backwardFeet[2]
+                else -> rightFeet[2]
+            }
+
+            val footImage = ImageView(mapRoot.mapLayout.context)
+            footImage.setImageResource(imgRes)
+            val layoutParams =
+                ConstraintLayout.LayoutParams(MATCH_CONSTRAINT, MATCH_CONSTRAINT)
+            layoutParams.topToTop = map.gameModels.rows[currentPosition.row]
+            layoutParams.bottomToBottom = map.gameModels.rows[currentPosition.row + 1]
+            layoutParams.startToStart = map.gameModels.cols[currentPosition.col]
+            layoutParams.endToEnd = map.gameModels.cols[currentPosition.col + 1]
+            footImage.layoutParams = layoutParams
+            mapRoot.mapLayout.addView(footImage)
+            delay(250)
+            mapRoot.mapLayout.removeView(footImage)
+        }
+
         delay(250)
         mapRoot.engine.setAnimationDuration(1000)
         finishPlayerStep(playerId, destination)

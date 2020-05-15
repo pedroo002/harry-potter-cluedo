@@ -53,7 +53,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
         return false
     }
 
-    private fun isDoor(pos: Position): Boolean {
+    fun isDoor(pos: Position): Boolean {
         for (door in gameModels.doorList) {
             if (door.position == pos)
                 return true
