@@ -37,7 +37,6 @@ class PlayerDiesViewModel(
             startDelay = 500
             start()
             doOnEnd {
-                coloredImage.visibility = ImageView.GONE
                 bind.playerDiesRoot.removeView(coloredImage)
                 bind.playerDiesRoot.ivDeadPlayer.bringToFront()
             }

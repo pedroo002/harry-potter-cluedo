@@ -49,6 +49,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvMysteryCards"
+            android:text="@string/his_mystery_cards"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/vpCards"
+            app:layout_constraintStart_toStartOf="@id/vpCards"
+            app:layout_constraintEnd_toEndOf="@id/vpCards"
+            android:layout_marginBottom="10dp"/>
+
         <Button
             android:id="@+id/btnOk"
             android:layout_width="wrap_content"
