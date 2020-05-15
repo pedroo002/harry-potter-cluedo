@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentDiceRollerBinding
 import neptun.jxy1vz.cluedo.domain.handler.StateMachineHandler
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 
 class DiceRollerFragment(private val listener: DiceResultInterface, private val playerId: Int, private val felixFelicis: Boolean) : Fragment(), DiceRollerViewModel.DiceFragmentListener {
 
@@ -35,6 +36,9 @@ class DiceRollerFragment(private val listener: DiceResultInterface, private val 
         val sum = fragmentDiceRollerBinding.diceRollerViewModel!!.getSum()
 
         listener.getCard(playerId, cardType)
+        cardType?.let {
+            MapViewModel.finishedCardCheck = false
+        }
         if (sum > 0)
             listener.onDiceRoll(playerId, sum, house)
         activity!!.supportFragmentManager.beginTransaction().remove(this).commit()

@@ -77,6 +77,7 @@ class MapViewModel(
 
         var isGameAbleToContinue = true
         var playerInTurnDied = false
+        var finishedCardCheck = false
 
         var pause = false
         var savedPlayerId = -1
@@ -96,6 +97,7 @@ class MapViewModel(
             pause = false
             isGameAbleToContinue = true
             playerInTurnDied = false
+            finishedCardCheck = false
             savedDiceValue = 0
             savedPlayerId = -1
             savedHouse = null

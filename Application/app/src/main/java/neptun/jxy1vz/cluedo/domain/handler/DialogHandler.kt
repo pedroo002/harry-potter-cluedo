@@ -10,6 +10,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.unused.UnusedMysteryCardsF
 import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.activityListener
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.finishedCardCheck
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameAbleToContinue
@@ -46,6 +47,8 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         mapRoot.setVerticalPanEnabled(true)
         mapRoot.setHorizontalPanEnabled(true)
         mapRoot.setScrollEnabled(true)
+
+        finishedCardCheck = true
         isGameAbleToContinue = true
         if (playerInTurnDied)
             map.gameSequenceHandler.moveToNextPlayer()

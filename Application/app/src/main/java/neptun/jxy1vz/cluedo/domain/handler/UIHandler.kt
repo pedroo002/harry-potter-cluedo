@@ -17,6 +17,7 @@ import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.diceList
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.finishedCardCheck
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
@@ -69,8 +70,10 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
                 setTarget(ivDarkMark)
                 start()
                 doOnEnd {
-                    if (s.darkMark)
+                    if (s.darkMark) {
                         map.interactionHandler.getCard(playerId, DiceRollerViewModel.CardType.DARK)
+                        finishedCardCheck = false
+                    }
                     else
                         setViewVisibility(ivDarkMark, s.darkMark)
 
@@ -129,8 +132,10 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
         setLayoutConstraintStart(selection, gameModels.cols[col])
         setLayoutConstraintTop(selection, gameModels.rows[row])
         selection.setOnClickListener {
-            map.playerHandler.stepPlayer(playerId, targetPosition)
-            emptySelectionList()
+            if (finishedCardCheck) {
+                map.playerHandler.stepPlayer(playerId, targetPosition)
+                emptySelectionList()
+            }
         }
         mapRoot.mapLayout.addView(selection)
     }

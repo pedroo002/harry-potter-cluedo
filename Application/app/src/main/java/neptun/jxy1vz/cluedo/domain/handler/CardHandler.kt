@@ -10,6 +10,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.finishedCardCheck
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
@@ -119,6 +120,8 @@ class CardHandler(private val map: MapViewModel.Companion) {
     private fun evaluateCard(playerId: Int, randomCard: Card, type: DiceRollerViewModel.CardType?) {
         when (type) {
             DiceRollerViewModel.CardType.HELPER -> {
+                finishedCardCheck = true
+
                 map.gameSequenceHandler.continueGame()
                 if (otherPlayerStepsOnStar) {
                     map.gameSequenceHandler.moveToNextPlayer()
