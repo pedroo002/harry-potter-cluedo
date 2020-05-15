@@ -11,14 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.otaliastudios.zoom.ZoomLayout
 import kotlinx.android.synthetic.main.activity_map.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.handler.*
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
-import neptun.jxy1vz.cluedo.ui.dialog.note.NoteDialog
+import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 import kotlin.math.abs
 
 class MapViewModel(
@@ -108,20 +106,19 @@ class MapViewModel(
         }
 
         fun insertFragment(fragment: Fragment, addToBackStack: Boolean = false) {
-            mapRoot.postOnAnimation {
-                val layoutParams = ConstraintLayout.LayoutParams(mContext!!.resources.displayMetrics.widthPixels, mContext!!.resources.displayMetrics.heightPixels)
-                mapRoot.dialogFrame.layoutParams = layoutParams
-                mapRoot.dialogFrame.x = abs(mapRoot.panX)
-                mapRoot.dialogFrame.y = abs(mapRoot.panY)
-                if (addToBackStack)
-                    fm.beginTransaction().add(R.id.dialogFrame, fragment).addToBackStack(fragment.toString()).commit()
-                else
-                    fm.beginTransaction().replace(R.id.dialogFrame, fragment).commit()
-                mapRoot.dialogFrame.bringToFront()
-                mapRoot.setVerticalPanEnabled(false)
-                mapRoot.setHorizontalPanEnabled(false)
-                mapRoot.setScrollEnabled(false)
-            }
+            val layoutParams = ConstraintLayout.LayoutParams(mContext!!.resources.displayMetrics.widthPixels, mContext!!.resources.displayMetrics.heightPixels)
+            mapRoot.dialogFrame.layoutParams = layoutParams
+            mapRoot.dialogFrame.x = abs(mapRoot.panX)
+            mapRoot.dialogFrame.y = abs(mapRoot.panY)
+            if (addToBackStack)
+                fm.beginTransaction().add(R.id.dialogFrame, fragment).addToBackStack(fragment.toString()).commit()
+            else
+                fm.beginTransaction().replace(R.id.dialogFrame, fragment).commit()
+            mapRoot.dialogFrame.bringToFront()
+
+            mapRoot.setVerticalPanEnabled(false)
+            mapRoot.setHorizontalPanEnabled(false)
+            mapRoot.setScrollEnabled(false)
         }
     }
 
@@ -181,8 +178,6 @@ class MapViewModel(
             p.hp = initHp
         }
 
-        NoteDialog(player, dialogHandler).show(fm, "DIALOG_NOTE")
-
         stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.SLYTHERIN)
         stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.RAVENCLAW)
         stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.GRYFFINDOR)
@@ -228,6 +223,12 @@ class MapViewModel(
         GlobalScope.launch(Dispatchers.IO) {
             unusedMysteryCards = ArrayList()
             unusedMysteryCards.addAll(gameModels.db.getUnusedMysteryCards())
+
+            withContext(Dispatchers.Main) {
+                delay(500)
+                val fragment = NoteFragment(player, dialogHandler)
+                insertFragment(fragment)
+            }
         }
     }
 

@@ -5,9 +5,9 @@ import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.dialog.endgame.EndOfGameDialog
-import neptun.jxy1vz.cluedo.ui.dialog.note.NoteDialog
 import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
 import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.unused.UnusedMysteryCardsFragment
+import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.activityListener
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
@@ -26,8 +26,10 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         mapRoot.setVerticalPanEnabled(true)
         mapRoot.setHorizontalPanEnabled(true)
         mapRoot.setScrollEnabled(true)
-        if (needToTakeNotes)
-            NoteDialog(player, this).show(fm, NoteDialog.TAG)
+        if (needToTakeNotes) {
+            val fragment = NoteFragment(player, this)
+            map.insertFragment(fragment)
+        }
         else
             map.gameSequenceHandler.moveToNextPlayer()
     }
@@ -36,7 +38,8 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         mapRoot.setVerticalPanEnabled(true)
         mapRoot.setHorizontalPanEnabled(true)
         mapRoot.setScrollEnabled(true)
-        NoteDialog(player, this).show(fm, NoteDialog.TAG)
+        val fragment = NoteFragment(player, this)
+        map.insertFragment(fragment)
     }
 
     override fun onDarkCardDismiss(card: DarkCard?) {
@@ -77,13 +80,18 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         if (player == null)
             activityListener.exitToMenu()
         else {
-            NoteDialog(map.player, this).show(fm, NoteDialog.TAG)
+            val fragment = NoteFragment(MapViewModel.player, this)
+            map.insertFragment(fragment)
         }
     }
 
     override fun onNoteDismiss() {
         if (!isGameAbleToContinue)
             return
+        mapRoot.setVerticalPanEnabled(true)
+        mapRoot.setHorizontalPanEnabled(true)
+        mapRoot.setScrollEnabled(true)
+
         if (!isGameRunning)
             map.cardHandler.handOutHelperCards()
         else if (pause)

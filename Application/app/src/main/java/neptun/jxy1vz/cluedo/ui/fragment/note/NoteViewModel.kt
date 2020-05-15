@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.dialog.note
+package neptun.jxy1vz.cluedo.ui.fragment.note
 
 import android.content.Context
 import android.view.MotionEvent
@@ -8,21 +8,21 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.view.isVisible
 import androidx.databinding.BaseObservable
-import kotlinx.android.synthetic.main.dialog_note.view.*
+import kotlinx.android.synthetic.main.fragment_note.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.database.CluedoDatabase
-import neptun.jxy1vz.cluedo.databinding.DialogNoteBinding
+import neptun.jxy1vz.cluedo.databinding.FragmentNoteBinding
 import neptun.jxy1vz.cluedo.domain.model.Note
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.util.Interactor
 import neptun.jxy1vz.cluedo.domain.util.toDatabaseModel
+import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class NoteViewModel(context: Context, player: Player, private val bind: DialogNoteBinding) :
-    BaseObservable() {
+class NoteViewModel(context: Context, player: Player, private val bind: FragmentNoteBinding, private val listener: ViewModelListener) : BaseObservable() {
 
     private val interactor = Interactor(CluedoDatabase.getInstance(context))
 
@@ -429,5 +429,10 @@ class NoteViewModel(context: Context, player: Player, private val bind: DialogNo
             interactor.eraseNotes()
             interactor.insertIntoNotes(noteList.map { note -> note.toDatabaseModel() })
         }
+    }
+
+    fun close() {
+        saveNotes()
+        listener.onFinish()
     }
 }

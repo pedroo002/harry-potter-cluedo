@@ -15,13 +15,16 @@ import neptun.jxy1vz.cluedo.databinding.ActivityMapBinding
 import neptun.jxy1vz.cluedo.domain.handler.MapActivityListener
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
+import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 
 class MapActivity : AppCompatActivity(), MapActivityListener {
+
+    private lateinit var activityMapBinding: ActivityMapBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val activityMapBinding = setContentView<ActivityMapBinding>(this, R.layout.activity_map)
+        activityMapBinding = setContentView(this, R.layout.activity_map)
         val mapRoot = findViewById<ZoomLayout>(R.id.mapRoot)
         val playerImageList: MutableList<ImageView> = ArrayList()
 
