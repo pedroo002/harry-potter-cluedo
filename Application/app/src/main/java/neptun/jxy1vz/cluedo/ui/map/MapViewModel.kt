@@ -1,6 +1,7 @@
 package neptun.jxy1vz.cluedo.ui.map
 
 import android.content.Context
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -117,6 +118,8 @@ class MapViewModel(
                 else
                     fm.beginTransaction().replace(R.id.dialogFrame, fragment).commit()
                 mapRoot.dialogFrame.bringToFront()
+                mapRoot.setVerticalPanEnabled(false)
+                mapRoot.setHorizontalPanEnabled(false)
                 mapRoot.setScrollEnabled(false)
             }
         }

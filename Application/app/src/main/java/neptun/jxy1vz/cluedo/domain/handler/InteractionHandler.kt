@@ -81,6 +81,8 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
     }
 
     override fun onDiceRoll(playerId: Int, sum: Int, house: StateMachineHandler.HogwartsHouse?) {
+        mapRoot.setVerticalPanEnabled(true)
+        mapRoot.setHorizontalPanEnabled(true)
         mapRoot.setScrollEnabled(true)
         house?.let {
             if (playerId == player.id)

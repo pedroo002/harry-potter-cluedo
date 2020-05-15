@@ -2,7 +2,6 @@ package neptun.jxy1vz.cluedo.domain.handler
 
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.DarkCard
-import neptun.jxy1vz.cluedo.domain.model.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.dialog.endgame.EndOfGameDialog
@@ -21,10 +20,11 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurnDied
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.unusedMysteryCards
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
 
 class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onIncriminationDetailsDismiss(needToTakeNotes: Boolean) {
+        mapRoot.setVerticalPanEnabled(true)
+        mapRoot.setHorizontalPanEnabled(true)
         mapRoot.setScrollEnabled(true)
         if (needToTakeNotes)
             NoteDialog(player, this).show(fm, NoteDialog.TAG)
@@ -33,11 +33,15 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onCardRevealDismiss() {
+        mapRoot.setVerticalPanEnabled(true)
+        mapRoot.setHorizontalPanEnabled(true)
         mapRoot.setScrollEnabled(true)
         NoteDialog(player, this).show(fm, NoteDialog.TAG)
     }
 
     override fun onDarkCardDismiss(card: DarkCard?) {
+        mapRoot.setVerticalPanEnabled(true)
+        mapRoot.setHorizontalPanEnabled(true)
         mapRoot.setScrollEnabled(true)
         isGameAbleToContinue = true
         if (playerInTurnDied)
@@ -48,6 +52,8 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onAccusationDismiss(suspect: Suspect) {
+        mapRoot.setVerticalPanEnabled(true)
+        mapRoot.setHorizontalPanEnabled(true)
         mapRoot.setScrollEnabled(true)
         var correct = true
         for (card in gameModels.gameSolution) {
