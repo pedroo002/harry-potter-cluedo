@@ -4,27 +4,32 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
+import kotlinx.android.synthetic.main.fragment_incrimination_details.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentIncriminationDetailsBinding
+import neptun.jxy1vz.cluedo.domain.model.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.domain.model.helper.*
-import neptun.jxy1vz.cluedo.ui.dialog.show_card.ShowCardDialog
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 
 class IncriminationDetailsViewModel(
     private val bind: FragmentIncriminationDetailsBinding,
-    context: Context,
-    suspect: Suspect,
+    private val context: Context,
+    private val suspect: Suspect,
     private val listener: ViewModelListener,
     private val fragmentListener: DetailsFragmentListener
 ) : BaseObservable() {
@@ -32,6 +37,8 @@ class IncriminationDetailsViewModel(
     interface DetailsFragmentListener {
         fun deliverInformation(needToTakeNotes: Boolean)
     }
+
+    private var playerShowedCard = false
 
     private val screenWidth = context.resources.displayMetrics.widthPixels
     private val screenHeight = context.resources.displayMetrics.heightPixels
@@ -74,12 +81,69 @@ class IncriminationDetailsViewModel(
                     )
                 if (cards != null) {
                     bind.ivPlayerWhoShows.setImageResource(MapViewModel.player.card.imageRes)
-                    ShowCardDialog(
-                        suspect,
-                        MapViewModel.playerHandler.getPlayerById(suspect.playerId).card.name,
-                        cards,
-                        MapViewModel.dialogHandler
-                    ).show(MapViewModel.fm, ShowCardDialog.TAG)
+                    bind.detailsRoot.btnOk.isEnabled = false
+                    val caution = TextView(bind.detailsRoot.context)
+                    val params = ConstraintLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+                    params.startToStart = bind.ivSuspectToken.id
+                    params.endToEnd = bind.ivSuspectToken.id
+                    params.bottomToTop = bind.ivSuspectToken.id
+                    params.bottomMargin = 15
+                    caution.layoutParams = params
+                    caution.text = context.resources.getString(R.string.show_card)
+                    caution.setTextColor(Color.WHITE)
+                    caution.setTypeface(null, Typeface.BOLD)
+                    bind.detailsRoot.addView(caution)
+
+                    (AnimatorInflater.loadAnimator(
+                        bind.detailsRoot.context,
+                        R.animator.appear
+                    ) as AnimatorSet).apply {
+                        setTarget(caution)
+                        startDelay = 200
+                        start()
+                    }
+
+                    for (card in cards) {
+                        if (roomList.contains(card.name))
+                            showCard(
+                                card,
+                                roomTokens,
+                                roomTokensBW,
+                                bind.ivRoomToken,
+                                roomList,
+                                caution
+                            )
+                        else
+                            bind.ivRoomToken.setImageResource(roomTokensBW[roomList.indexOf(suspect.room)])
+
+                        if (toolList.contains(card.name))
+                            showCard(
+                                card,
+                                toolTokens,
+                                toolTokensBW,
+                                bind.ivToolToken,
+                                toolList,
+                                caution
+                            )
+                        else
+                            bind.ivToolToken.setImageResource(toolTokensBW[toolList.indexOf(suspect.tool)])
+
+                        if (suspectList.contains(card.name))
+                            showCard(
+                                card,
+                                suspectTokens,
+                                suspectTokensBW,
+                                bind.ivSuspectToken,
+                                suspectList,
+                                caution
+                            )
+                        else
+                            bind.ivSuspectToken.setImageResource(
+                                suspectTokensBW[suspectList.indexOf(
+                                    suspect.suspect
+                                )]
+                            )
+                    }
                     someoneShowedSomething = true
                     fragmentListener.deliverInformation(false)
                 }
@@ -177,39 +241,57 @@ class IncriminationDetailsViewModel(
                                         bind.detailsRoot.removeView(mysteryCardImage)
 
                                         if (suspect.playerId == MapViewModel.mPlayerId) {
-                                            var targetImageView: ImageView
-                                            var bwToken: Int
-                                            var token: Int
                                             when {
                                                 toolList.contains(revealedCard.name) -> {
-                                                    bind.ivRoomToken.setImageResource(roomTokensBW[roomList.indexOf(suspect.room)])
-                                                    bind.ivSuspectToken.setImageResource(suspectTokensBW[suspectList.indexOf(suspect.suspect)])
-                                                    targetImageView = bind.ivToolToken
-                                                    bwToken = toolTokensBW[toolList.indexOf(suspect.tool)]
-                                                    token = toolTokens[toolList.indexOf(suspect.tool)]
+                                                    watchCard(
+                                                        bind.ivRoomToken,
+                                                        bind.ivSuspectToken,
+                                                        bind.ivToolToken,
+                                                        roomTokensBW,
+                                                        suspectTokensBW,
+                                                        toolTokensBW,
+                                                        toolTokens,
+                                                        roomList,
+                                                        suspectList,
+                                                        toolList,
+                                                        suspect.room,
+                                                        suspect.suspect,
+                                                        suspect.tool
+                                                    )
                                                 }
                                                 roomList.contains(revealedCard.name) -> {
-                                                    bind.ivToolToken.setImageResource(toolTokensBW[toolList.indexOf(suspect.tool)])
-                                                    bind.ivSuspectToken.setImageResource(suspectTokensBW[suspectList.indexOf(suspect.suspect)])
-                                                    targetImageView = bind.ivRoomToken
-                                                    bwToken = roomTokensBW[roomList.indexOf(suspect.room)]
-                                                    token = roomTokens[roomList.indexOf(suspect.room)]
+                                                    watchCard(
+                                                        bind.ivToolToken,
+                                                        bind.ivSuspectToken,
+                                                        bind.ivRoomToken,
+                                                        toolTokensBW,
+                                                        suspectTokensBW,
+                                                        roomTokensBW,
+                                                        roomTokens,
+                                                        toolList,
+                                                        suspectList,
+                                                        roomList,
+                                                        suspect.tool,
+                                                        suspect.suspect,
+                                                        suspect.room
+                                                    )
                                                 }
                                                 else -> {
-                                                    bind.ivToolToken.setImageResource(toolTokensBW[toolList.indexOf(suspect.tool)])
-                                                    bind.ivRoomToken.setImageResource(roomTokensBW[roomList.indexOf(suspect.room)])
-                                                    targetImageView = bind.ivSuspectToken
-                                                    bwToken = suspectTokensBW[suspectList.indexOf(suspect.suspect)]
-                                                    token = suspectTokens[suspectList.indexOf(suspect.suspect)]
-                                                }
-                                            }
-
-                                            GlobalScope.launch(Dispatchers.Main) {
-                                                for (x in 1..3) {
-                                                    targetImageView.setImageResource(bwToken)
-                                                    delay(500)
-                                                    targetImageView.setImageResource(token)
-                                                    delay(500)
+                                                    watchCard(
+                                                        bind.ivToolToken,
+                                                        bind.ivRoomToken,
+                                                        bind.ivSuspectToken,
+                                                        toolTokensBW,
+                                                        roomTokensBW,
+                                                        suspectTokensBW,
+                                                        suspectTokens,
+                                                        toolList,
+                                                        roomList,
+                                                        suspectList,
+                                                        suspect.tool,
+                                                        suspect.room,
+                                                        suspect.suspect
+                                                    )
                                                 }
                                             }
                                         }
@@ -256,6 +338,80 @@ class IncriminationDetailsViewModel(
 
         if (suspect.playerId == MapViewModel.mPlayerId)
             MapViewModel.userFinishedHisTurn = true
+    }
+
+    private fun showCard(
+        card: MysteryCard,
+        tokenList: List<Int>,
+        tokenListBW: List<Int>,
+        ivToken: ImageView,
+        nameList: Array<String>,
+        cautionTextView: TextView
+    ) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val res = tokenList[nameList.indexOf(card.name)]
+            val bwRes = tokenListBW[nameList.indexOf(card.name)]
+            for (j in 1..3) {
+                ivToken.setImageResource(bwRes)
+                delay(200)
+                ivToken.setImageResource(res)
+                delay(200)
+            }
+        }
+
+        ivToken.setOnClickListener {
+            if (!playerShowedCard) {
+                MapViewModel.interactionHandler.letOtherPlayersKnow(
+                    suspect,
+                    MapViewModel.mPlayerId,
+                    card.name
+                )
+
+                (AnimatorInflater.loadAnimator(
+                    bind.detailsRoot.context,
+                    R.animator.disappear
+                ) as AnimatorSet).apply {
+                    setTarget(cautionTextView)
+                    start()
+                    doOnEnd {
+                        bind.detailsRoot.removeView(cautionTextView)
+                    }
+                }
+            }
+            playerShowedCard = true
+            bind.detailsRoot.btnOk.isEnabled = true
+        }
+    }
+
+    private fun watchCard(
+        ivToken1: ImageView,
+        ivToken2: ImageView,
+        ivTargetToken: ImageView,
+        bwTokenList1: List<Int>,
+        bwTokenList2: List<Int>,
+        bwTargetTokenList: List<Int>,
+        targetTokenList: List<Int>,
+        nameList1: Array<String>,
+        nameList2: Array<String>,
+        targetNameList: Array<String>,
+        name1: String,
+        name2: String,
+        targetName: String
+    ) {
+        ivToken1.setImageResource(bwTokenList1[nameList1.indexOf(name1)])
+        ivToken2.setImageResource(bwTokenList2[nameList2.indexOf(name2)])
+        val targetImageView: ImageView = ivTargetToken
+        val bwToken: Int = bwTargetTokenList[targetNameList.indexOf(targetName)]
+        val token: Int = targetTokenList[targetNameList.indexOf(targetName)]
+
+        GlobalScope.launch(Dispatchers.Main) {
+            for (x in 1..3) {
+                targetImageView.setImageResource(bwToken)
+                delay(500)
+                targetImageView.setImageResource(token)
+                delay(500)
+            }
+        }
     }
 
     fun close() {

@@ -37,10 +37,6 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         NoteDialog(player, this).show(fm, NoteDialog.TAG)
     }
 
-    override fun onCardShowDismiss(suspect: Suspect, card: MysteryCard) {
-        map.interactionHandler.letOtherPlayersKnow(suspect, player.id, card.name)
-    }
-
     override fun onHelperCardDismiss() {
         mapRoot.setScrollEnabled(true)
         if (userFinishedHisTurn)
