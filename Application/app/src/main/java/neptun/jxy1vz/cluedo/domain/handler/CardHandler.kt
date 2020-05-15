@@ -33,8 +33,6 @@ class CardHandler(private val map: MapViewModel.Companion) {
                 map.cameraHandler.moveCameraToPlayer(player.id)
                 delay(1000)
                 map.interactionHandler.getCard(player.id, DiceRollerViewModel.CardType.HELPER)
-                isGameRunning = true
-                map.gameSequenceHandler.moveToNextPlayer()
             }
         }
     }
@@ -133,6 +131,11 @@ class CardHandler(private val map: MapViewModel.Companion) {
                     map.playerHandler.getPlayerById(playerId).helperCards = ArrayList()
                 }
                 map.playerHandler.getPlayerById(playerId).helperCards!!.add(randomCard as HelperCard)
+
+                if (!map.isGameRunning && playerId == mPlayerId) {
+                    isGameRunning = true
+                    map.gameSequenceHandler.moveToNextPlayer()
+                }
             }
             else -> {
                 GlobalScope.launch(Dispatchers.IO) {
