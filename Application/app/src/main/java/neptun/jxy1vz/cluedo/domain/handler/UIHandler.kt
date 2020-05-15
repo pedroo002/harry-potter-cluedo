@@ -142,7 +142,9 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             finishPlayerStep(playerId, destination)
             return
         }
-        delay(1000)
+        mapRoot.engine.setAnimationDuration(250)
+        map.cameraHandler.moveCameraToPlayer(playerId)
+        delay(500)
         val distancesFromOrigin = when {
             map.mapHandler.stepInRoom(start) == -1 -> map.mapHandler.dijkstra(start)
             else -> mergeRoutesFromRoom(playerId, start)
@@ -196,7 +198,6 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             R.drawable.footprints_standing_right
         )
 
-        mapRoot.engine.setAnimationDuration(250)
         var currentPosition = origin
         for (position in path) {
             val i = path.indexOf(position)
@@ -336,8 +337,11 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             gameModels.rows[map.playerHandler.getPlayerById(playerId).pos.row]
         )
 
+        delay(500)
+        mapRoot.engine.setAnimationDuration(100)
         map.cameraHandler.moveCameraToPlayer(playerId)
         delay(500)
+        mapRoot.engine.setAnimationDuration(1000)
 
         val starStep = map.mapHandler.stepOnStar(destination)
 
@@ -356,7 +360,6 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             map.mapHandler.stepInRoom(map.playerHandler.getPlayerById(playerId).pos) == -1 -> {
                 if (playerId != MapViewModel.player.id) {
                     if (starStep) {
-                        map.cameraHandler.moveCameraToPlayer(playerId)
                         MapViewModel.otherPlayerStepsOnStar = true
                         map.interactionHandler.getCard(
                             playerId,
