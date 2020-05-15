@@ -23,22 +23,15 @@ class PlayerDiesViewModel(
     fun loadPage() {
         val bwRes = bwPlayers[player.id]
         val res = player.card.imageRes
-
         bind.playerDiesRoot.ivDeadPlayer.setImageResource(bwRes)
-
-        val coloredImage = ImageView(bind.playerDiesRoot.context)
-        coloredImage.layoutParams = bind.playerDiesRoot.ivDeadPlayer.layoutParams
-        coloredImage.setImageResource(res)
-        bind.playerDiesRoot.addView(coloredImage)
-        coloredImage.bringToFront()
+        bind.playerDiesRoot.ivPlayer.setImageResource(res)
 
         (AnimatorInflater.loadAnimator(bind.playerDiesRoot.context, R.animator.disappear) as AnimatorSet).apply {
-            setTarget(coloredImage)
+            setTarget(bind.playerDiesRoot.ivPlayer)
             startDelay = 500
             start()
             doOnEnd {
-                bind.playerDiesRoot.removeView(coloredImage)
-                bind.playerDiesRoot.ivDeadPlayer.bringToFront()
+                bind.playerDiesRoot.ivPlayer.visibility = ImageView.GONE
             }
         }
     }

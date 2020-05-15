@@ -38,6 +38,17 @@
             app:layout_constraintTop_toBottomOf="@id/tvTitle"
             app:layout_constraintWidth_percent="0.25" />
 
+        <ImageView
+            android:id="@+id/ivPlayer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_percent="0.7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintWidth_percent="0.25" />
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/vpCards"
             android:layout_width="0dp"
