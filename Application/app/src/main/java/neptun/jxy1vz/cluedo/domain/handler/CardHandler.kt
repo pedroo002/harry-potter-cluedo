@@ -13,9 +13,11 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.otherPlayerStepsOnStar
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
 import kotlin.math.abs
 
 class CardHandler(private val map: MapViewModel.Companion) {
@@ -124,6 +126,8 @@ class CardHandler(private val map: MapViewModel.Companion) {
                     map.gameSequenceHandler.moveToNextPlayer()
                     otherPlayerStepsOnStar = false
                 }
+                if (playerId == mPlayerId && userFinishedHisTurn)
+                    map.gameSequenceHandler.moveToNextPlayer()
 
                 if (map.playerHandler.getPlayerById(playerId).helperCards.isNullOrEmpty()) {
                     map.playerHandler.getPlayerById(playerId).helperCards = ArrayList()

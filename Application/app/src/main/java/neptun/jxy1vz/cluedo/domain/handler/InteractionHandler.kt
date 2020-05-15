@@ -26,6 +26,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.unusedMysteryCards
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userCanStep
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
 
@@ -96,10 +97,12 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
             return
         GlobalScope.launch(Dispatchers.IO) {
             val randomCard = when (type) {
-                DiceRollerViewModel.CardType.HELPER -> gameModels.db.getCardBySuperType(
-                    playerId,
-                    mContext!!.getString(R.string.helper_prefix)
-                ) as? HelperCard
+                DiceRollerViewModel.CardType.HELPER -> {
+                    gameModels.db.getCardBySuperType(
+                        playerId,
+                        mContext!!.getString(R.string.helper_prefix)
+                    ) as? HelperCard
+                }
                 else -> gameModels.db.getCardBySuperType(playerId, mContext!!.getString(R.string.dark_prefix)) as? DarkCard
             }
                 ?: return@launch

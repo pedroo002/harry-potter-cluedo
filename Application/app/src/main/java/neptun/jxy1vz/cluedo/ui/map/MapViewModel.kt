@@ -106,13 +106,16 @@ class MapViewModel(
             hufflepuffState = 0
         }
 
-        fun insertFragment(fragment: Fragment) {
+        fun insertFragment(fragment: Fragment, addToBackStack: Boolean = false) {
             mapRoot.postOnAnimation {
                 val layoutParams = ConstraintLayout.LayoutParams(mContext!!.resources.displayMetrics.widthPixels, mContext!!.resources.displayMetrics.heightPixels)
                 mapRoot.dialogFrame.layoutParams = layoutParams
                 mapRoot.dialogFrame.x = abs(mapRoot.panX)
                 mapRoot.dialogFrame.y = abs(mapRoot.panY)
-                fm.beginTransaction().replace(R.id.dialogFrame, fragment).commit()
+                if (addToBackStack)
+                    fm.beginTransaction().add(R.id.dialogFrame, fragment).addToBackStack(fragment.toString()).commit()
+                else
+                    fm.beginTransaction().replace(R.id.dialogFrame, fragment).commit()
                 mapRoot.dialogFrame.bringToFront()
                 mapRoot.setScrollEnabled(false)
             }

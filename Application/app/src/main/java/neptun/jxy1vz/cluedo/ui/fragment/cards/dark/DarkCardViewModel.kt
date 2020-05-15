@@ -23,10 +23,10 @@ import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.domain.model.helper.safeIcons
 import neptun.jxy1vz.cluedo.domain.model.helper.unsafeIcons
-import neptun.jxy1vz.cluedo.ui.dialog.player_dies.PlayerDiesDialog
 import neptun.jxy1vz.cluedo.ui.dialog.player_dies.UserDiesDialog
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.cards.card_loss.CardLossFragment
+import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesFragment
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import kotlin.math.PI
 import kotlin.math.cos
@@ -61,6 +61,9 @@ class DarkCardViewModel(
             val i = playerList.indexOf(player)
 
             var imgRes: Int
+
+            if (player.id != MapViewModel.mPlayerId)
+                player.hp -= 50
 
             if (playerIds.contains(player.id)) {
                 val tools: ArrayList<String> = ArrayList()
@@ -199,13 +202,8 @@ class DarkCardViewModel(
                                             MapViewModel.isGameAbleToContinue = false
                                             if (MapViewModel.playerInTurn == player.id)
                                                 MapViewModel.playerInTurnDied = true
-                                            PlayerDiesDialog(
-                                                player,
-                                                MapViewModel.dialogHandler
-                                            ).show(
-                                                MapViewModel.fm,
-                                                PlayerDiesDialog.TAG
-                                            )
+                                            val fragment = PlayerDiesFragment(player, MapViewModel.dialogHandler)
+                                            MapViewModel.insertFragment(fragment, true)
                                             val newPlayerList = ArrayList<Player>()
                                             for (p in MapViewModel.gameModels.playerList) {
                                                 if (p.id != player.id)

@@ -242,10 +242,10 @@ class IncriminationDetailsViewModel(
                     }
                 }
 
+                playerShowedCard = true
+                bind.detailsRoot.btnOk.isEnabled = true
                 floatCard(card)
             }
-            playerShowedCard = true
-            bind.detailsRoot.btnOk.isEnabled = true
         }
     }
 
@@ -298,7 +298,10 @@ class IncriminationDetailsViewModel(
 
         val miniCardWidth = layoutParams.matchConstraintPercentWidth * screenWidth
         mysteryCardImage.translationX = miniCardWidth / 2
-        mysteryCardImage.setImageResource(R.drawable.rejtely_hatlap)
+        if (playerShowedCard)
+            mysteryCardImage.setImageResource(revealedCard.imageRes)
+        else
+            mysteryCardImage.setImageResource(R.drawable.rejtely_hatlap)
         bind.detailsRoot.addView(mysteryCardImage)
 
         (AnimatorInflater.loadAnimator(
