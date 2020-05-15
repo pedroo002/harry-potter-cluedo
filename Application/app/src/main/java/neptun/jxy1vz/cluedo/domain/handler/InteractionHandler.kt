@@ -105,10 +105,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                 ?: return@launch
 
             withContext(Dispatchers.Main) {
-                if (playerId != player.id || type == DiceRollerViewModel.CardType.DARK)
-                    map.cardHandler.showCard(playerId, randomCard, type)
-                else
-                    map.cardHandler.evaluateCard(playerId, randomCard, type)
+                map.cardHandler.showCard(playerId, randomCard, type)
             }
         }
     }

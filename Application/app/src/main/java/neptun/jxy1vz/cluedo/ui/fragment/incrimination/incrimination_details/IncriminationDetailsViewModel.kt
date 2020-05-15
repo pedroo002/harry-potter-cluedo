@@ -168,138 +168,7 @@ class IncriminationDetailsViewModel(
                         MapViewModel.gameModels.playerList[playerIdx].id,
                         revealedCard.name
                     )
-
-                    val playerWhoSuspectsLayoutParams =
-                        bind.ivPlayerWhoSuspects.layoutParams as ConstraintLayout.LayoutParams
-                    val playerWhoShowsLayoutParams =
-                        bind.ivPlayerWhoShows.layoutParams as ConstraintLayout.LayoutParams
-                    val distance =
-                        (screenWidth - playerWhoShowsLayoutParams.marginEnd - playerWhoShowsLayoutParams.matchConstraintPercentWidth * screenWidth) - (playerWhoSuspectsLayoutParams.marginStart + playerWhoSuspectsLayoutParams.matchConstraintPercentWidth * screenWidth)
-
-                    val mysteryCardImage = ImageView(bind.detailsRoot.context)
-
-                    val layoutParams =
-                        ConstraintLayout.LayoutParams(MATCH_CONSTRAINT, MATCH_CONSTRAINT)
-                    layoutParams.topToTop = bind.ivPlayerWhoShows.id
-                    layoutParams.bottomToBottom = bind.ivPlayerWhoShows.id
-                    layoutParams.endToStart = bind.ivPlayerWhoShows.id
-                    layoutParams.matchConstraintPercentWidth =
-                        playerWhoShowsLayoutParams.matchConstraintPercentWidth / 2
-                    layoutParams.matchConstraintPercentHeight =
-                        playerWhoShowsLayoutParams.matchConstraintPercentHeight / 2
-                    mysteryCardImage.layoutParams = layoutParams
-
-                    val miniCardWidth = layoutParams.matchConstraintPercentWidth * screenWidth
-                    mysteryCardImage.translationX = miniCardWidth / 2
-                    mysteryCardImage.setImageResource(R.drawable.rejtely_hatlap)
-                    bind.detailsRoot.addView(mysteryCardImage)
-
-                    (AnimatorInflater.loadAnimator(
-                        bind.detailsRoot.context,
-                        R.animator.appear
-                    ) as AnimatorSet).apply {
-                        setTarget(mysteryCardImage)
-                        start()
-                        ObjectAnimator.ofFloat(
-                            mysteryCardImage,
-                            "translationX",
-                            mysteryCardImage.translationX,
-                            mysteryCardImage.translationX - distance
-                        ).apply {
-                            duration = 4000
-                            startDelay = 1000
-                            start()
-                            ObjectAnimator.ofFloat(
-                                mysteryCardImage,
-                                "translationY",
-                                mysteryCardImage.translationY,
-                                mysteryCardImage.translationY - 100f
-                            ).apply {
-                                duration = 2000
-                                start()
-                                doOnEnd {
-                                    ObjectAnimator.ofFloat(
-                                        mysteryCardImage,
-                                        "translationY",
-                                        mysteryCardImage.translationY,
-                                        mysteryCardImage.translationY + 100f
-                                    ).apply {
-                                        duration = 2000
-                                        start()
-                                    }
-                                }
-                            }
-                            doOnEnd {
-                                (AnimatorInflater.loadAnimator(
-                                    bind.detailsRoot.context,
-                                    R.animator.disappear
-                                ) as AnimatorSet).apply {
-                                    setTarget(mysteryCardImage)
-                                    start()
-                                    doOnEnd {
-                                        mysteryCardImage.visibility = ImageView.GONE
-                                        bind.detailsRoot.removeView(mysteryCardImage)
-
-                                        if (suspect.playerId == MapViewModel.mPlayerId) {
-                                            when {
-                                                toolList.contains(revealedCard.name) -> {
-                                                    watchCard(
-                                                        bind.ivRoomToken,
-                                                        bind.ivSuspectToken,
-                                                        bind.ivToolToken,
-                                                        roomTokensBW,
-                                                        suspectTokensBW,
-                                                        toolTokensBW,
-                                                        toolTokens,
-                                                        roomList,
-                                                        suspectList,
-                                                        toolList,
-                                                        suspect.room,
-                                                        suspect.suspect,
-                                                        suspect.tool
-                                                    )
-                                                }
-                                                roomList.contains(revealedCard.name) -> {
-                                                    watchCard(
-                                                        bind.ivToolToken,
-                                                        bind.ivSuspectToken,
-                                                        bind.ivRoomToken,
-                                                        toolTokensBW,
-                                                        suspectTokensBW,
-                                                        roomTokensBW,
-                                                        roomTokens,
-                                                        toolList,
-                                                        suspectList,
-                                                        roomList,
-                                                        suspect.tool,
-                                                        suspect.suspect,
-                                                        suspect.room
-                                                    )
-                                                }
-                                                else -> {
-                                                    watchCard(
-                                                        bind.ivToolToken,
-                                                        bind.ivRoomToken,
-                                                        bind.ivSuspectToken,
-                                                        toolTokensBW,
-                                                        roomTokensBW,
-                                                        suspectTokensBW,
-                                                        suspectTokens,
-                                                        toolList,
-                                                        roomList,
-                                                        suspectList,
-                                                        suspect.tool,
-                                                        suspect.room,
-                                                        suspect.suspect
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    floatCard(revealedCard)
                 }
             }
             if (someoneShowedSomething)
@@ -351,12 +220,7 @@ class IncriminationDetailsViewModel(
         GlobalScope.launch(Dispatchers.Main) {
             val res = tokenList[nameList.indexOf(card.name)]
             val bwRes = tokenListBW[nameList.indexOf(card.name)]
-            for (j in 1..3) {
-                ivToken.setImageResource(bwRes)
-                delay(200)
-                ivToken.setImageResource(res)
-                delay(200)
-            }
+            blinkToken(ivToken, bwRes, res, 3, 200)
         }
 
         ivToken.setOnClickListener {
@@ -377,6 +241,8 @@ class IncriminationDetailsViewModel(
                         bind.detailsRoot.removeView(cautionTextView)
                     }
                 }
+
+                floatCard(card)
             }
             playerShowedCard = true
             bind.detailsRoot.btnOk.isEnabled = true
@@ -405,12 +271,150 @@ class IncriminationDetailsViewModel(
         val token: Int = targetTokenList[targetNameList.indexOf(targetName)]
 
         GlobalScope.launch(Dispatchers.Main) {
-            for (x in 1..3) {
-                targetImageView.setImageResource(bwToken)
-                delay(500)
-                targetImageView.setImageResource(token)
-                delay(500)
+            blinkToken(targetImageView, bwToken, token, 3, 200)
+        }
+    }
+
+    private fun floatCard(revealedCard: MysteryCard) {
+        val playerWhoSuspectsLayoutParams =
+            bind.ivPlayerWhoSuspects.layoutParams as ConstraintLayout.LayoutParams
+        val playerWhoShowsLayoutParams =
+            bind.ivPlayerWhoShows.layoutParams as ConstraintLayout.LayoutParams
+        val distance =
+            (screenWidth - playerWhoShowsLayoutParams.marginEnd - playerWhoShowsLayoutParams.matchConstraintPercentWidth * screenWidth) - (playerWhoSuspectsLayoutParams.marginStart + playerWhoSuspectsLayoutParams.matchConstraintPercentWidth * screenWidth)
+
+        val mysteryCardImage = ImageView(bind.detailsRoot.context)
+
+        val layoutParams =
+            ConstraintLayout.LayoutParams(MATCH_CONSTRAINT, MATCH_CONSTRAINT)
+        layoutParams.topToTop = bind.ivPlayerWhoShows.id
+        layoutParams.bottomToBottom = bind.ivPlayerWhoShows.id
+        layoutParams.endToStart = bind.ivPlayerWhoShows.id
+        layoutParams.matchConstraintPercentWidth =
+            playerWhoShowsLayoutParams.matchConstraintPercentWidth / 2
+        layoutParams.matchConstraintPercentHeight =
+            playerWhoShowsLayoutParams.matchConstraintPercentHeight / 2
+        mysteryCardImage.layoutParams = layoutParams
+
+        val miniCardWidth = layoutParams.matchConstraintPercentWidth * screenWidth
+        mysteryCardImage.translationX = miniCardWidth / 2
+        mysteryCardImage.setImageResource(R.drawable.rejtely_hatlap)
+        bind.detailsRoot.addView(mysteryCardImage)
+
+        (AnimatorInflater.loadAnimator(
+            bind.detailsRoot.context,
+            R.animator.appear
+        ) as AnimatorSet).apply {
+            setTarget(mysteryCardImage)
+            start()
+            ObjectAnimator.ofFloat(
+                mysteryCardImage,
+                "translationX",
+                mysteryCardImage.translationX,
+                mysteryCardImage.translationX - distance
+            ).apply {
+                duration = 4000
+                startDelay = 1000
+                start()
+                ObjectAnimator.ofFloat(
+                    mysteryCardImage,
+                    "translationY",
+                    mysteryCardImage.translationY,
+                    mysteryCardImage.translationY - 100f
+                ).apply {
+                    duration = 2000
+                    start()
+                    doOnEnd {
+                        ObjectAnimator.ofFloat(
+                            mysteryCardImage,
+                            "translationY",
+                            mysteryCardImage.translationY,
+                            mysteryCardImage.translationY + 100f
+                        ).apply {
+                            duration = 2000
+                            start()
+                        }
+                    }
+                }
+                doOnEnd {
+                    (AnimatorInflater.loadAnimator(
+                        bind.detailsRoot.context,
+                        R.animator.disappear
+                    ) as AnimatorSet).apply {
+                        setTarget(mysteryCardImage)
+                        start()
+                        doOnEnd {
+                            mysteryCardImage.visibility = ImageView.GONE
+                            bind.detailsRoot.removeView(mysteryCardImage)
+
+                            if (suspect.playerId == MapViewModel.mPlayerId) {
+                                when {
+                                    toolList.contains(revealedCard.name) -> {
+                                        watchCard(
+                                            bind.ivRoomToken,
+                                            bind.ivSuspectToken,
+                                            bind.ivToolToken,
+                                            roomTokensBW,
+                                            suspectTokensBW,
+                                            toolTokensBW,
+                                            toolTokens,
+                                            roomList,
+                                            suspectList,
+                                            toolList,
+                                            suspect.room,
+                                            suspect.suspect,
+                                            suspect.tool
+                                        )
+                                    }
+                                    roomList.contains(revealedCard.name) -> {
+                                        watchCard(
+                                            bind.ivToolToken,
+                                            bind.ivSuspectToken,
+                                            bind.ivRoomToken,
+                                            toolTokensBW,
+                                            suspectTokensBW,
+                                            roomTokensBW,
+                                            roomTokens,
+                                            toolList,
+                                            suspectList,
+                                            roomList,
+                                            suspect.tool,
+                                            suspect.suspect,
+                                            suspect.room
+                                        )
+                                    }
+                                    else -> {
+                                        watchCard(
+                                            bind.ivToolToken,
+                                            bind.ivRoomToken,
+                                            bind.ivSuspectToken,
+                                            toolTokensBW,
+                                            roomTokensBW,
+                                            suspectTokensBW,
+                                            suspectTokens,
+                                            toolList,
+                                            roomList,
+                                            suspectList,
+                                            suspect.tool,
+                                            suspect.room,
+                                            suspect.suspect
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
+        }
+    }
+
+    private suspend fun blinkToken(token: ImageView, bwRes: Int, res: Int, repeat: Int, delayTimeMillis: Long) {
+        for (x in 1..repeat) {
+            token.setImageResource(bwRes)
+            delay(delayTimeMillis)
+            token.setImageResource(res)
+            delay(delayTimeMillis)
         }
     }
 

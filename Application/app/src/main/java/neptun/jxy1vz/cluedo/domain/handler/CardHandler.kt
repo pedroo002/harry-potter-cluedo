@@ -8,7 +8,6 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
-import neptun.jxy1vz.cluedo.ui.fragment.cards.helper.HelperCardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
@@ -117,7 +116,7 @@ class CardHandler(private val map: MapViewModel.Companion) {
         }
     }
 
-    fun evaluateCard(playerId: Int, randomCard: Card, type: DiceRollerViewModel.CardType?) {
+    private fun evaluateCard(playerId: Int, randomCard: Card, type: DiceRollerViewModel.CardType?) {
         when (type) {
             DiceRollerViewModel.CardType.HELPER -> {
                 map.gameSequenceHandler.continueGame()
@@ -130,11 +129,6 @@ class CardHandler(private val map: MapViewModel.Companion) {
                     map.playerHandler.getPlayerById(playerId).helperCards = ArrayList()
                 }
                 map.playerHandler.getPlayerById(playerId).helperCards!!.add(randomCard as HelperCard)
-
-                if (playerId == player.id) {
-                    val fragment = HelperCardFragment(randomCard.imageRes, map.dialogHandler)
-                    map.insertFragment(fragment)
-                }
             }
             else -> {
                 GlobalScope.launch(Dispatchers.IO) {

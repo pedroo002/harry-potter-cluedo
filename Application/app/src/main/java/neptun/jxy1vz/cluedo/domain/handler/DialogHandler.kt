@@ -37,12 +37,6 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         NoteDialog(player, this).show(fm, NoteDialog.TAG)
     }
 
-    override fun onHelperCardDismiss() {
-        mapRoot.setScrollEnabled(true)
-        if (userFinishedHisTurn)
-            map.gameSequenceHandler.moveToNextPlayer()
-    }
-
     override fun onDarkCardDismiss(card: DarkCard?) {
         mapRoot.setScrollEnabled(true)
         isGameAbleToContinue = true
