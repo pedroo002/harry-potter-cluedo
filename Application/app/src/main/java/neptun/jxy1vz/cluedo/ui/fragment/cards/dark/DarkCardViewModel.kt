@@ -23,10 +23,10 @@ import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.domain.model.helper.safeIcons
 import neptun.jxy1vz.cluedo.domain.model.helper.unsafeIcons
-import neptun.jxy1vz.cluedo.ui.dialog.player_dies.UserDiesDialog
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.cards.card_loss.CardLossFragment
 import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesFragment
+import neptun.jxy1vz.cluedo.ui.fragment.user_dies.UserDiesFragment
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import kotlin.math.PI
 import kotlin.math.cos
@@ -189,13 +189,11 @@ class DarkCardViewModel(
                                         image.visibility = ImageView.GONE
                                         bind.darkCardRoot.removeView(image)
 
-                                        if (player.id == MapViewModel.player.id) {
-                                            UserDiesDialog(MapViewModel.dialogHandler).show(
-                                                MapViewModel.fm,
-                                                UserDiesDialog.TAG
-                                            )
+                                        if (player.id == MapViewModel.mPlayerId) {
+                                            val fragment = UserDiesFragment(player, MapViewModel.dialogHandler)
+                                            MapViewModel.insertFragment(fragment, true)
                                         }
-                                        else {
+                                        else if (MapViewModel.player.hp > 0) {
                                             MapViewModel.isGameAbleToContinue = false
                                             if (MapViewModel.playerInTurn == player.id)
                                                 MapViewModel.playerInTurnDied = true
@@ -282,7 +280,7 @@ class DarkCardViewModel(
                     val properHelperCards = getProperHelperCards(player, card.lossType)
 
                     if (properHelperCards.isNotEmpty()) {
-                        if (player.id == MapViewModel.player.id) {
+                        if (player.id == MapViewModel.mPlayerId) {
                             val title = when (card.lossType) {
                                 LossType.TOOL -> context.resources.getString(R.string.tool_loss)
                                 LossType.SPELL -> context.resources.getString(R.string.spell_loss)

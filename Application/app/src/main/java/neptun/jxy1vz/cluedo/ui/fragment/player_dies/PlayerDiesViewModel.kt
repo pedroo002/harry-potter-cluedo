@@ -20,7 +20,7 @@ class PlayerDiesViewModel(
 
     private lateinit var title: String
 
-    fun loadPage() {
+    init {
         val bwRes = bwPlayers[player.id]
         val res = player.card.imageRes
         bind.playerDiesRoot.ivDeadPlayer.setImageResource(bwRes)

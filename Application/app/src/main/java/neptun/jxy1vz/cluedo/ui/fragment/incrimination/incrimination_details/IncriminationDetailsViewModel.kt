@@ -50,7 +50,7 @@ class IncriminationDetailsViewModel(
     init {
         val layoutParams = bind.ivSuspectToken.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.bottomMargin =
-            ((bind.ivSuspectToken.layoutParams as ConstraintLayout.LayoutParams).matchConstraintPercentHeight * screenHeight / 2).toInt() // (context.resources.displayMetrics.densityDpi / 160)).toInt()
+            ((bind.ivSuspectToken.layoutParams as ConstraintLayout.LayoutParams).matchConstraintPercentHeight * screenHeight / 2).toInt()
         bind.ivSuspectToken.layoutParams = layoutParams
 
         bind.ivRoomToken.setImageResource(roomTokens[roomList.indexOf(suspect.room)])

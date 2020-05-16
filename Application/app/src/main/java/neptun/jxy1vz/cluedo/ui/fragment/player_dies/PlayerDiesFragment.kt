@@ -51,7 +51,6 @@ class PlayerDiesFragment(private val player: Player, private val listener: Dialo
     override fun onResume() {
         super.onResume()
         fragmentPlayerDiesBinding.vpCards.adapter = adapter
-        fragmentPlayerDiesBinding.playerDiesViewModel!!.loadPage()
     }
 
     override fun onFinish() {
