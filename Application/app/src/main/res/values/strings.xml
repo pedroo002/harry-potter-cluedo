@@ -175,6 +175,7 @@
     <string name="dark_prefix">DARK_%</string>
     <string name="helper_prefix">HELPER_%</string>
     <string name="game_solution">A rejtély megoldása ez volt:</string>
+    <string name="the_correct_solution">A helyes megoldás:</string>
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>

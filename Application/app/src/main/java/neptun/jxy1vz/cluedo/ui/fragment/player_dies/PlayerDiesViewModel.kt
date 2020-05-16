@@ -14,7 +14,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
 class PlayerDiesViewModel(
     private val bind: FragmentPlayerDiesBinding,
-    private val player: Player,
+    player: Player,
     private val listener: ViewModelListener
 ) : BaseObservable() {
 

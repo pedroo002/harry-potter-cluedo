@@ -20,7 +20,7 @@ import neptun.jxy1vz.cluedo.domain.model.helper.toolTokens
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 
-class UserDiesViewModel(private val bind: FragmentUserDiesBinding, private val context: Context, private val player: Player, private val listener: ViewModelListener) : BaseObservable() {
+class UserDiesViewModel(private val bind: FragmentUserDiesBinding, context: Context, player: Player, private val listener: ViewModelListener) : BaseObservable() {
 
     init {
         val bwRes = bwPlayers[player.id]
