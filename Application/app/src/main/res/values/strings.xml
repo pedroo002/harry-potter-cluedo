@@ -94,6 +94,7 @@
     <string name="slide_for_more">Lapozz oldalra a többiért!</string>
     <string name="game_params_pref">Game params</string>
     <string name="player_count_key">player_count</string>
+    <string name="play_mode_key">play_mode</string>
     <string name="database_name">CluedoDatabase</string>
     <string name="first_start_pref">FirstStart</string>
     <string name="helper_card_saved_him">Mentőkártyája megvédte őt a sötét erőkkel szemben.</string>
@@ -160,6 +161,8 @@
     <string name="dark_card31">Frics úr - a szokásosnál is gorombább hangulatban - befordul a sarkon.</string>
     <string name="dark_card32">A Griffendéles fiúk hálótermét kifosztották. Értékes dolgok tűntek el.</string>
     <string name="dark_card33">Cormac McLaggen szerelmi bájitallal átitatott édességet evett - és csak rád tud gondolni.</string>
+    <string name="single_player">Egyjátékos mód</string>
+    <string name="multi_player">Többjátékos mód</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
@@ -176,6 +179,8 @@
     <string name="helper_prefix">HELPER_%</string>
     <string name="game_solution">A rejtély megoldása ez volt:</string>
     <string name="the_correct_solution">A helyes megoldás:</string>
+    <string name="choose_from_each_game_mode_param">Válassz mindkét paraméterből egyet!</string>
+    <string name="cancel">Mégse</string>
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>

@@ -13,6 +13,8 @@ import neptun.jxy1vz.cluedo.domain.model.helper.DatabaseAccess
 
 class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
 
+    private lateinit var activityMenuBinding: ActivityMenuBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -29,10 +31,10 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
             editor.putBoolean(getString(R.string.first_start_pref), false)
         editor.apply()
 
-        val activityMenuBinding = DataBindingUtil.setContentView<ActivityMenuBinding>(this, R.layout.activity_menu)
+        activityMenuBinding = DataBindingUtil.setContentView(this, R.layout.activity_menu)
 
         val fm = supportFragmentManager
-        activityMenuBinding.menuViewModel = MenuViewModel(fm, this)
+        activityMenuBinding.menuViewModel = MenuViewModel(activityMenuBinding, fm, this)
     }
 
     override fun exitGame() {

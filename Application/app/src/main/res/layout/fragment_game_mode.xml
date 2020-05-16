@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/hogwarts_blur">
+
+    <data>
+
+        <variable
+            name="gameModeViewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.game_mode.GameModeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gameModeRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tvPlayerMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/player_mode"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivSinglePlayer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="20dp"
+            android:onClick="@{()->gameModeViewModel.selectPlayerMode(0)}"
+            android:src="@drawable/singleplayer"
+            app:layout_constraintEnd_toStartOf="@id/tvPlayerMode"
+            app:layout_constraintHeight_percent="0.12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvPlayerMode"
+            app:layout_constraintWidth_percent="0.2" />
+
+        <ImageView
+            android:id="@+id/ivMultiPlayer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="20dp"
+            android:onClick="@{()->gameModeViewModel.selectPlayerMode(1)}"
+            android:src="@drawable/multiplayer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.12"
+            app:layout_constraintStart_toEndOf="@id/tvPlayerMode"
+            app:layout_constraintTop_toBottomOf="@id/tvPlayerMode"
+            app:layout_constraintWidth_percent="0.2" />
+
+        <TextView
+            android:id="@+id/tvSinglePlayer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/single_player"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/ivSinglePlayer"
+            app:layout_constraintTop_toBottomOf="@id/ivSinglePlayer" />
+
+        <TextView
+            android:id="@+id/tvMultiPlayer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/multi_player"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/ivMultiPlayer"
+            app:layout_constraintTop_toBottomOf="@id/ivMultiPlayer" />
+
+        <TextView
+            android:id="@+id/tvPlayerCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/player_count"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSinglePlayer" />
+
+        <ImageView
+            android:id="@+id/ivPlayerCount3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:onClick="@{()->gameModeViewModel.selectPlayerCount(3)}"
+            android:src="@drawable/count3"
+            app:layout_constraintEnd_toStartOf="@id/ivPlayerCount4"
+            app:layout_constraintHeight_percent="0.12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvPlayerCount"
+            app:layout_constraintWidth_percent="0.2" />
+
+        <ImageView
+            android:id="@+id/ivPlayerCount4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:onClick="@{()->gameModeViewModel.selectPlayerCount(4)}"
+            android:src="@drawable/count4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvPlayerCount"
+            app:layout_constraintWidth_percent="0.2" />
+
+        <ImageView
+            android:id="@+id/ivPlayerCount5"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:onClick="@{()->gameModeViewModel.selectPlayerCount(5)}"
+            android:src="@drawable/count5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.12"
+            app:layout_constraintStart_toEndOf="@id/ivPlayerCount4"
+            app:layout_constraintTop_toBottomOf="@id/tvPlayerCount"
+            app:layout_constraintWidth_percent="0.2" />
+
+        <Button
+            android:id="@+id/btnSet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->gameModeViewModel.setGameMode()}"
+            android:text="@string/ok"
+            android:layout_marginTop="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivPlayerCount4" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnCancel"
+            android:text="@string/cancel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="10dp"
+            android:onClick="@{()->gameModeViewModel.cancel()}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
