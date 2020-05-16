@@ -9,10 +9,11 @@ import androidx.fragment.app.Fragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentGameModeBinding
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuListener
-import neptun.jxy1vz.cluedo.ui.dialog.character_selector.CharacterSelectorDialog
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
+import neptun.jxy1vz.cluedo.ui.fragment.character_selector.CharacterSelectorFragment
 
-class GameModeFragment(private val listener: MenuListener) : Fragment(), ViewModelListener {
+class GameModeFragment(private val listener: MenuListener) : Fragment(), ViewModelListener,
+    MenuListener {
 
     private lateinit var fragmentGameModeBinding: FragmentGameModeBinding
 
@@ -35,8 +36,15 @@ class GameModeFragment(private val listener: MenuListener) : Fragment(), ViewMod
     }
 
     override fun onFinish() {
-        if (!isCanceled)
-            CharacterSelectorDialog().show(activity!!.supportFragmentManager, "DIALOG_CHARACTER_SELECTOR")
+        if (!isCanceled) {
+            val characterFragment = CharacterSelectorFragment(this)
+            activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, characterFragment).commit()
+        }
+        else
+            onFragmentClose()
+    }
+
+    override fun onFragmentClose() {
         activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
         listener.onFragmentClose()
     }

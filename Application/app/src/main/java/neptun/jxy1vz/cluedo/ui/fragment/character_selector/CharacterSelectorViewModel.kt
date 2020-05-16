@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.dialog.character_selector
+package neptun.jxy1vz.cluedo.ui.fragment.character_selector
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
@@ -10,20 +10,17 @@ import android.widget.ArrayAdapter
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.databinding.DialogCharacterSelectorBinding
+import neptun.jxy1vz.cluedo.databinding.FragmentCharacterSelectorBinding
 import neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardActivity
+import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class CharacterSelectorViewModel(private val bind: DialogCharacterSelectorBinding, private val context: Context, private val listener: CharacterSelectorInterface) : BaseObservable(),
+class CharacterSelectorViewModel(private val bind: FragmentCharacterSelectorBinding, private val context: Context, private val listener: ViewModelListener) : BaseObservable(),
     AdapterView.OnItemSelectedListener {
 
-    interface CharacterSelectorInterface {
-        fun onGameStart()
-    }
-
-    private var playerId: Int = 0
+    private var playerId = -1
 
     init {
-        bind.spinnerCharacter.adapter = ArrayAdapter<String>(
+        bind.spinnerCharacter.adapter = ArrayAdapter(
             context,
             android.R.layout.simple_spinner_dropdown_item,
             context.resources.getStringArray(R.array.characters)
@@ -40,7 +37,7 @@ class CharacterSelectorViewModel(private val bind: DialogCharacterSelectorBindin
         mysteryCardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(mysteryCardIntent)
 
-        listener.onGameStart()
+        listener.onFinish()
     }
 
     private fun setPlayer(id: Int) {
@@ -61,7 +58,7 @@ class CharacterSelectorViewModel(private val bind: DialogCharacterSelectorBindin
             setTarget(bind.ivCharacterCard)
             start()
             doOnEnd {
-                bind.dialogViewModel!!.setPlayer(position)
+                setPlayer(position)
 
                 val img = when (position) {
                     0 -> R.drawable.szereplo_ginny

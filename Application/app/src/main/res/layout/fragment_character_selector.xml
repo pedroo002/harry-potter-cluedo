@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/hogwarts_blur">
 
     <data>
         <variable
-            name="dialogViewModel"
-            type="neptun.jxy1vz.cluedo.ui.dialog.character_selector.CharacterSelectorViewModel" />
+            name="characterSelectorViewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.character_selector.CharacterSelectorViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,7 +44,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:onClick="@{()->dialogViewModel.startGame()}"/>
+            android:onClick="@{()->characterSelectorViewModel.startGame()}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
