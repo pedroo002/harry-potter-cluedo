@@ -20,13 +20,13 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.pause
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.unusedMysteryCards
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userCanStep
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
 
@@ -34,7 +34,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
     DiceRollerFragment.DiceResultInterface {
     fun showOptions(playerId: Int) {
         if (isGameRunning) {
-            if (playerId == player.id && playerId == playerInTurn) {
+            if (playerId == mPlayerId && playerId == playerInTurn) {
                 val roomId = map.mapHandler.stepInRoom(player.pos)
                 val snackbar = Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.make_a_movement), Snackbar.LENGTH_LONG)
                 if (!userHasToStepOrIncriminate && userCanStep) {
@@ -52,7 +52,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
     }
 
     fun rollWithDice(playerId: Int) {
-        if (player.id != playerId) {
+        if (mPlayerId != playerId) {
             for (i in diceList.indices) {
                 val row = when (map.playerHandler.getPlayerById(playerId).pos.row) {
                     MapViewModel.ROWS -> MapViewModel.ROWS - 1
@@ -85,12 +85,12 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
         mapRoot.setHorizontalPanEnabled(true)
         mapRoot.setScrollEnabled(true)
         house?.let {
-            if (playerId == player.id)
+            if (playerId == mPlayerId)
                 map.stateMachineHandler.setState(playerId, it)
         }
         if (!pause)
             map.mapHandler.calculateMovingOptions(playerId, sum)
-        if (playerId == player.id)
+        if (playerId == mPlayerId)
             userHasToStepOrIncriminate = true
     }
 
@@ -116,7 +116,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
     }
 
     fun incrimination(playerId: Int, roomId: Int) {
-        if (playerId == player.id) {
+        if (playerId == mPlayerId) {
             if (roomId != 4) {
                 val fragment = IncriminationFragment(gameModels, playerId, roomId, this)
                 map.insertFragment(fragment)
@@ -188,7 +188,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
     override fun onIncriminationSkip() {
         if (userHasToIncriminate) {
             Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.you_have_to_incriminate), Snackbar.LENGTH_LONG).show()
-            incrimination(player.id, map.mapHandler.stepInRoom(player.pos))
+            incrimination(mPlayerId!!, map.mapHandler.stepInRoom(player.pos))
         }
         else
             Snackbar.make(mapRoot.mapLayout, mContext!!.resources.getString(R.string.make_a_movement), Snackbar.LENGTH_SHORT).show()
@@ -201,7 +201,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
     ) {
         if (playerWhoShowed != null && revealedMysteryCardName != null) {
             for (p in gameModels.playerList) {
-                if (p.id != playerWhoShowed && p.id != player.id) {
+                if (p.id != playerWhoShowed && p.id != mPlayerId) {
                     if (p.id == suspect.playerId)
                         p.getConclusion(revealedMysteryCardName, playerWhoShowed)
                     else
@@ -210,7 +210,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
             }
         } else {
             for (p in gameModels.playerList) {
-                if (p.id != player.id && suspect.playerId != p.id)
+                if (p.id != mPlayerId && suspect.playerId != p.id)
                     p.getSuspicion(suspect)
                 else if (p.id == suspect.playerId) {
                     for (suspectParam in listOf(suspect.room, suspect.tool, suspect.suspect))

@@ -20,6 +20,7 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.diceList
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.finishedCardCheck
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.selectionList
@@ -411,7 +412,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
 
         when {
             map.mapHandler.stepInRoom(map.playerHandler.getPlayerById(playerId).pos) != -1 -> {
-                if (playerId == MapViewModel.player.id) {
+                if (playerId == mPlayerId) {
                     MapViewModel.userHasToIncriminate = true
                     MapViewModel.userHasToStepOrIncriminate = false
                     MapViewModel.userCanStep = false
@@ -422,7 +423,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
                 )
             }
             map.mapHandler.stepInRoom(map.playerHandler.getPlayerById(playerId).pos) == -1 -> {
-                if (playerId != MapViewModel.player.id) {
+                if (playerId != mPlayerId) {
                     if (starStep) {
                         MapViewModel.otherPlayerStepsOnStar = true
                         map.interactionHandler.getCard(

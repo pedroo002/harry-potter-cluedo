@@ -11,7 +11,7 @@ import neptun.jxy1vz.cluedo.domain.model.Position
 import neptun.jxy1vz.cluedo.ui.fragment.cards.dark.DarkCardFragment
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerImagePairs
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.unusedMysteryCards
@@ -147,7 +147,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) {
             }
         }
 
-        val fragment = DarkCardFragment(player.id, card, gameModels.playerList, playerIds, map.dialogHandler)
+        val fragment = DarkCardFragment(mPlayerId!!, card, gameModels.playerList, playerIds, map.dialogHandler)
         map.insertFragment(fragment)
     }
 }

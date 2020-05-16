@@ -3,7 +3,7 @@ package neptun.jxy1vz.cluedo.domain.handler
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameRunning
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.savedDiceValue
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.savedHouse
@@ -46,14 +46,14 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
         if (isGameRunning) {
             map.cameraHandler.moveCameraToPlayer(playerInTurn)
 
-            if (playerInTurn != player.id)
+            if (playerInTurn != mPlayerId)
                 map.interactionHandler.rollWithDice(playerInTurn)
             else {
                 userFinishedHisTurn = false
                 userHasToIncriminate = false
                 userHasToStepOrIncriminate = false
                 userCanStep = true
-                map.interactionHandler.showOptions(player.id)
+                map.interactionHandler.showOptions(mPlayerId!!)
             }
         }
     }

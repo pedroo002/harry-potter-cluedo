@@ -8,8 +8,8 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gryffindorState
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.hufflepuffState
+import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapGraph
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.ravenclawState
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.slytherinState
 import java.util.*
@@ -129,7 +129,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
             }
         }
 
-        if (playerId == player.id) {
+        if (playerId == mPlayerId) {
             if (!distances.isNullOrEmpty()) {
                 for (x in 0..MapViewModel.COLS) {
                     for (y in 0..MapViewModel.ROWS) {

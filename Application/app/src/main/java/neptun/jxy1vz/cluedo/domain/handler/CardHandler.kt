@@ -17,7 +17,6 @@ import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.otherPlayerStepsOnStar
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
 import kotlin.math.abs
 
@@ -26,14 +25,14 @@ class CardHandler(private val map: MapViewModel.Companion) {
         if (!isGameRunning) {
             GlobalScope.launch(Dispatchers.Main) {
                 for (p in gameModels.playerList) {
-                    if (p.id != player.id) {
+                    if (p.id != mPlayerId) {
                         map.interactionHandler.getCard(p.id, DiceRollerViewModel.CardType.HELPER)
                         delay(5000)
                     }
                 }
-                map.cameraHandler.moveCameraToPlayer(player.id)
+                map.cameraHandler.moveCameraToPlayer(mPlayerId!!)
                 delay(1000)
-                map.interactionHandler.getCard(player.id, DiceRollerViewModel.CardType.HELPER)
+                map.interactionHandler.getCard(mPlayerId!!, DiceRollerViewModel.CardType.HELPER)
             }
         }
     }

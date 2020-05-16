@@ -1,7 +1,6 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
 import neptun.jxy1vz.cluedo.domain.model.DarkCard
-import neptun.jxy1vz.cluedo.domain.model.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 
