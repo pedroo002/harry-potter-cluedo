@@ -5,16 +5,16 @@ import android.widget.ImageView
 import kotlinx.android.synthetic.main.activity_map.view.*
 import neptun.jxy1vz.cluedo.domain.model.State
 import neptun.jxy1vz.cluedo.domain.model.boolean
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gryffindorState
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.hufflepuffState
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mPlayerId
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.ravenclawState
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.slytherinState
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gryffindorState
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.hufflepuffState
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapRoot
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.ravenclawState
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.slytherinState
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToStepOrIncriminate
 
 class StateMachineHandler(private val map: MapViewModel.Companion) {
     enum class HogwartsHouse {

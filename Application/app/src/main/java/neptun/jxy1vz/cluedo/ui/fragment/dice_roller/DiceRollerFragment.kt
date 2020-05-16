@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentDiceRollerBinding
 import neptun.jxy1vz.cluedo.domain.handler.StateMachineHandler
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 
 class DiceRollerFragment(private val listener: DiceResultInterface, private val playerId: Int, private val felixFelicis: Boolean) : Fragment(), DiceRollerViewModel.DiceFragmentListener {
 

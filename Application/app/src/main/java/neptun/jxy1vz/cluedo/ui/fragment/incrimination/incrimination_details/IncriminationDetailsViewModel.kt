@@ -24,7 +24,7 @@ import neptun.jxy1vz.cluedo.domain.model.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.domain.model.helper.*
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 
 class IncriminationDetailsViewModel(
     private val bind: FragmentIncriminationDetailsBinding,

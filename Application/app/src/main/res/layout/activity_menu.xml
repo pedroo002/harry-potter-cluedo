@@ -5,7 +5,7 @@
     <data>
         <variable
             name="menuViewModel"
-            type="neptun.jxy1vz.cluedo.ui.menu.MenuViewModel" />
+            type="neptun.jxy1vz.cluedo.ui.activity.menu.MenuViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

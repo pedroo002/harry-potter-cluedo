@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.mystery_cards
+package neptun.jxy1vz.cluedo.ui.activity.mystery_cards
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

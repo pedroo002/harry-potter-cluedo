@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.mystery_cards
+package neptun.jxy1vz.cluedo.ui.activity.mystery_cards
 
 import android.content.Context
 import android.content.Intent
@@ -15,7 +15,7 @@ import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
-import neptun.jxy1vz.cluedo.ui.map.MapActivity
+import neptun.jxy1vz.cluedo.ui.activity.map.MapActivity
 
 class MysteryCardViewModel(
     private val gameModel: GameModels,

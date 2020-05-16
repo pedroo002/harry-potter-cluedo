@@ -5,7 +5,7 @@
     <data>
         <variable
             name="mysteryCardViewModel"
-            type="neptun.jxy1vz.cluedo.ui.mystery_cards.MysteryCardViewModel" />
+            type="neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardViewModel" />
     </data>
 
         <androidx.constraintlayout.widget.ConstraintLayout

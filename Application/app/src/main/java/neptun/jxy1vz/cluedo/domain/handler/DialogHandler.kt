@@ -8,19 +8,19 @@ import neptun.jxy1vz.cluedo.ui.dialog.endgame.EndOfGameDialog
 import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
 import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.unused.UnusedMysteryCardsFragment
 import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.activityListener
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.finishedCardCheck
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameAbleToContinue
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameRunning
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.pause
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurnDied
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.unusedMysteryCards
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.activityListener
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.finishedCardCheck
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.fm
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameAbleToContinue
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapRoot
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.pause
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.player
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurnDied
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.unusedMysteryCards
 
 class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onIncriminationDetailsDismiss(needToTakeNotes: Boolean) {

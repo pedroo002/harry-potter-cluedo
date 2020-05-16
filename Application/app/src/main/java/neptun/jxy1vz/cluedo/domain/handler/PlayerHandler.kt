@@ -9,12 +9,12 @@ import neptun.jxy1vz.cluedo.domain.model.DarkType
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Position
 import neptun.jxy1vz.cluedo.ui.fragment.cards.dark.DarkCardFragment
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mPlayerId
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerImagePairs
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.unusedMysteryCards
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerImagePairs
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.unusedMysteryCards
 
 class PlayerHandler(private val map: MapViewModel.Companion) {
     fun useGateway(playerId: Int, from: Int, to: Int) {

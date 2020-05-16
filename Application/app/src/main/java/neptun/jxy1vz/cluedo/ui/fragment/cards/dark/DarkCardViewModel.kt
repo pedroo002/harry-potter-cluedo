@@ -27,7 +27,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.cards.card_loss.CardLossFragment
 import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesFragment
 import neptun.jxy1vz.cluedo.ui.fragment.user_dies.UserDiesFragment
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin

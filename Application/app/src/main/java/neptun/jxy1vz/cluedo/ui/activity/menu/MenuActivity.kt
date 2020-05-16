@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.menu
+package neptun.jxy1vz.cluedo.ui.activity.menu
 
 import android.content.Context
 import android.os.Bundle

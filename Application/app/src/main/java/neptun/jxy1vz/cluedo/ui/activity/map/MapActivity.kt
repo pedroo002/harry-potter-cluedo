@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.map
+package neptun.jxy1vz.cluedo.ui.activity.map
 
 import android.os.Bundle
 import android.widget.ImageView
@@ -15,7 +15,6 @@ import neptun.jxy1vz.cluedo.databinding.ActivityMapBinding
 import neptun.jxy1vz.cluedo.domain.handler.MapActivityListener
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
-import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 
 class MapActivity : AppCompatActivity(), MapActivityListener {
 

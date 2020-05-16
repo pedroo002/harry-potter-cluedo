@@ -1,17 +1,17 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameRunning
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mPlayerId
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.savedDiceValue
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.savedHouse
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.savedPlayerId
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userCanStep
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.savedDiceValue
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.savedHouse
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.savedPlayerId
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userCanStep
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userFinishedHisTurn
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToIncriminate
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToStepOrIncriminate
 
 class GameSequenceHandler(private val map: MapViewModel.Companion) {
     fun pause(playerId: Int, diceSum: Int, house: StateMachineHandler.HogwartsHouse?) {

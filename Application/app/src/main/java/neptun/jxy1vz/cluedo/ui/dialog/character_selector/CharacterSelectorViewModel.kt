@@ -11,7 +11,7 @@ import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.DialogCharacterSelectorBinding
-import neptun.jxy1vz.cluedo.ui.mystery_cards.MysteryCardActivity
+import neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardActivity
 
 class CharacterSelectorViewModel(private val bind: DialogCharacterSelectorBinding, private val context: Context, private val listener: CharacterSelectorInterface) : BaseObservable(),
     AdapterView.OnItemSelectedListener {

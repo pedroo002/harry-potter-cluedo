@@ -1,7 +1,7 @@
 package neptun.jxy1vz.cluedo.domain.model
 
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mContext
 
 class Player(
     val id: Int,

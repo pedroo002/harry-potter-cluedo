@@ -5,7 +5,7 @@
     <data>
         <variable
             name="mapViewModel"
-            type="neptun.jxy1vz.cluedo.ui.map.MapViewModel" />
+            type="neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel" />
     </data>
 
     <com.otaliastudios.zoom.ZoomLayout

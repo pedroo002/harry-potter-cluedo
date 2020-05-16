@@ -15,15 +15,15 @@ import kotlinx.coroutines.delay
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.diceList
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.finishedCardCheck
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mPlayerId
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.selectionList
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.diceList
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.finishedCardCheck
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mContext
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapRoot
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.selectionList
 import kotlin.math.abs
 import kotlin.random.Random
 

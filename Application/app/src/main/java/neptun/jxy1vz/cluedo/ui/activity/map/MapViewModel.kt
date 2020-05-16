@@ -1,7 +1,6 @@
-package neptun.jxy1vz.cluedo.ui.map
+package neptun.jxy1vz.cluedo.ui.activity.map
 
 import android.content.Context
-import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -55,7 +54,7 @@ class MapViewModel(
         lateinit var activityListener: MapActivityListener
 
         var otherPlayerStepsOnStar: Boolean = false
-        var playerInTurnAffected = false
+        private var playerInTurnAffected = false
         lateinit var player: Player
         lateinit var mapGraph: Graph<Position>
         var selectionList: ArrayList<ImageView> = ArrayList()
