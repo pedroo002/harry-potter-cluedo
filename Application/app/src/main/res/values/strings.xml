@@ -105,7 +105,7 @@
     <string name="he_lost_his_hps">elvesztette házpontjait, kiesett</string>
     <string name="his_mystery_cards">Rejtély kártyái ezek voltak:</string>
     <string name="someone_lost_hps">házpontokat vesztett</string>
-    <string name="select_from_every_parameter">Válassz minden sorból egyet!</string>
+    <string name="select_from_every_parameter">Válassz minden oszlopból egyet!</string>
     <string name="someone_solved_the_mystery">megoldotta a rejtélyt.</string>
     <string name="wrong_solution">rossz megoldást adott.</string>
     <string name="player_id_key">player_id</string>
