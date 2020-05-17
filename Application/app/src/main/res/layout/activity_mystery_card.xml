@@ -50,5 +50,15 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_margin="20dp"/>
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:id="@+id/ivLoadingScreen"
+                android:src="@drawable/loading_screen"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvLabelMysteryCards"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,8 +1,12 @@
 package neptun.jxy1vz.cluedo.ui.activity.mystery_cards
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.content.Context
 import android.content.Intent
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import androidx.fragment.app.FragmentManager
 import kotlinx.coroutines.Dispatchers
@@ -61,10 +65,17 @@ class MysteryCardViewModel(
                         )
                     )
             }
-            adapter = CardPagerAdapter(fm, fragmentList)
-            bind.cardPager.adapter = adapter
+            (AnimatorInflater.loadAnimator(context, R.animator.disappear) as AnimatorSet).apply {
+                setTarget(bind.ivLoadingScreen)
+                start()
+                doOnEnd {
+                    bind.ivLoadingScreen.visibility = ImageView.GONE
 
-            bind.btnGo.isEnabled = true
+                    adapter = CardPagerAdapter(fm, fragmentList)
+                    bind.cardPager.adapter = adapter
+                    bind.btnGo.isEnabled = true
+                }
+            }
         }
     }
 
