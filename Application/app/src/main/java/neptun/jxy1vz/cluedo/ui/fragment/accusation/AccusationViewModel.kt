@@ -37,11 +37,7 @@ class AccusationViewModel(private val playerId: Int, private val bind: FragmentA
     }
 
     fun finalize() {
-        if (selectedRoom.isEmpty() || selectedTool.isEmpty() || selectedSuspect.isEmpty()) {
-            Snackbar.make(bind.root, context.resources.getString(R.string.select_from_every_parameter), Snackbar.LENGTH_LONG).show()
-        }
-        else
-            listener.onFinalized(Suspect(playerId, selectedRoom, selectedTool, selectedSuspect))
+        listener.onFinalized(Suspect(playerId, selectedRoom, selectedTool, selectedSuspect))
     }
 
     fun selectRoom(idx: Int) {
@@ -55,6 +51,8 @@ class AccusationViewModel(private val playerId: Int, private val bind: FragmentA
         }
 
         notifyChange()
+        if (selectedTool.isNotEmpty() && selectedSuspect.isNotEmpty())
+            bind.btnValidate.isEnabled = true
     }
 
     fun selectTool(idx: Int) {
@@ -68,6 +66,8 @@ class AccusationViewModel(private val playerId: Int, private val bind: FragmentA
         }
 
         notifyChange()
+        if (selectedRoom.isNotEmpty() && selectedSuspect.isNotEmpty())
+            bind.btnValidate.isEnabled = true
     }
 
     fun selectSuspect(idx: Int) {
@@ -81,6 +81,8 @@ class AccusationViewModel(private val playerId: Int, private val bind: FragmentA
         }
 
         notifyChange()
+        if (selectedTool.isNotEmpty() && selectedRoom.isNotEmpty())
+            bind.btnValidate.isEnabled = true
     }
 
     fun getRoom(): String {

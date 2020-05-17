@@ -34,9 +34,7 @@ class IncriminationViewModel(
     private var finished = false
 
     fun finalize() {
-        if (tool.isEmpty() || suspect.isEmpty())
-            Snackbar.make(bind.root, context.getString(R.string.select_from_every_parameter), Snackbar.LENGTH_LONG).show()
-        else if (!finished) {
+        if (!finished) {
             listener.onIncriminationFinalization(tool, suspect)
             finished = true
         }
@@ -68,6 +66,8 @@ class IncriminationViewModel(
         }
 
         notifyChange()
+        if (suspect.isNotEmpty())
+            bind.btnValidate.isEnabled = true
     }
 
     fun selectSuspect(idx: Int) {
@@ -81,6 +81,8 @@ class IncriminationViewModel(
         }
 
         notifyChange()
+        if (tool.isNotEmpty())
+            bind.btnValidate.isEnabled = true
     }
 
     fun getRoom(): String {
