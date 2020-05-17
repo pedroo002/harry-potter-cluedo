@@ -16,8 +16,8 @@
     </style>
 
     <style name="Widget.Button.HarryPotterButtonStyle" parent="android:style/Widget.Button">
-        <item name="android:width">100dp</item>
-        <item name="android:height">30dp</item>
+        <item name="android:width">120dp</item>
+        <item name="android:height">35dp</item>
         <item name="backgroundTint">@color/buttonBackground</item>
         <item name="android:textColor">@color/buttonText</item>
         <item name="android:textStyle">bold</item>
