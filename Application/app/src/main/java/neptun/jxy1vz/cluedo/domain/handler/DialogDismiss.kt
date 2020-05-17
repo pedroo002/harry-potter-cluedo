@@ -12,5 +12,5 @@ interface DialogDismiss {
     fun onEndOfGameDismiss()
     fun onPlayerDiesDismiss(player: Player?)
     fun onNoteDismiss()
-    fun onOptionsDismiss(accusation: Boolean? = null)
+    fun onOptionsDismiss(accusation: Boolean)
 }

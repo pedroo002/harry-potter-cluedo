@@ -8,7 +8,6 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
-import neptun.jxy1vz.cluedo.ui.dialog.ChooseOptionDialog
 import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerFragment
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
@@ -16,7 +15,6 @@ import neptun.jxy1vz.cluedo.ui.fragment.incrimination.IncriminationFragment
 import neptun.jxy1vz.cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsFragment
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.diceList
-import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.fm
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mContext
@@ -29,6 +27,7 @@ import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.unusedMystery
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userCanStep
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToStepOrIncriminate
+import neptun.jxy1vz.cluedo.ui.fragment.choose_option.ChooseOptionFragment
 
 class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationFragment.MapInterface,
     DiceRollerFragment.DiceResultInterface {
@@ -81,9 +80,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
     }
 
     override fun onDiceRoll(playerId: Int, sum: Int, house: StateMachineHandler.HogwartsHouse?) {
-        mapRoot.setVerticalPanEnabled(true)
-        mapRoot.setHorizontalPanEnabled(true)
-        mapRoot.setScrollEnabled(true)
+        map.enableScrolling()
         house?.let {
             if (playerId == mPlayerId)
                 map.stateMachineHandler.setState(playerId, it)
@@ -122,11 +119,10 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                 map.insertFragment(fragment)
             }
             else {
-                if (unusedMysteryCards.isNotEmpty())
-                    ChooseOptionDialog(map.dialogHandler, userCanStep && !userHasToStepOrIncriminate).show(
-                        fm,
-                        ChooseOptionDialog.TAG
-                    )
+                if (unusedMysteryCards.isNotEmpty()) {
+                    val fragment = ChooseOptionFragment(userHasToStepOrIncriminate, map.dialogHandler)
+                    map.insertFragment(fragment)
+                }
                 else {
                     val fragment = AccusationFragment(playerId, map.dialogHandler)
                     map.insertFragment(fragment)

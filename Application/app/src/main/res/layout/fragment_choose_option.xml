@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/black_background">
+
+    <data>
+        <variable
+            name="chooseOptionViewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.choose_option.ChooseOptionViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/optionRoot">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTitle"
+            android:text="@string/purpose_in_room"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="10dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivWizengamot"
+            android:src="@drawable/wizengamot_bw"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintWidth_percent="0.4"
+            app:layout_constraintHeight_percent="0.7"
+            android:onClick="@{()->chooseOptionViewModel.selectOption(0)}"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivStep"
+            android:src="@drawable/footprints_forward1_bw"
+            app:layout_constraintStart_toEndOf="@id/ivWizengamot"
+            app:layout_constraintEnd_toStartOf="@id/ivCards"
+            app:layout_constraintBottom_toTopOf="@id/btnOk"
+            app:layout_constraintTop_toBottomOf="@id/tvStep"
+            android:layout_marginTop="10dp"
+            android:onClick="@{()->chooseOptionViewModel.selectOption(2)}"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivCards"
+            android:src="@drawable/check_out_cards_bw"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintWidth_percent="0.4"
+            app:layout_constraintHeight_percent="0.7"
+            android:onClick="@{()->chooseOptionViewModel.selectOption(1)}"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvAccusation"
+            android:text="@string/accusation"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="@id/ivWizengamot"
+            app:layout_constraintEnd_toEndOf="@id/ivWizengamot"
+            app:layout_constraintBottom_toTopOf="@id/ivWizengamot"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvCardCheck"
+            android:text="@string/check_cards"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="@id/ivCards"
+            app:layout_constraintEnd_toEndOf="@id/ivCards"
+            app:layout_constraintBottom_toTopOf="@id/ivCards"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvStep"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:text="@string/step"
+            app:layout_constraintStart_toStartOf="@id/ivStep"
+            app:layout_constraintEnd_toEndOf="@id/ivStep"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnOk"
+            android:text="@string/ok"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="10dp"
+            android:onClick="@{()->chooseOptionViewModel.finish()}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

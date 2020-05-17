@@ -21,9 +21,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 
 class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onIncriminationDetailsDismiss(needToTakeNotes: Boolean) {
-        mapRoot.setVerticalPanEnabled(true)
-        mapRoot.setHorizontalPanEnabled(true)
-        mapRoot.setScrollEnabled(true)
+        map.enableScrolling()
         if (needToTakeNotes) {
             val fragment = NoteFragment(player, this)
             map.insertFragment(fragment)
@@ -32,17 +30,14 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onCardRevealDismiss() {
-        mapRoot.setVerticalPanEnabled(true)
-        mapRoot.setHorizontalPanEnabled(true)
-        mapRoot.setScrollEnabled(true)
+        map.enableScrolling()
+        map.uiHandler.emptySelectionList()
         val fragment = NoteFragment(player, this)
         map.insertFragment(fragment)
     }
 
     override fun onDarkCardDismiss(card: DarkCard?) {
-        mapRoot.setVerticalPanEnabled(true)
-        mapRoot.setHorizontalPanEnabled(true)
-        mapRoot.setScrollEnabled(true)
+        map.enableScrolling()
 
         finishedCardCheck = true
         isGameAbleToContinue = true
@@ -54,9 +49,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onAccusationDismiss(suspect: Suspect) {
-        mapRoot.setVerticalPanEnabled(true)
-        mapRoot.setHorizontalPanEnabled(true)
-        mapRoot.setScrollEnabled(true)
+        map.enableScrolling()
         val fragment = EndOfGameFragment(suspect, this)
         map.insertFragment(fragment)
         isGameRunning = false
@@ -79,9 +72,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onNoteDismiss() {
         if (!isGameAbleToContinue)
             return
-        mapRoot.setVerticalPanEnabled(true)
-        mapRoot.setHorizontalPanEnabled(true)
-        mapRoot.setScrollEnabled(true)
+        map.enableScrolling()
 
         if (!isGameRunning)
             map.cardHandler.handOutHelperCards()
@@ -91,16 +82,13 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
             map.gameSequenceHandler.moveToNextPlayer()
     }
 
-    override fun onOptionsDismiss(accusation: Boolean?) {
-        accusation?.let {
-            if (accusation) {
-                val fragment = AccusationFragment(playerInTurn, this)
-                map.insertFragment(fragment)
-            } else {
-                val fragment = UnusedMysteryCardsFragment(this, unusedMysteryCards)
-                map.insertFragment(fragment)
-            }
-            return
+    override fun onOptionsDismiss(accusation: Boolean) {
+        if (accusation) {
+            val fragment = AccusationFragment(playerInTurn, this)
+            map.insertFragment(fragment)
+        } else {
+            val fragment = UnusedMysteryCardsFragment(this, unusedMysteryCards)
+            map.insertFragment(fragment)
         }
     }
 }
