@@ -132,6 +132,7 @@
 
         <Button
             android:id="@+id/btnSet"
+            android:enabled="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="@{()->gameModeViewModel.setGameMode()}"

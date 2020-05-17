@@ -218,6 +218,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             path.add(0, origin)
         }
         else {
+            //ha ajtóból indulok, nem jó
             val img = when (getDirection(start, path[0])) {
                 "W" -> forwardFeet[2]
                 "A" -> leftFeet[2]

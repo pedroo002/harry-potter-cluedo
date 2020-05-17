@@ -7,6 +7,8 @@ import android.content.Intent
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_character_selector.view.*
+import kotlinx.android.synthetic.main.fragment_game_mode.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCharacterSelectorBinding
 import neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardActivity
@@ -43,19 +45,12 @@ class CharacterSelectorViewModel(private val bind: FragmentCharacterSelectorBind
         bind.ivNeville
     )
 
-    private val playerNameList = context.resources.getStringArray(R.array.characters)
-
     init {
         val scale = context.resources.displayMetrics.density
         bind.ivCharacterCard.cameraDistance = 8000 * scale
     }
 
     fun startGame() {
-        if (playerId == -1) {
-            Snackbar.make(bind.characterSelectorRoot, context.resources.getString(R.string.choose_a_character), Snackbar.LENGTH_SHORT).show()
-            return
-        }
-
         val mysteryCardIntent = Intent(context, MysteryCardActivity::class.java)
         mysteryCardIntent.putExtra(context.resources.getString(R.string.player_id), playerId)
         mysteryCardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -65,6 +60,8 @@ class CharacterSelectorViewModel(private val bind: FragmentCharacterSelectorBind
     }
 
     fun setPlayer(id: Int) {
+        bind.characterSelectorRoot.btnStart.isEnabled = true
+
         playerId = id
         val pref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
         val editor = pref.edit()

@@ -26,6 +26,9 @@ class GameModeViewModel(private val bind: FragmentGameModeBinding, private val c
                 bind.gameModeRoot.ivMultiPlayer.setImageResource(R.drawable.multiplayer_selected)
             }
         }
+
+        if (gameMode.isNotEmpty() && playerCount != 0)
+            bind.gameModeRoot.btnSet.isEnabled = true
     }
 
     fun selectPlayerCount(count: Int) {
@@ -48,14 +51,12 @@ class GameModeViewModel(private val bind: FragmentGameModeBinding, private val c
                 bind.gameModeRoot.ivPlayerCount5.setImageResource(R.drawable.count5selected)
             }
         }
+
+        if (gameMode.isNotEmpty() && playerCount != 0)
+            bind.gameModeRoot.btnSet.isEnabled = true
     }
 
     fun setGameMode() {
-        if (gameMode.isEmpty() || playerCount == 0) {
-            Snackbar.make(bind.gameModeRoot, context.getString(R.string.choose_from_each_game_mode_param), Snackbar.LENGTH_SHORT).show()
-            return
-        }
-
         val pref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
         val editor = pref.edit()
         editor.putString(context.resources.getString(R.string.play_mode_key), gameMode)

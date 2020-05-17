@@ -35,17 +35,11 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
         if (isGameRunning) {
             if (playerId == mPlayerId && playerId == playerInTurn) {
                 val roomId = map.mapHandler.stepInRoom(player.pos)
-                val snackbar = Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.make_a_movement), Snackbar.LENGTH_LONG)
                 if (!userHasToStepOrIncriminate && userCanStep) {
-                    snackbar.setAction(mContext!!.getString(R.string.dice_rolling)) { rollWithDice(playerId) }
-                    snackbar.show()
+                    rollWithDice(playerId)
                 } else if (roomId != -1) {
-                    val title = if (roomId == 4) mContext!!.getString(R.string.your_options) else mContext!!.resources.getString(R.string.incrimination)
-                    snackbar.setAction(title) { incrimination(playerId, roomId) }
-                    snackbar.show()
+                    incrimination(playerId, roomId)
                 }
-                else
-                    Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.you_have_to_step), Snackbar.LENGTH_LONG).show()
             }
         }
     }
@@ -183,11 +177,9 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
 
     override fun onIncriminationSkip() {
         if (userHasToIncriminate) {
-            Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.you_have_to_incriminate), Snackbar.LENGTH_LONG).show()
+            //ide valami üzenet
             incrimination(mPlayerId!!, map.mapHandler.stepInRoom(player.pos))
         }
-        else
-            Snackbar.make(mapRoot.mapLayout, mContext!!.resources.getString(R.string.make_a_movement), Snackbar.LENGTH_SHORT).show()
     }
 
     fun letOtherPlayersKnow(

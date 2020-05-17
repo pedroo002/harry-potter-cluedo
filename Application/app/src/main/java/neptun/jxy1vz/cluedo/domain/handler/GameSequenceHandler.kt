@@ -53,7 +53,7 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
                 userHasToIncriminate = false
                 userHasToStepOrIncriminate = false
                 userCanStep = true
-                map.interactionHandler.showOptions(mPlayerId!!)
+                //valami üzenet, hogy én jövök
             }
         }
     }
