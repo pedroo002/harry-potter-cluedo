@@ -16,7 +16,7 @@ class MenuViewModel(private val bind: ActivityMenuBinding, private val fragmentM
 
     fun openGameModeDialog() {
         val gameModeFragment = GameModeFragment(this)
-        fragmentManager.beginTransaction().replace(R.id.menuFrame, gameModeFragment).commit()
+        fragmentManager.beginTransaction().add(R.id.menuFrame, gameModeFragment).addToBackStack(gameModeFragment.toString()).commit()
         bind.menuFrame.bringToFront()
 
         bind.btnStart.visibility = View.GONE

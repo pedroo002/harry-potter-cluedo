@@ -181,6 +181,7 @@
     <string name="the_correct_solution">A helyes megoldás:</string>
     <string name="choose_from_each_game_mode_param">Válassz mindkét paraméterből egyet!</string>
     <string name="cancel">Mégse</string>
+    <string name="choose_your_character">Válassz karaktert magadnak!</string>
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>
