@@ -9,15 +9,17 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vpCards"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
         android:layout_weight="9"/>
 
     <Button
         android:id="@+id/btnOk"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="center"
         android:text="@string/ok"
+        android:layout_margin="10dp"
         android:layout_weight="1"/>
 
 </LinearLayout>
