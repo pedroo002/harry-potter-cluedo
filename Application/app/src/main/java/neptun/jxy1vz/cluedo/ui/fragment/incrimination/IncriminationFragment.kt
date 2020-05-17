@@ -10,6 +10,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentIncriminationBinding
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 
 class IncriminationFragment(private val gameModels: GameModels,
                             private val playerId: Int,
@@ -19,7 +20,6 @@ class IncriminationFragment(private val gameModels: GameModels,
 
     interface MapInterface {
         fun getIncrimination(suspect: Suspect)
-        fun onIncriminationSkip()
     }
 
     private lateinit var fragmentIncriminationBinding: FragmentIncriminationBinding
@@ -32,6 +32,7 @@ class IncriminationFragment(private val gameModels: GameModels,
         fragmentIncriminationBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_incrimination, container, false)
         val roomName = gameModels.roomList[roomId].name
         fragmentIncriminationBinding.incriminationViewModel = IncriminationViewModel(fragmentIncriminationBinding, context!!, roomName, this)
+        fragmentIncriminationBinding.btnSkip.isEnabled = !MapViewModel.userHasToIncriminate
         return fragmentIncriminationBinding.root
     }
 
@@ -41,7 +42,6 @@ class IncriminationFragment(private val gameModels: GameModels,
     }
 
     override fun onSkip() {
-        listener.onIncriminationSkip()
         activity?.supportFragmentManager!!.beginTransaction().remove(this).commit()
     }
 }

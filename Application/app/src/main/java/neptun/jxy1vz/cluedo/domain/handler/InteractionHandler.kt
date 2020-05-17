@@ -175,13 +175,6 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
         }
     }
 
-    override fun onIncriminationSkip() {
-        if (userHasToIncriminate) {
-            //ide valami üzenet
-            incrimination(mPlayerId!!, map.mapHandler.stepInRoom(player.pos))
-        }
-    }
-
     fun letOtherPlayersKnow(
         suspect: Suspect,
         playerWhoShowed: Int? = null,
