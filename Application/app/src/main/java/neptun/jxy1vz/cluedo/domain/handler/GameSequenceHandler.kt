@@ -1,5 +1,10 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
+import android.widget.ImageView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
@@ -53,7 +58,16 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
                 userHasToIncriminate = false
                 userHasToStepOrIncriminate = false
                 userCanStep = true
-                //valami üzenet, hogy én jövök
+
+                GlobalScope.launch(Dispatchers.Main) {
+                    val tileToBlink = map.playerHandler.getPairById(mPlayerId!!).second
+                    for (i in 1..3) {
+                        tileToBlink.visibility = ImageView.GONE
+                        delay(200)
+                        tileToBlink.visibility = ImageView.VISIBLE
+                        delay(200)
+                    }
+                }
             }
         }
     }
