@@ -176,6 +176,7 @@ class IncriminationDetailsViewModel(
         }
         if (!someoneShowedSomething) {
             MapViewModel.interactionHandler.letOtherPlayersKnow(suspect)
+            bind.detailsRoot.ivPlayerWhoShows.setImageResource(R.drawable.szereplo_hatlap)
 
             val crossImage = ImageView(bind.detailsRoot.context)
             val layoutParams = ConstraintLayout.LayoutParams(MATCH_CONSTRAINT, MATCH_CONSTRAINT)
