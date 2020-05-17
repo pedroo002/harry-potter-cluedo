@@ -502,21 +502,21 @@ class DatabaseAccess(private val context: Context) {
         MysteryCard(
             8,
             suspectNames[2],
-            R.drawable.rejtely_dolores_umbridge,
+            R.drawable.rejtely_draco_malfoy,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             9,
             suspectNames[3],
-            R.drawable.rejtely_draco_malfoy,
+            R.drawable.rejtely_lucius_malfoy,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             10,
             suspectNames[4],
-            R.drawable.rejtely_lucius_malfoy,
+            R.drawable.rejtely_dolores_umbridge,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
