@@ -424,7 +424,7 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
         bind.svNotepad.noteLayout.addView(image)
     }
 
-    fun saveNotes() {
+    private fun saveNotes() {
         GlobalScope.launch(Dispatchers.IO) {
             interactor.eraseNotes()
             interactor.insertIntoNotes(noteList.map { note -> note.toDatabaseModel() })
