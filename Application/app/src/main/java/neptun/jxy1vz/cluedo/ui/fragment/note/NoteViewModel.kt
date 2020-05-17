@@ -25,6 +25,11 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 class NoteViewModel(context: Context, player: Player, private val bind: FragmentNoteBinding, private val listener: ViewModelListener) : BaseObservable() {
 
     private val interactor = Interactor(CluedoDatabase.getInstance(context))
+    private val ownCards = player.mysteryCards
+
+    private val suspectNames = context.resources.getStringArray(R.array.suspects)
+    private val toolNames = context.resources.getStringArray(R.array.tools)
+    private val roomNames = context.resources.getStringArray(R.array.rooms)
 
     private var guidelineTop: Guideline? = null
     private var guidelineLeft: Guideline? = null
@@ -295,6 +300,19 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
             iv.visibility = ImageView.GONE
             bind.svNotepad.noteLayout.addView(iv)
             conclusionList.add(iv)
+        }
+
+        for (card in ownCards) {
+            val params = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+            )
+            params.setMargins(0, 0, 20, 0)
+            when {
+                suspectNames.contains(card.name) -> noteInCell(ownName, cols[0], cols[1], rowsSuspects[suspectNames.indexOf(card.name) + 1], rowsSuspects[suspectNames.indexOf(card.name) + 2], params)
+                toolNames.contains(card.name) -> noteInCell(ownName, cols[0], cols[1], rowsTools[toolNames.indexOf(card.name) + 1], rowsTools[toolNames.indexOf(card.name) + 2], params)
+                else -> noteInCell(ownName, cols[0], cols[1], rowsVenues[roomNames.indexOf(card.name) + 1], rowsVenues[roomNames.indexOf(card.name) + 2], params)
+            }
         }
     }
 

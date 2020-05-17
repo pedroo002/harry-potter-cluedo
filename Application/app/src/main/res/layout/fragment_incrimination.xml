@@ -149,19 +149,11 @@
                             android:src="@drawable/suspect_crak_and_monstro_bw" />
 
                         <ImageView
-                            android:id="@+id/ivSuspectUmbridge"
-                            android:layout_width="150dp"
-                            android:layout_height="150dp"
-                            android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectSuspect(2)}"
-                            android:src="@drawable/suspect_dolores_umbridge_bw" />
-
-                        <ImageView
                             android:id="@+id/ivSuspectDraco"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectSuspect(3)}"
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(2)}"
                             android:src="@drawable/suspect_draco_malfoy_bw" />
 
                         <ImageView
@@ -169,8 +161,16 @@
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectSuspect(4)}"
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(3)}"
                             android:src="@drawable/suspect_lucius_malfoy_bw" />
+
+                        <ImageView
+                            android:id="@+id/ivSuspectUmbridge"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(4)}"
+                            android:src="@drawable/suspect_dolores_umbridge_bw" />
 
                         <ImageView
                             android:id="@+id/ivSuspectFeregfark"

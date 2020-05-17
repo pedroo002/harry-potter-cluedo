@@ -14,9 +14,9 @@ val toolTokens = listOf(
 val suspectTokens = listOf(
     R.drawable.suspect_bellatrix_lestrange,
     R.drawable.suspect_crak_and_monstro,
-    R.drawable.suspect_dolores_umbridge,
     R.drawable.suspect_draco_malfoy,
     R.drawable.suspect_lucius_malfoy,
+    R.drawable.suspect_dolores_umbridge,
     R.drawable.suspect_peter_pettigrew
 )
 
@@ -44,9 +44,9 @@ val toolTokensBW = listOf(
 val suspectTokensBW = listOf(
     R.drawable.suspect_bellatrix_lestrange_bw,
     R.drawable.suspect_crak_and_monstro_bw,
-    R.drawable.suspect_dolores_umbridge_bw,
     R.drawable.suspect_draco_malfoy_bw,
     R.drawable.suspect_lucius_malfoy_bw,
+    R.drawable.suspect_dolores_umbridge_bw,
     R.drawable.suspect_peter_pettigrew_bw
 )
 

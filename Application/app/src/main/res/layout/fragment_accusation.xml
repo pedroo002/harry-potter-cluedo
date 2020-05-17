@@ -310,22 +310,11 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/ivSuspectUmbridge"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:layout_margin="20dp"
-                        android:onClick="@{()->accusationViewModel.selectSuspect(2)}"
-                        android:src="@drawable/suspect_dolores_umbridge_bw"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/ivSuspectCrakEsMonstro"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
                         android:id="@+id/ivSuspectDraco"
                         android:layout_width="200dp"
                         android:layout_height="200dp"
                         android:layout_margin="20dp"
-                        android:onClick="@{()->accusationViewModel.selectSuspect(3)}"
+                        android:onClick="@{()->accusationViewModel.selectSuspect(2)}"
                         android:src="@drawable/suspect_draco_malfoy_bw"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/ivSuspectUmbridge"
@@ -336,10 +325,21 @@
                         android:layout_width="200dp"
                         android:layout_height="200dp"
                         android:layout_margin="20dp"
-                        android:onClick="@{()->accusationViewModel.selectSuspect(4)}"
+                        android:onClick="@{()->accusationViewModel.selectSuspect(3)}"
                         android:src="@drawable/suspect_lucius_malfoy_bw"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/ivSuspectDraco"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/ivSuspectUmbridge"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_margin="20dp"
+                        android:onClick="@{()->accusationViewModel.selectSuspect(4)}"
+                        android:src="@drawable/suspect_dolores_umbridge_bw"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivSuspectCrakEsMonstro"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView

@@ -207,9 +207,9 @@
     <string-array name="suspects">
         <item>Bellatrix Lestrange</item>
         <item>Crak és Monstro</item>
-        <item>Dolores Umbridge</item>
         <item>Draco Malfoy</item>
         <item>Lucius Malfoy</item>
+        <item>Dolores Umbridge</item>
         <item>Peter Pettigrew</item>
     </string-array>
 
