@@ -21,6 +21,8 @@
                 android:id="@+id/tvLabelMysteryCards"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_margin="20dp"
                 android:text="@string/your_mystery_cards"
                 android:textSize="20sp"

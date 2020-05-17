@@ -6,6 +6,7 @@
     <color name="white">#FFFFFF</color>
     <color name="red">#FF0000</color>
     <color name="green">#00FF00</color>
+    <color name="black">#000000</color>
     <color name="buttonBackground">#DBD1C0</color>
     <color name="buttonText">#4F3217</color>
     <color name="disabledButtonText">#D2B48C</color>
