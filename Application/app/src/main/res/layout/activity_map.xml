@@ -5,19 +5,19 @@
     <data>
         <variable
             name="mapViewModel"
-            type="neptun.jxy1vz.cluedo.ui.map.MapViewModel" />
+            type="neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel" />
     </data>
 
     <com.otaliastudios.zoom.ZoomLayout
         android:id="@+id/mapRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical|horizontal"
+        android:scrollbars="none"
         app:transformation="centerCrop"
         app:transformationGravity="auto"
         app:alignment="center"
-        app:overScrollHorizontal="true"
-        app:overScrollVertical="true"
+        app:overScrollHorizontal="false"
+        app:overScrollVertical="false"
         app:overPinchable="true"
         app:horizontalPanEnabled="true"
         app:verticalPanEnabled="true"
@@ -1202,6 +1202,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/ivSzuksegSzobajaToSVKJobb" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/dialogFrame"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
     </com.otaliastudios.zoom.ZoomLayout>

@@ -3,60 +3,49 @@ package neptun.jxy1vz.cluedo.domain.handler
 import android.widget.ImageView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_map.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
-import neptun.jxy1vz.cluedo.ui.dialog.ChooseOptionDialog
-import neptun.jxy1vz.cluedo.ui.dialog.accusation.AccusationDialog
-import neptun.jxy1vz.cluedo.ui.dialog.card_dialog.reveal_mystery_card.CardRevealDialog
-import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerDialog
-import neptun.jxy1vz.cluedo.ui.dialog.dice.DiceRollerViewModel
-import neptun.jxy1vz.cluedo.ui.dialog.incrimination.IncriminationDialog
-import neptun.jxy1vz.cluedo.ui.dialog.information.InformationDialog
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.diceList
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.fm
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameRunning
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.pause
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.unusedMysteryCards
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userCanStep
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
-import kotlin.random.Random
+import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerFragment
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
+import neptun.jxy1vz.cluedo.ui.fragment.incrimination.IncriminationFragment
+import neptun.jxy1vz.cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsFragment
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.diceList
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mContext
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapRoot
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.pause
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.player
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.unusedMysteryCards
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userCanStep
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToIncriminate
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToStepOrIncriminate
+import neptun.jxy1vz.cluedo.ui.fragment.choose_option.ChooseOptionFragment
 
-class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationDialog.MapInterface, DiceRollerDialog.DiceResultInterface {
+class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationFragment.MapInterface,
+    DiceRollerFragment.DiceResultInterface {
     fun showOptions(playerId: Int) {
         if (isGameRunning) {
-            if (playerId == player.id && playerId == playerInTurn) {
+            if (playerId == mPlayerId && playerId == playerInTurn) {
                 val roomId = map.mapHandler.stepInRoom(player.pos)
-                val snackbar = Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.make_a_movement), Snackbar.LENGTH_LONG)
                 if (!userHasToStepOrIncriminate && userCanStep) {
-                    snackbar.setAction(mContext!!.getString(R.string.dice_rolling)) { rollWithDice(playerId) }
-                    snackbar.show()
+                    rollWithDice(playerId)
                 } else if (roomId != -1) {
-                    val title = if (roomId == 4) mContext!!.getString(R.string.your_options) else mContext!!.resources.getString(R.string.incrimination)
-                    snackbar.setAction(title) { incrimination(playerId, roomId) }
-                    snackbar.show()
+                    incrimination(playerId, roomId)
                 }
-                else
-                    Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.you_have_to_step), Snackbar.LENGTH_LONG).show()
             }
         }
     }
 
     fun rollWithDice(playerId: Int) {
-        if (player.id != playerId) {
+        if (mPlayerId != playerId) {
             for (i in diceList.indices) {
                 val row = when (map.playerHandler.getPlayerById(playerId).pos.row) {
                     MapViewModel.ROWS -> MapViewModel.ROWS - 1
@@ -78,18 +67,21 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
 
                 diceList[i].startAnimation(map.anim)
             }
-        } else
-            DiceRollerDialog(this, playerId, player.hasFelixFelicis()).show(fm, DiceRollerDialog.TAG)
+        } else {
+            val fragment = DiceRollerFragment(this, playerId, player.hasFelixFelicis())
+            map.insertFragment(fragment)
+        }
     }
 
     override fun onDiceRoll(playerId: Int, sum: Int, house: StateMachineHandler.HogwartsHouse?) {
+        map.enableScrolling()
         house?.let {
-            if (playerId == player.id)
+            if (playerId == mPlayerId)
                 map.stateMachineHandler.setState(playerId, it)
         }
         if (!pause)
             map.mapHandler.calculateMovingOptions(playerId, sum)
-        if (playerId == player.id)
+        if (playerId == mPlayerId)
             userHasToStepOrIncriminate = true
     }
 
@@ -98,38 +90,37 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
             return
         GlobalScope.launch(Dispatchers.IO) {
             val randomCard = when (type) {
-                DiceRollerViewModel.CardType.HELPER -> gameModels.db.getCardBySuperType(
-                    playerId,
-                    mContext!!.getString(R.string.helper_prefix)
-                ) as? HelperCard
+                DiceRollerViewModel.CardType.HELPER -> {
+                    gameModels.db.getCardBySuperType(
+                        playerId,
+                        mContext!!.getString(R.string.helper_prefix)
+                    ) as? HelperCard
+                }
                 else -> gameModels.db.getCardBySuperType(playerId, mContext!!.getString(R.string.dark_prefix)) as? DarkCard
             }
                 ?: return@launch
 
             withContext(Dispatchers.Main) {
-                if (playerId != player.id) {
-                    map.cardHandler.showCard(playerId, randomCard, type)
-                } else
-                    map.cardHandler.evaluateCard(playerId, randomCard, type)
+                map.cardHandler.showCard(playerId, randomCard, type)
             }
         }
     }
 
     fun incrimination(playerId: Int, roomId: Int) {
-        if (playerId == player.id) {
-            if (roomId != 4)
-                IncriminationDialog(gameModels, playerId, roomId, this).show(
-                    fm,
-                    IncriminationDialog.TAG
-                )
+        if (playerId == mPlayerId) {
+            if (roomId != 4) {
+                val fragment = IncriminationFragment(gameModels, playerId, roomId, this)
+                map.insertFragment(fragment)
+            }
             else {
-                if (unusedMysteryCards.isNotEmpty())
-                    ChooseOptionDialog(map.dialogHandler, userCanStep && !userHasToStepOrIncriminate).show(
-                        fm,
-                        ChooseOptionDialog.TAG
-                    )
-                else
-                    AccusationDialog(playerId, map.dialogHandler).show(fm, AccusationDialog.TAG)
+                if (unusedMysteryCards.isNotEmpty()) {
+                    val fragment = ChooseOptionFragment(userHasToStepOrIncriminate, map.dialogHandler)
+                    map.insertFragment(fragment)
+                }
+                else {
+                    val fragment = AccusationFragment(playerId, map.dialogHandler)
+                    map.insertFragment(fragment)
+                }
             }
         } else {
             val room = gameModels.roomList[roomId].name
@@ -161,7 +152,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                         hasConclusionsOfThem = false
                 }
                 if (hasConclusionsOfThem)
-                    map.dialogHandler.onAccusationDismiss(map.playerHandler.getPlayerById(playerId).solution)
+                    map.dialogHandler.onAccusationDismiss(map.playerHandler.getPlayerById(playerId).solution!!)
                 else {
                     for (card in unusedMysteryCards) {
                         map.playerHandler.getPlayerById(playerId).getConclusion(card.name, -2)
@@ -177,57 +168,11 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
 
     override fun getIncrimination(suspect: Suspect) {
         map.uiHandler.emptySelectionList()
-
-        if (suspect.playerId != player.id) {
-            val title = map.playerHandler.getPlayerById(suspect.playerId).card.name + mContext!!.getString(
-                            R.string.some_one_incriminates)
-            val message =
-                mContext!!.getString(R.string.in_this_room) + suspect.room + "\n" + mContext!!.getString(
-                                    R.string.with_this_tool) + suspect.tool + "\n" + mContext!!.getString(
-                                                        R.string.suspect_person) + suspect.suspect
-            InformationDialog(suspect, title, message, map.dialogHandler).show(fm, InformationDialog.TAG)
-        } else {
-            var someoneShowedSomething = false
-            var playerIdx = gameModels.playerList.indexOf(map.playerHandler.getPlayerById(suspect.playerId))
-            for (i in 0 until gameModels.playerList.size - 1) {
-                playerIdx--
-                if (playerIdx < 0)
-                    playerIdx = gameModels.playerList.lastIndex
-                val cards =
-                    map.cardHandler.revealMysteryCards(playerIdx, suspect.room, suspect.tool, suspect.suspect)
-                if (cards != null) {
-                    val revealedCard = cards[Random.nextInt(0, cards.size)]
-                    CardRevealDialog(
-                        revealedCard,
-                        gameModels.playerList[playerIdx].card.name,
-                        map.dialogHandler
-                    ).show(fm, CardRevealDialog.TAG)
-                    someoneShowedSomething = true
-                    letOtherPlayersKnow(
-                        suspect,
-                        gameModels.playerList[playerIdx].id,
-                        revealedCard.name
-                    )
-                }
-                if (someoneShowedSomething)
-                    break
-            }
-            if (!someoneShowedSomething) {
-                nothingHasBeenShowed(suspect)
-                letOtherPlayersKnow(suspect)
-            }
-
-            userFinishedHisTurn = true
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(1000)
+            val detailsFragment = IncriminationDetailsFragment(suspect, map.dialogHandler)
+            map.insertFragment(detailsFragment)
         }
-    }
-
-    override fun onIncriminationSkip() {
-        if (userHasToIncriminate) {
-            Snackbar.make(mapRoot.mapLayout, mContext!!.getString(R.string.you_have_to_incriminate), Snackbar.LENGTH_LONG).show()
-            incrimination(player.id, map.mapHandler.stepInRoom(player.pos))
-        }
-        else
-            Snackbar.make(mapRoot.mapLayout, mContext!!.resources.getString(R.string.make_a_movement), Snackbar.LENGTH_SHORT).show()
     }
 
     fun letOtherPlayersKnow(
@@ -237,7 +182,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
     ) {
         if (playerWhoShowed != null && revealedMysteryCardName != null) {
             for (p in gameModels.playerList) {
-                if (p.id != playerWhoShowed && p.id != player.id) {
+                if (p.id != playerWhoShowed && p.id != mPlayerId) {
                     if (p.id == suspect.playerId)
                         p.getConclusion(revealedMysteryCardName, playerWhoShowed)
                     else
@@ -246,7 +191,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
             }
         } else {
             for (p in gameModels.playerList) {
-                if (p.id != player.id && suspect.playerId != p.id)
+                if (p.id != mPlayerId && suspect.playerId != p.id)
                     p.getSuspicion(suspect)
                 else if (p.id == suspect.playerId) {
                     for (suspectParam in listOf(suspect.room, suspect.tool, suspect.suspect))
@@ -265,13 +210,5 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                 }
             }
         }
-    }
-
-    fun nothingHasBeenShowed(suspect: Suspect) {
-        val title = mContext!!.getString(R.string.no_one_could_show)
-        val message =
-            mContext!!.getString(R.string.incrimination_params) + "\n\t" + mContext!!.getString(R.string.current_room) + "${suspect.room}\n\t" + mContext!!.getString(
-                            R.string.current_tool) + "${suspect.tool}\n\t" + mContext!!.resources.getString(R.string.suspect_person) + suspect.suspect
-        InformationDialog(null, title, message, map.dialogHandler).show(fm, InformationDialog.TAG)
     }
 }

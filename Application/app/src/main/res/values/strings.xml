@@ -67,7 +67,7 @@
     <string name="correct_accusation">Helyes vád</string>
     <string name="incorrect_accusation">Helytelen vád</string>
     <string name="your_turn">Te jössz!</string>
-    <string name="show_card">Fedd fel az egyik kártyádat</string>
+    <string name="show_card">Fedd fel az egyik kártyádat!</string>
     <string name="show">Felfed</string>
     <string name="skip">Passz</string>
     <string name="room">Helyiség</string>
@@ -94,17 +94,18 @@
     <string name="slide_for_more">Lapozz oldalra a többiért!</string>
     <string name="game_params_pref">Game params</string>
     <string name="player_count_key">player_count</string>
+    <string name="play_mode_key">play_mode</string>
     <string name="database_name">CluedoDatabase</string>
     <string name="first_start_pref">FirstStart</string>
     <string name="helper_card_saved_him">Mentőkártyája megvédte őt a sötét erőkkel szemben.</string>
     <string name="has_been_rescued">megmenekült</string>
     <string name="you_died">Meghaltál!</string>
-    <string name="you_lost_your_hps">Elvesztetted házpontjaidat.</string>
+    <string name="you_lost_your_hps">Elvesztetted házpontjaidat, kiestél.</string>
     <string name="game_over">A játéknak vége.</string>
     <string name="he_lost_his_hps">elvesztette házpontjait, kiesett</string>
-    <string name="his_mystery_cards">Rejtély kártyái ezek voltak: </string>
+    <string name="his_mystery_cards">Rejtély kártyái ezek voltak:</string>
     <string name="someone_lost_hps">házpontokat vesztett</string>
-    <string name="select_from_every_parameter">Válassz minden sorból egyet!</string>
+    <string name="select_from_every_parameter">Válassz minden oszlopból egyet!</string>
     <string name="someone_solved_the_mystery">megoldotta a rejtélyt.</string>
     <string name="wrong_solution">rossz megoldást adott.</string>
     <string name="player_id_key">player_id</string>
@@ -160,6 +161,8 @@
     <string name="dark_card31">Frics úr - a szokásosnál is gorombább hangulatban - befordul a sarkon.</string>
     <string name="dark_card32">A Griffendéles fiúk hálótermét kifosztották. Értékes dolgok tűntek el.</string>
     <string name="dark_card33">Cormac McLaggen szerelmi bájitallal átitatott édességet evett - és csak rád tud gondolni.</string>
+    <string name="single_player">Egyjátékos mód</string>
+    <string name="multi_player">Többjátékos mód</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
@@ -174,6 +177,12 @@
     <string name="mystery_prefix">MYSTERY_%</string>
     <string name="dark_prefix">DARK_%</string>
     <string name="helper_prefix">HELPER_%</string>
+    <string name="game_solution">A rejtély megoldása ez volt:</string>
+    <string name="the_correct_solution">A helyes megoldás:</string>
+    <string name="choose_from_each_game_mode_param">Válassz mindkét paraméterből egyet!</string>
+    <string name="cancel">Mégse</string>
+    <string name="choose_your_character">Válassz karaktert magadnak!</string>
+    <string name="choose_an_option">Válassz egy opciót!</string>
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>
@@ -198,9 +207,9 @@
     <string-array name="suspects">
         <item>Bellatrix Lestrange</item>
         <item>Crak és Monstro</item>
-        <item>Dolores Umbridge</item>
         <item>Draco Malfoy</item>
         <item>Lucius Malfoy</item>
+        <item>Dolores Umbridge</item>
         <item>Peter Pettigrew</item>
     </string-array>
 

@@ -71,8 +71,8 @@ class DatabaseAccess(private val context: Context) {
         resetCards()
 
         val mcList = ArrayList<Pair<MysteryCard, Int>>()
-        val tools = interactor.getCardsByType(MysteryType.TOOL.toDatabaseModel().string())
         val suspects = interactor.getCardsByType(MysteryType.SUSPECT.toDatabaseModel().string())
+        val tools = interactor.getCardsByType(MysteryType.TOOL.toDatabaseModel().string())
         val venues = interactor.getCardsByType(MysteryType.VENUE.toDatabaseModel().string())
 
         val MYSTERY_CARDS_COUNT = 21
@@ -80,22 +80,22 @@ class DatabaseAccess(private val context: Context) {
         val PLAYERS_COUNT = playerIds.size - 1
         val LEFTOVER_COUNT = ((MYSTERY_CARDS_COUNT - playerIds.size * CARD_TYPES_COUNT) / PLAYERS_COUNT)
 
-        val randomToolIndices = ArrayList<Int>()
         val randomSuspectIndices = ArrayList<Int>()
+        val randomToolIndices = ArrayList<Int>()
         val randomVenueIndices = ArrayList<Int>()
         val leftoverCards = ArrayList<CardDBmodel>()
 
         while (randomToolIndices.size + randomSuspectIndices.size + randomVenueIndices.size != playerIds.size * CARD_TYPES_COUNT) {
-            if (randomToolIndices.size < playerIds.size) {
-                val rnd = Random.nextInt(0, tools!!.size)
-                if (!randomToolIndices.contains(rnd))
-                    randomToolIndices.add(rnd)
-            }
-
             if (randomSuspectIndices.size < playerIds.size) {
                 val rnd = Random.nextInt(0, suspects!!.size)
                 if (!randomSuspectIndices.contains(rnd))
                     randomSuspectIndices.add(rnd)
+            }
+
+            if (randomToolIndices.size < playerIds.size) {
+                val rnd = Random.nextInt(0, tools!!.size)
+                if (!randomToolIndices.contains(rnd))
+                    randomToolIndices.add(rnd)
             }
 
             if (randomVenueIndices.size < playerIds.size) {
@@ -105,19 +105,36 @@ class DatabaseAccess(private val context: Context) {
             }
 
             if (randomToolIndices.size + randomSuspectIndices.size + randomVenueIndices.size == playerIds.size * CARD_TYPES_COUNT) {
-                for (i in tools!!.indices) {
-                    if (!randomToolIndices.contains(i))
-                        leftoverCards.add(tools[i])
-                }
                 for (i in suspects!!.indices) {
                     if (!randomSuspectIndices.contains(i))
                         leftoverCards.add(suspects[i])
+                }
+                for (i in tools!!.indices) {
+                    if (!randomToolIndices.contains(i))
+                        leftoverCards.add(tools[i])
                 }
                 for (i in venues!!.indices) {
                     if (!randomVenueIndices.contains(i))
                         leftoverCards.add(venues[i])
                 }
             }
+        }
+
+        for (id in playerIds) {
+            val card1 = suspects?.get(randomSuspectIndices[0])
+            randomSuspectIndices.removeAt(0)
+            val card2 = tools?.get(randomToolIndices[0])
+            randomToolIndices.removeAt(0)
+            val card3 = venues?.get(randomVenueIndices[0])
+            randomVenueIndices.removeAt(0)
+
+            interactor.updateCards(CardDBmodel(card1!!.id, card1.name, card1.imageRes, card1.versoRes, card1.cardType, id, card1.lossType, card1.hpLoss))
+            interactor.updateCards(CardDBmodel(card2!!.id, card2.name, card2.imageRes, card2.versoRes, card2.cardType, id, card2.lossType, card2.hpLoss))
+            interactor.updateCards(CardDBmodel(card3!!.id, card3.name, card3.imageRes, card3.versoRes, card3.cardType, id, card3.lossType, card3.hpLoss))
+
+            mcList.add(Pair(card1.toDomainModel() as MysteryCard, id))
+            mcList.add(Pair(card2.toDomainModel() as MysteryCard, id))
+            mcList.add(Pair(card3.toDomainModel() as MysteryCard, id))
         }
 
         for (i in 1..LEFTOVER_COUNT) {
@@ -130,22 +147,6 @@ class DatabaseAccess(private val context: Context) {
             }
         }
 
-        for (id in playerIds) {
-            val card1 = tools?.get(randomToolIndices[0])
-            randomToolIndices.removeAt(0)
-            val card2 = suspects?.get(randomSuspectIndices[0])
-            randomSuspectIndices.removeAt(0)
-            val card3 = venues?.get(randomVenueIndices[0])
-            randomVenueIndices.removeAt(0)
-
-            interactor.updateCards(CardDBmodel(card1!!.id, card1.name, card1.imageRes, card1.versoRes, card1.cardType, id, card1.lossType, card1.hpLoss))
-            interactor.updateCards(CardDBmodel(card2!!.id, card2.name, card2.imageRes, card2.versoRes, card2.cardType, id, card2.lossType, card2.hpLoss))
-            interactor.updateCards(CardDBmodel(card3!!.id, card3.name, card3.imageRes, card3.versoRes, card3.cardType, id, card3.lossType, card3.hpLoss))
-
-            mcList.add(Pair(card1.toDomainModel() as MysteryCard, id))
-            mcList.add(Pair(card2.toDomainModel() as MysteryCard, id))
-            mcList.add(Pair(card3.toDomainModel() as MysteryCard, id))
-        }
         return mcList
     }
 
@@ -501,21 +502,21 @@ class DatabaseAccess(private val context: Context) {
         MysteryCard(
             8,
             suspectNames[2],
-            R.drawable.rejtely_dolores_umbridge,
+            R.drawable.rejtely_draco_malfoy,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             9,
             suspectNames[3],
-            R.drawable.rejtely_draco_malfoy,
+            R.drawable.rejtely_lucius_malfoy,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             10,
             suspectNames[4],
-            R.drawable.rejtely_lucius_malfoy,
+            R.drawable.rejtely_dolores_umbridge,
             R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),

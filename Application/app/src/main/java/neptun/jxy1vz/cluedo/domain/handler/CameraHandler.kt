@@ -1,9 +1,9 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
 import kotlinx.android.synthetic.main.activity_map.view.*
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mContext
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapRoot
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mContext
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapRoot
 
 class CameraHandler(private val map: MapViewModel.Companion) {
     fun moveCameraToPlayer(playerId: Int) {
@@ -29,6 +29,12 @@ class CameraHandler(private val map: MapViewModel.Companion) {
             else -> mapRoot.mapLayout.ivMap.bottom.toFloat()
         }
 
+        mapRoot.panTo(-x, -y, true)
+    }
+
+    fun moveCameraToPosition(top: Float, left: Float) {
+        val x = left - mContext!!.resources.displayMetrics.widthPixels / 2
+        val y = top - mContext!!.resources.displayMetrics.heightPixels / 2
         mapRoot.panTo(-x, -y, true)
     }
 }

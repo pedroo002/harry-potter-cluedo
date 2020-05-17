@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/semi_transparent_background">
+
+    <data>
+
+        <variable
+            name="incriminationViewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.incrimination.IncriminationViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvLabelRoom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:text="@{incriminationViewModel.room}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <Button
+                android:id="@+id/btnValidate"
+                android:enabled="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:onClick="@{()->incriminationViewModel.finalize()}"
+                android:text="@string/incrimination"
+                app:layout_constraintEnd_toStartOf="@id/btnSkip"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <Button
+                android:id="@+id/btnSkip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:onClick="@{()->incriminationViewModel.skip()}"
+                android:text="@string/skip"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvLabelTool"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:text="@{incriminationViewModel.tool}" />
+
+                <ScrollView
+                    android:id="@+id/svTool"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/layoutToolImages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/ivToolAltatoital"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectTool(0)}"
+                            android:src="@drawable/tool_altatoital_bw" />
+
+                        <ImageView
+                            android:id="@+id/ivToolMandragora"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectTool(1)}"
+                            android:src="@drawable/tool_mandragora_bw" />
+
+                        <ImageView
+                            android:id="@+id/ivToolObstructo"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectTool(2)}"
+                            android:src="@drawable/tool_obstructo_bw" />
+
+                        <ImageView
+                            android:id="@+id/ivToolPetrificusTotalus"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectTool(3)}"
+                            android:src="@drawable/tool_petrificus_totalus_bw" />
+
+                        <ImageView
+                            android:id="@+id/ivToolVoltNincs"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectTool(4)}"
+                            android:src="@drawable/tool_volt_nincs_szekreny_bw" />
+
+                        <ImageView
+                            android:id="@+id/ivToolZsupszkulcs"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectTool(5)}"
+                            android:src="@drawable/tool_zsupszkulcs_bw" />
+
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvLabelSuspect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:text="@{incriminationViewModel.suspect}" />
+
+                <ScrollView
+                    android:id="@+id/svSuspect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/layoutSuspectImages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/ivSuspectBellatrix"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(0)}"
+                            android:src="@drawable/suspect_bellatrix_lestrange_bw" />
+
+                        <ImageView
+                            android:id="@+id/ivSuspectCrakEsMonstro"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(1)}"
+                            android:src="@drawable/suspect_crak_and_monstro_bw" />
+
+                        <ImageView
+                            android:id="@+id/ivSuspectDraco"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(2)}"
+                            android:src="@drawable/suspect_draco_malfoy_bw" />
+
+                        <ImageView
+                            android:id="@+id/ivSuspectLucius"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(3)}"
+                            android:src="@drawable/suspect_lucius_malfoy_bw" />
+
+                        <ImageView
+                            android:id="@+id/ivSuspectUmbridge"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(4)}"
+                            android:src="@drawable/suspect_dolores_umbridge_bw" />
+
+                        <ImageView
+                            android:id="@+id/ivSuspectFeregfark"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(5)}"
+                            android:src="@drawable/suspect_peter_pettigrew_bw" />
+
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</layout>

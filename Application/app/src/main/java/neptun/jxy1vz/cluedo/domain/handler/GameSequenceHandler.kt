@@ -1,17 +1,22 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.isGameRunning
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.playerInTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.savedDiceValue
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.savedHouse
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.savedPlayerId
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userCanStep
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userFinishedHisTurn
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToIncriminate
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.userHasToStepOrIncriminate
+import android.widget.ImageView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.savedDiceValue
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.savedHouse
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.savedPlayerId
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userCanStep
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userFinishedHisTurn
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToIncriminate
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToStepOrIncriminate
 
 class GameSequenceHandler(private val map: MapViewModel.Companion) {
     fun pause(playerId: Int, diceSum: Int, house: StateMachineHandler.HogwartsHouse?) {
@@ -46,14 +51,23 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
         if (isGameRunning) {
             map.cameraHandler.moveCameraToPlayer(playerInTurn)
 
-            if (playerInTurn != player.id)
+            if (playerInTurn != mPlayerId)
                 map.interactionHandler.rollWithDice(playerInTurn)
             else {
                 userFinishedHisTurn = false
                 userHasToIncriminate = false
                 userHasToStepOrIncriminate = false
                 userCanStep = true
-                map.interactionHandler.showOptions(player.id)
+
+                GlobalScope.launch(Dispatchers.Main) {
+                    val tileToBlink = map.playerHandler.getPairById(mPlayerId!!).second
+                    for (i in 1..3) {
+                        tileToBlink.visibility = ImageView.GONE
+                        delay(200)
+                        tileToBlink.visibility = ImageView.VISIBLE
+                        delay(200)
+                    }
+                }
             }
         }
     }

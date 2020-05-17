@@ -4,14 +4,14 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.DoorState
 import neptun.jxy1vz.cluedo.domain.model.Position
 import neptun.jxy1vz.cluedo.domain.model.Room
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gameModels
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.gryffindorState
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.hufflepuffState
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.mapGraph
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.player
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.ravenclawState
-import neptun.jxy1vz.cluedo.ui.map.MapViewModel.Companion.slytherinState
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gryffindorState
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.hufflepuffState
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapGraph
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.ravenclawState
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.slytherinState
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -53,7 +53,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
         return false
     }
 
-    private fun isDoor(pos: Position): Boolean {
+    fun isDoor(pos: Position): Boolean {
         for (door in gameModels.doorList) {
             if (door.position == pos)
                 return true
@@ -61,7 +61,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
         return false
     }
 
-    private fun dijkstra(current: Position): HashMap<Position, Int> {
+    fun dijkstra(current: Position): HashMap<Position, Int> {
         val distances = HashMap<Position, Int>()
         val unvisited = HashSet<Position>()
 
@@ -92,7 +92,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
         return distances
     }
 
-    private fun mergeDistances(
+    fun mergeDistances(
         map1: HashMap<Position, Int>,
         map2: HashMap<Position, Int>? = null
     ): HashMap<Position, Int> {
@@ -129,13 +129,14 @@ class MapHandler(private val map: MapViewModel.Companion) {
             }
         }
 
-        if (playerId == player.id) {
+        if (playerId == mPlayerId) {
             if (!distances.isNullOrEmpty()) {
                 for (x in 0..MapViewModel.COLS) {
                     for (y in 0..MapViewModel.ROWS) {
                         val current = Position(y, x)
                         if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances[current]!! <= limit) {
-                            map.uiHandler.drawSelection(R.drawable.field_selection, y, x, playerId)
+                            val sel = if (stepOnStar(current)) R.drawable.star_selection else R.drawable.field_selection
+                            map.uiHandler.drawSelection(sel, y, x, playerId)
                         }
                     }
                 }

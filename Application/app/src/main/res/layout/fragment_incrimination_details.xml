@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/semi_transparent_background">
+    
+    <data>
+        <variable
+            name="incriminationDetailsViewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsViewModel" />
+    </data>
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/detailsRoot">
+
+        <ImageView
+            android:id="@+id/ivPlayerWhoSuspects"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_percent="0.7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.25" />
+
+        <ImageView
+            android:id="@+id/ivRoomToken"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:translationX="56dp"
+            android:translationY="-12dp"
+            app:layout_constraintEnd_toStartOf="@+id/ivSuspectToken"
+            app:layout_constraintHeight_percent="0.25"
+            app:layout_constraintTop_toBottomOf="@+id/ivSuspectToken"
+            app:layout_constraintWidth_percent="0.15" />
+
+        <ImageView
+            android:id="@+id/ivToolToken"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:translationX="-56dp"
+            android:translationY="-12dp"
+            app:layout_constraintHeight_percent="0.25"
+            app:layout_constraintStart_toEndOf="@+id/ivSuspectToken"
+            app:layout_constraintTop_toBottomOf="@+id/ivSuspectToken"
+            app:layout_constraintWidth_percent="0.15" />
+
+        <ImageView
+            android:id="@+id/ivSuspectToken"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.25"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.15" />
+
+        <ImageView
+            android:id="@+id/ivPlayerWhoShows"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_percent="0.7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.25" />
+
+        <Button
+            android:id="@+id/btnOk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:onClick="@{()->incriminationDetailsViewModel.close()}"
+            android:text="@string/ok"
+            app:layout_constraintEnd_toEndOf="@id/ivPlayerWhoShows"
+            app:layout_constraintBottom_toTopOf="@id/ivPlayerWhoShows" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

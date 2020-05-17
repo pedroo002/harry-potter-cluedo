@@ -4,19 +4,19 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/game_icon"
         android:label="@string/app_name"
         android:roundIcon="@drawable/game_icon"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
-        <activity android:name="neptun.jxy1vz.cluedo.ui.map.MapActivity"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.CluedoStyle">
+        <activity android:name="neptun.jxy1vz.cluedo.ui.activity.map.MapActivity"
             android:screenOrientation="landscape">
         </activity>
-        <activity android:name=".ui.mystery_cards.MysteryCardActivity"
+        <activity android:name="neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardActivity"
             android:screenOrientation="portrait"
             android:noHistory="true">
         </activity>
-        <activity android:name=".ui.menu.MenuActivity"
+        <activity android:name="neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

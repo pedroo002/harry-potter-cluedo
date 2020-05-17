@@ -24,3 +24,7 @@ fun getHelperObjects(player: Player, darkCard: DarkCard, tools: ArrayList<String
 private fun addHelperToArray(name: String, array: ArrayList<String>) {
     array.add(name)
 }
+
+fun getPixelsFromDp(dp: Int, density: Int): Int {
+    return (density / 160) * dp
+}

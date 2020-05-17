@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/hogwarts_blur">
+
+    <data>
+        <variable
+            name="characterSelectorViewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.character_selector.CharacterSelectorViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/characterSelectorRoot">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:id="@+id/tvTitle"
+            android:text="@string/choose_your_character"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="10dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivGinny"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ginny_token_bw"
+            app:layout_constraintWidth_percent="0.16"
+            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            android:onClick="@{()->characterSelectorViewModel.setPlayer(0)}"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivHarry"
+            android:src="@drawable/harry_token_bw"
+            android:layout_marginTop="10dp"
+            app:layout_constraintWidth_percent="0.16"
+            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintStart_toEndOf="@id/ivGinny"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            android:onClick="@{()->characterSelectorViewModel.setPlayer(1)}"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivHermione"
+            android:src="@drawable/hermione_token_bw"
+            android:layout_marginTop="10dp"
+            app:layout_constraintWidth_percent="0.16"
+            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintStart_toEndOf="@id/ivHarry"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            android:onClick="@{()->characterSelectorViewModel.setPlayer(2)}"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivRon"
+            android:src="@drawable/ron_token_bw"
+            android:layout_marginTop="10dp"
+            app:layout_constraintWidth_percent="0.16"
+            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintStart_toEndOf="@id/ivHermione"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            android:onClick="@{()->characterSelectorViewModel.setPlayer(3)}"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivLuna"
+            android:src="@drawable/luna_token_bw"
+            android:layout_marginTop="10dp"
+            app:layout_constraintWidth_percent="0.16"
+            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintStart_toEndOf="@id/ivRon"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            android:onClick="@{()->characterSelectorViewModel.setPlayer(4)}"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivNeville"
+            android:src="@drawable/neville_token_bw"
+            android:layout_marginTop="10dp"
+            app:layout_constraintWidth_percent="0.16"
+            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintStart_toEndOf="@id/ivLuna"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            android:onClick="@{()->characterSelectorViewModel.setPlayer(5)}"/>
+
+        <ImageView
+            android:id="@+id/ivCharacterCard"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="20dp"
+            android:src="@drawable/szereplo_hatlap"
+            app:layout_constraintBottom_toTopOf="@+id/btnStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.7"
+            app:layout_constraintWidth_percent="0.77"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivHarry"
+            android:contentDescription="@string/card_character" />
+
+        <Button
+            android:id="@+id/btnStart"
+            android:enabled="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/ivCharacterCard"
+            android:onClick="@{()->characterSelectorViewModel.startGame()}"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnCancel"
+            android:text="@string/cancel"
+            app:layout_constraintStart_toStartOf="@id/ivCharacterCard"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="10dp"
+            android:onClick="@{()->characterSelectorViewModel.cancel()}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
