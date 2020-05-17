@@ -15,4 +15,18 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="Widget.Button.HarryPotterButtonStyle" parent="android:style/Widget.Button">
+        <item name="android:width">100dp</item>
+        <item name="android:height">30dp</item>
+        <item name="backgroundTint">@color/buttonBackground</item>
+        <item name="android:textColor">@color/buttonText</item>
+        <item name="android:textStyle">bold</item>
+        <item name="borderWidth">2dp</item>
+        <item name="android:background">@drawable/button_enabled</item>
+    </style>
+
+    <style name="Theme.AppCompat.Light.NoActionBar.FullScreen.CluedoStyle" parent="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+        <item name="android:buttonStyle">@style/Widget.Button.HarryPotterButtonStyle</item>
+    </style>
+
 </resources>
