@@ -178,7 +178,7 @@ class DarkCardViewModel(
                                     bind.darkCardRoot.removeView(lossTextView)
                                 }
                             }
-                            if (player.hp <= 0)
+                            if (player.hp <= 0) {
                                 (AnimatorInflater.loadAnimator(
                                     bind.darkCardRoot.context,
                                     R.animator.disappear
@@ -190,14 +190,17 @@ class DarkCardViewModel(
                                         bind.darkCardRoot.removeView(image)
 
                                         if (player.id == MapViewModel.mPlayerId) {
-                                            val fragment = UserDiesFragment(player, MapViewModel.dialogHandler)
+                                            val fragment =
+                                                UserDiesFragment(player, MapViewModel.dialogHandler)
                                             MapViewModel.insertFragment(fragment, true)
-                                        }
-                                        else if (MapViewModel.player.hp > 0) {
+                                        } else if (MapViewModel.player.hp > 0) {
                                             MapViewModel.isGameAbleToContinue = false
                                             if (MapViewModel.playerInTurn == player.id)
                                                 MapViewModel.playerInTurnDied = true
-                                            val fragment = PlayerDiesFragment(player, MapViewModel.dialogHandler)
+                                            val fragment = PlayerDiesFragment(
+                                                player,
+                                                MapViewModel.dialogHandler
+                                            )
                                             MapViewModel.insertFragment(fragment, true)
                                             val newPlayerList = ArrayList<Player>()
                                             for (p in MapViewModel.gameModels.playerList) {
@@ -218,6 +221,7 @@ class DarkCardViewModel(
                                         }
                                     }
                                 }
+                            }
                         }
                     }
             }
