@@ -102,6 +102,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
                 map.insertFragment(noteFragment)
             }
             NotesOrDiceFragment.Option.DICE -> {
+                isGameAbleToContinue = true
                 map.interactionHandler.rollWithDice(mPlayerId!!)
             }
         }
