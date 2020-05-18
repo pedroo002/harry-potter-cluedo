@@ -72,9 +72,9 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onNoteDismiss() {
+        map.enableScrolling()
         if (!isGameAbleToContinue)
             return
-        map.enableScrolling()
 
         if (!isGameRunning)
             map.cardHandler.handOutHelperCards()
