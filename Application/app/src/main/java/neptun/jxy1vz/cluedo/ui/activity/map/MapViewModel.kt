@@ -120,12 +120,16 @@ class MapViewModel(
             mapRoot.setVerticalPanEnabled(false)
             mapRoot.setHorizontalPanEnabled(false)
             mapRoot.setScrollEnabled(false)
+            mapRoot.setTwoFingersScrollEnabled(false)
+            mapRoot.setThreeFingersScrollEnabled(false)
         }
 
         fun enableScrolling() {
             mapRoot.setVerticalPanEnabled(true)
             mapRoot.setHorizontalPanEnabled(true)
             mapRoot.setScrollEnabled(true)
+            mapRoot.setTwoFingersScrollEnabled(true)
+            mapRoot.setThreeFingersScrollEnabled(true)
         }
     }
 
