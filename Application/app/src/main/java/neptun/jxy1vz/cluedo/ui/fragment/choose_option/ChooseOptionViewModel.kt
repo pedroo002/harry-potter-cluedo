@@ -47,15 +47,13 @@ class ChooseOptionViewModel(private val bind: FragmentChooseOptionBinding, priva
                 }
             }
         }
-        if (canStep || num != 2)
+        if (canStep || num != 2) {
             selectedOption = num
+            bind.optionRoot.btnOk.isEnabled = true
+        }
     }
 
     fun finish() {
-        if (selectedOption == -1) {
-            Snackbar.make(bind.optionRoot, context.getString(R.string.choose_an_option), Snackbar.LENGTH_SHORT).show()
-            return
-        }
         listener.onFinish()
     }
 }
