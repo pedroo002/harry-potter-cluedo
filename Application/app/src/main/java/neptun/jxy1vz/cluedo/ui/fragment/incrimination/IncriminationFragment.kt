@@ -42,6 +42,7 @@ class IncriminationFragment(private val gameModels: GameModels,
     }
 
     override fun onSkip() {
+        MapViewModel.enableScrolling()
         activity?.supportFragmentManager!!.beginTransaction().remove(this).commit()
     }
 }
