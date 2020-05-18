@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.unused
+package neptun.jxy1vz.cluedo.ui.fragment.cards.mystery
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable

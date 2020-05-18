@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.unused
+package neptun.jxy1vz.cluedo.ui.fragment.cards.mystery
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -31,11 +31,12 @@ class UnusedMysteryCardsFragment(
             container,
             false
         )
-        fragmentUnusedMysteryCardsBinding.unusedCardsViewModel = UnusedMysteryCardsViewModel(
-            fragmentUnusedMysteryCardsBinding,
-            cardList,
-            this
-        )
+        fragmentUnusedMysteryCardsBinding.unusedCardsViewModel =
+            UnusedMysteryCardsViewModel(
+                fragmentUnusedMysteryCardsBinding,
+                cardList,
+                this
+            )
 
         return fragmentUnusedMysteryCardsBinding.root
     }

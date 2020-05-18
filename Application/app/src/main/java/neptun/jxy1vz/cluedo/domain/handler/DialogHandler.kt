@@ -9,14 +9,13 @@ import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.finishedCardC
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameAbleToContinue
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
-import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.pause
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurnDied
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.unusedMysteryCards
 import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
-import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.unused.UnusedMysteryCardsFragment
+import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.UnusedMysteryCardsFragment
 import neptun.jxy1vz.cluedo.ui.fragment.endgame.EndOfGameFragment
 import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 import neptun.jxy1vz.cluedo.ui.fragment.notes_or_dice.NotesOrDiceFragment
@@ -89,7 +88,11 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
             val fragment = AccusationFragment(playerInTurn, this)
             map.insertFragment(fragment)
         } else {
-            val fragment = UnusedMysteryCardsFragment(this, unusedMysteryCards)
+            val fragment =
+                UnusedMysteryCardsFragment(
+                    this,
+                    unusedMysteryCards
+                )
             map.insertFragment(fragment)
         }
     }
