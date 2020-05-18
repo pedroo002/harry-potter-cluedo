@@ -40,7 +40,7 @@ class DatabaseAccess(private val context: Context) {
     suspend fun getCardBySuperType(playerId: Int, prefix: String): Card? {
         val cards = interactor.getCardBySuperType(prefix)
         if (cards != null) {
-            val card = cards[Random.nextInt(0, cards.size)]
+            val card = cards.random()
             interactor.updateCards(
                 CardDBmodel(
                     card.id,
@@ -71,78 +71,28 @@ class DatabaseAccess(private val context: Context) {
         resetCards()
 
         val mcList = ArrayList<Pair<MysteryCard, Int>>()
-        val suspects = interactor.getCardsByType(MysteryType.SUSPECT.toDatabaseModel().string())
-        val tools = interactor.getCardsByType(MysteryType.TOOL.toDatabaseModel().string())
-        val venues = interactor.getCardsByType(MysteryType.VENUE.toDatabaseModel().string())
 
-        val MYSTERY_CARDS_COUNT = 21
-        val CARD_TYPES_COUNT = 3
-        val PLAYERS_COUNT = playerIds.size - 1
-        val LEFTOVER_COUNT = ((MYSTERY_CARDS_COUNT - playerIds.size * CARD_TYPES_COUNT) / PLAYERS_COUNT)
+        val suspectSolution = interactor.getCardsByType(MysteryType.SUSPECT.toDatabaseModel().toString())!!.random()
+        val toolSolution = interactor.getCardsByType(MysteryType.TOOL.toDatabaseModel().toString())!!.random()
+        val roomSolution = interactor.getCardsByType(MysteryType.VENUE.toDatabaseModel().toString())!!.random()
+        mcList.add(Pair(suspectSolution.toDomainModel() as MysteryCard, -1))
+        mcList.add(Pair(toolSolution.toDomainModel() as MysteryCard, -1))
+        mcList.add(Pair(roomSolution.toDomainModel() as MysteryCard, -1))
+        interactor.updateCards(CardDBmodel(suspectSolution.id, suspectSolution.name, suspectSolution.imageRes, suspectSolution.versoRes, suspectSolution.cardType, -1, suspectSolution.lossType, suspectSolution.hpLoss))
+        interactor.updateCards(CardDBmodel(toolSolution.id, toolSolution.name, toolSolution.imageRes, toolSolution.versoRes, toolSolution.cardType, -1, toolSolution.lossType, toolSolution.hpLoss))
+        interactor.updateCards(CardDBmodel(roomSolution.id, roomSolution.name, roomSolution.imageRes, roomSolution.versoRes, roomSolution.cardType, -1, roomSolution.lossType, roomSolution.hpLoss))
 
-        val randomSuspectIndices = ArrayList<Int>()
-        val randomToolIndices = ArrayList<Int>()
-        val randomVenueIndices = ArrayList<Int>()
-        val leftoverCards = ArrayList<CardDBmodel>()
-
-        while (randomToolIndices.size + randomSuspectIndices.size + randomVenueIndices.size != playerIds.size * CARD_TYPES_COUNT) {
-            if (randomSuspectIndices.size < playerIds.size) {
-                val rnd = Random.nextInt(0, suspects!!.size)
-                if (!randomSuspectIndices.contains(rnd))
-                    randomSuspectIndices.add(rnd)
-            }
-
-            if (randomToolIndices.size < playerIds.size) {
-                val rnd = Random.nextInt(0, tools!!.size)
-                if (!randomToolIndices.contains(rnd))
-                    randomToolIndices.add(rnd)
-            }
-
-            if (randomVenueIndices.size < playerIds.size) {
-                val rnd = Random.nextInt(0, venues!!.size)
-                if (!randomVenueIndices.contains(rnd))
-                    randomVenueIndices.add(rnd)
-            }
-
-            if (randomToolIndices.size + randomSuspectIndices.size + randomVenueIndices.size == playerIds.size * CARD_TYPES_COUNT) {
-                for (i in suspects!!.indices) {
-                    if (!randomSuspectIndices.contains(i))
-                        leftoverCards.add(suspects[i])
-                }
-                for (i in tools!!.indices) {
-                    if (!randomToolIndices.contains(i))
-                        leftoverCards.add(tools[i])
-                }
-                for (i in venues!!.indices) {
-                    if (!randomVenueIndices.contains(i))
-                        leftoverCards.add(venues[i])
-                }
-            }
+        val cardsPerPlayers = when (playerIds.size - 1) {
+            3 -> 6
+            4 -> 4
+            else -> 3
         }
-
-        for (id in playerIds) {
-            val card1 = suspects?.get(randomSuspectIndices[0])
-            randomSuspectIndices.removeAt(0)
-            val card2 = tools?.get(randomToolIndices[0])
-            randomToolIndices.removeAt(0)
-            val card3 = venues?.get(randomVenueIndices[0])
-            randomVenueIndices.removeAt(0)
-
-            interactor.updateCards(CardDBmodel(card1!!.id, card1.name, card1.imageRes, card1.versoRes, card1.cardType, id, card1.lossType, card1.hpLoss))
-            interactor.updateCards(CardDBmodel(card2!!.id, card2.name, card2.imageRes, card2.versoRes, card2.cardType, id, card2.lossType, card2.hpLoss))
-            interactor.updateCards(CardDBmodel(card3!!.id, card3.name, card3.imageRes, card3.versoRes, card3.cardType, id, card3.lossType, card3.hpLoss))
-
-            mcList.add(Pair(card1.toDomainModel() as MysteryCard, id))
-            mcList.add(Pair(card2.toDomainModel() as MysteryCard, id))
-            mcList.add(Pair(card3.toDomainModel() as MysteryCard, id))
-        }
-
-        for (i in 1..LEFTOVER_COUNT) {
+        for (i in 1..cardsPerPlayers) {
             for (id in playerIds) {
                 if (id != -1) {
-                    interactor.updateCards(CardDBmodel(leftoverCards[0].id, leftoverCards[0].name, leftoverCards[0].imageRes, leftoverCards[0].versoRes, leftoverCards[0].cardType, id, leftoverCards[0].lossType, leftoverCards[0].hpLoss))
-                    mcList.add(Pair(leftoverCards[0].toDomainModel() as MysteryCard, id))
-                    leftoverCards.removeAt(0)
+                    val card = interactor.getCardBySuperType(context.resources.getString(R.string.mystery_prefix))!!.random()
+                    interactor.updateCards(CardDBmodel(card.id, card.name, card.imageRes, card.versoRes, card.cardType, id, card.lossType, card.hpLoss))
+                    mcList.add(Pair(card.toDomainModel() as MysteryCard, id))
                 }
             }
         }

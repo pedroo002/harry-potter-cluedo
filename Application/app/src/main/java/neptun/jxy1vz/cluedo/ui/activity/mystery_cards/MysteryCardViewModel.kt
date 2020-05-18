@@ -81,6 +81,7 @@ class MysteryCardViewModel(
 
     private suspend fun handOutCardsToPlayers() {
         val idList = ArrayList<Int>()
+        idList.add(-1)
         idList.add(playerId)
 
         var playerCount = context.getSharedPreferences(context.getString(R.string.game_params_pref), Context.MODE_PRIVATE).getInt(
@@ -94,7 +95,6 @@ class MysteryCardViewModel(
                 playerCount--
             }
         }
-        idList.add(-1)
         getMysteryCards(idList)
     }
 }
