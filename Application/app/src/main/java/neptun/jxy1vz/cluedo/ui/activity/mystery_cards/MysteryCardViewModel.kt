@@ -54,8 +54,6 @@ class MysteryCardViewModel(
         val cards = gameModel.db.getMysteryCardsForPlayers(playerIds)
 
         withContext(Dispatchers.Main) {
-            Toast.makeText(context, context.getString(R.string.slide_for_more), Toast.LENGTH_LONG).show()
-
             val fragmentList = ArrayList<CardFragment>()
             for (card in cards) {
                 if (card.second == playerId)
@@ -74,6 +72,7 @@ class MysteryCardViewModel(
                     adapter = CardPagerAdapter(fm, fragmentList)
                     bind.cardPager.adapter = adapter
                     bind.btnGo.isEnabled = true
+                    Toast.makeText(context, context.getString(R.string.slide_for_more), Toast.LENGTH_LONG).show()
                 }
             }
         }
