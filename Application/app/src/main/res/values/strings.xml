@@ -183,6 +183,9 @@
     <string name="cancel">Mégse</string>
     <string name="choose_your_character">Válassz karaktert magadnak!</string>
     <string name="choose_an_option">Válassz egy opciót!</string>
+    <string name="what_is_your_purpose">Mit szeretnél csinálni?</string>
+    <string name="check_notes">Jegyzetek megtekintése</string>
+    <string name="back">Vissza</string>
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>

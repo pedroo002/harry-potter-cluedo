@@ -8,6 +8,7 @@ import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.activityListe
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.finishedCardCheck
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameAbleToContinue
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.pause
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.player
@@ -18,6 +19,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
 import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.unused.UnusedMysteryCardsFragment
 import neptun.jxy1vz.cluedo.ui.fragment.endgame.EndOfGameFragment
 import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
+import neptun.jxy1vz.cluedo.ui.fragment.notes_or_dice.NotesOrDiceFragment
 
 class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onIncriminationDetailsDismiss(needToTakeNotes: Boolean) {
@@ -89,6 +91,20 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         } else {
             val fragment = UnusedMysteryCardsFragment(this, unusedMysteryCards)
             map.insertFragment(fragment)
+        }
+    }
+
+    override fun onShowOptionsDismiss(option: NotesOrDiceFragment.Option) {
+        when (option) {
+            NotesOrDiceFragment.Option.NOTES -> {
+                isGameAbleToContinue = false
+                val noteFragment = NoteFragment(player, this)
+                map.insertFragment(noteFragment)
+            }
+            NotesOrDiceFragment.Option.DICE -> {
+                isGameAbleToContinue = true
+                map.interactionHandler.rollWithDice(mPlayerId!!)
+            }
         }
     }
 }

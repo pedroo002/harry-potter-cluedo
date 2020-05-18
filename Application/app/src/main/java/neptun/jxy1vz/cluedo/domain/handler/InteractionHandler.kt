@@ -1,33 +1,30 @@
 package neptun.jxy1vz.cluedo.domain.handler
 
 import android.widget.ImageView
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
-import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
-import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerFragment
-import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
-import neptun.jxy1vz.cluedo.ui.fragment.incrimination.IncriminationFragment
-import neptun.jxy1vz.cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsFragment
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.diceList
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mContext
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
-import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.pause
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.unusedMysteryCards
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userCanStep
-import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToIncriminate
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToStepOrIncriminate
+import neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationFragment
 import neptun.jxy1vz.cluedo.ui.fragment.choose_option.ChooseOptionFragment
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerFragment
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
+import neptun.jxy1vz.cluedo.ui.fragment.incrimination.IncriminationFragment
+import neptun.jxy1vz.cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsFragment
+import neptun.jxy1vz.cluedo.ui.fragment.notes_or_dice.NotesOrDiceFragment
 
 class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationFragment.MapInterface,
     DiceRollerFragment.DiceResultInterface {
@@ -36,7 +33,8 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
             if (playerId == mPlayerId && playerId == playerInTurn) {
                 val roomId = map.mapHandler.stepInRoom(player.pos)
                 if (!userHasToStepOrIncriminate && userCanStep) {
-                    rollWithDice(playerId)
+                    val optionsFragment = NotesOrDiceFragment(map.dialogHandler)
+                    map.insertFragment(optionsFragment)
                 } else if (roomId != -1) {
                     incrimination(playerId, roomId)
                 }
