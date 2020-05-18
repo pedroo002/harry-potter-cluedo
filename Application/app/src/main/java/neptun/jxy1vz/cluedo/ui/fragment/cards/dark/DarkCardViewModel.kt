@@ -5,6 +5,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
@@ -93,6 +94,7 @@ class DarkCardViewModel(
                 lossTextView.text = lossString
                 lossTextView.setTextColor(Color.RED)
                 lossTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                lossTextView.setTypeface(null, Typeface.BOLD)
             }
 
             var thrownCard: ImageView? = null
