@@ -55,7 +55,6 @@ class MapViewModel(
         lateinit var activityListener: MapActivityListener
 
         var otherPlayerStepsOnStar: Boolean = false
-        private var playerInTurnAffected = false
         lateinit var player: Player
         lateinit var mapGraph: Graph<Position>
         var selectionList: ArrayList<ImageView> = ArrayList()
@@ -88,7 +87,6 @@ class MapViewModel(
 
         fun onDestroy() {
             otherPlayerStepsOnStar = false
-            playerInTurnAffected = false
             isGameRunning = false
             userFinishedHisTurn = false
             userHasToStepOrIncriminate = false
