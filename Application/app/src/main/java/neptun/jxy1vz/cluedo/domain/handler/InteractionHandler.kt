@@ -3,8 +3,8 @@ package neptun.jxy1vz.cluedo.domain.handler
 import android.widget.ImageView
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.domain.model.DarkCard
-import neptun.jxy1vz.cluedo.domain.model.HelperCard
+import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
+import neptun.jxy1vz.cluedo.domain.model.card.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.diceList

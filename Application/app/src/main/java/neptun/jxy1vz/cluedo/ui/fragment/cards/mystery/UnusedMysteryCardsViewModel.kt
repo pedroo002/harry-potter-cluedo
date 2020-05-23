@@ -4,7 +4,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import kotlinx.android.synthetic.main.fragment_unused_mystery_cards.view.*
 import neptun.jxy1vz.cluedo.databinding.FragmentUnusedMysteryCardsBinding
-import neptun.jxy1vz.cluedo.domain.model.MysteryCard
+import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
 class UnusedMysteryCardsViewModel(

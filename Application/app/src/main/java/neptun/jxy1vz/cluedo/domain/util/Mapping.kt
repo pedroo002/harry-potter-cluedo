@@ -4,7 +4,8 @@ import neptun.jxy1vz.cluedo.database.model.*
 import neptun.jxy1vz.cluedo.database.model.CardType.*
 import neptun.jxy1vz.cluedo.database.model.LossType
 import neptun.jxy1vz.cluedo.domain.model.*
-import neptun.jxy1vz.cluedo.domain.model.CardType
+import neptun.jxy1vz.cluedo.domain.model.card.*
+import neptun.jxy1vz.cluedo.domain.model.card.CardType
 
 fun CardDBmodel.toDomainModel(): Card {
     return when (cardType) {
@@ -32,8 +33,14 @@ fun CardDBmodel.toDomainModel(): Card {
             name,
             imageRes,
             versoRes,
-            toCardType(cardType).toDomainModel())
-        else -> PlayerCard(id.toInt(), name, imageRes, versoRes)
+            toCardType(cardType).toDomainModel()
+        )
+        else -> PlayerCard(
+            id.toInt(),
+            name,
+            imageRes,
+            versoRes
+        )
     }
 }
 
@@ -89,20 +96,20 @@ fun CardType.toDatabaseModel(): neptun.jxy1vz.cluedo.database.model.CardType {
     }
 }
 
-fun LossType.toDomainModel(): neptun.jxy1vz.cluedo.domain.model.LossType {
+fun LossType.toDomainModel(): neptun.jxy1vz.cluedo.domain.model.card.LossType {
     return when (this) {
-        LossType.HP -> neptun.jxy1vz.cluedo.domain.model.LossType.HP
-        LossType.TOOL_CARD -> neptun.jxy1vz.cluedo.domain.model.LossType.TOOL
-        LossType.SPELL_CARD -> neptun.jxy1vz.cluedo.domain.model.LossType.SPELL
-        else -> neptun.jxy1vz.cluedo.domain.model.LossType.ALLY
+        LossType.HP -> neptun.jxy1vz.cluedo.domain.model.card.LossType.HP
+        LossType.TOOL_CARD -> neptun.jxy1vz.cluedo.domain.model.card.LossType.TOOL
+        LossType.SPELL_CARD -> neptun.jxy1vz.cluedo.domain.model.card.LossType.SPELL
+        else -> neptun.jxy1vz.cluedo.domain.model.card.LossType.ALLY
     }
 }
 
-fun neptun.jxy1vz.cluedo.domain.model.LossType.toDatabaseModel(): LossType {
+fun neptun.jxy1vz.cluedo.domain.model.card.LossType.toDatabaseModel(): LossType {
     return when (this) {
-        neptun.jxy1vz.cluedo.domain.model.LossType.HP -> LossType.HP
-        neptun.jxy1vz.cluedo.domain.model.LossType.TOOL -> LossType.TOOL_CARD
-        neptun.jxy1vz.cluedo.domain.model.LossType.SPELL -> LossType.SPELL_CARD
+        neptun.jxy1vz.cluedo.domain.model.card.LossType.HP -> LossType.HP
+        neptun.jxy1vz.cluedo.domain.model.card.LossType.TOOL -> LossType.TOOL_CARD
+        neptun.jxy1vz.cluedo.domain.model.card.LossType.SPELL -> LossType.SPELL_CARD
         else -> LossType.ALLY_CARD
     }
 }

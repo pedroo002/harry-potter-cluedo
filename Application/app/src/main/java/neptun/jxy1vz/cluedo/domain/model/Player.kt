@@ -1,6 +1,10 @@
 package neptun.jxy1vz.cluedo.domain.model
 
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.domain.model.card.HelperCard
+import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
+import neptun.jxy1vz.cluedo.domain.model.card.MysteryType
+import neptun.jxy1vz.cluedo.domain.model.card.PlayerCard
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mContext
 
 class Player(

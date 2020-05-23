@@ -121,7 +121,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             imageView.visibility = View.GONE
     }
 
-    fun drawSelection(@DrawableRes selRes: Int, row: Int, col: Int, playerId: Int) {
+    fun drawSelection(selRes: Int, row: Int, col: Int, playerId: Int) {
         val targetPosition = Position(row, col)
 
         val selection = ImageView(mapRoot.mapLayout.context)

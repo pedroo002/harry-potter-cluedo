@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentDarkCardBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
-import neptun.jxy1vz.cluedo.domain.model.DarkCard
-import neptun.jxy1vz.cluedo.domain.model.LossType
+import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
+import neptun.jxy1vz.cluedo.domain.model.card.LossType
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 

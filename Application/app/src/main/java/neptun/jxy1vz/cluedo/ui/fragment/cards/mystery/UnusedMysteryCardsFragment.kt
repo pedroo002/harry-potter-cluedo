@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentUnusedMysteryCardsBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
-import neptun.jxy1vz.cluedo.domain.model.MysteryCard
+import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
 class UnusedMysteryCardsFragment(

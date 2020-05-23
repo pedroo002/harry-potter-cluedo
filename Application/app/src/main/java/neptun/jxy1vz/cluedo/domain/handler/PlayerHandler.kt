@@ -4,8 +4,8 @@ import android.widget.ImageView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import neptun.jxy1vz.cluedo.domain.model.DarkCard
-import neptun.jxy1vz.cluedo.domain.model.DarkType
+import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
+import neptun.jxy1vz.cluedo.domain.model.card.DarkType
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Position
 import neptun.jxy1vz.cluedo.ui.fragment.cards.dark.DarkCardFragment

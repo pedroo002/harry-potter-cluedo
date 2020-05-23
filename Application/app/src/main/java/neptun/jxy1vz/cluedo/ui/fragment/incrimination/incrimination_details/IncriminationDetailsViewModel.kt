@@ -20,7 +20,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentIncriminationDetailsBinding
-import neptun.jxy1vz.cluedo.domain.model.MysteryCard
+import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.domain.model.helper.*
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener

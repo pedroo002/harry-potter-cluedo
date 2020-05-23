@@ -9,6 +9,5 @@ data class Room(
     val right: Int,
     val bottom: Int,
     val left: Int,
-    val area: Int,
-    @DrawableRes val selection: Int
+    val selection: Int
 )

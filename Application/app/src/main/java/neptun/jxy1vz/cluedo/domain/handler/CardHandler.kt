@@ -7,7 +7,7 @@ import androidx.core.animation.doOnEnd
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.domain.model.*
+import neptun.jxy1vz.cluedo.domain.model.card.*
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.finishedCardCheck

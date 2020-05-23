@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_dark_card.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentDarkCardBinding
 import neptun.jxy1vz.cluedo.domain.model.*
+import neptun.jxy1vz.cluedo.domain.model.card.*
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.domain.model.helper.safeIcons
 import neptun.jxy1vz.cluedo.domain.model.helper.unsafeIcons

@@ -7,11 +7,10 @@ import neptun.jxy1vz.cluedo.database.model.CardDBmodel
 import neptun.jxy1vz.cluedo.database.model.CardType.PLAYER
 import neptun.jxy1vz.cluedo.database.model.DarkHelperPairDBmodel
 import neptun.jxy1vz.cluedo.database.model.string
-import neptun.jxy1vz.cluedo.domain.model.*
+import neptun.jxy1vz.cluedo.domain.model.card.*
 import neptun.jxy1vz.cluedo.domain.util.Interactor
 import neptun.jxy1vz.cluedo.domain.util.toDatabaseModel
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
-import kotlin.random.Random
 
 class DatabaseAccess(private val context: Context) {
 
