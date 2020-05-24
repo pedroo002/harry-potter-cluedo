@@ -128,7 +128,7 @@ class Player(
         return false
     }
 
-    fun getRandomSuspect(
+    fun generateSuspect(
         room: String,
         toolList: Array<String>,
         suspectList: Array<String>

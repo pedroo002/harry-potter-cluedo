@@ -125,7 +125,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
 
             val tools = mContext!!.resources.getStringArray(R.array.tools)
             val suspects = mContext!!.resources.getStringArray(R.array.suspects)
-            val suspect = map.playerHandler.getPlayerById(playerId).getRandomSuspect(room, tools, suspects)
+            val suspect = map.playerHandler.getPlayerById(playerId).generateSuspect(room, tools, suspects)
 
             for (t in tools) {
                 if (map.playerHandler.getPlayerById(playerId).hasSuspicion(t)) {
