@@ -80,7 +80,10 @@ class Player(
                             else -> MysteryType.TOOL
                         }
                         fillSolution(type, suspectParam)
-                    } else
+                    } else if (conclusions!![otherTwo[0]] == playerWhoShowed || conclusions!![otherTwo[0]] == playerWhoShowed) {
+                        suspicions!![suspectParam] = playerWhoShowed
+                    }
+                    else
                         getConclusion(suspectParam, playerWhoShowed)
                 }
             }
