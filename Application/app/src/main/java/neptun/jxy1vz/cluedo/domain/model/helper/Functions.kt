@@ -4,25 +4,15 @@ import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.card.HelperType
 import neptun.jxy1vz.cluedo.domain.model.Player
 
-fun getHelperObjects(player: Player, darkCard: DarkCard, tools: ArrayList<String>, spells: ArrayList<String>, allys: ArrayList<String>) {
-    tools.add("")
-    spells.add("")
-    allys.add("")
-
+fun getHelperObjects(player: Player, darkCard: DarkCard): ArrayList<String> {
+    val helperObjects = ArrayList<String>()
     if (!player.helperCards.isNullOrEmpty()) {
         for (helperCard in player.helperCards!!) {
             if (!darkCard.helperIds.isNullOrEmpty() && darkCard.helperIds!!.contains(helperCard.id))
-                when (helperCard.type) {
-                    HelperType.TOOL -> addHelperToArray(helperCard.name, tools)
-                    HelperType.SPELL -> addHelperToArray(helperCard.name, spells)
-                    HelperType.ALLY -> addHelperToArray(helperCard.name, allys)
-                }
+                helperObjects.add(helperCard.name)
         }
     }
-}
-
-private fun addHelperToArray(name: String, array: ArrayList<String>) {
-    array.add(name)
+    return helperObjects
 }
 
 fun getPixelsFromDp(dp: Int, density: Int): Int {

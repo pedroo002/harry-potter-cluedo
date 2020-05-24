@@ -62,31 +62,21 @@ class DarkCardViewModel(
         for (player in playerList) {
             val i = playerList.indexOf(player)
 
-            var imgRes: Int
+            val imgRes = if (playerIds.contains(player.id)) {
+                val helperObjects = getHelperObjects(player, card)
 
-            if (playerIds.contains(player.id)) {
-                val tools: ArrayList<String> = ArrayList()
-                val spells: ArrayList<String> = ArrayList()
-                val allys: ArrayList<String> = ArrayList()
-
-                getHelperObjects(player, card, tools, spells, allys)
-
-                imgRes = if (tools.size == 1 && spells.size == 1 && allys.size == 1) {
+                if (helperObjects.isEmpty()) {
                     getLoss(player, card)
                     playerIcons[player.card.name]!!
                 } else {
-                    val mergedHelperNames = ArrayList<String>()
-                    mergedHelperNames.addAll(tools)
-                    mergedHelperNames.addAll(spells)
-                    mergedHelperNames.addAll(allys)
-                    for (tool in mergedHelperNames)
+                    for (tool in helperObjects)
                         for (helperCard in player.helperCards!!)
                             if (helperCard.name == tool)
                                 helperCard.numberOfHelpingCases++
                     safePlayerIcons[player.card.name]!!
                 }
             } else
-                imgRes = safePlayerIcons[player.card.name]!!
+                safePlayerIcons[player.card.name]!!
 
             var lossTextView: TextView? = null
             if (card.lossType == LossType.HP && playerIds.contains(player.id) && imgRes != safePlayerIcons[player.card.name]!!) {
