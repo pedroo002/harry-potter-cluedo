@@ -15,6 +15,7 @@ class GameModeViewModel(private val bind: FragmentGameModeBinding, private val c
 
     fun selectPlayerMode(mode: Int) {
         gameMode = context.resources.getStringArray(R.array.playmodes)[mode]
+        bind.gameMode = gameMode
 
         when (mode) {
             0 -> {

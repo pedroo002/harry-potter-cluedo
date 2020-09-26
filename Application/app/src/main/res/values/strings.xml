@@ -186,6 +186,9 @@
     <string name="what_is_your_purpose">Mit szeretnél csinálni?</string>
     <string name="check_notes">Jegyzetek megtekintése</string>
     <string name="back">Vissza</string>
+    <string name="next">Tovább</string>
+    <string name="join_server">Csatlakozás szerverhez</string>
+    <string name="create_server">Szerver létrehozása</string>
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>
