@@ -196,6 +196,9 @@
     <string name="login">Bejelentkezés</string>
     <string name="new_user">Új felhasználó</string>
     <string name="existing_user">Régi felhasználó</string>
+    <string name="user_pref">User data</string>
+    <string name="logged_in_user">Jelenlegi felhasználó</string>
+
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>
