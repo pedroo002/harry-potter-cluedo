@@ -1,6 +1,5 @@
 package neptun.jxy1vz.cluedo.api
 
-import neptun.jxy1vz.cluedo.api.model.AccusationApiModel
 import neptun.jxy1vz.cluedo.api.model.ChannelApiModel
 import neptun.jxy1vz.cluedo.api.model.PlayerApiModel
 import okhttp3.RequestBody
