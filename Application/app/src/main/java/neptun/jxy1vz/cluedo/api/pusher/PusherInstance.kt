@@ -20,7 +20,7 @@ class PusherInstance {
             return if (this::pusher.isInitialized)
                 pusher
             else {
-                val pusherOptions = PusherOptions().setAuthorizer(getPresenceAuthorizer()).setCluster(PUSHER_APP_CLUSTER)
+                val pusherOptions = PusherOptions().setAuthorizer(getPrivateAuthorizer()).setCluster(PUSHER_APP_CLUSTER)
                 pusher = Pusher(PUSHER_APP_KEY, pusherOptions)
                 pusher
             }

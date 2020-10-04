@@ -14,5 +14,85 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvLabelChannelName"
+            android:text="@string/channel_name"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtChannelName"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelChannelName"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvLabelAuthKey"
+            android:text="@string/auth_key"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtChannelName"/>
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numAuthKey1"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey"/>
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numAuthKey2"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toEndOf="@id/numAuthKey1"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey"/>
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numAuthKey3"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toEndOf="@id/numAuthKey2"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey"/>
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numAuthKey4"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toEndOf="@id/numAuthKey3"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnCreateChannel"
+            android:text="@string/create"
+            android:layout_marginTop="20dp"
+            android:enabled="false"
+            android:onClick="@{()->createChannelViewModel.createChannel()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/numAuthKey1"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -10,6 +10,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentChannelRootBinding
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuListener
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
+import neptun.jxy1vz.cluedo.ui.fragment.channel.create.CreateChannelFragment
 
 class ChannelRootFragment(private val listener: MenuListener) : Fragment(), ViewModelListener {
 
@@ -26,7 +27,8 @@ class ChannelRootFragment(private val listener: MenuListener) : Fragment(), View
     }
 
     override fun onFinish() {
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        val createChannelFragment = CreateChannelFragment()
+        activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, createChannelFragment).commit()
         listener.onFragmentClose()
     }
 }
