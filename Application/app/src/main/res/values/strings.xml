@@ -192,6 +192,10 @@
     <string name="channel_name">Szerver neve</string>
     <string name="auth_key">Belépési kód</string>
     <string name="create">Létrehozás</string>
+    <string name="player_name">Felhasználónév</string>
+    <string name="login">Bejelentkezés</string>
+    <string name="new_user">Új felhasználó</string>
+    <string name="existing_user">Régi felhasználó</string>
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>
