@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.api.model
+package neptun.jxy1vz.cluedo.network.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

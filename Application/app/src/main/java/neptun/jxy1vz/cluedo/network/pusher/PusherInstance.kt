@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.api.pusher
+package neptun.jxy1vz.cluedo.network.pusher
 
 import com.pusher.client.Pusher
 import com.pusher.client.PusherOptions

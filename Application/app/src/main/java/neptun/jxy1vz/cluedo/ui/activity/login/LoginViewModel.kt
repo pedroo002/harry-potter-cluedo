@@ -8,8 +8,8 @@ import kotlinx.android.synthetic.main.activity_login.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import neptun.jxy1vz.cluedo.api.RetrofitInstance
-import neptun.jxy1vz.cluedo.api.model.PlayerApiModel
+import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.cluedo.network.model.PlayerApiModel
 import neptun.jxy1vz.cluedo.databinding.ActivityLoginBinding
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -20,10 +20,21 @@ import retrofit2.Response
 
 class LoginViewModel(private val bind: ActivityLoginBinding, private val context: Context, private val listener: LoginActivityListener) : BaseObservable() {
 
-    suspend fun login() {
+    fun login() {
         disableEditTexts()
 
         GlobalScope.launch(Dispatchers.IO) {
+            /*RetrofitInstance.retrofit.test().enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    println(response.message())
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    println("Fail.")
+                }
+
+            })*/
+
             val playerName = bind.root.txtPlayerName.text.toString()
             val password = bind.root.txtPassword.text.toString()
 
@@ -36,8 +47,12 @@ class LoginViewModel(private val bind: ActivityLoginBinding, private val context
                 register(jsonBody)
             }
             else {
-                RetrofitInstance.retrofit.loginPlayer(jsonBody).enqueue(object : Callback<String> {
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                RetrofitInstance.retrofit.loginPlayer(jsonBody).process { playerApiModel, throwable ->
+                    println(playerApiModel?.name)
+                }
+                /*RetrofitInstance.retrofit.loginPlayer(jsonBody).enqueue(object : Callback<PlayerApiModel> {
+                    override fun onResponse(call: Call<PlayerApiModel>, response: Response<PlayerApiModel>) {
+                        println("${response.code()}: ${response.message()}")
                         when (response.code()) {
                             200 -> {
                                 listener.goToMenu(playerName)
@@ -53,21 +68,25 @@ class LoginViewModel(private val bind: ActivityLoginBinding, private val context
                         }
                     }
 
-                    override fun onFailure(call: Call<String>, t: Throwable) {
+                    override fun onFailure(call: Call<PlayerApiModel>, t: Throwable) {
                         Log.i("LoginViewModel::login()", t.message)
                         enableEditTexts()
                     }
-                })
+                })*/
             }
         }
     }
 
     private suspend fun register(jsonBody: RequestBody) {
-        RetrofitInstance.retrofit.registerPlayer(jsonBody).enqueue(object : Callback<PlayerApiModel> {
+        RetrofitInstance.retrofit.registerPlayer(jsonBody).process { playerApiModel, throwable ->
+            println(playerApiModel?.name)
+        }
+        /*RetrofitInstance.retrofit.registerPlayer(jsonBody).enqueue(object : Callback<PlayerApiModel> {
             override fun onResponse(
                 call: Call<PlayerApiModel>,
                 response: Response<PlayerApiModel>
             ) {
+                println("${response.code()}: ${response.message()}")
                 when (response.code()) {
                     201 -> {
                         listener.goToMenu(bind.root.txtPlayerName.text.toString())
@@ -88,7 +107,7 @@ class LoginViewModel(private val bind: ActivityLoginBinding, private val context
                 enableEditTexts()
             }
 
-        })
+        })*/
     }
 
     private fun serverErrorSnackbar() {

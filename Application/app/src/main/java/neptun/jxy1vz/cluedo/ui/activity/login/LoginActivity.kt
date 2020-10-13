@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
+import kotlinx.android.synthetic.main.activity_login.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityLoginBinding
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity
@@ -18,6 +20,17 @@ class LoginActivity : AppCompatActivity(), LoginActivityListener {
 
         activityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         activityLoginBinding.loginViewModel = LoginViewModel(activityLoginBinding, applicationContext, this)
+
+        activityLoginBinding.root.txtPlayerName.addTextChangedListener {
+            buttonEnableValidator()
+        }
+        activityLoginBinding.root.txtPassword.addTextChangedListener {
+            buttonEnableValidator()
+        }
+    }
+
+    private fun buttonEnableValidator() {
+        activityLoginBinding.root.btnLogin.isEnabled = activityLoginBinding.root.txtPlayerName.text!!.isNotEmpty() && activityLoginBinding.root.txtPassword.text!!.isNotEmpty()
     }
 
     override fun goToMenu(playerName: String) {

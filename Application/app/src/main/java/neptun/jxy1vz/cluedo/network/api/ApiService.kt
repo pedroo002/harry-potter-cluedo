@@ -1,12 +1,16 @@
-package neptun.jxy1vz.cluedo.api
+package neptun.jxy1vz.cluedo.network.api
 
-import neptun.jxy1vz.cluedo.api.model.ChannelApiModel
-import neptun.jxy1vz.cluedo.api.model.PlayerApiModel
+import neptun.jxy1vz.cluedo.network.call_adapter.Simple
+import neptun.jxy1vz.cluedo.network.model.ChannelApiModel
+import neptun.jxy1vz.cluedo.network.model.PlayerApiModel
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiService {
+
+    @GET("/test")
+    suspend fun test(): Simple<String>
 
     //------------------------------------ Channel API requests
 
@@ -37,10 +41,10 @@ interface ApiService {
     suspend fun getPlayer(@Body body: RequestBody): Call<PlayerApiModel>
 
     @POST("/player")
-    suspend fun registerPlayer(@Body body: RequestBody): Call<PlayerApiModel>
+    suspend fun registerPlayer(@Body body: RequestBody): Simple<PlayerApiModel>
 
     @POST("/login-player")
-    suspend fun loginPlayer(@Body body: RequestBody): Call<String>
+    suspend fun loginPlayer(@Body body: RequestBody): Simple<PlayerApiModel>
 
     @DELETE("/player/:id")
     suspend fun deletePlayer()

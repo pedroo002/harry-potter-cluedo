@@ -26,7 +26,8 @@
             android:screenOrientation="portrait"
             android:noHistory="true"/>
         <activity android:name="neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

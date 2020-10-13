@@ -1,11 +1,11 @@
-package neptun.jxy1vz.cluedo.api.model
+package neptun.jxy1vz.cluedo.network.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class PlayerApiModel(
+data class CardApiModel(
     @SerializedName("_id") @Expose var id: String,
-    @SerializedName("name") @Expose var name: String,
     @SerializedName("player_id") @Expose var playerId: Int,
-    @SerializedName("password_hash") @Expose var password: String
+    @SerializedName("card_name") @Expose var cardName: String,
+    @SerializedName("card_type") @Expose var cardType: String
 )
