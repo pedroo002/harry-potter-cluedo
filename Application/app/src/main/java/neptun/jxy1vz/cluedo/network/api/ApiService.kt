@@ -10,7 +10,7 @@ import retrofit2.http.*
 interface ApiService {
 
     @GET("/test")
-    suspend fun test(): Simple<String>
+    suspend fun test(): Call<String>
 
     //------------------------------------ Channel API requests
 
@@ -41,10 +41,10 @@ interface ApiService {
     suspend fun getPlayer(@Body body: RequestBody): Call<PlayerApiModel>
 
     @POST("/player")
-    suspend fun registerPlayer(@Body body: RequestBody): Simple<PlayerApiModel>
+    suspend fun registerPlayer(@Body body: RequestBody): Call<PlayerApiModel>
 
     @POST("/login-player")
-    suspend fun loginPlayer(@Body body: RequestBody): Simple<PlayerApiModel>
+    suspend fun loginPlayer(@Query("player_name") playerName: String, @Query("password") password: String): Simple<PlayerApiModel>
 
     @DELETE("/player/:id")
     suspend fun deletePlayer()

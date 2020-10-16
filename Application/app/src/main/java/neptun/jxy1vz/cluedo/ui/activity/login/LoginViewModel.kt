@@ -47,41 +47,46 @@ class LoginViewModel(private val bind: ActivityLoginBinding, private val context
                 register(jsonBody)
             }
             else {
-                RetrofitInstance.retrofit.loginPlayer(jsonBody).process { playerApiModel, throwable ->
-                    println(playerApiModel?.name)
+                RetrofitInstance.retrofit.loginPlayer(playerName, password).process { playerApiModel, throwable ->
+                    println("Debug: ${playerApiModel?.name}")
                 }
-                /*RetrofitInstance.retrofit.loginPlayer(jsonBody).enqueue(object : Callback<PlayerApiModel> {
-                    override fun onResponse(call: Call<PlayerApiModel>, response: Response<PlayerApiModel>) {
-                        println("${response.code()}: ${response.message()}")
-                        when (response.code()) {
-                            200 -> {
-                                listener.goToMenu(playerName)
-                            }
-                            400 -> {
-                                enableEditTexts()
-                                Snackbar.make(bind.root, response.message(), Snackbar.LENGTH_LONG).show()
-                            }
-                            500 -> {
-                                enableEditTexts()
-                                serverErrorSnackbar()
+                /*try {
+                    RetrofitInstance.retrofit.loginPlayer(playerName, password)
+                        .enqueue(object : Callback<PlayerApiModel> {
+                        override fun onResponse(call: Call<PlayerApiModel>, response: Response<PlayerApiModel>) {
+                            println("${response.code()}: ${response.message()}")
+                            when (response.code()) {
+                                200 -> {
+                                    listener.goToMenu(playerName)
+                                }
+                                400 -> {
+                                    enableEditTexts()
+                                    Snackbar.make(bind.root, response.message(), Snackbar.LENGTH_LONG).show()
+                                }
+                                500 -> {
+                                    enableEditTexts()
+                                    serverErrorSnackbar()
+                                }
                             }
                         }
-                    }
 
-                    override fun onFailure(call: Call<PlayerApiModel>, t: Throwable) {
-                        Log.i("LoginViewModel::login()", t.message)
-                        enableEditTexts()
-                    }
-                })*/
+                        override fun onFailure(call: Call<PlayerApiModel>, t: Throwable) {
+                            Log.i("LoginViewModel::login()", t.message)
+                            enableEditTexts()
+                        }
+                    })
+                } catch (ex: Exception) {
+                    Log.i("LoginViewModel::login()", "Hiba:\n${ex.localizedMessage}")
+                }*/
             }
         }
     }
 
     private suspend fun register(jsonBody: RequestBody) {
-        RetrofitInstance.retrofit.registerPlayer(jsonBody).process { playerApiModel, throwable ->
+        /*RetrofitInstance.retrofit.registerPlayer(jsonBody).process { playerApiModel, throwable ->
             println(playerApiModel?.name)
-        }
-        /*RetrofitInstance.retrofit.registerPlayer(jsonBody).enqueue(object : Callback<PlayerApiModel> {
+        }*/
+        RetrofitInstance.retrofit.registerPlayer(jsonBody).enqueue(object : Callback<PlayerApiModel> {
             override fun onResponse(
                 call: Call<PlayerApiModel>,
                 response: Response<PlayerApiModel>
@@ -107,7 +112,7 @@ class LoginViewModel(private val bind: ActivityLoginBinding, private val context
                 enableEditTexts()
             }
 
-        })*/
+        })
     }
 
     private fun serverErrorSnackbar() {

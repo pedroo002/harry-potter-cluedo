@@ -7,22 +7,22 @@ import java.lang.reflect.Type
 
 class SimpleCallAdapterFactory private constructor() : CallAdapter.Factory() {
 
-    override fun get(returnType: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): CallAdapter<*, *>? {        return returnType?.let {
-        return try {
-            // get enclosing type
-            val enclosingType = (it as ParameterizedType)
+    override fun get(returnType: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): CallAdapter<*, *>? =
+        returnType?.let {
+            return try {
+                // get enclosing type
+                val enclosingType = (it as ParameterizedType)
 
-            // ensure enclosing type is 'Simple'
-            if (enclosingType.rawType != Simple::class.java)
+                // ensure enclosing type is 'Simple'
+                if (enclosingType.rawType != Simple::class.java)
+                    null
+                else {
+                    val type = enclosingType.actualTypeArguments[0]
+                    SimpleCallAdapter<Any>(type)
+                }
+            } catch (ex: ClassCastException) {
                 null
-            else {
-                val type = enclosingType.actualTypeArguments[0]
-                SimpleCallAdapter<Any>(type)
-            }
-        } catch (ex: ClassCastException) {
-            null
-        }        }
-    }
+            }        }
 
     companion object {
         @JvmStatic
