@@ -32,7 +32,7 @@ class CreateChannelViewModel(private val bind: FragmentCreateChannelBinding, pri
         val jsonBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
 
         GlobalScope.launch(Dispatchers.IO) {
-            RetrofitInstance.retrofit.createChannel(jsonBody).enqueue(object : Callback<ChannelApiModel> {
+            RetrofitInstance.cluedo.createChannel(jsonBody).enqueue(object : Callback<ChannelApiModel> {
                 override fun onResponse(
                     call: Call<ChannelApiModel>,
                     response: Response<ChannelApiModel>
@@ -51,7 +51,7 @@ class CreateChannelViewModel(private val bind: FragmentCreateChannelBinding, pri
                 }
 
                 override fun onFailure(call: Call<ChannelApiModel>, t: Throwable) {
-                    Log.i("CreateChannelViewModel", t.message)
+                    t.message?.let { Log.i("CreateChannelViewModel", it) }
                 }
 
             })

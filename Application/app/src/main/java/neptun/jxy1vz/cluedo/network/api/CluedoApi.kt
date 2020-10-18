@@ -7,7 +7,7 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
-interface ApiService {
+interface CluedoApi {
 
     @GET("/test")
     suspend fun test(): Call<String>
