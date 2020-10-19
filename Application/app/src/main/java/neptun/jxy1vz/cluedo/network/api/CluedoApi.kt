@@ -8,25 +8,22 @@ import retrofit2.http.*
 
 interface CluedoApi {
 
-    @GET("/test")
-    suspend fun test(): String
-
     //------------------------------------ Channel API requests
 
     @GET("/channel")
-    suspend fun getChannels(): Call<List<ChannelApiModel>>
+    suspend fun getChannels(): List<ChannelApiModel>?
 
     @GET("/channel/:id")
-    suspend fun getChannel(): Call<ChannelApiModel>
+    suspend fun getChannel(): ChannelApiModel?
 
     @POST("/channel")
-    suspend fun createChannel(@Body body: RequestBody): Call<ChannelApiModel>
+    suspend fun createChannel(@Body body: RequestBody): ChannelApiModel?
 
     @PUT("/join-channel/:id")
-    suspend fun joinChannel(@Body body: RequestBody): Call<ChannelApiModel>
+    suspend fun joinChannel(@Body body: RequestBody): ChannelApiModel?
 
     @PUT("/leave-channel/:id")
-    suspend fun leaveChannel(@Body body: RequestBody): Call<ChannelApiModel>
+    suspend fun leaveChannel(@Body body: RequestBody): ChannelApiModel?
 
     @DELETE("/channel/:id")
     suspend fun deleteChannel()
@@ -34,10 +31,10 @@ interface CluedoApi {
     //------------------------------------ Player API requests
 
     @GET("/player")
-    suspend fun getPlayers(): Call<List<PlayerApiModel>>
+    suspend fun getPlayers(): List<PlayerApiModel>?
 
     @GET("/player/:id")
-    suspend fun getPlayer(@Body body: RequestBody): Call<PlayerApiModel>
+    suspend fun getPlayer(@Body body: RequestBody): PlayerApiModel?
 
     @POST("/player")
     suspend fun registerPlayer(@Body body: RequestBody): PlayerApiModel?

@@ -1,7 +1,6 @@
 package neptun.jxy1vz.cluedo.ui.activity.login
 
 import android.content.Context
-import android.util.Log
 import androidx.databinding.BaseObservable
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.android.material.snackbar.Snackbar
@@ -16,7 +15,12 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import org.json.JSONObject
 
-class LoginViewModel(private val bind: ActivityLoginBinding, private val context: Context, private val listener: LoginActivityListener, private val lifecycle: LifecycleCoroutineScope) : BaseObservable() {
+class LoginViewModel(
+    private val bind: ActivityLoginBinding,
+    private val context: Context,
+    private val listener: LoginActivityListener,
+    private val lifecycle: LifecycleCoroutineScope
+) : BaseObservable() {
 
     private val retrofit = RetrofitInstance.getInstance(context)
 
@@ -36,82 +40,26 @@ class LoginViewModel(private val bind: ActivityLoginBinding, private val context
 
             val moshiJson = adapter.toJson(playerRequest)
 
-            val jsonBody = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), moshiJson)
+            val jsonBody =
+                RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), moshiJson)
 
             if (bind.root.newOrExisting.isChecked) {
                 register(jsonBody)
-            }
-            else {
-                /*RetrofitInstance.cluedo.loginPlayer(playerName, password).process { playerApiModel, throwable ->
-                    println("Debug: ${playerApiModel?.name}")
-                }*/
-
+            } else {
                 val res = retrofit.cluedo.loginPlayer(jsonBody)
                 res?.let {
                     if (res.name == playerName)
                         listener.goToMenu(playerName)
                 }
-                /*.enqueue(object : Callback<PlayerApiModel> {
-                override fun onResponse(call: Call<PlayerApiModel>, response: Response<PlayerApiModel>) {
-                    println("${response.code()}: ${response.message()}")
-                    when (response.code()) {
-                        200 -> {
-                            listener.goToMenu(playerName)
-                        }
-                        400 -> {
-                            enableEditTexts()
-                            Snackbar.make(bind.root, response.message(), Snackbar.LENGTH_LONG).show()
-                        }
-                        500 -> {
-                            enableEditTexts()
-                            serverErrorSnackbar()
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<PlayerApiModel>, t: Throwable) {
-                    t.message?.let { Log.i("LoginViewModel::login()", it) }
-                    enableEditTexts()
-                }
-            })*/
             }
         }
     }
 
     private suspend fun register(jsonBody: RequestBody) {
-        /*RetrofitInstance.cluedo.registerPlayer(jsonBody).process { playerApiModel, throwable ->
-            println(playerApiModel?.name)
-        }*/
         val res = retrofit.cluedo.registerPlayer(jsonBody)
         res?.let {
             listener.goToMenu(res.name)
         }
-            /*.enqueue(object : Callback<PlayerApiModel> {
-            override fun onResponse(
-                call: Call<PlayerApiModel>,
-                response: Response<PlayerApiModel>
-            ) {
-                println("${response.code()}: ${response.message()}")
-                when (response.code()) {
-                    201 -> {
-                        listener.goToMenu(bind.root.txtPlayerName.text.toString())
-                    }
-                    400 -> {
-                        enableEditTexts()
-                        Snackbar.make(bind.root, response.message(), Snackbar.LENGTH_LONG).show()
-                    }
-                    500 -> {
-                        enableEditTexts()
-                        serverErrorSnackbar()
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<PlayerApiModel>, t: Throwable) {
-                t.message?.let { Log.i("LoginViewModel::register()", it) }
-                enableEditTexts()
-            }
-        })*/
     }
 
     private fun serverErrorSnackbar() {

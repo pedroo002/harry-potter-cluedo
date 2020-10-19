@@ -1,24 +1,17 @@
 package neptun.jxy1vz.cluedo.ui.fragment.channel.create
 
 import android.content.Context
-import android.util.Log
 import androidx.databinding.BaseObservable
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.cluedo.network.model.ChannelApiModel
 import neptun.jxy1vz.cluedo.databinding.FragmentCreateChannelBinding
+import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class CreateChannelViewModel(private val bind: FragmentCreateChannelBinding, private val context: Context, listener: ViewModelListener) : BaseObservable() {
 
@@ -35,29 +28,7 @@ class CreateChannelViewModel(private val bind: FragmentCreateChannelBinding, pri
         val jsonBody = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), jsonObject.toString())
 
         GlobalScope.launch(Dispatchers.IO) {
-            retrofit.cluedo.createChannel(jsonBody).enqueue(object : Callback<ChannelApiModel> {
-                override fun onResponse(
-                    call: Call<ChannelApiModel>,
-                    response: Response<ChannelApiModel>
-                ) {
-                    when (response.code()) {
-                        201 -> {
-
-                        }
-                        400 -> {
-                            Snackbar.make(bind.root, response.message(), Snackbar.LENGTH_LONG).show()
-                        }
-                        else -> {
-
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<ChannelApiModel>, t: Throwable) {
-                    t.message?.let { Log.i("CreateChannelViewModel", it) }
-                }
-
-            })
+            retrofit.cluedo.createChannel(jsonBody)
         }
     }
 }
