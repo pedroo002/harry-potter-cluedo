@@ -8,24 +8,23 @@ import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCreateChannelBinding
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.cluedo.network.model.ChannelRequest
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import org.json.JSONObject
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class CreateChannelViewModel(private val bind: FragmentCreateChannelBinding, private val context: Context, listener: ViewModelListener) : BaseObservable() {
 
     private val retrofit = RetrofitInstance.getInstance(context)
 
     fun createChannel() {
-        val channelName = bind.txtChannelName.text
+        val channelName = bind.txtChannelName.text.toString()
         val authKey = "${bind.numAuthKey1.value}${bind.numAuthKey2.value}${bind.numAuthKey3.value}${bind.numAuthKey4.value}"
 
-        val jsonObject = JSONObject()
-        jsonObject.put("channel_name", channelName)
-        jsonObject.put("auth_key", authKey)
-        jsonObject.put("max_user", context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE).getString(context.resources.getString(R.string.player_count_key), "5"))
-        val jsonBody = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), jsonObject.toString())
+        val adapter = retrofit.moshi.adapter(ChannelRequest::class.java)
+        val channelRequest = ChannelRequest(channelName, authKey, context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE).getString(context.resources.getString(R.string.player_count_key), "5")!!)
+        val moshiJson = adapter.toJson(channelRequest)
+        val jsonBody = moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
         GlobalScope.launch(Dispatchers.IO) {
             retrofit.cluedo.createChannel(jsonBody)

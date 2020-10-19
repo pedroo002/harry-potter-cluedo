@@ -13,6 +13,7 @@ import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.PlayerRequest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
 class LoginViewModel(
@@ -34,14 +35,8 @@ class LoginViewModel(
             val playerRequest = PlayerRequest(playerName, password)
             val adapter = retrofit.moshi.adapter(PlayerRequest::class.java)
 
-            val jsonObject = JSONObject()
-            jsonObject.put("player_name", playerName)
-            jsonObject.put("password", password)
-
             val moshiJson = adapter.toJson(playerRequest)
-
-            val jsonBody =
-                RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), moshiJson)
+            val jsonBody = moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
             if (bind.root.newOrExisting.isChecked) {
                 register(jsonBody)
