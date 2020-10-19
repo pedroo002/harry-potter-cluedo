@@ -1,33 +1,29 @@
 package neptun.jxy1vz.cluedo.network.api
 
-import neptun.jxy1vz.cluedo.network.call_adapter.Simple
 import neptun.jxy1vz.cluedo.network.model.ChannelApiModel
 import neptun.jxy1vz.cluedo.network.model.PlayerApiModel
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
-interface ApiService {
-
-    @GET("/test")
-    suspend fun test(): Call<String>
+interface CluedoApi {
 
     //------------------------------------ Channel API requests
 
     @GET("/channel")
-    suspend fun getChannels(): Call<List<ChannelApiModel>>
+    suspend fun getChannels(): List<ChannelApiModel>?
 
     @GET("/channel/:id")
-    suspend fun getChannel(): Call<ChannelApiModel>
+    suspend fun getChannel(): ChannelApiModel?
 
     @POST("/channel")
-    suspend fun createChannel(@Body body: RequestBody): Call<ChannelApiModel>
+    suspend fun createChannel(@Body body: RequestBody): ChannelApiModel?
 
     @PUT("/join-channel/:id")
-    suspend fun joinChannel(@Body body: RequestBody): Call<ChannelApiModel>
+    suspend fun joinChannel(@Body body: RequestBody): ChannelApiModel?
 
     @PUT("/leave-channel/:id")
-    suspend fun leaveChannel(@Body body: RequestBody): Call<ChannelApiModel>
+    suspend fun leaveChannel(@Body body: RequestBody): ChannelApiModel?
 
     @DELETE("/channel/:id")
     suspend fun deleteChannel()
@@ -35,16 +31,16 @@ interface ApiService {
     //------------------------------------ Player API requests
 
     @GET("/player")
-    suspend fun getPlayers(): Call<List<PlayerApiModel>>
+    suspend fun getPlayers(): List<PlayerApiModel>?
 
     @GET("/player/:id")
-    suspend fun getPlayer(@Body body: RequestBody): Call<PlayerApiModel>
+    suspend fun getPlayer(@Body body: RequestBody): PlayerApiModel?
 
     @POST("/player")
-    suspend fun registerPlayer(@Body body: RequestBody): Call<PlayerApiModel>
+    suspend fun registerPlayer(@Body body: RequestBody): PlayerApiModel?
 
     @POST("/login-player")
-    suspend fun loginPlayer(@Query("player_name") playerName: String, @Query("password") password: String): Simple<PlayerApiModel>
+    suspend fun loginPlayer(@Body body: RequestBody): PlayerApiModel?
 
     @DELETE("/player/:id")
     suspend fun deletePlayer()

@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_login.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityLoginBinding
@@ -19,7 +20,7 @@ class LoginActivity : AppCompatActivity(), LoginActivityListener {
         super.onCreate(savedInstanceState)
 
         activityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
-        activityLoginBinding.loginViewModel = LoginViewModel(activityLoginBinding, applicationContext, this)
+        activityLoginBinding.loginViewModel = LoginViewModel(activityLoginBinding, applicationContext, this, lifecycleScope)
 
         activityLoginBinding.root.txtPlayerName.addTextChangedListener {
             buttonEnableValidator()
@@ -41,6 +42,7 @@ class LoginActivity : AppCompatActivity(), LoginActivityListener {
 
         val menuIntent = Intent(applicationContext, MenuActivity::class.java)
         menuIntent.putExtra(applicationContext.resources.getString(R.string.logged_in_user), playerName)
+        menuIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         applicationContext.startActivity(menuIntent)
     }
 }
