@@ -13,6 +13,7 @@ import neptun.jxy1vz.cluedo.network.model.ChannelApiModel
 import neptun.jxy1vz.cluedo.databinding.FragmentCreateChannelBinding
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.Call
@@ -20,6 +21,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class CreateChannelViewModel(private val bind: FragmentCreateChannelBinding, private val context: Context, listener: ViewModelListener) : BaseObservable() {
+
+    private val retrofit = RetrofitInstance.getInstance(context)
 
     fun createChannel() {
         val channelName = bind.txtChannelName.text
@@ -29,10 +32,10 @@ class CreateChannelViewModel(private val bind: FragmentCreateChannelBinding, pri
         jsonObject.put("channel_name", channelName)
         jsonObject.put("auth_key", authKey)
         jsonObject.put("max_user", context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE).getString(context.resources.getString(R.string.player_count_key), "5"))
-        val jsonBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
+        val jsonBody = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), jsonObject.toString())
 
         GlobalScope.launch(Dispatchers.IO) {
-            RetrofitInstance.cluedo.createChannel(jsonBody).enqueue(object : Callback<ChannelApiModel> {
+            retrofit.cluedo.createChannel(jsonBody).enqueue(object : Callback<ChannelApiModel> {
                 override fun onResponse(
                     call: Call<ChannelApiModel>,
                     response: Response<ChannelApiModel>

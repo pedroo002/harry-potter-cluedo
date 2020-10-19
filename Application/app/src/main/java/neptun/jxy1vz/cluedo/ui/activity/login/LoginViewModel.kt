@@ -3,122 +3,90 @@ package neptun.jxy1vz.cluedo.ui.activity.login
 import android.content.Context
 import android.util.Log
 import androidx.databinding.BaseObservable
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
-import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.cluedo.network.model.PlayerApiModel
 import neptun.jxy1vz.cluedo.databinding.ActivityLoginBinding
-import neptun.jxy1vz.cluedo.network.model.nyt_model.ArticleData
-import neptun.jxy1vz.cluedo.network.model.nyt_model.ArticleProperties
-import neptun.jxy1vz.cluedo.network.model.nyt_model.toDomainModel
-import neptun.jxy1vz.cluedo.network.model.weather.WeatherData
-import okhttp3.Dispatcher
-import okhttp3.MediaType
+import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.cluedo.network.model.PlayerRequest
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.concurrent.Executors
 
 class LoginViewModel(private val bind: ActivityLoginBinding, private val context: Context, private val listener: LoginActivityListener, private val lifecycle: LifecycleCoroutineScope) : BaseObservable() {
+
+    private val retrofit = RetrofitInstance.getInstance(context)
 
     fun login() {
         disableEditTexts()
 
         GlobalScope.launch(Dispatchers.IO) {
-            RetrofitInstance.weather.getWeather("London", "metric", RetrofitInstance.SERVICE_KEY).enqueue(object : Callback<WeatherData> {
-                override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
-                    println("jovagy")
-                }
-
-                override fun onFailure(call: Call<WeatherData>, t: Throwable) {
-                    println("Fail")
-                }
-            })
-        }
-        /*GlobalScope.launch(Dispatchers.IO) {
-            RetrofitInstance.nytimes.getNews().enqueue(object : Callback<ArticleData> {
-                override fun onResponse(call: Call<ArticleData>, response: Response<ArticleData>) {
-                    val results = response.body()?.results?.map(ArticleProperties::toDomainModel)
-                    println("Size of results: ${results?.size}")
-                }
-
-                override fun onFailure(call: Call<ArticleData>, t: Throwable) {
-                    println("Unsuccessful query")
-                }
-
-            })
-
-            /*RetrofitInstance.retrofit.test().enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    println(response.message())
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    println("Fail.")
-                }
-
-            })*/
-
             val playerName = bind.root.txtPlayerName.text.toString()
             val password = bind.root.txtPassword.text.toString()
+
+            val playerRequest = PlayerRequest(playerName, password)
+            val adapter = retrofit.moshi.adapter(PlayerRequest::class.java)
 
             val jsonObject = JSONObject()
             jsonObject.put("player_name", playerName)
             jsonObject.put("password", password)
-            val jsonBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
+
+            val moshiJson = adapter.toJson(playerRequest)
+
+            val jsonBody = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), moshiJson)
 
             if (bind.root.newOrExisting.isChecked) {
                 register(jsonBody)
             }
             else {
-                RetrofitInstance.cluedo.loginPlayer(playerName, password).process { playerApiModel, throwable ->
+                /*RetrofitInstance.cluedo.loginPlayer(playerName, password).process { playerApiModel, throwable ->
                     println("Debug: ${playerApiModel?.name}")
-                }
-                /*try {
-                    RetrofitInstance.retrofit.loginPlayer(playerName, password)
-                        .enqueue(object : Callback<PlayerApiModel> {
-                        override fun onResponse(call: Call<PlayerApiModel>, response: Response<PlayerApiModel>) {
-                            println("${response.code()}: ${response.message()}")
-                            when (response.code()) {
-                                200 -> {
-                                    listener.goToMenu(playerName)
-                                }
-                                400 -> {
-                                    enableEditTexts()
-                                    Snackbar.make(bind.root, response.message(), Snackbar.LENGTH_LONG).show()
-                                }
-                                500 -> {
-                                    enableEditTexts()
-                                    serverErrorSnackbar()
-                                }
-                            }
-                        }
-
-                        override fun onFailure(call: Call<PlayerApiModel>, t: Throwable) {
-                            Log.i("LoginViewModel::login()", t.message)
-                            enableEditTexts()
-                        }
-                    })
-                } catch (ex: Exception) {
-                    Log.i("LoginViewModel::login()", "Hiba:\n${ex.localizedMessage}")
                 }*/
+
+                val res = retrofit.cluedo.loginPlayer(jsonBody)
+                res?.let {
+                    if (res.name == playerName)
+                        listener.goToMenu(playerName)
+                }
+                /*.enqueue(object : Callback<PlayerApiModel> {
+                override fun onResponse(call: Call<PlayerApiModel>, response: Response<PlayerApiModel>) {
+                    println("${response.code()}: ${response.message()}")
+                    when (response.code()) {
+                        200 -> {
+                            listener.goToMenu(playerName)
+                        }
+                        400 -> {
+                            enableEditTexts()
+                            Snackbar.make(bind.root, response.message(), Snackbar.LENGTH_LONG).show()
+                        }
+                        500 -> {
+                            enableEditTexts()
+                            serverErrorSnackbar()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<PlayerApiModel>, t: Throwable) {
+                    t.message?.let { Log.i("LoginViewModel::login()", it) }
+                    enableEditTexts()
+                }
+            })*/
             }
-        }*/
+        }
     }
 
     private suspend fun register(jsonBody: RequestBody) {
-        /*RetrofitInstance.retrofit.registerPlayer(jsonBody).process { playerApiModel, throwable ->
+        /*RetrofitInstance.cluedo.registerPlayer(jsonBody).process { playerApiModel, throwable ->
             println(playerApiModel?.name)
         }*/
-        RetrofitInstance.cluedo.registerPlayer(jsonBody).enqueue(object : Callback<PlayerApiModel> {
+        val res = retrofit.cluedo.registerPlayer(jsonBody)
+        res?.let {
+            listener.goToMenu(res.name)
+        }
+            /*.enqueue(object : Callback<PlayerApiModel> {
             override fun onResponse(
                 call: Call<PlayerApiModel>,
                 response: Response<PlayerApiModel>
@@ -143,8 +111,7 @@ class LoginViewModel(private val bind: ActivityLoginBinding, private val context
                 t.message?.let { Log.i("LoginViewModel::register()", it) }
                 enableEditTexts()
             }
-
-        })
+        })*/
     }
 
     private fun serverErrorSnackbar() {
