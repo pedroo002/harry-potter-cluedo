@@ -8,13 +8,13 @@ import kotlinx.android.synthetic.main.activity_login.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.databinding.ActivityLoginBinding
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.PlayerRequest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
 
 class LoginViewModel(
     private val bind: ActivityLoginBinding,
@@ -28,7 +28,7 @@ class LoginViewModel(
     fun login() {
         disableEditTexts()
 
-        GlobalScope.launch(Dispatchers.IO) {
+        lifecycle.launch(Dispatchers.IO) {
             val playerName = bind.root.txtPlayerName.text.toString()
             val password = bind.root.txtPassword.text.toString()
 
@@ -36,15 +36,18 @@ class LoginViewModel(
             val adapter = retrofit.moshi.adapter(PlayerRequest::class.java)
 
             val moshiJson = adapter.toJson(playerRequest)
-            val jsonBody = moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+            val jsonBody =
+                moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
             if (bind.root.newOrExisting.isChecked) {
                 register(jsonBody)
             } else {
                 val res = retrofit.cluedo.loginPlayer(jsonBody)
                 res?.let {
-                    if (res.name == playerName)
-                        listener.goToMenu(playerName)
+                    listener.goToMenu(playerName)
+                }
+                if (res == null) {
+                    errorSnackbar()
                 }
             }
         }
@@ -54,11 +57,17 @@ class LoginViewModel(
         val res = retrofit.cluedo.registerPlayer(jsonBody)
         res?.let {
             listener.goToMenu(res.name)
+            return
+        }
+        withContext(Dispatchers.Main) {
+            errorSnackbar()
         }
     }
 
-    private fun serverErrorSnackbar() {
-        Snackbar.make(bind.root, "Szerverhiba. Kérlek próbáld újra!", Snackbar.LENGTH_LONG).show()
+    private fun errorSnackbar() {
+        Snackbar.make(bind.root, "Művelet sikertelen. Kérlek próbáld újra!", Snackbar.LENGTH_LONG)
+            .show()
+        enableEditTexts()
     }
 
     private fun disableEditTexts() {
