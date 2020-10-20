@@ -20,7 +20,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "neptun.jxy1vz.cluedo"
-        minSdkVersion 24
+        minSdkVersion 28
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -106,6 +106,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.9.0'
     implementation("com.squareup.okhttp3:okhttp-tls:4.9.0")
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+
+    //GIF
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
 }
 
 kapt {

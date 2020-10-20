@@ -4,12 +4,17 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMenuBinding
 import neptun.jxy1vz.cluedo.domain.model.helper.DatabaseAccess
+import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.cluedo.network.model.PlayerRequest
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
 
@@ -18,7 +23,10 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val pref = applicationContext.getSharedPreferences(getString(R.string.database_name), Context.MODE_PRIVATE)
+        val pref = applicationContext.getSharedPreferences(
+            getString(R.string.database_name),
+            Context.MODE_PRIVATE
+        )
         val editor = pref.edit()
         if (!pref.contains(getString(R.string.first_start_pref))) {
             editor.putBoolean(getString(R.string.first_start_pref), true)
@@ -26,8 +34,7 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
                 val db = DatabaseAccess(applicationContext)
                 db.uploadDatabase()
             }
-        }
-        else
+        } else
             editor.putBoolean(getString(R.string.first_start_pref), false)
         editor.apply()
 
@@ -37,7 +44,29 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
         activityMenuBinding.menuViewModel = MenuViewModel(activityMenuBinding, fm, this)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        activityMenuBinding.menuViewModel!!.onFragmentClose()
+        exitGame()
+    }
+
     override fun exitGame() {
+        val pref = applicationContext.getSharedPreferences(
+            resources.getString(R.string.player_data_pref),
+            Context.MODE_PRIVATE
+        )
+        val playerRequest = PlayerRequest(
+            pref.getString(resources.getString(R.string.player_name_key), "")!!,
+            pref.getString(resources.getString(R.string.password_key), "")!!
+        )
+
+        val retrofit = RetrofitInstance.getInstance(applicationContext)
+        val body = retrofit.moshi.adapter(PlayerRequest::class.java).toJson(playerRequest).toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            retrofit.cluedo.logoutPlayer(body)
+        }
+
         finish()
     }
 }

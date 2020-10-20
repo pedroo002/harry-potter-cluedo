@@ -93,6 +93,9 @@
     <string name="player_id">Player ID</string>
     <string name="slide_for_more">Lapozz oldalra a többiért!</string>
     <string name="game_params_pref">Game params</string>
+    <string name="player_data_pref">PLAYER DATA</string>
+    <string name="player_name_key">player_name</string>
+    <string name="password_key">password</string>
     <string name="player_count_key">player_count</string>
     <string name="play_mode_key">play_mode</string>
     <string name="database_name">CluedoDatabase</string>
@@ -196,9 +199,11 @@
     <string name="login">Bejelentkezés</string>
     <string name="new_user">Új felhasználó</string>
     <string name="existing_user">Régi felhasználó</string>
-    <string name="user_pref">User data</string>
-    <string name="logged_in_user">Jelenlegi felhasználó</string>
     <string name="password">Jelszó</string>
+    <string name="join">Csatlakozás</string>
+    <string name="wait_for_other_players">Várakozás a többi játékosra</string>
+    <string name="existing_channels">Jelenlegi csatornák</string>
+    <string name="channel_id_key">channel_id</string>
 
     <string-array name="rooms">
         <item>Bagolyház</item>

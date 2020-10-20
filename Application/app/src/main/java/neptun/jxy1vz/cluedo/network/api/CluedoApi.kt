@@ -13,19 +13,19 @@ interface CluedoApi {
     @GET("/channel")
     suspend fun getChannels(): List<ChannelApiModel>?
 
-    @GET("/channel/:id")
-    suspend fun getChannel(): ChannelApiModel?
+    @GET("/channel/{id}")
+    suspend fun getChannel(@Path("id") id: String): ChannelApiModel?
 
     @POST("/channel")
     suspend fun createChannel(@Body body: RequestBody): ChannelApiModel?
 
-    @PUT("/join-channel/:id")
-    suspend fun joinChannel(@Body body: RequestBody): ChannelApiModel?
+    @PUT("/join-channel/{id}")
+    suspend fun joinChannel(@Path("id") id: String, @Body body: RequestBody): ChannelApiModel?
 
-    @PUT("/leave-channel/:id")
-    suspend fun leaveChannel(@Body body: RequestBody): ChannelApiModel?
+    @PUT("/leave-channel/{id}")
+    suspend fun leaveChannel(@Path("id") id: String, @Query("player_name") playerName: String): ChannelApiModel?
 
-    @DELETE("/channel/:id")
+    @DELETE("/channel/{id}")
     suspend fun deleteChannel()
 
     //------------------------------------ Player API requests
@@ -33,29 +33,35 @@ interface CluedoApi {
     @GET("/player")
     suspend fun getPlayers(): List<PlayerApiModel>?
 
-    @GET("/player/:id")
-    suspend fun getPlayer(@Body body: RequestBody): PlayerApiModel?
+    @GET("/player/{id}")
+    suspend fun getPlayer(@Path("id") id: String, @Body body: RequestBody): PlayerApiModel?
 
     @POST("/player")
     suspend fun registerPlayer(@Body body: RequestBody): PlayerApiModel?
 
-    @POST("/login-player")
+    @PUT("/login-player")
     suspend fun loginPlayer(@Body body: RequestBody): PlayerApiModel?
 
-    @DELETE("/player/:id")
-    suspend fun deletePlayer()
+    @PUT("/logout-player")
+    suspend fun logoutPlayer(@Body body: RequestBody): String?
+
+    @DELETE("/player/{id}")
+    suspend fun deletePlayer(@Path("id") id: String)
 
     //------------------------------------ Pusher event triggers
 
     @POST("/incriminate")
-    suspend fun sendIncrimination(@Body body: RequestBody)
+    suspend fun sendIncrimination(@Query("channel_name") channelName: String)
 
     @POST("/accuse")
-    suspend fun sendAccusation(@Body body: RequestBody)
+    suspend fun sendAccusation(@Query("channel_name") channelName: String)
 
     @POST("/move")
-    suspend fun sendMovingData(@Body body: RequestBody)
+    suspend fun sendMovingData(@Query("channel_name") channelName: String)
 
     @POST("/draw-card")
-    suspend fun sendCardEvent(@Body body: RequestBody)
+    suspend fun sendCardEvent(@Query("channel_name") channelName: String)
+
+    @POST("/ready")
+    suspend fun notifyGameReady(@Query("channel_name") channelName: String)
 }

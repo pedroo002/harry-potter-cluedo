@@ -34,15 +34,9 @@ class LoginActivity : AppCompatActivity(), LoginActivityListener {
         activityLoginBinding.root.btnLogin.isEnabled = activityLoginBinding.root.txtPlayerName.text!!.isNotEmpty() && activityLoginBinding.root.txtPassword.text!!.isNotEmpty()
     }
 
-    override fun goToMenu(playerName: String) {
-        val pref = application.getSharedPreferences(applicationContext.resources.getString(R.string.user_pref), Context.MODE_PRIVATE)
-        val editor = pref.edit()
-        editor.putString(applicationContext.resources.getString(R.string.logged_in_user), playerName)
-        editor.apply()
-
+    override fun goToMenu() {
         val menuIntent = Intent(applicationContext, MenuActivity::class.java)
-        menuIntent.putExtra(applicationContext.resources.getString(R.string.logged_in_user), playerName)
-        menuIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        menuIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         applicationContext.startActivity(menuIntent)
     }
 }

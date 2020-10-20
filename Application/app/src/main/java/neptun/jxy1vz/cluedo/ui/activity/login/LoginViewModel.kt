@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.databinding.BaseObservable
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.moshi.JsonReader
 import kotlinx.android.synthetic.main.activity_login.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityLoginBinding
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.PlayerRequest
@@ -24,6 +26,7 @@ class LoginViewModel(
 ) : BaseObservable() {
 
     private val retrofit = RetrofitInstance.getInstance(context)
+    private val adapter = retrofit.moshi.adapter(PlayerRequest::class.java)
 
     fun login() {
         disableEditTexts()
@@ -33,18 +36,18 @@ class LoginViewModel(
             val password = bind.root.txtPassword.text.toString()
 
             val playerRequest = PlayerRequest(playerName, password)
-            val adapter = retrofit.moshi.adapter(PlayerRequest::class.java)
 
             val moshiJson = adapter.toJson(playerRequest)
             val jsonBody =
                 moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
             if (bind.root.newOrExisting.isChecked) {
-                register(jsonBody)
+                register(moshiJson)
             } else {
                 val res = retrofit.cluedo.loginPlayer(jsonBody)
                 res?.let {
-                    listener.goToMenu(playerName)
+                    savePlayerData(playerName, password)
+                    listener.goToMenu()
                 }
                 if (res == null) {
                     errorSnackbar()
@@ -53,10 +56,15 @@ class LoginViewModel(
         }
     }
 
-    private suspend fun register(jsonBody: RequestBody) {
-        val res = retrofit.cluedo.registerPlayer(jsonBody)
+    private suspend fun register(json: String) {
+        retrofit.cluedo.registerPlayer(json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull()))
+
+        val playerRequest = adapter.fromJson(json)
+
+        val res = retrofit.cluedo.loginPlayer(json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull()))
         res?.let {
-            listener.goToMenu(res.name)
+            savePlayerData(playerRequest!!.playerName, playerRequest.password)
+            listener.goToMenu()
             return
         }
         withContext(Dispatchers.Main) {
@@ -78,5 +86,13 @@ class LoginViewModel(
     private fun enableEditTexts() {
         bind.root.txtPlayerName.isEnabled = true
         bind.root.txtPassword.isEnabled = true
+    }
+
+    private fun savePlayerData(playerName: String, password: String) {
+        val pref = context.getSharedPreferences(context.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
+        val editor = pref.edit()
+        editor.putString(context.resources.getString(R.string.player_name_key), playerName)
+        editor.putString(context.resources.getString(R.string.password_key), password)
+        editor.apply()
     }
 }

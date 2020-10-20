@@ -61,3 +61,21 @@ val roomTokensBW = listOf(
     R.drawable.room_svk_bw,
     R.drawable.room_szukseg_szobaja_bw
 )
+
+val characterTokenListBW = listOf(
+    R.drawable.ginny_token_bw,
+    R.drawable.harry_token_bw,
+    R.drawable.hermione_token_bw,
+    R.drawable.ron_token_bw,
+    R.drawable.luna_token_bw,
+    R.drawable.neville_token_bw
+)
+
+val characterTokenList = listOf(
+    R.drawable.ginny_token,
+    R.drawable.harry_token,
+    R.drawable.hermione_token,
+    R.drawable.ron_token,
+    R.drawable.luna_token,
+    R.drawable.neville_token
+)

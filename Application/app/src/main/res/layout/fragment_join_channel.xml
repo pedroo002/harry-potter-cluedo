@@ -14,5 +14,83 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvChannels"
+            android:text="@string/existing_channels"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="10dp"/>
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinnerAllChannels"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvChannels"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvLabelAuthKey"
+            android:text="@string/auth_key"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinnerAllChannels"/>
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numAuthKey1"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey"/>
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numAuthKey2"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toEndOf="@id/numAuthKey1"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey"/>
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numAuthKey3"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toEndOf="@id/numAuthKey2"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey"/>
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numAuthKey4"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toEndOf="@id/numAuthKey3"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnJoin"
+            android:text="@string/join"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/numAuthKey1"
+            app:layout_constraintStart_toStartOf="@id/numAuthKey1"
+            app:layout_constraintEnd_toEndOf="@id/numAuthKey4"
+            android:onClick="@{()->joinChannelViewModel.join()}"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

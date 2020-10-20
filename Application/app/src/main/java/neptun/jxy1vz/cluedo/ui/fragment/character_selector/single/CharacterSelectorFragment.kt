@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.fragment.character_selector
+package neptun.jxy1vz.cluedo.ui.fragment.character_selector.single
 
 import android.os.Bundle
 import android.view.LayoutInflater

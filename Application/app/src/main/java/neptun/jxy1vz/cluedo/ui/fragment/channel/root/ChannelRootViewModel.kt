@@ -7,7 +7,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
 class ChannelRootViewModel(private val bind: FragmentChannelRootBinding, private val listener: ViewModelListener) : BaseObservable() {
 
-    private var action = ""
+    var action = ""
 
     fun createServer() {
         action = "create"

@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.ui.fragment.character_selector
+package neptun.jxy1vz.cluedo.ui.fragment.character_selector.single
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
@@ -6,35 +6,17 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_character_selector.view.*
-import kotlinx.android.synthetic.main.fragment_game_mode.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCharacterSelectorBinding
+import neptun.jxy1vz.cluedo.domain.model.helper.characterTokenList
+import neptun.jxy1vz.cluedo.domain.model.helper.characterTokenListBW
 import neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardActivity
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
 class CharacterSelectorViewModel(private val bind: FragmentCharacterSelectorBinding, private val context: Context, private val listener: ViewModelListener) : BaseObservable() {
 
     private var playerId = -1
-
-    private val tokenListBW = listOf(
-        R.drawable.ginny_token_bw,
-        R.drawable.harry_token_bw,
-        R.drawable.hermione_token_bw,
-        R.drawable.ron_token_bw,
-        R.drawable.luna_token_bw,
-        R.drawable.neville_token_bw
-    )
-
-    private val tokenList = listOf(
-        R.drawable.ginny_token,
-        R.drawable.harry_token,
-        R.drawable.hermione_token,
-        R.drawable.ron_token,
-        R.drawable.luna_token,
-        R.drawable.neville_token
-    )
 
     private val ivList = listOf(
         bind.ivGinny,
@@ -70,9 +52,9 @@ class CharacterSelectorViewModel(private val bind: FragmentCharacterSelectorBind
 
         for (i in 0..5) {
             if (i == id)
-                ivList[i].setImageResource(tokenList[i])
+                ivList[i].setImageResource(characterTokenList[i])
             else
-                ivList[i].setImageResource(tokenListBW[i])
+                ivList[i].setImageResource(characterTokenListBW[i])
         }
 
         bind.ivCharacterCard.setImageResource(R.drawable.szereplo_hatlap)
