@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/hogwarts_blur">
 
     <data>
@@ -29,40 +29,15 @@
             android:textStyle="bold"
             android:textSize="20sp"/>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/guidelinePlayer1"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.1"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/guidelinePlayer2"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.26"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/guidelinePlayer3"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.42"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/guidelinePlayer4"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.58"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/guidelinePlayer5"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.74"/>
+            android:id="@+id/rvPlayerList"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btnReady"
+            tools:listitem="@layout/player_list_item"/>
 
         <Button
             android:layout_width="wrap_content"

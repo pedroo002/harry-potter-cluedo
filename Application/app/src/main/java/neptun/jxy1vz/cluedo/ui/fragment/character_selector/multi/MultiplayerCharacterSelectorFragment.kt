@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentMultiplayerCharacterSelectorBinding
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuListener
-import neptun.jxy1vz.cluedo.ui.activity.menu.MenuViewModel
 import neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardActivity
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 

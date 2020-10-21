@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvPlayerName"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvCharacterName"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@id/tvPlayerName"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/ivCharacterIcon"
+        android:src="@drawable/szereplo_token"
+        app:layout_constraintStart_toEndOf="@id/tvCharacterName"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintWidth_percent="0.05"
+        app:layout_constraintHeight_percent="0.8"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/ivGinny"
+        android:src="@drawable/ginny_token"
+        app:layout_constraintStart_toEndOf="@id/ivCharacterIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        app:layout_constraintWidth_percent="0.05"
+        app:layout_constraintHeight_percent="0.8"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/ivHarry"
+        android:src="@drawable/harry_token"
+        app:layout_constraintStart_toEndOf="@id/ivGinny"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        app:layout_constraintWidth_percent="0.05"
+        app:layout_constraintHeight_percent="0.8"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/ivHermione"
+        android:src="@drawable/hermione_token"
+        app:layout_constraintStart_toEndOf="@id/ivHarry"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        app:layout_constraintWidth_percent="0.05"
+        app:layout_constraintHeight_percent="0.8"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/ivRon"
+        android:src="@drawable/ron_token"
+        app:layout_constraintStart_toEndOf="@id/ivHermione"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        app:layout_constraintWidth_percent="0.05"
+        app:layout_constraintHeight_percent="0.8"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/ivLuna"
+        android:src="@drawable/luna_token"
+        app:layout_constraintStart_toEndOf="@id/ivRon"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        app:layout_constraintWidth_percent="0.05"
+        app:layout_constraintHeight_percent="0.8"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/ivNeville"
+        android:src="@drawable/neville_token"
+        app:layout_constraintStart_toEndOf="@id/ivLuna"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        app:layout_constraintWidth_percent="0.05"
+        app:layout_constraintHeight_percent="0.8"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,3 +28,9 @@ data class PlayerRequest(
     @Json(name = "password")
     val password: String
 )
+
+data class PlayerDomainModel(
+    val playerName: String,
+    var selectedCharacter: String,
+    var playerId: Int
+)
