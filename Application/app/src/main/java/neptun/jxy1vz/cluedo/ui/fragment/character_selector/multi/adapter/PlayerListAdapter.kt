@@ -41,7 +41,7 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
                     listItem.setOnClickListener { token ->
                         val idx = tokenImages.indexOf(token)
                         characterName.text = characterList[idx]
-                        listItem.setImageResource(characterTokenList[idx])
+                        characterImage.setImageResource(characterTokenList[idx])
                         playerList[layoutPosition].playerId = tokenImages.indexOf(listItem)
                         playerList[layoutPosition].selectedCharacter = characterName.text.toString()
                         tokenImages.forEach {
