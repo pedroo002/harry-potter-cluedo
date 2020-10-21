@@ -48,7 +48,12 @@ class MultiplayerCharacterViewModel(
                     ?.toList()!!
             )
 
-            delay(5000)
+            playersOfChannel.forEach {
+                println(it.playerId)
+                println(it.playerName)
+                println(it.selectedCharacter)
+                println()
+            }
 
             withContext(Dispatchers.Main) {
                 val adapter = PlayerListAdapter(playersOfChannel, playerName)
