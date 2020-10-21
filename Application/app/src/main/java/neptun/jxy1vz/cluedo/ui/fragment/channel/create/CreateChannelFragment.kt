@@ -10,6 +10,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_create_channel.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCreateChannelBinding
 import neptun.jxy1vz.cluedo.domain.util.setNumPicker
@@ -42,7 +44,9 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
     }
 
     override fun onFinish() {
-        activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, MultiplayerCharacterSelectorFragment(this)).commit()
+        lifecycleScope.launch(Dispatchers.Main) {
+            activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, MultiplayerCharacterSelectorFragment(this@CreateChannelFragment)).commit()
+        }
     }
 
     override fun onFragmentClose() {

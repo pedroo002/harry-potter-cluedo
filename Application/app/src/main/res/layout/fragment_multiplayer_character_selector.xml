@@ -37,7 +37,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/btnReady"
-            tools:listitem="@layout/player_list_item"/>
+            tools:listitem="@layout/player_list_item"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
         <Button
             android:layout_width="wrap_content"

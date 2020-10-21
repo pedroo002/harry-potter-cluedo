@@ -10,13 +10,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.pusher.client.Pusher
+import com.pusher.client.channel.PresenceChannelEventListener
+import com.pusher.client.channel.User
 import kotlinx.android.synthetic.main.fragment_create_channel.view.numAuthKey1
 import kotlinx.android.synthetic.main.fragment_create_channel.view.numAuthKey2
 import kotlinx.android.synthetic.main.fragment_create_channel.view.numAuthKey3
 import kotlinx.android.synthetic.main.fragment_create_channel.view.numAuthKey4
 import kotlinx.android.synthetic.main.fragment_join_channel.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentJoinChannelBinding
 import neptun.jxy1vz.cluedo.domain.util.setNumPicker
@@ -28,6 +29,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi.MultiplayerCharacterSelectorFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.lang.Exception
 
 class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
@@ -78,9 +80,23 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
             }
 
             pusher.subscribePresence(pusherChannelName)
-            pusher.getPresenceChannel(pusherChannelName).bind("game-ready") { p0, p1, p2 ->
-                activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, MultiplayerCharacterSelectorFragment(this)).commit()
-            }
+            pusher.getPresenceChannel(pusherChannelName).bind("game-ready", object : PresenceChannelEventListener {
+                override fun onEvent(p0: String?, p1: String?, p2: String?) {
+                    openCharacterSelector()
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+        }
+    }
+
+    fun openCharacterSelector() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, MultiplayerCharacterSelectorFragment(this@JoinChannelFragment)).commit()
         }
     }
 
