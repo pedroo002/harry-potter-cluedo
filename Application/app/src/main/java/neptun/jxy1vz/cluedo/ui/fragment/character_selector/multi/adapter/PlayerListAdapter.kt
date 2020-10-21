@@ -10,10 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.helper.characterTokenList
-import neptun.jxy1vz.cluedo.network.model.PlayerApiModel
 import neptun.jxy1vz.cluedo.network.model.PlayerDomainModel
 
-class PlayerListAdapter(private val playerList: List<PlayerDomainModel>, private val currentPlayer: String) : ListAdapter<PlayerApiModel, PlayerListAdapter.ViewHolder>(PlayerItemComparator) {
+class PlayerListAdapter(private val playerList: List<PlayerDomainModel>, private val currentPlayer: String) : ListAdapter<PlayerDomainModel, PlayerListAdapter.ViewHolder>(PlayerItemComparator) {
 
     private lateinit var characterList: Array<String>
 
@@ -64,7 +63,7 @@ class PlayerListAdapter(private val playerList: List<PlayerDomainModel>, private
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.playerName.text = item.name
+        holder.playerName.text = item.playerName
         holder.characterName.text = ""
         holder.characterImage.setImageResource(R.drawable.szereplo_token)
 

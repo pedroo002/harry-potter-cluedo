@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.databinding.BaseObservable
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
@@ -46,6 +47,8 @@ class MultiplayerCharacterViewModel(
                     ?.map { playerApiModel -> PlayerDomainModel(playerApiModel.name, "", -1) }
                     ?.toList()!!
             )
+
+            delay(5000)
 
             withContext(Dispatchers.Main) {
                 val adapter = PlayerListAdapter(playersOfChannel, playerName)

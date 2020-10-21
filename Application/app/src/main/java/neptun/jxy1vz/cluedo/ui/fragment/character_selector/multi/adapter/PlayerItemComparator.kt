@@ -1,14 +1,14 @@
 package neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import neptun.jxy1vz.cluedo.network.model.PlayerApiModel
+import neptun.jxy1vz.cluedo.network.model.PlayerDomainModel
 
-object PlayerItemComparator : DiffUtil.ItemCallback<PlayerApiModel>() {
-    override fun areItemsTheSame(oldItem: PlayerApiModel, newItem: PlayerApiModel): Boolean {
-        return oldItem.name == newItem.name
+object PlayerItemComparator : DiffUtil.ItemCallback<PlayerDomainModel>() {
+    override fun areItemsTheSame(oldItem: PlayerDomainModel, newItem: PlayerDomainModel): Boolean {
+        return oldItem.playerName == newItem.playerName
     }
 
-    override fun areContentsTheSame(oldItem: PlayerApiModel, newItem: PlayerApiModel): Boolean {
+    override fun areContentsTheSame(oldItem: PlayerDomainModel, newItem: PlayerDomainModel): Boolean {
         return oldItem == newItem
     }
 }
