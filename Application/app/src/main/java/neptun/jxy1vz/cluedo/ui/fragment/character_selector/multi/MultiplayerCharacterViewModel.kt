@@ -22,7 +22,10 @@ class MultiplayerCharacterViewModel(
 
     private val retrofit: RetrofitInstance = RetrofitInstance.getInstance(context)
     private val playerName: String =
-        context.getSharedPreferences(context.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE).getString(context.resources.getString(R.string.player_name_key), "")!!
+        context.getSharedPreferences(
+            context.resources.getString(R.string.player_data_pref),
+            Context.MODE_PRIVATE
+        ).getString(context.resources.getString(R.string.player_name_key), "")!!
     var playerId = -1
 
     init {
@@ -37,13 +40,12 @@ class MultiplayerCharacterViewModel(
             subscribedPlayers.addAll(channel!!.subscribedUsers)
 
             val playersOfChannel = ArrayList<PlayerDomainModel>()
-            val playerList = retrofit.cluedo.getPlayers()?.map { playerApiModel -> PlayerDomainModel(playerApiModel.name, "", -1) }
-            playerList?.let {
-                playerList.forEach {
-                    if (subscribedPlayers.contains(it.playerName))
-                        playersOfChannel.add(it)
-                }
-            }
+            playersOfChannel.addAll(
+                retrofit.cluedo.getPlayers()
+                    ?.filter { playerApiModel -> subscribedPlayers.contains(playerApiModel.name) }
+                    ?.map { playerApiModel -> PlayerDomainModel(playerApiModel.name, "", -1) }
+                    ?.toList()!!
+            )
 
             withContext(Dispatchers.Main) {
                 val adapter = PlayerListAdapter(playersOfChannel, playerName)
