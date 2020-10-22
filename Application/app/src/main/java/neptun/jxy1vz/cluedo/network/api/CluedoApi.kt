@@ -29,7 +29,7 @@ interface CluedoApi {
     suspend fun leaveChannel(@Path("id") id: String, @Query("player_name") playerName: String): ChannelApiModel?
 
     @DELETE("/channel/{id}")
-    suspend fun deleteChannel()
+    suspend fun deleteChannel(@Path("id") channelId: String)
 
     //------------------------------------ Player API requests
 
@@ -70,4 +70,10 @@ interface CluedoApi {
 
     @POST("/character-selected")
     suspend fun notifyCharacterSelected(@Query("channel_name") channelName: String, @Query("player_name") playerName: String, @Query("character_name") characterName: String, @Query("token_src") tokenImageSource: Int)
+
+    @POST("/submit")
+    suspend fun notifyCharacterSubmit(@Query("player_name") playerName: String)
+
+    @POST("/remove-channel")
+    suspend fun notifyChannelRemoved(@Query("channel_name") channelName: String)
 }

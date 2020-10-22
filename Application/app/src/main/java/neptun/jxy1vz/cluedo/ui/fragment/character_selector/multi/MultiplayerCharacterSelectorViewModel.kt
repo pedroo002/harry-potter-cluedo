@@ -3,8 +3,10 @@ package neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi
 import android.content.Context
 import androidx.databinding.BaseObservable
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.google.android.material.snackbar.Snackbar
 import com.pusher.client.channel.PresenceChannelEventListener
 import com.pusher.client.channel.User
+import kotlinx.android.synthetic.main.fragment_multiplayer_character_selector.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,7 +25,7 @@ class MultiplayerCharacterSelectorViewModel(
     private val context: Context,
     private val lifecycle: LifecycleCoroutineScope,
     private val listener: ViewModelListener
-) : BaseObservable(), PlayerListAdapter.EventTriggerListener {
+) : BaseObservable(), PlayerListAdapter.AdapterListener {
 
     private val retrofit: RetrofitInstance = RetrofitInstance.getInstance(context)
     private val pusher = PusherInstance.getInstance()
@@ -34,6 +36,7 @@ class MultiplayerCharacterSelectorViewModel(
         ).getString(context.resources.getString(R.string.player_name_key), "")!!
     var playerId = -1
     private lateinit var channelName: String
+    private var waitFor = -1
 
     init {
         val subscribedPlayers = ArrayList<String>()
@@ -62,6 +65,7 @@ class MultiplayerCharacterSelectorViewModel(
                     this@MultiplayerCharacterSelectorViewModel
                 )
                 bind.rvPlayerList.adapter = adapter
+                waitFor = adapter.itemCount - 1
 
                 pusher.getPresenceChannel(channelName)
                     .bind("character-selected", object : PresenceChannelEventListener {
@@ -78,6 +82,26 @@ class MultiplayerCharacterSelectorViewModel(
                         override fun userSubscribed(p0: String?, p1: User?) {}
                         override fun userUnsubscribed(p0: String?, p1: User?) {}
                     })
+
+                pusher.getPresenceChannel(channelName).bind("character-submit", object : PresenceChannelEventListener {
+                    override fun onEvent(playerName: String?, eventName: String?, message: String?) {
+                        println("$playerName\n$eventName\n$message")
+                        playerName?.let {
+                            if (playerName != this@MultiplayerCharacterSelectorViewModel.playerName) {
+                                waitFor--
+                                Snackbar.make(bind.multiCharacterSelectorRoot, "$playerName készen áll.", Snackbar.LENGTH_SHORT).show()
+                                if (waitFor == 0)
+                                    listener.onFinish()
+                            }
+                        }
+                    }
+
+                    override fun onSubscriptionSucceeded(p0: String?) {}
+                    override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                    override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                    override fun userSubscribed(p0: String?, p1: User?) {}
+                    override fun userUnsubscribed(p0: String?, p1: User?) {}
+                })
             }
         }
     }
@@ -86,8 +110,12 @@ class MultiplayerCharacterSelectorViewModel(
         val adapter = (bind.rvPlayerList.adapter as PlayerListAdapter)
         if (adapter.areSelectionsDifferent()) {
             playerId = adapter.getCurrentPlayer().playerId
-            listener.onFinish()
+            lifecycle.launch(Dispatchers.IO) {
+                retrofit.cluedo.notifyCharacterSubmit(playerName)
+            }
         }
+        else
+            Snackbar.make(bind.multiCharacterSelectorRoot, "Különböző karaktereket válasszatok!", Snackbar.LENGTH_LONG).show()
     }
 
     private fun triggerUpdate(messageJson: CharacterSelectionMessage) {
@@ -97,6 +125,8 @@ class MultiplayerCharacterSelectorViewModel(
     }
 
     override fun onSelect(playerName: String, characterName: String, tokenSource: Int) {
+        bind.multiCharacterSelectorRoot.btnReady.isEnabled = true
+
         lifecycle.launch(Dispatchers.IO) {
             retrofit.cluedo.notifyCharacterSelected(channelName, playerName, characterName, tokenSource)
         }

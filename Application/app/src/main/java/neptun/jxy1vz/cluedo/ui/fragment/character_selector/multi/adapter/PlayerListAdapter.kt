@@ -9,13 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.helper.characterTokenList
-import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.PlayerDomainModel
-import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 
-class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, private val currentPlayer: String, private val listener: EventTriggerListener) : RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
+class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, private val currentPlayer: String, private val listener: AdapterListener) : RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
 
-    interface EventTriggerListener {
+    interface AdapterListener {
         fun onSelect(playerName: String, characterName: String, tokenSource: Int)
     }
 
@@ -44,8 +42,8 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
 
                 tokenImages.forEach {listItem ->
                     listItem.visibility = ImageView.VISIBLE
+                    characterName.visibility = TextView.GONE
                     listItem.setOnClickListener { token ->
-                        characterName.visibility = TextView.GONE
                         val idx = tokenImages.indexOf(token)
                         doSelection(idx, characterName, characterImage, layoutPosition, tokenImages, listItem)
                         tokenImages.forEach {
@@ -87,7 +85,7 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
 
     override fun getItemCount(): Int = playerList.size
 
-    fun doSelection(idx: Int, tvChar: TextView, ivChar: ImageView, pos: Int, tokenImages: List<ImageView>, listItem: ImageView) {
+    private fun doSelection(idx: Int, tvChar: TextView, ivChar: ImageView, pos: Int, tokenImages: List<ImageView>, listItem: ImageView) {
         tvChar.text = characterList[idx]
         tvChar.visibility = TextView.VISIBLE
         ivChar.setImageResource(characterTokenList[idx])
@@ -112,6 +110,6 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
     }
 
     fun areSelectionsDifferent(): Boolean {
-        return playerList.distinct().size == playerList.size
+        return playerList.map { player -> (player.selectedCharacter) }.distinct().size == playerList.size
     }
 }

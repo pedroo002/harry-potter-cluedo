@@ -28,11 +28,12 @@ class ChannelRootFragment(private val listener: MenuListener) : Fragment(), View
     }
 
     override fun onFinish() {
-        val fragment: Fragment = when (fragmentChannelRootBinding.channelRootViewModel!!.action) {
+        val action = fragmentChannelRootBinding.channelRootViewModel!!.action
+        val fragment: Fragment = when (action) {
             "create" -> CreateChannelFragment()
             else -> JoinChannelFragment()
         }
-        activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, fragment).addToBackStack("FRAGMENT-${fragmentChannelRootBinding.channelRootViewModel!!.action}").commit()
+        activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, fragment, "FRAGMENT-$action").addToBackStack("FRAGMENT-$action").commit()
         listener.onFragmentClose()
     }
 }

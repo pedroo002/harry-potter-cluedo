@@ -13,6 +13,8 @@ import neptun.jxy1vz.cluedo.databinding.ActivityMenuBinding
 import neptun.jxy1vz.cluedo.domain.model.helper.DatabaseAccess
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.PlayerRequest
+import neptun.jxy1vz.cluedo.ui.fragment.channel.create.CreateChannelFragment
+import neptun.jxy1vz.cluedo.ui.fragment.channel.join.JoinChannelFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -40,14 +42,20 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
 
         activityMenuBinding = DataBindingUtil.setContentView(this, R.layout.activity_menu)
 
-        val fm = supportFragmentManager
-        activityMenuBinding.menuViewModel = MenuViewModel(activityMenuBinding, fm, this)
+        activityMenuBinding.menuViewModel = MenuViewModel(activityMenuBinding, supportFragmentManager, this)
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        val create = (supportFragmentManager.findFragmentByTag(CreateChannelFragment.TAG) as CreateChannelFragment?)
+        val join = (supportFragmentManager.findFragmentByTag(JoinChannelFragment.TAG) as JoinChannelFragment?)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            join?.onBackPressed()
+            create?.onBackPressed()
+        }
+
         activityMenuBinding.menuViewModel!!.onFragmentClose()
-        exitGame()
+        super.onBackPressed()
     }
 
     override fun exitGame() {

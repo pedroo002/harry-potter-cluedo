@@ -1,14 +1,17 @@
 package neptun.jxy1vz.cluedo.ui.fragment.channel.join
 
 import android.content.Context
+import android.graphics.Color
 import android.widget.ArrayAdapter
 import androidx.databinding.BaseObservable
 import androidx.lifecycle.LifecycleCoroutineScope
+import kotlinx.android.synthetic.main.fragment_create_channel.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentJoinChannelBinding
+import neptun.jxy1vz.cluedo.domain.util.setNumPicker
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.ChannelApiModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
@@ -25,6 +28,11 @@ class JoinChannelViewModel(private val bind: FragmentJoinChannelBinding, private
     private val retrofit = RetrofitInstance.getInstance(context)
 
     init {
+        setNumPicker(bind.root.numAuthKey1, 0, 9, Color.WHITE)
+        setNumPicker(bind.root.numAuthKey2, 0, 9, Color.WHITE)
+        setNumPicker(bind.root.numAuthKey3, 0, 9, Color.WHITE)
+        setNumPicker(bind.root.numAuthKey4, 0, 9, Color.WHITE)
+
         lifecycleScope.launch(Dispatchers.IO) {
             val playerCount = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE).getInt(context.resources.getString(R.string.player_count_key), 3)
 
