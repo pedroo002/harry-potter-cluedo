@@ -26,7 +26,9 @@ class JoinChannelViewModel(private val bind: FragmentJoinChannelBinding, private
 
     init {
         lifecycleScope.launch(Dispatchers.IO) {
-            channels = retrofit.cluedo.getChannels()
+            val playerCount = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE).getInt(context.resources.getString(R.string.player_count_key), 3)
+
+            channels = retrofit.cluedo.getChannelsByPlayerLimit(playerCount)
             channels?.let {
                 channelNames = ArrayList()
                 for (channel in channels!!) {

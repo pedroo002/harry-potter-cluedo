@@ -9,9 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.helper.characterTokenList
+import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.PlayerDomainModel
+import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 
-class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, private val currentPlayer: String) : RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
+class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, private val currentPlayer: String, private val listener: EventTriggerListener) : RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
+
+    interface EventTriggerListener {
+        fun onSelect(playerName: String, characterName: String, tokenSource: Int)
+    }
 
     private lateinit var characterList: Array<String>
 
@@ -39,17 +45,20 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
                 tokenImages.forEach {listItem ->
                     listItem.visibility = ImageView.VISIBLE
                     listItem.setOnClickListener { token ->
+                        characterName.visibility = TextView.GONE
                         val idx = tokenImages.indexOf(token)
-                        characterName.text = characterList[idx]
-                        characterImage.setImageResource(characterTokenList[idx])
-                        playerList[layoutPosition].playerId = tokenImages.indexOf(listItem)
-                        playerList[layoutPosition].selectedCharacter = characterName.text.toString()
+                        doSelection(idx, characterName, characterImage, layoutPosition, tokenImages, listItem)
                         tokenImages.forEach {
                             it.visibility = ImageView.GONE
                         }
                     }
                 }
             }
+        }
+
+        fun setViewHolder(character: String, token: Int) {
+            characterName.text = character
+            characterImage.setImageResource(token)
         }
     }
 
@@ -67,7 +76,36 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
 
     }
 
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty())
+            onBindViewHolder(holder, position)
+        else {
+            val payload = payloads[0] as ArrayList<*>
+            holder.setViewHolder(payload[0].toString(), payload[1].toString().toInt())
+        }
+    }
+
     override fun getItemCount(): Int = playerList.size
+
+    fun doSelection(idx: Int, tvChar: TextView, ivChar: ImageView, pos: Int, tokenImages: List<ImageView>, listItem: ImageView) {
+        tvChar.text = characterList[idx]
+        tvChar.visibility = TextView.VISIBLE
+        ivChar.setImageResource(characterTokenList[idx])
+        playerList[pos].playerId = tokenImages.indexOf(listItem)
+        playerList[pos].selectedCharacter = tvChar.text.toString()
+
+        listener.onSelect(currentPlayer, tvChar.text.toString(), characterTokenList[idx])
+    }
+
+    fun updatePlayerSelection(playerName: String, characterName: String, token: Int) {
+        val item = playerList.find { player -> player.playerName == playerName }!!
+        item.selectedCharacter = characterName
+        item.playerId = characterList.indexOf(characterName)
+        val payloads: MutableList<String> = ArrayList()
+        payloads.add(characterName)
+        payloads.add(token.toString())
+        notifyItemRangeChanged(playerList.indexOf(item), 1, payloads)
+    }
 
     fun getCurrentPlayer(): PlayerDomainModel {
         return playerList.find { player -> player.playerName == currentPlayer }!!

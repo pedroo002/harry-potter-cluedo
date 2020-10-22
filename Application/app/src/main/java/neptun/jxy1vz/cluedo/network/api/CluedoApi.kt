@@ -13,6 +13,9 @@ interface CluedoApi {
     @GET("/channel")
     suspend fun getChannels(): List<ChannelApiModel>?
 
+    @GET("/channel-by-limit")
+    suspend fun getChannelsByPlayerLimit(@Query("max_user") limit: Int): List<ChannelApiModel>?
+
     @GET("/channel/{id}")
     suspend fun getChannel(@Path("id") id: String): ChannelApiModel?
 
@@ -64,4 +67,7 @@ interface CluedoApi {
 
     @POST("/ready")
     suspend fun notifyGameReady(@Query("channel_name") channelName: String)
+
+    @POST("/character-selected")
+    suspend fun notifyCharacterSelected(@Query("channel_name") channelName: String, @Query("player_name") playerName: String, @Query("character_name") characterName: String, @Query("token_src") tokenImageSource: Int)
 }

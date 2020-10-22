@@ -7,7 +7,7 @@
     <data>
         <variable
             name="characterSelectorViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi.MultiplayerCharacterViewModel" />
+            type="neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi.MultiplayerCharacterSelectorViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -23,7 +23,7 @@ class MultiplayerCharacterSelectorFragment(private val listener: MenuListener) :
         savedInstanceState: Bundle?
     ): View? {
         fragmentMultiplayerCharacterSelectorBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_multiplayer_character_selector, container, false)
-        fragmentMultiplayerCharacterSelectorBinding.characterSelectorViewModel = MultiplayerCharacterViewModel(fragmentMultiplayerCharacterSelectorBinding, context!!, lifecycleScope, this)
+        fragmentMultiplayerCharacterSelectorBinding.characterSelectorViewModel = MultiplayerCharacterSelectorViewModel(fragmentMultiplayerCharacterSelectorBinding, context!!, lifecycleScope, this)
         return fragmentMultiplayerCharacterSelectorBinding.root
     }
 
