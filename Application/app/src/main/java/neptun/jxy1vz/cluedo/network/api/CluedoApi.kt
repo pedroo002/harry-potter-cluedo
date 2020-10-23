@@ -1,9 +1,8 @@
 package neptun.jxy1vz.cluedo.network.api
 
-import neptun.jxy1vz.cluedo.network.model.ChannelApiModel
-import neptun.jxy1vz.cluedo.network.model.PlayerApiModel
+import neptun.jxy1vz.cluedo.network.model.channel.ChannelApiModel
+import neptun.jxy1vz.cluedo.network.model.player.PlayerApiModel
 import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.http.*
 
 interface CluedoApi {
@@ -21,6 +20,9 @@ interface CluedoApi {
 
     @POST("/channel")
     suspend fun createChannel(@Body body: RequestBody): ChannelApiModel?
+
+    @PUT("/stop-waiting/{id}")
+    suspend fun stopChannelWaiting(@Path("id") channelId: String): ChannelApiModel?
 
     @PUT("/join-channel/{id}")
     suspend fun joinChannel(@Path("id") id: String, @Body body: RequestBody): ChannelApiModel?
@@ -65,15 +67,24 @@ interface CluedoApi {
     @POST("/draw-card")
     suspend fun sendCardEvent(@Query("channel_name") channelName: String)
 
-    @POST("/ready")
+    @POST("/game-ready")
     suspend fun notifyGameReady(@Query("channel_name") channelName: String)
 
     @POST("/character-selected")
     suspend fun notifyCharacterSelected(@Query("channel_name") channelName: String, @Query("player_name") playerName: String, @Query("character_name") characterName: String, @Query("token_src") tokenImageSource: Int)
 
-    @POST("/submit")
-    suspend fun notifyCharacterSubmit(@Query("player_name") playerName: String)
+    @POST("/character-submit")
+    suspend fun notifyCharacterSubmit(@Query("channel_name") channelName: String, @Query("player_name") playerName: String)
 
-    @POST("/remove-channel")
-    suspend fun notifyChannelRemoved(@Query("channel_name") channelName: String)
+    @POST("/channel-removed-before-join")
+    suspend fun notifyChannelRemovedBeforeJoin(@Query("channel_name") channelName: String)
+
+    @POST("/channel-removed-after-join")
+    suspend fun notifyChannelRemovedAfterJoin(@Query("channel_name") channelName: String)
+
+    @POST("/player-leaves")
+    suspend fun notifyPlayerLeaves(@Query("channel_name") channelName: String, @Query("player_name") playerName: String)
+
+    @POST("/player-arrives")
+    suspend fun notifyPlayerArrives(@Query("channel_name") channelName: String, @Query("player_name") playerName: String)
 }

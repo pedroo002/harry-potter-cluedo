@@ -19,12 +19,13 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCreateChannelBinding
 import neptun.jxy1vz.cluedo.domain.util.setNumPicker
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.cluedo.network.model.ChannelRequest
-import neptun.jxy1vz.cluedo.network.model.JoinRequest
+import neptun.jxy1vz.cluedo.network.model.channel.ChannelRequest
+import neptun.jxy1vz.cluedo.network.model.channel.JoinRequest
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
 
 class CreateChannelViewModel(
     private val bind: FragmentCreateChannelBinding,
@@ -39,6 +40,8 @@ class CreateChannelViewModel(
 
     private lateinit var playerName: String
     private lateinit var channelId: String
+
+    private var fragmentKilled = false
 
     init {
         setNumPicker(bind.root.numAuthKey1, 0, 9, Color.WHITE)
@@ -56,7 +59,7 @@ class CreateChannelViewModel(
     suspend fun deleteCreatedChannel() {
         if (!this::channelId.isInitialized)
             return
-        retrofit.cluedo.notifyChannelRemoved(pusherChannelName!!)
+        retrofit.cluedo.notifyChannelRemovedBeforeJoin(pusherChannelName!!)
         retrofit.cluedo.deleteChannel(channelId)
     }
 
@@ -77,80 +80,98 @@ class CreateChannelViewModel(
             moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
         lifecycleScope.launch(Dispatchers.IO) {
-            val res = retrofit.cluedo.createChannel(jsonBody)
-            if (res != null) {
-                val pref = context.getSharedPreferences(
-                    context.resources.getString(R.string.player_data_pref),
-                    Context.MODE_PRIVATE
-                )
-                playerName =
-                    pref.getString(context.resources.getString(R.string.player_name_key), "")!!
-                channelId = res.id
+            try {
+                val res = retrofit.cluedo.createChannel(jsonBody)
+                if (res != null) {
+                    val pref = context.getSharedPreferences(
+                        context.resources.getString(R.string.player_data_pref),
+                        Context.MODE_PRIVATE
+                    )
+                    playerName =
+                        pref.getString(context.resources.getString(R.string.player_name_key), "")!!
+                    channelId = res.id
 
-                val joinRequest = JoinRequest(playerName, authKey)
-                val json = retrofit.moshi.adapter(JoinRequest::class.java).toJson(joinRequest)
-                    .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-                retrofit.cluedo.joinChannel(res.id, json)
+                    val joinRequest = JoinRequest(playerName, authKey)
+                    val json = retrofit.moshi.adapter(JoinRequest::class.java).toJson(joinRequest)
+                        .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+                    retrofit.cluedo.joinChannel(res.id, json)
 
-                val editor = pref.edit()
-                editor.putString(context.resources.getString(R.string.channel_id_key), res.id)
-                editor.apply()
+                    val editor = pref.edit()
+                    editor.putString(context.resources.getString(R.string.channel_id_key), res.id)
+                    editor.apply()
 
-                withContext(Dispatchers.Main) {
-                    bind.numAuthKey1.isEnabled = false
-                    bind.numAuthKey2.isEnabled = false
-                    bind.numAuthKey3.isEnabled = false
-                    bind.numAuthKey4.isEnabled = false
-                    bind.btnCreateChannel.isEnabled = false
-                    bind.txtChannelName.isEnabled = false
+                    withContext(Dispatchers.Main) {
+                        bind.numAuthKey1.isEnabled = false
+                        bind.numAuthKey2.isEnabled = false
+                        bind.numAuthKey3.isEnabled = false
+                        bind.numAuthKey4.isEnabled = false
+                        bind.btnCreateChannel.isEnabled = false
+                        bind.txtChannelName.isEnabled = false
 
-                    bind.ivLoading.visibility = ImageView.VISIBLE
-                    bind.tvWaitForPlayers.visibility = TextView.VISIBLE
-                }
+                        bind.ivLoading.visibility = ImageView.VISIBLE
+                        bind.tvWaitForPlayers.visibility = TextView.VISIBLE
+                    }
 
-                pusher.connect()
+                    pusher.connect()
 
-                var playersToWait = playerCount - 1
+                    var playersToWait = playerCount - 1
 
-                pusherChannelName = "presence-${res.channelName}"
-                pusher.subscribePresence(pusherChannelName, object : PresenceChannelEventListener {
-                    override fun onEvent(p0: String?, p1: String?, p2: String?) {}
-                    override fun onSubscriptionSucceeded(p0: String?) {}
-                    override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-                    override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                    pusherChannelName = "presence-${res.channelName}"
+                    pusher.subscribePresence(pusherChannelName, object : PresenceChannelEventListener {
+                        override fun onEvent(p0: String?, p1: String?, p2: String?) {}
+                        override fun onSubscriptionSucceeded(p0: String?) {}
+                        override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                        override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
 
-                    override fun userSubscribed(channelName: String?, presenceData: User?) {
-                        playersToWait--
-                        Snackbar.make(
-                            bind.createChannelRoot,
-                            "Valaki megjött!",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                        if (playersToWait == 0) {
-                            Snackbar.make(
-                                bind.createChannelRoot,
-                                "Mindenki megjött!",
-                                Snackbar.LENGTH_LONG
-                            )
-                                .show()
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                delay(500)
-                                retrofit.cluedo.notifyGameReady(pusherChannelName!!)
+                        override fun userSubscribed(channelName: String?, presenceData: User?) {
+                            playersToWait--
+                            if (!fragmentKilled)
+                                Snackbar.make(
+                                    bind.createChannelRoot,
+                                    "Valaki megjött!",
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            if (playersToWait == 0) {
+                                if (!fragmentKilled)
+                                    Snackbar.make(
+                                        bind.createChannelRoot,
+                                        "Mindenki megjött!",
+                                        Snackbar.LENGTH_LONG
+                                    ).show()
+                                lifecycleScope.launch(Dispatchers.IO) {
+                                    delay(500)
+                                    retrofit.cluedo.notifyGameReady(pusherChannelName!!)
+                                }
+                                listener.onFinish()
                             }
-                            listener.onFinish()
                         }
-                    }
 
-                    override fun userUnsubscribed(channelName: String?, presenceData: User?) {
-                        playersToWait++
-                        Snackbar.make(
-                            bind.createChannelRoot,
-                            "Valaki elment!",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                })
+                        override fun userUnsubscribed(channelName: String?, presenceData: User?) {
+                            playersToWait++
+                            if (!fragmentKilled)
+                                Snackbar.make(
+                                    bind.createChannelRoot,
+                                    "Valaki elment!",
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                        }
+                    })
+                }
+            }
+            catch (ex: HttpException) {
+                val message = when (ex.code()) {
+                    400 -> "Már létezik ilyen nevű szerver."
+                    500 -> "Szerverhiba, próbálja újra!"
+                    else -> "Ismeretlen hiba történt."
+                }
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.createChannelRoot, message, Snackbar.LENGTH_LONG).show()
+                }
             }
         }
+    }
+
+    fun notifyFragmentKilled() {
+        fragmentKilled = true
     }
 }

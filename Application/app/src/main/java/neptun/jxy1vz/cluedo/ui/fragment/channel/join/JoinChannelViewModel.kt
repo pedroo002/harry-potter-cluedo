@@ -13,7 +13,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentJoinChannelBinding
 import neptun.jxy1vz.cluedo.domain.util.setNumPicker
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.cluedo.network.model.ChannelApiModel
+import neptun.jxy1vz.cluedo.network.model.channel.ChannelApiModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
 class JoinChannelViewModel(private val bind: FragmentJoinChannelBinding, private val context: Context, private val lifecycleScope: LifecycleCoroutineScope, private val listener: ViewModelListener) : BaseObservable() {
@@ -44,7 +44,7 @@ class JoinChannelViewModel(private val bind: FragmentJoinChannelBinding, private
                 }
 
                 withContext(Dispatchers.Main) {
-                    val spinnerAdapter = ArrayAdapter<String>(context, R.layout.spinner_item, channelNames)
+                    val spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, channelNames)
                     bind.spinnerAllChannels.adapter = spinnerAdapter
                 }
             }

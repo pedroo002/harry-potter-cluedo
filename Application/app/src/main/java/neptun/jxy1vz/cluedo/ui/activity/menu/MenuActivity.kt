@@ -12,9 +12,10 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMenuBinding
 import neptun.jxy1vz.cluedo.domain.model.helper.DatabaseAccess
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.cluedo.network.model.PlayerRequest
+import neptun.jxy1vz.cluedo.network.model.player.PlayerRequest
 import neptun.jxy1vz.cluedo.ui.fragment.channel.create.CreateChannelFragment
 import neptun.jxy1vz.cluedo.ui.fragment.channel.join.JoinChannelFragment
+import neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi.MultiplayerCharacterSelectorFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -48,10 +49,15 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
     override fun onBackPressed() {
         val create = (supportFragmentManager.findFragmentByTag(CreateChannelFragment.TAG) as CreateChannelFragment?)
         val join = (supportFragmentManager.findFragmentByTag(JoinChannelFragment.TAG) as JoinChannelFragment?)
+        val multi = (supportFragmentManager.findFragmentByTag(MultiplayerCharacterSelectorFragment.TAG) as MultiplayerCharacterSelectorFragment?)
 
         lifecycleScope.launch(Dispatchers.IO) {
-            join?.onBackPressed()
-            create?.onBackPressed()
+            if (multi != null)
+                multi.onBackPressed()
+            else {
+                join?.onBackPressed()
+                create?.onBackPressed()
+            }
         }
 
         activityMenuBinding.menuViewModel!!.onFragmentClose()

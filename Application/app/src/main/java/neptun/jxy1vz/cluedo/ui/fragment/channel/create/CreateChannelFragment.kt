@@ -9,13 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCreateChannelBinding
+import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuListener
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi.MultiplayerCharacterSelectorFragment
+import retrofit2.HttpException
 
 class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
@@ -38,7 +39,12 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
     override fun onFinish() {
         lifecycleScope.launch(Dispatchers.Main) {
-            activity!!.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment(this@CreateChannelFragment)).addToBackStack("CharacterSelectorMulti").commit()
+            activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, MultiplayerCharacterSelectorFragment(true,
+                isLate = false,
+                listener = this@CreateChannelFragment
+            ), MultiplayerCharacterSelectorFragment.TAG).addToBackStack(MultiplayerCharacterSelectorFragment.TAG).commit()
+            fragmentCreateChannelBinding.createChannelViewModel!!.notifyFragmentKilled()
+            onFragmentClose()
         }
     }
 
@@ -48,8 +54,18 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
     suspend fun onBackPressed() {
         fragmentCreateChannelBinding.createChannelViewModel!!.getChannel()?.let {
-            fragmentCreateChannelBinding.createChannelViewModel!!.deleteCreatedChannel()
+            try {
+                fragmentCreateChannelBinding.createChannelViewModel!!.deleteCreatedChannel()
+            }
+            catch (ex: HttpException) {
+                if (ex.code() == 404) {
+                    debugPrint("Delete channel: 404")
+                }
+            }
+            finally {
+                PusherInstance.getInstance().unsubscribe(it)
+                PusherInstance.getInstance().disconnect()
+            }
         }
-        PusherInstance.getInstance().disconnect()
     }
 }

@@ -9,3 +9,7 @@ fun setNumPicker(numPicker: NumberPicker, min: Int, max: Int, color: Int) {
         numPicker.textColor = color
     }
 }
+
+fun debugPrint(message: String) {
+    println("==================== <DEBUG> ====================\n$message\n==================== </DEBUG> ====================")
+}

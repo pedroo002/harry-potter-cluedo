@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.network.model
+package neptun.jxy1vz.cluedo.network.model.channel
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -10,23 +10,6 @@ data class ChannelApiModel(
     @Json(name = "auth_key") var authorizationKey: Int,
     @Json(name = "max_user") var maxUser: Int,
     @Json(name = "subscribed_users") var subscribedUsers: List<String>,
+    @Json(name = "is_waiting") var isWaiting: Boolean,
     @Json(name = "__v") @Transient var version: Int = 0
-)
-
-@JsonClass(generateAdapter = true)
-data class ChannelRequest(
-    @Json(name = "channel_name")
-    val name: String,
-    @Json(name = "auth_key")
-    val auth: String,
-    @Json(name = "max_user")
-    val maxUser: String
-)
-
-@JsonClass(generateAdapter = true)
-data class JoinRequest(
-    @Json(name = "player_name")
-    val playerName: String,
-    @Json(name = "auth_key")
-    val authKey: String
 )

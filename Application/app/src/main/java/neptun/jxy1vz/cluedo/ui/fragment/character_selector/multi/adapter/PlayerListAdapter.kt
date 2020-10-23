@@ -7,14 +7,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.helper.characterTokenList
-import neptun.jxy1vz.cluedo.network.model.PlayerDomainModel
+import neptun.jxy1vz.cluedo.network.model.player.PlayerDomainModel
 
 class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, private val currentPlayer: String, private val listener: AdapterListener) : RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
 
     interface AdapterListener {
         fun onSelect(playerName: String, characterName: String, tokenSource: Int)
+        fun catchUp(playerName: String, playerList: ArrayList<PlayerDomainModel>)
     }
 
     private lateinit var characterList: Array<String>
@@ -109,7 +113,30 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
         return playerList.find { player -> player.playerName == currentPlayer }!!
     }
 
+    fun getTokenFromCharacterName(characterName: String): Int {
+        return characterTokenList[characterList.indexOf(characterName)]
+    }
+
     fun areSelectionsDifferent(): Boolean {
         return playerList.map { player -> (player.selectedCharacter) }.distinct().size == playerList.size
+    }
+
+    fun deletePlayer(playerName: String) {
+        val item = playerList.find { player -> player.playerName == playerName }
+        val pos = playerList.indexOf(item)
+        playerList.remove(item)
+        GlobalScope.launch(Dispatchers.Main) {
+            notifyItemRemoved(pos)
+        }
+    }
+
+    fun addNewPlayer(playerName: String) {
+        if (playerList.map { player -> player.playerName }.contains(playerName))
+            return
+        playerList.add(PlayerDomainModel(playerName, "", -1))
+        GlobalScope.launch(Dispatchers.Main) {
+            notifyDataSetChanged()
+        }
+        listener.catchUp(playerName, playerList)
     }
 }

@@ -4,19 +4,17 @@ import android.content.Context
 import androidx.databinding.BaseObservable
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.android.material.snackbar.Snackbar
-import com.squareup.moshi.JsonReader
 import kotlinx.android.synthetic.main.activity_login.view.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityLoginBinding
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.cluedo.network.model.PlayerRequest
+import neptun.jxy1vz.cluedo.network.model.player.PlayerRequest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
 
 class LoginViewModel(
     private val bind: ActivityLoginBinding,
@@ -44,36 +42,55 @@ class LoginViewModel(
             if (bind.root.newOrExisting.isChecked) {
                 register(moshiJson)
             } else {
-                val res = retrofit.cluedo.loginPlayer(jsonBody)
-                res?.let {
-                    savePlayerData(playerName, password)
-                    listener.goToMenu()
+                try {
+                    val res = retrofit.cluedo.loginPlayer(jsonBody)
+                    res?.let {
+                        savePlayerData(playerName, password)
+                        listener.goToMenu()
+                    }
                 }
-                if (res == null) {
-                    errorSnackbar()
+                catch (ex: HttpException){
+                    val message = when (ex.code()) {
+                        400 -> "Már be van jelentkezve!"
+                        401 -> "Helytelen jelszó!"
+                        404 -> "Ilyen nevű játékos nem létezik."
+                        500 -> "Szerverhiba, próbálja újra!"
+                        else -> "Ismeretlen hiba történt."
+                    }
+                    withContext(Dispatchers.Main) {
+                        errorSnackbar(message)
+                    }
                 }
             }
         }
     }
 
     private suspend fun register(json: String) {
-        retrofit.cluedo.registerPlayer(json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull()))
+        try {
+            retrofit.cluedo.registerPlayer(json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull()))
 
-        val playerRequest = adapter.fromJson(json)
+            val playerRequest = adapter.fromJson(json)
 
-        val res = retrofit.cluedo.loginPlayer(json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull()))
-        res?.let {
-            savePlayerData(playerRequest!!.playerName, playerRequest.password)
-            listener.goToMenu()
-            return
+            val res = retrofit.cluedo.loginPlayer(json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull()))
+            res?.let {
+                savePlayerData(playerRequest!!.playerName, playerRequest.password)
+                listener.goToMenu()
+            }
         }
-        withContext(Dispatchers.Main) {
-            errorSnackbar()
+        catch (ex: HttpException) {
+            val message = when (ex.code()) {
+                400 -> "Ilyen nevű játékos már létezik."
+                500 -> "Szerverhiba, próbálja újra!"
+                else -> "Ismeretlen hiba történt."
+            }
+            withContext(Dispatchers.Main) {
+                errorSnackbar(message)
+            }
         }
     }
 
-    private fun errorSnackbar() {
-        Snackbar.make(bind.root, "Művelet sikertelen. Kérlek próbáld újra!", Snackbar.LENGTH_LONG)
+    private fun errorSnackbar(message: String) {
+        Snackbar.make(bind.root, message, Snackbar.LENGTH_LONG)
             .show()
         enableEditTexts()
     }

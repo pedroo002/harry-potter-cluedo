@@ -12,9 +12,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentMultiplayerCharacterSelectorBinding
+import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.cluedo.network.model.CharacterSelectionMessage
-import neptun.jxy1vz.cluedo.network.model.PlayerDomainModel
+import neptun.jxy1vz.cluedo.network.model.message.presence.PlayerPresenceMessage
+import neptun.jxy1vz.cluedo.network.model.message.selection.CharacterSelectionMessage
+import neptun.jxy1vz.cluedo.network.model.message.submit.CharacterSubmitMessage
+import neptun.jxy1vz.cluedo.network.model.player.PlayerDomainModel
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi.adapter.PlayerListAdapter
@@ -23,19 +26,31 @@ import java.lang.Exception
 class MultiplayerCharacterSelectorViewModel(
     private val bind: FragmentMultiplayerCharacterSelectorBinding,
     private val context: Context,
+    private val isHost: Boolean,
+    private val lateArrival: Boolean,
     private val lifecycle: LifecycleCoroutineScope,
-    private val listener: ViewModelListener
+    private val viewModelListener: ViewModelListener,
+    private val channelListener: ChannelListener
 ) : BaseObservable(), PlayerListAdapter.AdapterListener {
+
+    interface ChannelListener {
+        fun onChannelRemoved()
+    }
 
     private val retrofit: RetrofitInstance = RetrofitInstance.getInstance(context)
     private val pusher = PusherInstance.getInstance()
-    private val playerName: String =
+    val playerName: String =
         context.getSharedPreferences(
             context.resources.getString(R.string.player_data_pref),
             Context.MODE_PRIVATE
         ).getString(context.resources.getString(R.string.player_name_key), "")!!
+    val channelId: String = context.getSharedPreferences(
+        context.resources.getString(R.string.player_data_pref),
+        Context.MODE_PRIVATE
+    ).getString(context.resources.getString(R.string.channel_id_key), "")!!
     var playerId = -1
-    private lateinit var channelName: String
+    private lateinit var adapter: PlayerListAdapter
+    lateinit var channelName: String
     private var waitFor = -1
 
     init {
@@ -44,9 +59,13 @@ class MultiplayerCharacterSelectorViewModel(
             val channelId = context.getSharedPreferences(
                 context.resources.getString(R.string.player_data_pref),
                 Context.MODE_PRIVATE
-            ).getString(context.resources.getString(R.string.channel_id_key), "")
+            ).getString(context.resources.getString(R.string.channel_id_key), "")!!
 
-            val channel = retrofit.cluedo.getChannel(channelId!!)
+            if (isHost) {
+                retrofit.cluedo.stopChannelWaiting(channelId)
+            }
+
+            val channel = retrofit.cluedo.getChannel(channelId)
             subscribedPlayers.addAll(channel!!.subscribedUsers)
             channelName = "presence-${channel.channelName}"
 
@@ -59,13 +78,13 @@ class MultiplayerCharacterSelectorViewModel(
             )
 
             withContext(Dispatchers.Main) {
-                val adapter = PlayerListAdapter(
+                adapter = PlayerListAdapter(
                     playersOfChannel,
                     playerName,
                     this@MultiplayerCharacterSelectorViewModel
                 )
                 bind.rvPlayerList.adapter = adapter
-                waitFor = adapter.itemCount - 1
+                waitFor = adapter.itemCount
 
                 pusher.getPresenceChannel(channelName)
                     .bind("character-selected", object : PresenceChannelEventListener {
@@ -73,6 +92,7 @@ class MultiplayerCharacterSelectorViewModel(
                             val messageJson = retrofit.moshi.adapter(CharacterSelectionMessage::class.java).fromJson(message!!)!!
                             if (messageJson.message.playerName == playerName)
                                 return
+                            debugPrint("${messageJson.message.playerName} selected ${messageJson.message.characterName}")
                             triggerUpdate(messageJson)
                         }
 
@@ -84,15 +104,47 @@ class MultiplayerCharacterSelectorViewModel(
                     })
 
                 pusher.getPresenceChannel(channelName).bind("character-submit", object : PresenceChannelEventListener {
-                    override fun onEvent(playerName: String?, eventName: String?, message: String?) {
-                        println("$playerName\n$eventName\n$message")
-                        playerName?.let {
-                            if (playerName != this@MultiplayerCharacterSelectorViewModel.playerName) {
-                                waitFor--
-                                Snackbar.make(bind.multiCharacterSelectorRoot, "$playerName készen áll.", Snackbar.LENGTH_SHORT).show()
-                                if (waitFor == 0)
-                                    listener.onFinish()
-                            }
+                    override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                        val messageJson = retrofit.moshi.adapter(CharacterSubmitMessage::class.java).fromJson(message!!)!!
+                        debugPrint("${messageJson.message.playerName} is ready")
+                        waitFor--
+                        debugPrint("Waiting for $waitFor players")
+                        Snackbar.make(bind.multiCharacterSelectorRoot, "${messageJson.message.playerName} készen áll.", Snackbar.LENGTH_SHORT).show()
+                        if (waitFor == 0)
+                            viewModelListener.onFinish()
+                    }
+
+                    override fun onSubscriptionSucceeded(p0: String?) {}
+                    override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                    override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                    override fun userSubscribed(p0: String?, p1: User?) {}
+                    override fun userUnsubscribed(p0: String?, p1: User?) {}
+                })
+
+                pusher.getPresenceChannel(channelName).bind("player-leaves", object : PresenceChannelEventListener {
+                    override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                        val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
+                        debugPrint("${messageJson.message.playerName} leaves")
+                        if (messageJson.message.playerName != this@MultiplayerCharacterSelectorViewModel.playerName) {
+                            //Snackbar.make(bind.root.rootView, "${messageJson.message.playerName} lelépett.", Snackbar.LENGTH_SHORT).show()
+                            adapter.deletePlayer(messageJson.message.playerName)
+                        }
+                    }
+
+                    override fun onSubscriptionSucceeded(p0: String?) {}
+                    override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                    override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                    override fun userSubscribed(p0: String?, p1: User?) {}
+                    override fun userUnsubscribed(p0: String?, p1: User?) {}
+                })
+
+                pusher.getPresenceChannel(channelName).bind("player-arrives", object : PresenceChannelEventListener {
+                    override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                        val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
+                        debugPrint("${messageJson.message.playerName} arrives")
+                        if (messageJson.message.playerName != this@MultiplayerCharacterSelectorViewModel.playerName) {
+                            //Snackbar.make(bind.root.rootView, "${messageJson.message.playerName} belépett.", Snackbar.LENGTH_SHORT).show()
+                            adapter.addNewPlayer(messageJson.message.playerName)
                         }
                     }
 
@@ -103,15 +155,37 @@ class MultiplayerCharacterSelectorViewModel(
                     override fun userUnsubscribed(p0: String?, p1: User?) {}
                 })
             }
+
+            pusher.getPresenceChannel(channelName).bind("channel-removed-after-join", object : PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    debugPrint("Channel '$channelName' removed")
+                    channelName?.let {
+                        //Snackbar.make(bind.multiCharacterSelectorRoot, "Megszűnt a szerver.", Snackbar.LENGTH_SHORT).show()
+                        channelListener.onChannelRemoved()
+                    }
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+
+            if (lateArrival) {
+                withContext(Dispatchers.IO) {
+                    retrofit.cluedo.notifyPlayerArrives(channelName, playerName)
+                }
+            }
         }
     }
 
     fun ready() {
-        val adapter = (bind.rvPlayerList.adapter as PlayerListAdapter)
         if (adapter.areSelectionsDifferent()) {
             playerId = adapter.getCurrentPlayer().playerId
+            debugPrint("Player '$playerName' is ready.")
             lifecycle.launch(Dispatchers.IO) {
-                retrofit.cluedo.notifyCharacterSubmit(playerName)
+                retrofit.cluedo.notifyCharacterSubmit(channelName, playerName)
             }
         }
         else
@@ -120,7 +194,7 @@ class MultiplayerCharacterSelectorViewModel(
 
     private fun triggerUpdate(messageJson: CharacterSelectionMessage) {
         lifecycle.launch(Dispatchers.Main) {
-            (bind.rvPlayerList.adapter as PlayerListAdapter).updatePlayerSelection(messageJson.message.playerName, messageJson.message.characterName, messageJson.message.token)
+            adapter.updatePlayerSelection(messageJson.message.playerName, messageJson.message.characterName, messageJson.message.token)
         }
     }
 
@@ -129,6 +203,15 @@ class MultiplayerCharacterSelectorViewModel(
 
         lifecycle.launch(Dispatchers.IO) {
             retrofit.cluedo.notifyCharacterSelected(channelName, playerName, characterName, tokenSource)
+        }
+    }
+
+    override fun catchUp(playerName: String, playerList: ArrayList<PlayerDomainModel>) {
+        lifecycle.launch(Dispatchers.IO) {
+            playerList.filter { player -> player.playerName != playerName && player.selectedCharacter.isNotEmpty() }.forEach {
+                debugPrint("channelName: $channelName\nplayerName: ${it.playerName}\nselectedCharacter: ${it.selectedCharacter}")
+                retrofit.cluedo.notifyCharacterSelected(channelName, it.playerName, it.selectedCharacter, adapter.getTokenFromCharacterName(it.selectedCharacter))
+            }
         }
     }
 }

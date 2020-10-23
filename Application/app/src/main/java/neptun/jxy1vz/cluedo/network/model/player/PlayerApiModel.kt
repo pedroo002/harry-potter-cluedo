@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.network.model
+package neptun.jxy1vz.cluedo.network.model.player
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -19,18 +19,4 @@ data class PlayerApiModel(
     @Json(name = "__v")
     @Transient
     var version: Int = 0
-)
-
-@JsonClass(generateAdapter = true)
-data class PlayerRequest(
-    @Json(name = "player_name")
-    val playerName: String,
-    @Json(name = "password")
-    val password: String
-)
-
-data class PlayerDomainModel(
-    val playerName: String,
-    var selectedCharacter: String,
-    var playerId: Int
 )
