@@ -21,6 +21,7 @@ import neptun.jxy1vz.cluedo.network.model.player.PlayerDomainModel
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi.adapter.PlayerListAdapter
+import retrofit2.HttpException
 import java.lang.Exception
 
 class MultiplayerCharacterSelectorViewModel(
@@ -61,39 +62,58 @@ class MultiplayerCharacterSelectorViewModel(
                 Context.MODE_PRIVATE
             ).getString(context.resources.getString(R.string.channel_id_key), "")!!
 
-            if (isHost) {
-                retrofit.cluedo.stopChannelWaiting(channelId)
-            }
+            try {
+                if (isHost) {
+                    retrofit.cluedo.stopChannelWaiting(channelId)
+                }
 
-            val channel = retrofit.cluedo.getChannel(channelId)
-            subscribedPlayers.addAll(channel!!.subscribedUsers)
-            channelName = "presence-${channel.channelName}"
+                val channel = retrofit.cluedo.getChannel(channelId)
+                subscribedPlayers.addAll(channel!!.subscribedUsers)
+                channelName = "presence-${channel.channelName}"
 
-            val playersOfChannel = ArrayList<PlayerDomainModel>()
-            playersOfChannel.addAll(
-                retrofit.cluedo.getPlayers()
-                    ?.filter { playerApiModel -> subscribedPlayers.contains(playerApiModel.name) }
-                    ?.map { playerApiModel -> PlayerDomainModel(playerApiModel.name, "", -1) }
-                    ?.toList()!!
-            )
-
-            withContext(Dispatchers.Main) {
-                adapter = PlayerListAdapter(
-                    playersOfChannel,
-                    playerName,
-                    this@MultiplayerCharacterSelectorViewModel
+                val playersOfChannel = ArrayList<PlayerDomainModel>()
+                playersOfChannel.addAll(
+                    retrofit.cluedo.getPlayers()
+                        ?.filter { playerApiModel -> subscribedPlayers.contains(playerApiModel.name) }
+                        ?.map { playerApiModel -> PlayerDomainModel(playerApiModel.name, "", -1) }
+                        ?.toList()!!
                 )
-                bind.rvPlayerList.adapter = adapter
-                waitFor = adapter.itemCount
 
-                pusher.getPresenceChannel(channelName)
-                    .bind("character-selected", object : PresenceChannelEventListener {
+                withContext(Dispatchers.Main) {
+                    adapter = PlayerListAdapter(
+                        playersOfChannel,
+                        playerName,
+                        this@MultiplayerCharacterSelectorViewModel
+                    )
+                    bind.rvPlayerList.adapter = adapter
+                    waitFor = adapter.itemCount
+
+                    pusher.getPresenceChannel(channelName)
+                        .bind("character-selected", object : PresenceChannelEventListener {
+                            override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                                val messageJson = retrofit.moshi.adapter(CharacterSelectionMessage::class.java).fromJson(message!!)!!
+                                if (messageJson.message.playerName == playerName)
+                                    return
+                                debugPrint("${messageJson.message.playerName} selected ${messageJson.message.characterName}")
+                                triggerUpdate(messageJson)
+                            }
+
+                            override fun onSubscriptionSucceeded(p0: String?) {}
+                            override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                            override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                            override fun userSubscribed(p0: String?, p1: User?) {}
+                            override fun userUnsubscribed(p0: String?, p1: User?) {}
+                        })
+
+                    pusher.getPresenceChannel(channelName).bind("character-submit", object : PresenceChannelEventListener {
                         override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                            val messageJson = retrofit.moshi.adapter(CharacterSelectionMessage::class.java).fromJson(message!!)!!
-                            if (messageJson.message.playerName == playerName)
-                                return
-                            debugPrint("${messageJson.message.playerName} selected ${messageJson.message.characterName}")
-                            triggerUpdate(messageJson)
+                            val messageJson = retrofit.moshi.adapter(CharacterSubmitMessage::class.java).fromJson(message!!)!!
+                            debugPrint("${messageJson.message.playerName} is ready")
+                            waitFor--
+                            debugPrint("Waiting for $waitFor players")
+                            Snackbar.make(bind.multiCharacterSelectorRoot, "${messageJson.message.playerName} készen áll.", Snackbar.LENGTH_SHORT).show()
+                            if (waitFor == 0)
+                                viewModelListener.onFinish()
                         }
 
                         override fun onSubscriptionSucceeded(p0: String?) {}
@@ -103,31 +123,47 @@ class MultiplayerCharacterSelectorViewModel(
                         override fun userUnsubscribed(p0: String?, p1: User?) {}
                     })
 
-                pusher.getPresenceChannel(channelName).bind("character-submit", object : PresenceChannelEventListener {
-                    override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                        val messageJson = retrofit.moshi.adapter(CharacterSubmitMessage::class.java).fromJson(message!!)!!
-                        debugPrint("${messageJson.message.playerName} is ready")
-                        waitFor--
-                        debugPrint("Waiting for $waitFor players")
-                        Snackbar.make(bind.multiCharacterSelectorRoot, "${messageJson.message.playerName} készen áll.", Snackbar.LENGTH_SHORT).show()
-                        if (waitFor == 0)
-                            viewModelListener.onFinish()
-                    }
+                    pusher.getPresenceChannel(channelName).bind("player-leaves", object : PresenceChannelEventListener {
+                        override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                            val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
+                            debugPrint("${messageJson.message.playerName} leaves")
+                            if (messageJson.message.playerName != this@MultiplayerCharacterSelectorViewModel.playerName) {
+                                //Snackbar.make(bind.root.rootView, "${messageJson.message.playerName} lelépett.", Snackbar.LENGTH_SHORT).show()
+                                adapter.deletePlayer(messageJson.message.playerName)
+                            }
+                        }
 
-                    override fun onSubscriptionSucceeded(p0: String?) {}
-                    override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-                    override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                    override fun userSubscribed(p0: String?, p1: User?) {}
-                    override fun userUnsubscribed(p0: String?, p1: User?) {}
-                })
+                        override fun onSubscriptionSucceeded(p0: String?) {}
+                        override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                        override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                        override fun userSubscribed(p0: String?, p1: User?) {}
+                        override fun userUnsubscribed(p0: String?, p1: User?) {}
+                    })
 
-                pusher.getPresenceChannel(channelName).bind("player-leaves", object : PresenceChannelEventListener {
+                    pusher.getPresenceChannel(channelName).bind("player-arrives", object : PresenceChannelEventListener {
+                        override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                            val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
+                            debugPrint("${messageJson.message.playerName} arrives")
+                            if (messageJson.message.playerName != this@MultiplayerCharacterSelectorViewModel.playerName) {
+                                //Snackbar.make(bind.root.rootView, "${messageJson.message.playerName} belépett.", Snackbar.LENGTH_SHORT).show()
+                                adapter.addNewPlayer(messageJson.message.playerName)
+                            }
+                        }
+
+                        override fun onSubscriptionSucceeded(p0: String?) {}
+                        override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                        override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                        override fun userSubscribed(p0: String?, p1: User?) {}
+                        override fun userUnsubscribed(p0: String?, p1: User?) {}
+                    })
+                }
+
+                pusher.getPresenceChannel(channelName).bind("channel-removed-after-join", object : PresenceChannelEventListener {
                     override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                        val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
-                        debugPrint("${messageJson.message.playerName} leaves")
-                        if (messageJson.message.playerName != this@MultiplayerCharacterSelectorViewModel.playerName) {
-                            //Snackbar.make(bind.root.rootView, "${messageJson.message.playerName} lelépett.", Snackbar.LENGTH_SHORT).show()
-                            adapter.deletePlayer(messageJson.message.playerName)
+                        debugPrint("Channel '$channelName' removed")
+                        channelName?.let {
+                            //Snackbar.make(bind.multiCharacterSelectorRoot, "Megszűnt a szerver.", Snackbar.LENGTH_SHORT).show()
+                            channelListener.onChannelRemoved()
                         }
                     }
 
@@ -138,44 +174,14 @@ class MultiplayerCharacterSelectorViewModel(
                     override fun userUnsubscribed(p0: String?, p1: User?) {}
                 })
 
-                pusher.getPresenceChannel(channelName).bind("player-arrives", object : PresenceChannelEventListener {
-                    override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                        val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
-                        debugPrint("${messageJson.message.playerName} arrives")
-                        if (messageJson.message.playerName != this@MultiplayerCharacterSelectorViewModel.playerName) {
-                            //Snackbar.make(bind.root.rootView, "${messageJson.message.playerName} belépett.", Snackbar.LENGTH_SHORT).show()
-                            adapter.addNewPlayer(messageJson.message.playerName)
-                        }
+                if (lateArrival) {
+                    withContext(Dispatchers.IO) {
+                        retrofit.cluedo.notifyPlayerArrives(channelName, playerName)
                     }
-
-                    override fun onSubscriptionSucceeded(p0: String?) {}
-                    override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-                    override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                    override fun userSubscribed(p0: String?, p1: User?) {}
-                    override fun userUnsubscribed(p0: String?, p1: User?) {}
-                })
+                }
             }
-
-            pusher.getPresenceChannel(channelName).bind("channel-removed-after-join", object : PresenceChannelEventListener {
-                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                    debugPrint("Channel '$channelName' removed")
-                    channelName?.let {
-                        //Snackbar.make(bind.multiCharacterSelectorRoot, "Megszűnt a szerver.", Snackbar.LENGTH_SHORT).show()
-                        channelListener.onChannelRemoved()
-                    }
-                }
-
-                override fun onSubscriptionSucceeded(p0: String?) {}
-                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                override fun userSubscribed(p0: String?, p1: User?) {}
-                override fun userUnsubscribed(p0: String?, p1: User?) {}
-            })
-
-            if (lateArrival) {
-                withContext(Dispatchers.IO) {
-                    retrofit.cluedo.notifyPlayerArrives(channelName, playerName)
-                }
+            catch (ex: HttpException) {
+                debugPrint("${ex.code()}: ${ex.message()}")
             }
         }
     }

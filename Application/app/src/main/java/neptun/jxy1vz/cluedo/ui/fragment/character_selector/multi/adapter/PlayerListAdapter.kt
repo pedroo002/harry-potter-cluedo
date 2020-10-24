@@ -135,7 +135,10 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
             return
         playerList.add(PlayerDomainModel(playerName, "", -1))
         GlobalScope.launch(Dispatchers.Main) {
-            notifyDataSetChanged()
+            notifyItemInserted(playerList.indexOf(playerList.find { player -> player.playerName == playerName }))
+            playerList.filter { player -> player.selectedCharacter.isNotEmpty() }.forEach {
+                updatePlayerSelection(it.playerName, it.selectedCharacter, characterTokenList[characterList.indexOf(it.selectedCharacter)])
+            }
         }
         listener.catchUp(playerName, playerList)
     }

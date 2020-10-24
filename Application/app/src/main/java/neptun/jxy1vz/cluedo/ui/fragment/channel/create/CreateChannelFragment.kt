@@ -53,19 +53,19 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
     }
 
     suspend fun onBackPressed() {
-        fragmentCreateChannelBinding.createChannelViewModel!!.getChannel()?.let {
+        if (vm().channelCreated()) {
             try {
-                fragmentCreateChannelBinding.createChannelViewModel!!.deleteCreatedChannel()
+                vm().deleteCreatedChannel()
+                PusherInstance.getInstance().unsubscribe(vm().getChannel())
+                PusherInstance.getInstance().disconnect()
             }
             catch (ex: HttpException) {
                 if (ex.code() == 404) {
                     debugPrint("Delete channel: 404")
                 }
             }
-            finally {
-                PusherInstance.getInstance().unsubscribe(it)
-                PusherInstance.getInstance().disconnect()
-            }
         }
     }
+
+    private fun vm(): CreateChannelViewModel = fragmentCreateChannelBinding.createChannelViewModel!!
 }

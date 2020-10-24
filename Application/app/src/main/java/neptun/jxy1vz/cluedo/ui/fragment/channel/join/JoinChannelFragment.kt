@@ -73,9 +73,9 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
                 val body = retrofit.moshi.adapter(JoinRequest::class.java).toJson(joinRequest).toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
                 channelId = fragmentJoinChannelBinding.joinChannelViewModel!!.channelId
-                val channelApiModel = retrofit.cluedo.getChannel(channelId)
 
                 try {
+                    val channelApiModel = retrofit.cluedo.getChannel(channelId)
                     retrofit.cluedo.joinChannel(channelId, body)
 
                     val editor = pref.edit()
@@ -123,11 +123,13 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
                         400 -> "Már csatlakozott!"
                         401 -> "A szerver megtelt."
                         403 -> "Helytelen kulcs."
+                        404 -> "Szerver nem található."
                         500 -> "Szerverhiba, próbálja újra!"
                         else -> ex.message()
                     }
                     withContext(Dispatchers.Main) {
                         Snackbar.make(fragmentJoinChannelBinding.root.rootView, message, Snackbar.LENGTH_LONG).show()
+                        fragmentJoinChannelBinding.root.btnJoin.isEnabled = true
                     }
                 }
             }

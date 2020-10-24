@@ -63,6 +63,7 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
         cancellation = true
         if (host) {
             try {
+                debugPrint("Delete channel: Multiplayerblablabla")
                 retrofit.cluedo.notifyChannelRemovedAfterJoin(vm().channelName)
                 retrofit.cluedo.deleteChannel(vm().channelId)
             }
@@ -88,8 +89,11 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
             .remove(this@MultiplayerCharacterSelectorFragment).commit()
         listener.onFragmentClose()
 
-        if (cancellation)
+        if (cancellation) {
+            for (i in 1..parentActivity.supportFragmentManager.backStackEntryCount)
+                parentActivity.supportFragmentManager.popBackStack()
             return
+        }
 
         val mysteryCardIntent = Intent(context, MysteryCardActivity::class.java)
         mysteryCardIntent.putExtra(

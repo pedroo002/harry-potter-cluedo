@@ -33,25 +33,46 @@ class JoinChannelViewModel(private val bind: FragmentJoinChannelBinding, private
         setNumPicker(bind.root.numAuthKey3, 0, 9, Color.WHITE)
         setNumPicker(bind.root.numAuthKey4, 0, 9, Color.WHITE)
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            val playerCount = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE).getInt(context.resources.getString(R.string.player_count_key), 3)
-
-            channels = retrofit.cluedo.getChannelsByPlayerLimit(playerCount)
-            channels?.let {
-                channelNames = ArrayList()
-                for (channel in channels!!) {
-                    channelNames.add(channel.channelName)
-                }
-
+        bind.swipeJoin.setOnRefreshListener {
+            lifecycleScope.launch(Dispatchers.IO) {
+                updateChannelList()
                 withContext(Dispatchers.Main) {
-                    val spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, channelNames)
-                    bind.spinnerAllChannels.adapter = spinnerAdapter
+                    bind.swipeJoin.isRefreshing = false
                 }
+            }
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            updateChannelList()
+        }
+    }
+
+    private suspend fun updateChannelList() {
+        val playerCount = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE).getInt(context.resources.getString(R.string.player_count_key), 3)
+
+        channels = retrofit.cluedo.getChannelsByPlayerLimit(playerCount)
+        channels?.let {
+            channelNames = ArrayList()
+            for (channel in channels!!) {
+                channelNames.add(channel.channelName)
+            }
+
+            withContext(Dispatchers.Main) {
+                val spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, channelNames)
+                bind.spinnerAllChannels.adapter = spinnerAdapter
+                if (channelNames.isNotEmpty())
+                    bind.btnJoin.isEnabled = true
             }
         }
     }
 
     fun join() {
+        bind.numAuthKey1.isEnabled = false
+        bind.numAuthKey2.isEnabled = false
+        bind.numAuthKey3.isEnabled = false
+        bind.numAuthKey4.isEnabled = false
+        bind.swipeJoin.isEnabled = false
+
         authKey = "${bind.numAuthKey1.value}${bind.numAuthKey2.value}${bind.numAuthKey3.value}${bind.numAuthKey4.value}"
         channel = bind.spinnerAllChannels.selectedItem.toString()
         channelId = channels!![channelNames.indexOf(channel)].id

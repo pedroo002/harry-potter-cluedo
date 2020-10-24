@@ -52,8 +52,11 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
         val multi = (supportFragmentManager.findFragmentByTag(MultiplayerCharacterSelectorFragment.TAG) as MultiplayerCharacterSelectorFragment?)
 
         lifecycleScope.launch(Dispatchers.IO) {
-            if (multi != null)
+            if (multi != null) {
                 multi.onBackPressed()
+                for (i in 1..supportFragmentManager.backStackEntryCount)
+                    supportFragmentManager.popBackStack()
+            }
             else {
                 join?.onBackPressed()
                 create?.onBackPressed()

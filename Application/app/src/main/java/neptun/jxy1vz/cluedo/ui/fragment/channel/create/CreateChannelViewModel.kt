@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCreateChannelBinding
+import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.setNumPicker
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.channel.ChannelRequest
@@ -54,9 +55,14 @@ class CreateChannelViewModel(
         }
     }
 
-    fun getChannel(): String? = pusherChannelName
+    fun channelCreated(): Boolean {
+        return !pusherChannelName.isNullOrEmpty()
+    }
+
+    fun getChannel(): String = pusherChannelName!!
 
     suspend fun deleteCreatedChannel() {
+        debugPrint("Delete channel: CreateChannelViewModel")
         if (!this::channelId.isInitialized)
             return
         retrofit.cluedo.notifyChannelRemovedBeforeJoin(pusherChannelName!!)
