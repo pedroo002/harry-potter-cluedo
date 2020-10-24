@@ -35,8 +35,6 @@ class GameModeViewModel(private val bind: FragmentGameModeBinding, private val c
     fun selectPlayerCount(count: Int) {
         playerCount = count
 
-        if (count == 3) playerCount = 2
-
         when (count) {
             3 -> {
                 bind.gameModeRoot.ivPlayerCount3.setImageResource(R.drawable.count3selected)
