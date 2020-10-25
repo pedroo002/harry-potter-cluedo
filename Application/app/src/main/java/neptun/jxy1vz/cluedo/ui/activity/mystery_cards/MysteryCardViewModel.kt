@@ -21,6 +21,7 @@ import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
+import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.message.mystery_card.MysteryCardPlayerPair
@@ -31,6 +32,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import kotlin.concurrent.thread
 
 class MysteryCardViewModel(
     private val gameModel: GameModels,
@@ -87,7 +89,6 @@ class MysteryCardViewModel(
             gameModeList[1] -> {
                 playersToWait = playerList.size
                 GlobalScope.launch(Dispatchers.IO) {
-                    RetrofitInstance.getInstance(context).cluedo.readyToLoadMap(pusherChannel!!)
                     withContext(Dispatchers.Main) {
                         PusherInstance.getInstance().getPresenceChannel(pusherChannel).bind("ready-to-game", object : PresenceChannelEventListener {
                             override fun onEvent(channelName: String?, eventName: String?, message: String?) {
@@ -104,6 +105,7 @@ class MysteryCardViewModel(
                             override fun userUnsubscribed(p0: String?, p1: User?) {}
                         })
                     }
+                    RetrofitInstance.getInstance(context).cluedo.readyToLoadMap(pusherChannel!!)
                 }
             }
         }
@@ -187,6 +189,7 @@ class MysteryCardViewModel(
             })
             withContext(Dispatchers.Main) {
                 loadMysteryCards(cards)
+                debugPrint(cards.toString())
             }
         }
     }
