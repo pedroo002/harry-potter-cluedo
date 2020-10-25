@@ -109,8 +109,6 @@ class MultiplayerCharacterSelectorViewModel(
                     pusher.getPresenceChannel(channelName).bind("character-submit", object : PresenceChannelEventListener {
                         override fun onEvent(channelName: String?, eventName: String?, message: String?) {
                             val messageJson = retrofit.moshi.adapter(CharacterSubmitMessage::class.java).fromJson(message!!)!!
-                            if (messageJson.message.playerName == playerName)
-                                return
                             adapter.setCharacterTextColor(messageJson.message.playerName, Color.GREEN)
                             readyPlayers.add(adapter.getPlayer(messageJson.message.playerName))
 
@@ -189,9 +187,7 @@ class MultiplayerCharacterSelectorViewModel(
     fun ready() {
         if (adapter.areSelectionsDifferent()) {
             playerId = adapter.getCurrentPlayer().playerId
-            adapter.setCharacterTextColor(playerName, Color.GREEN)
             isReady = true
-            readyPlayers.add(adapter.getCurrentPlayer())
             lifecycle.launch(Dispatchers.IO) {
                 retrofit.cluedo.notifyCharacterSubmit(channelName, playerName)
             }

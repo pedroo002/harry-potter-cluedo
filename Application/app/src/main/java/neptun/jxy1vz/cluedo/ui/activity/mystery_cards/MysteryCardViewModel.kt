@@ -189,7 +189,10 @@ class MysteryCardViewModel(
             })
             withContext(Dispatchers.Main) {
                 loadMysteryCards(cards)
-                debugPrint(cards.toString())
+                cards.sortBy { card -> card.second }
+                cards.forEach {
+                    println("${it.second} --> ${it.first}")
+                }
             }
         }
     }
