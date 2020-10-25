@@ -41,14 +41,17 @@ class MultiplayerCharacterSelectorViewModel(
 
     private val retrofit: RetrofitInstance = RetrofitInstance.getInstance(context)
     private val pusher = PusherInstance.getInstance()
-    private val pref = context.getSharedPreferences(context.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
-    val playerName: String = pref.getString(context.resources.getString(R.string.player_name_key), "")!!
-    val channelId: String = pref.getString(context.resources.getString(R.string.channel_id_key), "")!!
+    private val playerPref = context.getSharedPreferences(context.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
+    private val gamePref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
+    val playerName: String = playerPref.getString(context.resources.getString(R.string.player_name_key), "")!!
+    val channelId: String = playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
+    private val playerCount = gamePref.getInt(context.resources.getString(R.string.player_count_key), 3)
     var playerId = -1
     private lateinit var adapter: PlayerListAdapter
     lateinit var channelName: String
-    private var waitFor = -1
     private var isReady = false
+
+    private val readyPlayers = ArrayList<PlayerDomainModel>()
 
     init {
         val subscribedPlayers = ArrayList<String>()
@@ -82,7 +85,6 @@ class MultiplayerCharacterSelectorViewModel(
                         this@MultiplayerCharacterSelectorViewModel
                     )
                     bind.rvPlayerList.adapter = adapter
-                    waitFor = adapter.itemCount
 
                     pusher.getPresenceChannel(channelName)
                         .bind("character-selected", object : PresenceChannelEventListener {
@@ -106,8 +108,9 @@ class MultiplayerCharacterSelectorViewModel(
                             if (messageJson.message.playerName == playerName)
                                 return
                             adapter.setCharacterTextColor(messageJson.message.playerName, Color.GREEN)
-                            waitFor--
-                            if (waitFor == 0)
+                            readyPlayers.add(adapter.getPlayer(messageJson.message.playerName))
+
+                            if (readyPlayers.size == playerCount)
                                 viewModelListener.onFinish()
                         }
 
@@ -123,6 +126,7 @@ class MultiplayerCharacterSelectorViewModel(
                             val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
                             if (messageJson.message.playerName != this@MultiplayerCharacterSelectorViewModel.playerName) {
                                 adapter.deletePlayer(messageJson.message.playerName)
+                                readyPlayers.removeAll { player -> player.playerName == messageJson.message.playerName }
                             }
                         }
 
@@ -181,6 +185,7 @@ class MultiplayerCharacterSelectorViewModel(
             playerId = adapter.getCurrentPlayer().playerId
             adapter.setCharacterTextColor(playerName, Color.GREEN)
             isReady = true
+            readyPlayers.add(adapter.getCurrentPlayer())
             lifecycle.launch(Dispatchers.IO) {
                 retrofit.cluedo.notifyCharacterSubmit(channelName, playerName)
             }

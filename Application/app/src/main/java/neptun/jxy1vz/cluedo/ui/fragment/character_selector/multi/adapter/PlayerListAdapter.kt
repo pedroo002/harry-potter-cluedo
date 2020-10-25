@@ -120,6 +120,10 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
         return playerList.find { player -> player.playerName == currentPlayer }!!
     }
 
+    fun getPlayer(playerName: String): PlayerDomainModel {
+        return playerList.find { player -> player.playerName == playerName }!!
+    }
+
     fun getTokenFromCharacterName(characterName: String): Int {
         return characterTokenList[characterList.indexOf(characterName)]
     }
