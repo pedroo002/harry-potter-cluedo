@@ -18,7 +18,7 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
 
     interface AdapterListener {
         fun onSelect(playerName: String, characterName: String, tokenSource: Int)
-        fun catchUp(playerName: String, playerList: ArrayList<PlayerDomainModel>)
+        fun catchUp(playerList: ArrayList<PlayerDomainModel>)
     }
 
     private lateinit var characterList: Array<String>
@@ -62,6 +62,10 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
             characterName.text = character
             characterImage.setImageResource(token)
         }
+
+        fun setColor(color: Int) {
+            characterName.setTextColor(color)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -83,7 +87,10 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
             onBindViewHolder(holder, position)
         else {
             val payload = payloads[0] as ArrayList<*>
-            holder.setViewHolder(payload[0].toString(), payload[1].toString().toInt())
+            if (payload.size > 1)
+                holder.setViewHolder(payload[0].toString(), payload[1].toString().toInt())
+            else
+                holder.setColor(payload[0].toString().toInt())
         }
     }
 
@@ -140,6 +147,13 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
                 updatePlayerSelection(it.playerName, it.selectedCharacter, characterTokenList[characterList.indexOf(it.selectedCharacter)])
             }
         }
-        listener.catchUp(playerName, playerList)
+        listener.catchUp(playerList)
+    }
+
+    fun setCharacterTextColor(playerName: String, color: Int) {
+        val item = playerList.find { player -> player.playerName == playerName }!!
+        val payloads: MutableList<Int> = ArrayList()
+        payloads.add(color)
+        notifyItemRangeChanged(playerList.indexOf(item), 1, payloads)
     }
 }
