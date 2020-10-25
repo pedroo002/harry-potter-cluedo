@@ -54,6 +54,10 @@ class MultiplayerCharacterSelectorViewModel(
     private val readyPlayers = ArrayList<PlayerDomainModel>()
 
     init {
+        val editor = playerPref.edit()
+        editor.putBoolean(context.resources.getString(R.string.is_host_key), isHost)
+        editor.apply()
+
         val subscribedPlayers = ArrayList<String>()
         lifecycle.launch(Dispatchers.IO) {
             val channelId = context.getSharedPreferences(
@@ -179,6 +183,8 @@ class MultiplayerCharacterSelectorViewModel(
             }
         }
     }
+
+    fun getReadyPlayers(): ArrayList<PlayerDomainModel> = readyPlayers
 
     fun ready() {
         if (adapter.areSelectionsDifferent()) {

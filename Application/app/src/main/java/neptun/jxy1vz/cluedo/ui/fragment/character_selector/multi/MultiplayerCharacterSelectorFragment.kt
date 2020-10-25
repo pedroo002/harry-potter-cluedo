@@ -8,7 +8,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.database.CluedoDatabase
+import neptun.jxy1vz.cluedo.database.model.PlayerDBmodel
 import neptun.jxy1vz.cluedo.databinding.FragmentMultiplayerCharacterSelectorBinding
 import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
@@ -95,13 +100,20 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
             return
         }
 
-        val mysteryCardIntent = Intent(context, MysteryCardActivity::class.java)
-        mysteryCardIntent.putExtra(
-            context!!.resources.getString(R.string.player_id),
-            vm().playerId
-        )
-        mysteryCardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context!!.startActivity(mysteryCardIntent)
+        lifecycleScope.launch(Dispatchers.IO) {
+            vm().getReadyPlayers().map { playerDomainModel -> PlayerDBmodel(0, playerDomainModel.playerName, playerDomainModel.playerId, playerDomainModel.selectedCharacter) }.forEach {
+                CluedoDatabase.getInstance(context!!).playerDao().insertIntoTable(it)
+            }
+            withContext(Dispatchers.Main) {
+                val mysteryCardIntent = Intent(context, MysteryCardActivity::class.java)
+                mysteryCardIntent.putExtra(
+                    context!!.resources.getString(R.string.player_id),
+                    vm().playerId
+                )
+                mysteryCardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context!!.startActivity(mysteryCardIntent)
+            }
+        }
     }
 
     override fun onChannelRemoved() {

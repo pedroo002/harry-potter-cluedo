@@ -87,4 +87,10 @@ interface CluedoApi {
 
     @POST("/player-arrives")
     suspend fun notifyPlayerArrives(@Query("channel_name") channelName: String, @Query("player_name") playerName: String)
+
+    @POST("/mystery-pairs")
+    suspend fun sendMysteryCardPairs(@Query("channel_name") channelName: String, @Body body: RequestBody)
+
+    @POST("/ready-to-game")
+    suspend fun readyToLoadMap(@Query("channel_name") channelName: String)
 }
