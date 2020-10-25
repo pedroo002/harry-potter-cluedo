@@ -154,6 +154,8 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
         val item = playerList.find { player -> player.playerName == playerName }!!
         val payloads: MutableList<Int> = ArrayList()
         payloads.add(color)
-        notifyItemRangeChanged(playerList.indexOf(item), 1, payloads)
+        GlobalScope.launch(Dispatchers.Main) {
+            notifyItemRangeChanged(playerList.indexOf(item), 1, payloads)
+        }
     }
 }
