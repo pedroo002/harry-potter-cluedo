@@ -100,6 +100,8 @@ class MysteryCardViewModel(
                                     eventName: String?,
                                     message: String?
                                 ) {
+                                    debugPrint(message!!)
+
                                     val messageJson =
                                         retrofit!!.moshi.adapter(MysteryCardsMessage::class.java)
                                             .fromJson(message!!)!!
@@ -181,6 +183,8 @@ class MysteryCardViewModel(
                         retrofit!!.moshi.adapter(MysteryCardsMessage::class.java).toJson(queryPairs)
                     val body =
                         moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+                    debugPrint(body.toString())
 
                     retrofit!!.cluedo.sendMysteryCardPairs(pusherChannel!!, body)
                     debugPrint(pusherChannel!!)
