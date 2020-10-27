@@ -58,7 +58,7 @@ class MysteryCardViewModel(
     private val gameMode =
         gamePref.getString(context.resources.getString(R.string.play_mode_key), gameModeList[0])
 
-    private val db = CluedoDatabase.getInstance(context)
+    private lateinit var db: CluedoDatabase
 
     private lateinit var playerList: List<Player>
 
@@ -69,6 +69,12 @@ class MysteryCardViewModel(
     init {
         bind.btnGo.isEnabled = false
         GlobalScope.launch(Dispatchers.IO) {
+            db = CluedoDatabase.getInstance(context)
+
+            db.playerDao().getPlayers()?.forEach {
+                println("${it.playerId}: ${it.playerName}")
+            }
+
             playerList = when (gameMode) {
                 gameModeList[0] -> gameModel.loadPlayers()
                 else -> db.playerDao().getPlayers()?.map { dbModel ->

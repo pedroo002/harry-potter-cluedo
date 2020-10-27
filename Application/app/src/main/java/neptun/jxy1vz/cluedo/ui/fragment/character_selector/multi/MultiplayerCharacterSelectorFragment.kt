@@ -101,8 +101,11 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
         }
 
         lifecycleScope.launch(Dispatchers.IO) {
+            val db = CluedoDatabase.getInstance(context!!)
+            db.playerDao().deletePlayers()
+
             vm().getReadyPlayers().map { playerDomainModel -> PlayerDBmodel(0, playerDomainModel.playerName, playerDomainModel.playerId, playerDomainModel.selectedCharacter) }.forEach {
-                CluedoDatabase.getInstance(context!!).playerDao().insertIntoTable(it)
+                db.playerDao().insertIntoTable(it)
             }
             withContext(Dispatchers.Main) {
                 val mysteryCardIntent = Intent(context, MysteryCardActivity::class.java)
