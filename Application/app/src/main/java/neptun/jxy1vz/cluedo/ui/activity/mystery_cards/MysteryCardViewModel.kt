@@ -21,7 +21,6 @@ import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.message.mystery_card.MysteryCardMessageBody
@@ -33,7 +32,6 @@ import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import kotlin.concurrent.thread
 
 class MysteryCardViewModel(
     private val gameModel: GameModels,
@@ -100,8 +98,6 @@ class MysteryCardViewModel(
                                     eventName: String?,
                                     message: String?
                                 ) {
-                                    debugPrint(message!!)
-
                                     val messageJson =
                                         retrofit!!.moshi.adapter(MysteryCardsMessage::class.java)
                                             .fromJson(message!!)!!
@@ -184,10 +180,7 @@ class MysteryCardViewModel(
                     val body =
                         moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
-                    debugPrint(body.toString())
-
                     retrofit!!.cluedo.sendMysteryCardPairs(pusherChannel!!, body)
-                    debugPrint(pusherChannel!!)
 
                     withContext(Dispatchers.Main) {
                         loadMysteryCards(cards)

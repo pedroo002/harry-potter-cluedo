@@ -68,7 +68,6 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
         cancellation = true
         if (host) {
             try {
-                debugPrint("Delete channel: Multiplayerblablabla")
                 retrofit.cluedo.notifyChannelRemovedAfterJoin(vm().channelName)
                 retrofit.cluedo.deleteChannel(vm().channelId)
             }
