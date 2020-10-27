@@ -62,6 +62,7 @@ class MysteryCardViewModel(
 
     private lateinit var playerList: List<Player>
 
+    private var retrofit: RetrofitInstance? = null
     private var pusherChannel: String? = null
     private var playersToWait: Int? = null
 
@@ -74,10 +75,40 @@ class MysteryCardViewModel(
                     gameModel.loadPlayers().find { player -> player.id == dbModel.playerId }!!
                 }!!
             }
-            withContext(Dispatchers.Main) {
-                player = playerList.find { p -> p.id == playerId }!!
-                handOutCardsToPlayers()
+
+            player = playerList.find { p -> p.id == playerId }!!
+
+            if (gameMode == gameModeList[1]) {
+                retrofit = RetrofitInstance.getInstance(context)
+                val channelId =
+                    playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
+                pusherChannel = "presence-${retrofit!!.cluedo.getChannel(channelId)!!.channelName}"
+
+                withContext(Dispatchers.Main) {
+                    if (!playerPref.getBoolean(context.resources.getString(R.string.is_host_key), false)) {
+                        PusherInstance.getInstance().getPresenceChannel(pusherChannel)
+                            .bind("mystery-card-pairs", object : PresenceChannelEventListener {
+                                override fun onEvent(
+                                    channelName: String?,
+                                    eventName: String?,
+                                    message: String?
+                                ) {
+                                    val messageJson =
+                                        retrofit!!.moshi.adapter(MysteryCardsMessage::class.java)
+                                            .fromJson(message!!)!!
+                                    convertJsonToPairsAndLoadMysteryCards(messageJson)
+                                }
+
+                                override fun onSubscriptionSucceeded(p0: String?) {}
+                                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                                override fun userSubscribed(p0: String?, p1: User?) {}
+                                override fun userUnsubscribed(p0: String?, p1: User?) {}
+                            })
+                    }
+                }
             }
+            handOutCardsToPlayers()
         }
     }
 
@@ -127,12 +158,6 @@ class MysteryCardViewModel(
                 }
             }
             else -> {
-                val retrofit = RetrofitInstance.getInstance(context)
-                val channelId =
-                    playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
-                val channelName = "presence-${retrofit.cluedo.getChannel(channelId)!!.channelName}"
-                pusherChannel = channelName
-
                 if (playerPref.getBoolean(
                         context.resources.getString(R.string.is_host_key),
                         false
@@ -146,12 +171,12 @@ class MysteryCardViewModel(
                         )
                     })
                     val moshiJson =
-                        retrofit.moshi.adapter(MysteryCardsMessage::class.java).toJson(queryPairs)
+                        retrofit!!.moshi.adapter(MysteryCardsMessage::class.java).toJson(queryPairs)
                     val body =
                         moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
-                    retrofit.cluedo.sendMysteryCardPairs(channelName, body)
-                    debugPrint(channelName)
+                    retrofit!!.cluedo.sendMysteryCardPairs(pusherChannel!!, body)
+                    debugPrint(pusherChannel!!)
 
                     loadMysteryCards(cards)
 
@@ -159,26 +184,6 @@ class MysteryCardViewModel(
                     cards.forEach {
                         println("${it.second} --> ${it.first}")
                     }
-                } else {
-                    PusherInstance.getInstance().getPresenceChannel(channelName)
-                        .bind("mystery-card-pairs", object : PresenceChannelEventListener {
-                            override fun onEvent(
-                                channelName: String?,
-                                eventName: String?,
-                                message: String?
-                            ) {
-                                val messageJson =
-                                    retrofit.moshi.adapter(MysteryCardsMessage::class.java)
-                                        .fromJson(message!!)!!
-                                convertJsonToPairsAndLoadMysteryCards(messageJson)
-                            }
-
-                            override fun onSubscriptionSucceeded(p0: String?) {}
-                            override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-                            override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                            override fun userSubscribed(p0: String?, p1: User?) {}
-                            override fun userUnsubscribed(p0: String?, p1: User?) {}
-                        })
                 }
             }
         }
