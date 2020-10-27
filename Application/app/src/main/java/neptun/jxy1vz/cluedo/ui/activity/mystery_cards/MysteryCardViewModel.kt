@@ -184,11 +184,13 @@ class MysteryCardViewModel(
                     retrofit!!.cluedo.sendMysteryCardPairs(pusherChannel!!, body)
                     debugPrint(pusherChannel!!)
 
-                    loadMysteryCards(cards)
+                    withContext(Dispatchers.Main) {
+                        loadMysteryCards(cards)
 
-                    (cards as ArrayList).sortBy { card -> card.second }
-                    cards.forEach {
-                        println("${it.second} --> ${it.first}")
+                        (cards as ArrayList).sortBy { card -> card.second }
+                        cards.forEach {
+                            println("${it.second} --> ${it.first}")
+                        }
                     }
                 }
             }
