@@ -151,8 +151,14 @@ class MysteryCardViewModel(
                         moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
                     retrofit.cluedo.sendMysteryCardPairs(channelName, body)
+                    debugPrint(channelName)
 
                     loadMysteryCards(cards)
+
+                    (cards as ArrayList).sortBy { card -> card.second }
+                    cards.forEach {
+                        println("${it.second} --> ${it.first}")
+                    }
                 } else {
                     PusherInstance.getInstance().getPresenceChannel(channelName)
                         .bind("mystery-card-pairs", object : PresenceChannelEventListener {
