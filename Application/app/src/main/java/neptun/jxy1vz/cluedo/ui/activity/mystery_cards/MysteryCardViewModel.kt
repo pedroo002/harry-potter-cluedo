@@ -89,9 +89,13 @@ class MysteryCardViewModel(
                     playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
                 pusherChannel = "presence-${retrofit!!.cluedo.getChannel(channelId)!!.channelName}"
 
+                val pusher = PusherInstance.getInstance()
+
+                playersToWait = playerList.size
+
                 withContext(Dispatchers.Main) {
                     if (!playerPref.getBoolean(context.resources.getString(R.string.is_host_key), false)) {
-                        PusherInstance.getInstance().getPresenceChannel(pusherChannel)
+                        pusher.getPresenceChannel(pusherChannel)
                             .bind("mystery-card-pairs", object : PresenceChannelEventListener {
                                 override fun onEvent(
                                     channelName: String?,
@@ -111,6 +115,21 @@ class MysteryCardViewModel(
                                 override fun userUnsubscribed(p0: String?, p1: User?) {}
                             })
                     }
+
+                    pusher.getPresenceChannel(pusherChannel).bind("ready-to-game", object : PresenceChannelEventListener {
+                        override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                            playersToWait = playersToWait!! - 1
+                            if (playersToWait!! == 0) {
+                                makeMapIntent()
+                            }
+                        }
+
+                        override fun onSubscriptionSucceeded(p0: String?) {}
+                        override fun onAuthenticationFailure(p0: String?, p1: java.lang.Exception?) {}
+                        override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                        override fun userSubscribed(p0: String?, p1: User?) {}
+                        override fun userUnsubscribed(p0: String?, p1: User?) {}
+                    })
                 }
             }
             handOutCardsToPlayers()
@@ -123,24 +142,7 @@ class MysteryCardViewModel(
                 makeMapIntent()
             }
             gameModeList[1] -> {
-                playersToWait = playerList.size
                 GlobalScope.launch(Dispatchers.IO) {
-                    withContext(Dispatchers.Main) {
-                        PusherInstance.getInstance().getPresenceChannel(pusherChannel).bind("ready-to-game", object : PresenceChannelEventListener {
-                            override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                                playersToWait = playersToWait!! - 1
-                                if (playersToWait!! == 0) {
-                                    makeMapIntent()
-                                }
-                            }
-
-                            override fun onSubscriptionSucceeded(p0: String?) {}
-                            override fun onAuthenticationFailure(p0: String?, p1: java.lang.Exception?) {}
-                            override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                            override fun userSubscribed(p0: String?, p1: User?) {}
-                            override fun userUnsubscribed(p0: String?, p1: User?) {}
-                        })
-                    }
                     RetrofitInstance.getInstance(context).cluedo.readyToLoadMap(pusherChannel!!)
                 }
             }
@@ -184,11 +186,6 @@ class MysteryCardViewModel(
 
                     withContext(Dispatchers.Main) {
                         loadMysteryCards(cards)
-
-                        (cards as ArrayList).sortBy { card -> card.second }
-                        cards.forEach {
-                            println("${it.second} --> ${it.first}")
-                        }
                     }
                 }
             }
@@ -199,10 +196,6 @@ class MysteryCardViewModel(
         GlobalScope.launch(Dispatchers.IO) {
             val cards: ArrayList<Pair<MysteryCard, Int>> = ArrayList()
 
-            message.message.pairs.forEach {
-                println(it.cardName)
-            }
-
             cards.addAll(message.message.pairs.map { pair ->
                 Pair(
                     db.cardDao().getCardByName(pair.cardName)?.toDomainModel() as MysteryCard,
@@ -211,10 +204,6 @@ class MysteryCardViewModel(
             })
             withContext(Dispatchers.Main) {
                 loadMysteryCards(cards)
-                cards.sortBy { card -> card.second }
-                cards.forEach {
-                    println("${it.second} --> ${it.first}")
-                }
             }
         }
     }
