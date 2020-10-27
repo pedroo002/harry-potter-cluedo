@@ -24,6 +24,7 @@ import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.cluedo.network.model.message.mystery_card.MysteryCardMessageBody
 import neptun.jxy1vz.cluedo.network.model.message.mystery_card.MysteryCardPlayerPair
 import neptun.jxy1vz.cluedo.network.model.message.mystery_card.MysteryCardsMessage
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
@@ -170,12 +171,12 @@ class MysteryCardViewModel(
                     )
                 ) {
                     val cards = gameModel.db.getMysteryCardsForPlayers(playerIds)
-                    val queryPairs = MysteryCardsMessage(cards.map { pair ->
+                    val queryPairs = MysteryCardsMessage(MysteryCardMessageBody(cards.map { pair ->
                         MysteryCardPlayerPair(
                             pair.first.name,
                             pair.second
                         )
-                    })
+                    }))
                     val moshiJson =
                         retrofit!!.moshi.adapter(MysteryCardsMessage::class.java).toJson(queryPairs)
                     val body =
@@ -200,7 +201,7 @@ class MysteryCardViewModel(
     private fun convertJsonToPairsAndLoadMysteryCards(message: MysteryCardsMessage) {
         GlobalScope.launch(Dispatchers.IO) {
             val cards: ArrayList<Pair<MysteryCard, Int>> = ArrayList()
-            cards.addAll(message.message.map { pair ->
+            cards.addAll(message.message.pairs.map { pair ->
                 Pair(
                     db.cardDao().getCardByName(pair.cardName)?.toDomainModel() as MysteryCard,
                     pair.ownerPlayerId
