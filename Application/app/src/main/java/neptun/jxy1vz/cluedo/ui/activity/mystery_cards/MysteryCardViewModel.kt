@@ -205,6 +205,11 @@ class MysteryCardViewModel(
     private fun convertJsonToPairsAndLoadMysteryCards(message: MysteryCardsMessage) {
         GlobalScope.launch(Dispatchers.IO) {
             val cards: ArrayList<Pair<MysteryCard, Int>> = ArrayList()
+
+            message.message.pairs.forEach {
+                println(it.cardName)
+            }
+
             cards.addAll(message.message.pairs.map { pair ->
                 Pair(
                     db.cardDao().getCardByName(pair.cardName)?.toDomainModel() as MysteryCard,
