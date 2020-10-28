@@ -13,6 +13,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCreateChannelBinding
 import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
+import neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuListener
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi.MultiplayerCharacterSelectorFragment
@@ -25,6 +26,7 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
     }
 
     private lateinit var fragmentCreateChannelBinding : FragmentCreateChannelBinding
+    private lateinit var parentActivity: MenuActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +34,7 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
         savedInstanceState: Bundle?
     ): View? {
         fragmentCreateChannelBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_channel, container, false)
+        parentActivity = activity!! as MenuActivity
 
         fragmentCreateChannelBinding.createChannelViewModel = CreateChannelViewModel(fragmentCreateChannelBinding, context!!, lifecycleScope,  this)
         return fragmentCreateChannelBinding.root
@@ -39,7 +42,7 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
     override fun onFinish() {
         lifecycleScope.launch(Dispatchers.Main) {
-            activity!!.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment(true,
+            parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment(true,
                 isLate = false,
                 listener = this@CreateChannelFragment
             ), MultiplayerCharacterSelectorFragment.TAG).addToBackStack(MultiplayerCharacterSelectorFragment.TAG).commit()
@@ -49,7 +52,7 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
     }
 
     override fun onFragmentClose() {
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        parentActivity.supportFragmentManager.beginTransaction().remove(this).commit()
     }
 
     suspend fun onBackPressed() {

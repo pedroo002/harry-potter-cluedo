@@ -22,6 +22,7 @@ import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.channel.JoinRequest
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
+import neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuListener
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi.MultiplayerCharacterSelectorFragment
@@ -34,6 +35,8 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
     companion object {
         const val TAG = "FRAGMENT-join"
     }
+
+    private lateinit var parentActivity: MenuActivity
 
     private lateinit var fragmentJoinChannelBinding: FragmentJoinChannelBinding
     private lateinit var pusher: Pusher
@@ -50,6 +53,8 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
     ): View? {
         fragmentJoinChannelBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_join_channel, container, false)
+
+        parentActivity = activity!! as MenuActivity
 
         retrofit = RetrofitInstance.getInstance(context!!)
         pusher = PusherInstance.getInstance()
@@ -138,13 +143,13 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
     fun openCharacterSelector(isLate: Boolean = false) {
         lifecycleScope.launch(Dispatchers.Main) {
-            activity!!.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment(false, isLate, this@JoinChannelFragment), MultiplayerCharacterSelectorFragment.TAG).addToBackStack("CharacterSelectorMulti").commit()
+            parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment(false, isLate, this@JoinChannelFragment), MultiplayerCharacterSelectorFragment.TAG).addToBackStack("CharacterSelectorMulti").commit()
             onFragmentClose()
         }
     }
 
     override fun onFragmentClose() {
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        parentActivity.supportFragmentManager.beginTransaction().remove(this).commit()
     }
 
     suspend fun onBackPressed() {
