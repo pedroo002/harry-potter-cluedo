@@ -51,6 +51,7 @@ class MultiplayerCharacterSelectorViewModel(
     lateinit var channelName: String
     private var isReady = false
 
+    private val playersWhoSelected = ArrayList<String>()
     private val readyPlayers = ArrayList<PlayerDomainModel>()
 
     init {
@@ -94,6 +95,13 @@ class MultiplayerCharacterSelectorViewModel(
                         .bind("character-selected", object : PresenceChannelEventListener {
                             override fun onEvent(channelName: String?, eventName: String?, message: String?) {
                                 val messageJson = retrofit.moshi.adapter(CharacterSelectionMessage::class.java).fromJson(message!!)!!
+
+                                if (!playersWhoSelected.contains(messageJson.message.playerName))
+                                    playersWhoSelected.add(messageJson.message.playerName)
+
+                                if (playersWhoSelected.size == playerCount)
+                                    enableButton()
+
                                 if (messageJson.message.playerName == playerName)
                                     return
                                 triggerUpdate(messageJson)
@@ -203,8 +211,6 @@ class MultiplayerCharacterSelectorViewModel(
     }
 
     override fun onSelect(playerName: String, characterName: String, tokenSource: Int) {
-        bind.multiCharacterSelectorRoot.btnReady.isEnabled = true
-
         lifecycle.launch(Dispatchers.IO) {
             retrofit.cluedo.notifyCharacterSelected(channelName, playerName, characterName, tokenSource)
         }
@@ -218,6 +224,12 @@ class MultiplayerCharacterSelectorViewModel(
                 if(isReady)
                     retrofit.cluedo.notifyCharacterSubmit(channelName, playerName)
             }
+        }
+    }
+
+    private fun enableButton() {
+        lifecycle.launch(Dispatchers.Main) {
+            bind.btnReady.isEnabled = true
         }
     }
 }
