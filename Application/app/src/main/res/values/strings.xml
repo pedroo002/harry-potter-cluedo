@@ -222,9 +222,9 @@
         <item>Altatóital</item>
         <item>Mandragóra</item>
         <item>Impedimenta Obstructo</item>
-        <item>Petrificus Totalus</item>
+        <item>Petrificus Totalus (rejtély)</item>
         <item>Volt-nincs szekrény</item>
-        <item>Zsupszkulcs</item>
+        <item>Zsupszkulcs (rejtély)</item>
     </string-array>
 
     <string-array name="suspects">
@@ -245,7 +245,7 @@
         <item>Láthatatlanná tévő köpeny</item>
         <item>Mandragórás gyógyszirup</item>
         <item>Tekergők térképe</item>
-        <item>Zsupszkulcs</item>
+        <item>Zsupszkulcs (mentő)</item>
         <item>Felix Felicis</item>
         <item>Albus Dumbledore</item>
         <item>Dobby</item>
@@ -258,7 +258,7 @@
         <item>Capitulatus</item>
         <item>Immobilus</item>
         <item>Lumos</item>
-        <item>Petrificus Totalus</item>
+        <item>Petrificus Totalus (mentő)</item>
         <item>Protego</item>
         <item>Commikulissimus</item>
         <item>Stupor</item>

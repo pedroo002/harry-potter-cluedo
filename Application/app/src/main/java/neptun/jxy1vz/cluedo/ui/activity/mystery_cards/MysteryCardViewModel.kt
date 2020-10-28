@@ -21,9 +21,9 @@ import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.cluedo.network.model.message.mystery_card.MysteryCardMessageBody
 import neptun.jxy1vz.cluedo.network.model.message.mystery_card.MysteryCardPlayerPair
 import neptun.jxy1vz.cluedo.network.model.message.mystery_card.MysteryCardsMessage
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
@@ -32,7 +32,6 @@ import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import kotlin.concurrent.thread
 
 class MysteryCardViewModel(
     private val gameModel: GameModels,
@@ -58,26 +57,82 @@ class MysteryCardViewModel(
     private val gameMode =
         gamePref.getString(context.resources.getString(R.string.play_mode_key), gameModeList[0])
 
-    private val db = CluedoDatabase.getInstance(context)
+    private lateinit var db: CluedoDatabase
 
     private lateinit var playerList: List<Player>
 
+    private var retrofit: RetrofitInstance? = null
     private var pusherChannel: String? = null
     private var playersToWait: Int? = null
 
     init {
         bind.btnGo.isEnabled = false
         GlobalScope.launch(Dispatchers.IO) {
+            db = CluedoDatabase.getInstance(context)
+
+            db.playerDao().getPlayers()?.forEach {
+                println("${it.playerId}: ${it.playerName}")
+            }
+
             playerList = when (gameMode) {
                 gameModeList[0] -> gameModel.loadPlayers()
                 else -> db.playerDao().getPlayers()?.map { dbModel ->
                     gameModel.loadPlayers().find { player -> player.id == dbModel.playerId }!!
                 }!!
             }
-            withContext(Dispatchers.Main) {
-                player = playerList.find { p -> p.id == playerId }!!
-                handOutCardsToPlayers()
+
+            player = playerList.find { p -> p.id == playerId }!!
+
+            if (gameMode == gameModeList[1]) {
+                retrofit = RetrofitInstance.getInstance(context)
+                val channelId =
+                    playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
+                pusherChannel = "presence-${retrofit!!.cluedo.getChannel(channelId)!!.channelName}"
+
+                val pusher = PusherInstance.getInstance()
+
+                playersToWait = playerList.size
+
+                withContext(Dispatchers.Main) {
+                    if (!playerPref.getBoolean(context.resources.getString(R.string.is_host_key), false)) {
+                        pusher.getPresenceChannel(pusherChannel)
+                            .bind("mystery-card-pairs", object : PresenceChannelEventListener {
+                                override fun onEvent(
+                                    channelName: String?,
+                                    eventName: String?,
+                                    message: String?
+                                ) {
+                                    val messageJson =
+                                        retrofit!!.moshi.adapter(MysteryCardsMessage::class.java)
+                                            .fromJson(message!!)!!
+                                    convertJsonToPairsAndLoadMysteryCards(messageJson)
+                                }
+
+                                override fun onSubscriptionSucceeded(p0: String?) {}
+                                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                                override fun userSubscribed(p0: String?, p1: User?) {}
+                                override fun userUnsubscribed(p0: String?, p1: User?) {}
+                            })
+                    }
+
+                    pusher.getPresenceChannel(pusherChannel).bind("ready-to-game", object : PresenceChannelEventListener {
+                        override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                            playersToWait = playersToWait!! - 1
+                            if (playersToWait!! == 0) {
+                                makeMapIntent()
+                            }
+                        }
+
+                        override fun onSubscriptionSucceeded(p0: String?) {}
+                        override fun onAuthenticationFailure(p0: String?, p1: java.lang.Exception?) {}
+                        override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                        override fun userSubscribed(p0: String?, p1: User?) {}
+                        override fun userUnsubscribed(p0: String?, p1: User?) {}
+                    })
+                }
             }
+            handOutCardsToPlayers()
         }
     }
 
@@ -87,24 +142,7 @@ class MysteryCardViewModel(
                 makeMapIntent()
             }
             gameModeList[1] -> {
-                playersToWait = playerList.size
                 GlobalScope.launch(Dispatchers.IO) {
-                    withContext(Dispatchers.Main) {
-                        PusherInstance.getInstance().getPresenceChannel(pusherChannel).bind("ready-to-game", object : PresenceChannelEventListener {
-                            override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                                playersToWait = playersToWait!! - 1
-                                if (playersToWait!! == 0) {
-                                    makeMapIntent()
-                                }
-                            }
-
-                            override fun onSubscriptionSucceeded(p0: String?) {}
-                            override fun onAuthenticationFailure(p0: String?, p1: java.lang.Exception?) {}
-                            override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                            override fun userSubscribed(p0: String?, p1: User?) {}
-                            override fun userUnsubscribed(p0: String?, p1: User?) {}
-                        })
-                    }
                     RetrofitInstance.getInstance(context).cluedo.readyToLoadMap(pusherChannel!!)
                 }
             }
@@ -127,58 +165,28 @@ class MysteryCardViewModel(
                 }
             }
             else -> {
-                val retrofit = RetrofitInstance.getInstance(context)
-                val channelId =
-                    playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
-                val channelName = "presence-${retrofit.cluedo.getChannel(channelId)!!.channelName}"
-                pusherChannel = channelName
-
                 if (playerPref.getBoolean(
                         context.resources.getString(R.string.is_host_key),
                         false
                     )
                 ) {
                     val cards = gameModel.db.getMysteryCardsForPlayers(playerIds)
-                    val queryPairs = MysteryCardsMessage(cards.map { pair ->
+                    val queryPairs = MysteryCardsMessage(MysteryCardMessageBody(cards.map { pair ->
                         MysteryCardPlayerPair(
                             pair.first.name,
                             pair.second
                         )
-                    })
+                    }))
                     val moshiJson =
-                        retrofit.moshi.adapter(MysteryCardsMessage::class.java).toJson(queryPairs)
+                        retrofit!!.moshi.adapter(MysteryCardsMessage::class.java).toJson(queryPairs)
                     val body =
                         moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
-                    retrofit.cluedo.sendMysteryCardPairs(channelName, body)
-                    debugPrint(channelName)
+                    retrofit!!.cluedo.sendMysteryCardPairs(pusherChannel!!, body)
 
-                    loadMysteryCards(cards)
-
-                    (cards as ArrayList).sortBy { card -> card.second }
-                    cards.forEach {
-                        println("${it.second} --> ${it.first}")
+                    withContext(Dispatchers.Main) {
+                        loadMysteryCards(cards)
                     }
-                } else {
-                    PusherInstance.getInstance().getPresenceChannel(channelName)
-                        .bind("mystery-card-pairs", object : PresenceChannelEventListener {
-                            override fun onEvent(
-                                channelName: String?,
-                                eventName: String?,
-                                message: String?
-                            ) {
-                                val messageJson =
-                                    retrofit.moshi.adapter(MysteryCardsMessage::class.java)
-                                        .fromJson(message!!)!!
-                                convertJsonToPairsAndLoadMysteryCards(messageJson)
-                            }
-
-                            override fun onSubscriptionSucceeded(p0: String?) {}
-                            override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-                            override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                            override fun userSubscribed(p0: String?, p1: User?) {}
-                            override fun userUnsubscribed(p0: String?, p1: User?) {}
-                        })
                 }
             }
         }
@@ -187,7 +195,8 @@ class MysteryCardViewModel(
     private fun convertJsonToPairsAndLoadMysteryCards(message: MysteryCardsMessage) {
         GlobalScope.launch(Dispatchers.IO) {
             val cards: ArrayList<Pair<MysteryCard, Int>> = ArrayList()
-            cards.addAll(message.message.map { pair ->
+
+            cards.addAll(message.message.pairs.map { pair ->
                 Pair(
                     db.cardDao().getCardByName(pair.cardName)?.toDomainModel() as MysteryCard,
                     pair.ownerPlayerId
@@ -195,10 +204,6 @@ class MysteryCardViewModel(
             })
             withContext(Dispatchers.Main) {
                 loadMysteryCards(cards)
-                cards.sortBy { card -> card.second }
-                cards.forEach {
-                    println("${it.second} --> ${it.first}")
-                }
             }
         }
     }

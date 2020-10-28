@@ -5,8 +5,13 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class MysteryCardsMessage(
-    @Json(name = "mystery_pairs")
-    val message: List<MysteryCardPlayerPair>
+    @Json(name = "message")
+    val message: MysteryCardMessageBody
+)
+
+@JsonClass(generateAdapter = true)
+data class MysteryCardMessageBody(
+    val pairs: List<MysteryCardPlayerPair>
 )
 
 @JsonClass(generateAdapter = true)
