@@ -89,13 +89,8 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
     }
 
     override fun onFinish() {
-        parentActivity.supportFragmentManager.beginTransaction()
-            .remove(this@MultiplayerCharacterSelectorFragment).commit()
-        listener.onFragmentClose()
-
         if (cancellation) {
-            for (i in 1..parentActivity.supportFragmentManager.backStackEntryCount)
-                parentActivity.supportFragmentManager.popBackStack()
+            popFragments()
             return
         }
 
@@ -114,6 +109,8 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
                 )
                 mysteryCardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 context!!.startActivity(mysteryCardIntent)
+
+                popFragments()
             }
         }
     }
@@ -128,4 +125,10 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
     }
 
     private fun vm(): MultiplayerCharacterSelectorViewModel = fragmentMultiplayerCharacterSelectorBinding.characterSelectorViewModel!!
+
+    private fun popFragments() {
+        for (i in 1..parentActivity.supportFragmentManager.backStackEntryCount)
+            parentActivity.supportFragmentManager.popBackStack()
+        listener.onFragmentClose()
+    }
 }

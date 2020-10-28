@@ -138,7 +138,7 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
     fun openCharacterSelector(isLate: Boolean = false) {
         lifecycleScope.launch(Dispatchers.Main) {
-            activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, MultiplayerCharacterSelectorFragment(false, isLate, this@JoinChannelFragment), MultiplayerCharacterSelectorFragment.TAG).addToBackStack("CharacterSelectorMulti").commit()
+            activity!!.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment(false, isLate, this@JoinChannelFragment), MultiplayerCharacterSelectorFragment.TAG).addToBackStack("CharacterSelectorMulti").commit()
             onFragmentClose()
         }
     }
@@ -157,7 +157,10 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
             if (ex.code() == 404)
                 debugPrint("Channel $channelId does not exist any more.")
         }
-        pusher.unsubscribe(pusherChannelName)
-        pusher.disconnect()
+        finally {
+            pusher.unsubscribe(pusherChannelName)
+            pusher.disconnect()
+            onFragmentClose()
+        }
     }
 }

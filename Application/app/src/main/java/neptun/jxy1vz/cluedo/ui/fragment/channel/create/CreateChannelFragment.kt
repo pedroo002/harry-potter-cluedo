@@ -39,7 +39,7 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
     override fun onFinish() {
         lifecycleScope.launch(Dispatchers.Main) {
-            activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, MultiplayerCharacterSelectorFragment(true,
+            activity!!.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment(true,
                 isLate = false,
                 listener = this@CreateChannelFragment
             ), MultiplayerCharacterSelectorFragment.TAG).addToBackStack(MultiplayerCharacterSelectorFragment.TAG).commit()
@@ -55,14 +55,19 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
     suspend fun onBackPressed() {
         if (vm().channelCreated()) {
             try {
+                PusherInstance.getInstance().apply {
+                    unsubscribe(vm().getChannel())
+                    disconnect()
+                }
                 vm().deleteCreatedChannel()
-                PusherInstance.getInstance().unsubscribe(vm().getChannel())
-                PusherInstance.getInstance().disconnect()
             }
             catch (ex: HttpException) {
                 if (ex.code() == 404) {
                     debugPrint("Delete channel: 404")
                 }
+            }
+            finally {
+                onFragmentClose()
             }
         }
     }

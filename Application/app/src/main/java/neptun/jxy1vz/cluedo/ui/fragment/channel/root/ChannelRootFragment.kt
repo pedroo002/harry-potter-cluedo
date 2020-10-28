@@ -33,7 +33,7 @@ class ChannelRootFragment(private val listener: MenuListener) : Fragment(), View
             "create" -> CreateChannelFragment()
             else -> JoinChannelFragment()
         }
-        activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, fragment, "FRAGMENT-$action").addToBackStack("FRAGMENT-$action").commit()
+        activity!!.supportFragmentManager.beginTransaction().add(R.id.menuFrame, fragment, "FRAGMENT-$action").addToBackStack("FRAGMENT-$action").commit()
         listener.onFragmentClose()
     }
 }
