@@ -93,4 +93,7 @@ interface CluedoApi {
 
     @POST("/ready-to-game")
     suspend fun readyToLoadMap(@Query("channel_name") channelName: String, @Query("player_name") playerName: String)
+
+    @POST("/fetch-cards")
+    suspend fun sendCardRequestToHost(@Query("channel_name") channelName: String)
 }
