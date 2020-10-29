@@ -268,7 +268,7 @@ class MapViewModel(
 
     fun onBackPressed() {
         val fragment = OnBackPressedFragment(dialogHandler)
-        insertFragment(fragment)
+        insertFragment(fragment, true)
     }
 
     private fun subscribeToEvents() {
