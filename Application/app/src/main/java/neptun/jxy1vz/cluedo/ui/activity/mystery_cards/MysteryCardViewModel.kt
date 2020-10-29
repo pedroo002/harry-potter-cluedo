@@ -19,11 +19,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.database.CluedoDatabase
+import neptun.jxy1vz.cluedo.database.model.CardDBmodel
 import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.cluedo.domain.util.debugPrint
+import neptun.jxy1vz.cluedo.domain.util.toDatabaseModel
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.message.mystery_card.MysteryCardMessageBody
@@ -77,7 +79,8 @@ class MysteryCardViewModel(
 
     init {
         bind.btnGo.isEnabled = false
-        playerName = playerPref.getString(context.resources.getString(R.string.player_name_key), "")!!
+        playerName =
+            playerPref.getString(context.resources.getString(R.string.player_name_key), "")!!
         GlobalScope.launch(Dispatchers.IO) {
             db = CluedoDatabase.getInstance(context)
 
@@ -101,7 +104,11 @@ class MysteryCardViewModel(
                 playersToWait = playerList.size
 
                 withContext(Dispatchers.Main) {
-                    if (!playerPref.getBoolean(context.resources.getString(R.string.is_host_key), false)) {
+                    if (!playerPref.getBoolean(
+                            context.resources.getString(R.string.is_host_key),
+                            false
+                        )
+                    ) {
                         bind.refreshLayoutRoot.setOnRefreshListener {
                             sendRequest()
                         }
@@ -124,49 +131,86 @@ class MysteryCardViewModel(
 
                                 override fun onSubscriptionSucceeded(p0: String?) {}
                                 override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-                                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                                override fun onUsersInformationReceived(
+                                    p0: String?,
+                                    p1: MutableSet<User>?
+                                ) {
+                                }
+
                                 override fun userSubscribed(p0: String?, p1: User?) {}
                                 override fun userUnsubscribed(p0: String?, p1: User?) {}
                             })
-                    }
-                    else {
+                    } else {
                         bind.refreshLayoutRoot.isEnabled = false
 
-                        pusher.getPresenceChannel(pusherChannel).bind("fetch-cards", object : PresenceChannelEventListener {
-                            override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                                sendPairsToClients()
-                            }
+                        pusher.getPresenceChannel(pusherChannel)
+                            .bind("fetch-cards", object : PresenceChannelEventListener {
+                                override fun onEvent(
+                                    channelName: String?,
+                                    eventName: String?,
+                                    message: String?
+                                ) {
+                                    sendPairsToClients()
+                                }
 
-                            override fun onSubscriptionSucceeded(p0: String?) {}
-                            override fun onAuthenticationFailure(p0: String?, p1: java.lang.Exception?) {}
-                            override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                            override fun userSubscribed(p0: String?, p1: User?) {}
-                            override fun userUnsubscribed(p0: String?, p1: User?) {}
-                        })
+                                override fun onSubscriptionSucceeded(p0: String?) {}
+                                override fun onAuthenticationFailure(
+                                    p0: String?,
+                                    p1: java.lang.Exception?
+                                ) {
+                                }
+
+                                override fun onUsersInformationReceived(
+                                    p0: String?,
+                                    p1: MutableSet<User>?
+                                ) {
+                                }
+
+                                override fun userSubscribed(p0: String?, p1: User?) {}
+                                override fun userUnsubscribed(p0: String?, p1: User?) {}
+                            })
 
                         handOutCardsToPlayers()
                     }
 
-                    pusher.getPresenceChannel(pusherChannel).bind("ready-to-game", object : PresenceChannelEventListener {
-                        override fun onEvent(channelName: String?, eventName: String?, playerName: String?) {
-                            if (playerName != this@MysteryCardViewModel.playerName)
-                                Snackbar.make(bind.cardImages, "$playerName készen áll!", Snackbar.LENGTH_LONG).show()
+                    pusher.getPresenceChannel(pusherChannel)
+                        .bind("ready-to-game", object : PresenceChannelEventListener {
+                            override fun onEvent(
+                                channelName: String?,
+                                eventName: String?,
+                                playerName: String?
+                            ) {
+                                if (playerName != this@MysteryCardViewModel.playerName)
+                                    Snackbar.make(
+                                        bind.cardImages,
+                                        "$playerName készen áll!",
+                                        Snackbar.LENGTH_LONG
+                                    ).show()
 
-                            playersToWait = playersToWait!! - 1
-                            if (playersToWait!! == 0) {
-                                makeMapIntent()
+                                playersToWait = playersToWait!! - 1
+                                if (playersToWait!! == 0) {
+                                    makeMapIntent()
+                                }
                             }
-                        }
 
-                        override fun onSubscriptionSucceeded(p0: String?) {}
-                        override fun onAuthenticationFailure(p0: String?, p1: java.lang.Exception?) {}
-                        override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                        override fun userSubscribed(p0: String?, p1: User?) {}
-                        override fun userUnsubscribed(p0: String?, p1: User?) {}
-                    })
+                            override fun onSubscriptionSucceeded(p0: String?) {}
+                            override fun onAuthenticationFailure(
+                                p0: String?,
+                                p1: java.lang.Exception?
+                            ) {
+                            }
+
+                            override fun onUsersInformationReceived(
+                                p0: String?,
+                                p1: MutableSet<User>?
+                            ) {
+                            }
+
+                            override fun userSubscribed(p0: String?, p1: User?) {}
+                            override fun userUnsubscribed(p0: String?, p1: User?) {}
+                        })
                 }
-            }
-            else
+            } else
                 handOutCardsToPlayers()
         }
     }
@@ -187,7 +231,10 @@ class MysteryCardViewModel(
             }
             gameModeList[1] -> {
                 GlobalScope.launch(Dispatchers.IO) {
-                    RetrofitInstance.getInstance(context).cluedo.readyToLoadMap(pusherChannel!!, playerName)
+                    RetrofitInstance.getInstance(context).cluedo.readyToLoadMap(
+                        pusherChannel!!,
+                        playerName
+                    )
                 }
             }
         }
@@ -215,6 +262,7 @@ class MysteryCardViewModel(
                     )
                 ) {
                     val cards = gameModel.db.getMysteryCardsForPlayers(playerIds)
+
                     val queryPairs = MysteryCardsMessage(MysteryCardMessageBody(cards.map { pair ->
                         MysteryCardPlayerPair(
                             pair.first.name,
@@ -248,12 +296,28 @@ class MysteryCardViewModel(
         GlobalScope.launch(Dispatchers.IO) {
             val cards: ArrayList<Pair<MysteryCard, Int>> = ArrayList()
 
+            gameModel.db.resetCards()
+
             cards.addAll(message.message.pairs.map { pair ->
                 Pair(
                     db.cardDao().getCardByName(pair.cardName)?.toDomainModel() as MysteryCard,
                     pair.ownerPlayerId
                 )
             })
+
+            cards.map { card ->
+                CardDBmodel(
+                    card.first.id.toLong(),
+                    card.first.name,
+                    card.first.imageRes,
+                    card.first.verso,
+                    card.first.type.toDatabaseModel().toString(),
+                    card.second
+                )
+            }.forEach {
+                gameModel.db.updateCard(it)
+            }
+
             withContext(Dispatchers.Main) {
                 loadMysteryCards(cards)
             }

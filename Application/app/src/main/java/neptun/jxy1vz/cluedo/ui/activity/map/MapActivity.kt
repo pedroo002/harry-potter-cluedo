@@ -1,10 +1,14 @@
 package neptun.jxy1vz.cluedo.ui.activity.map
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil.setContentView
+import androidx.lifecycle.lifecycleScope
 import com.otaliastudios.zoom.ZoomLayout
+import com.pusher.client.channel.PresenceChannelEventListener
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -15,13 +19,25 @@ import neptun.jxy1vz.cluedo.databinding.ActivityMapBinding
 import neptun.jxy1vz.cluedo.domain.handler.MapActivityListener
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
+import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 
 class MapActivity : AppCompatActivity(), MapActivityListener {
 
     private lateinit var activityMapBinding: ActivityMapBinding
 
+    private lateinit var gamePref: SharedPreferences
+    private lateinit var playerPref: SharedPreferences
+    private lateinit var playMode: String
+    private lateinit var playModes: Array<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        gamePref = applicationContext.getSharedPreferences(applicationContext.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
+        playerPref = applicationContext.getSharedPreferences(applicationContext.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
+        playMode = gamePref.getString(applicationContext.resources.getString(R.string.play_mode_key), "")!!
+        playModes = applicationContext.resources.getStringArray(R.array.playmodes)
 
         activityMapBinding = setContentView(this, R.layout.activity_map)
         val mapRoot = findViewById<ZoomLayout>(R.id.mapRoot)
@@ -65,7 +81,32 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
     }
 
     override fun exitToMenu() {
+        if (playMode == playModes[1]) {
+            val channel = playerPref.getString(applicationContext.resources.getString(R.string.channel_id_key), "")
+            var pusherChannel: String
+            RetrofitInstance.getInstance(applicationContext).cluedo.apply {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    pusherChannel = "presence-${getChannel(channel!!)!!.channelName}"
+                    if (playerPref.getBoolean(applicationContext.resources.getString(R.string.is_host_key), false)) {
+                        RetrofitInstance.getInstance(applicationContext).cluedo.apply {
+                            deleteChannel(channel)
+                        }
+                    }
+                    PusherInstance.getInstance().apply {
+                        unsubscribe(pusherChannel)
+                        disconnect()
+                    }
+                    if (MapViewModel.isGameRunning)
+                        activityMapBinding.mapViewModel!!.quitDuringGame()
+                }
+            }
+        }
+
         finish()
+    }
+
+    override fun onBackPressed() {
+        activityMapBinding.mapViewModel!!.onBackPressed()
     }
 
     override fun onDestroy() {

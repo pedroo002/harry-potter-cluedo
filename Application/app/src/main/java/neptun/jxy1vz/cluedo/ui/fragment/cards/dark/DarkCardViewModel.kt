@@ -25,6 +25,7 @@ import neptun.jxy1vz.cluedo.domain.model.card.*
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.domain.model.helper.safeIcons
 import neptun.jxy1vz.cluedo.domain.model.helper.unsafeIcons
+import neptun.jxy1vz.cluedo.domain.util.removePlayer
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.cards.card_loss.CardLossFragment
 import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesFragment
@@ -195,22 +196,8 @@ class DarkCardViewModel(
                                                 MapViewModel.dialogHandler
                                             )
                                             MapViewModel.insertFragment(fragment, true)
-                                            val newPlayerList = ArrayList<Player>()
-                                            for (p in MapViewModel.gameModels.playerList) {
-                                                if (p.id != player.id)
-                                                    newPlayerList.add(p)
-                                            }
-                                            MapViewModel.gameModels.playerList = newPlayerList
-                                            val pair =
-                                                MapViewModel.playerHandler.getPairById(player.id)
-                                            MapViewModel.mapRoot.mapLayout.removeView(pair.second)
-                                            val newPlayerImagePairs =
-                                                ArrayList<Pair<Player, ImageView>>()
-                                            for (p in MapViewModel.playerImagePairs) {
-                                                if (p.first.id != player.id)
-                                                    newPlayerImagePairs.add(p)
-                                            }
-                                            MapViewModel.playerImagePairs = newPlayerImagePairs
+
+                                            removePlayer(player)
                                         }
                                     }
                                 }

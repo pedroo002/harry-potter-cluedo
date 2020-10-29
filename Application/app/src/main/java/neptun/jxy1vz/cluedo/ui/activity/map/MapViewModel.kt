@@ -9,6 +9,8 @@ import androidx.databinding.BaseObservable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.otaliastudios.zoom.ZoomLayout
+import com.pusher.client.channel.PresenceChannelEventListener
+import com.pusher.client.channel.User
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
@@ -16,18 +18,30 @@ import neptun.jxy1vz.cluedo.domain.handler.*
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
+import neptun.jxy1vz.cluedo.domain.util.removePlayer
+import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.cluedo.network.model.message.presence.PlayerPresenceMessage
+import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
+import neptun.jxy1vz.cluedo.ui.fragment.on_back_pressed.OnBackPressedFragment
+import java.lang.Exception
 import kotlin.math.abs
 
 class MapViewModel(
     gm: GameModels,
     listener: MapActivityListener,
-    context: Context,
+    private val context: Context,
     playerId: Int,
     pairs: List<Pair<Player, ImageView>>,
     root: ZoomLayout,
     fragmentManager: FragmentManager
 ) : BaseObservable() {
+
+    private val gamePref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
+    private val playerPref = context.getSharedPreferences(context.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
+    private val playMode = gamePref.getString(context.resources.getString(R.string.play_mode_key), "")
+    private val playModes = context.resources.getStringArray(R.array.playmodes)
+    private lateinit var channelName: String
 
     companion object {
         const val ROWS = 24
@@ -239,10 +253,120 @@ class MapViewModel(
                 val fragment = NoteFragment(player, dialogHandler)
                 insertFragment(fragment)
             }
+
+            if (playMode == playModes[1]) {
+                val channelId = playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
+                channelName = "presence-${RetrofitInstance.getInstance(context).cluedo.getChannel(channelId)!!.channelName}"
+                subscribeToEvents()
+            }
         }
     }
 
     fun showOptions(playerId: Int) {
         interactionHandler.showOptions(playerId)
+    }
+
+    fun onBackPressed() {
+        val fragment = OnBackPressedFragment(dialogHandler)
+        insertFragment(fragment)
+    }
+
+    private suspend fun subscribeToEvents() {
+        val channel = playerPref.getString(context.resources.getString(R.string.channel_id_key), "")
+        var pusherChannel: String
+        RetrofitInstance.getInstance(context).cluedo.apply {
+            pusherChannel = "presence-${getChannel(channel!!)!!.channelName}"
+        }
+        PusherInstance.getInstance().getPresenceChannel(pusherChannel).apply {
+            val retrofit = RetrofitInstance.getInstance(context)
+
+            bind("incrimination", object :
+                PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, character: String?) {
+
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+
+            bind("accusation", object :
+                PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, character: String?) {
+
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+
+            bind("incrimination", object :
+                PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, character: String?) {
+
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+
+            bind("player-moves", object :
+                PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, character: String?) {
+
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+
+            bind("card-drawing", object :
+                PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, character: String?) {
+
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+
+            bind("player-leaves", object :
+                PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
+                    val player = gameModels.playerList.find { p -> p.card.name == messageJson.message.playerName }!!
+                    cameraHandler.moveCameraToPlayer(player.id)
+                    removePlayer(player)
+                    //fragment
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+        }
+    }
+
+    suspend fun quitDuringGame() {
+        RetrofitInstance.getInstance(context).cluedo.apply {
+            notifyPlayerLeaves(channelName, player.card.name)
+        }
     }
 }

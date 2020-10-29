@@ -33,22 +33,6 @@ class UserDiesFragment(private val player: Player, private val listener: DialogD
     }
 
     override fun onFinish() {
-        val gameMode = context!!.getSharedPreferences(resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE).getString(resources.getString(R.string.play_mode_key), "")
-        if (gameMode == resources.getStringArray(R.array.playmodes)[1]) {
-            val playerData = context!!.getSharedPreferences(resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
-            val playerName = playerData.getString(resources.getString(R.string.player_name_key), "")
-            val channelId = playerData.getString(resources.getString(R.string.channel_id_key), "")
-
-            val retrofit = RetrofitInstance.getInstance(context!!)
-            lifecycleScope.launch(Dispatchers.IO) {
-                retrofit.cluedo.leaveChannel(channelId!!, playerName!!)
-                val channelName = retrofit.cluedo.getChannel(channelId)
-                val pusher = PusherInstance.getInstance()
-                pusher.unsubscribe("presence-$channelName")
-                pusher.disconnect()
-            }
-        }
-
         listener.onPlayerDiesDismiss(null)
         activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
     }

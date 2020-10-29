@@ -110,4 +110,11 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
             }
         }
     }
+
+    override fun onBackPressedDismiss(quit: Boolean) {
+        if (quit) {
+            activityListener.exitToMenu()
+            map.onDestroy()
+        }
+    }
 }

@@ -205,6 +205,8 @@
     <string name="existing_channels">Jelenlegi csatornák</string>
     <string name="channel_id_key">channel_id</string>
     <string name="is_host_key">is_host</string>
+    <string name="are_you_sure">Biztosan ki akarsz lépni a játékból?</string>
+    <string name="yes">Igen</string>
 
     <string-array name="rooms">
         <item>Bagolyház</item>
