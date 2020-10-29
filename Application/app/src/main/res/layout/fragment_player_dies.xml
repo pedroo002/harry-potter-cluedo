@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="playerDiesViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesViewModel" />
+            name="playerDiesOrViewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +23,7 @@
             android:textColor="@color/white"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:text="@{playerDiesViewModel.title}"
+            android:text="@{playerDiesOrViewModel.title}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:onClick="@{()->playerDiesViewModel.close()}"
+            android:onClick="@{()->playerDiesOrViewModel.close()}"
             android:text="@string/ok"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

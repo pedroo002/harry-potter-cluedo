@@ -6,7 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.databinding.FragmentPlayerDiesBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Player
@@ -14,7 +18,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
 
-class PlayerDiesFragment(private val player: Player, private val listener: DialogDismiss) : Fragment(), ViewModelListener {
+class PlayerDiesOrLeavesFragment(private val player: Player, private val dead: Boolean, private val listener: DialogDismiss) : Fragment(), ViewModelListener {
 
     private lateinit var fragmentPlayerDiesBinding: FragmentPlayerDiesBinding
     private lateinit var adapter: CardPagerAdapter
@@ -25,13 +29,14 @@ class PlayerDiesFragment(private val player: Player, private val listener: Dialo
         savedInstanceState: Bundle?
     ): View? {
         fragmentPlayerDiesBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_player_dies, container, false)
-        fragmentPlayerDiesBinding.playerDiesViewModel = PlayerDiesViewModel(
+        fragmentPlayerDiesBinding.playerDiesOrViewModel = PlayerDiesOrLeavesViewModel(
             fragmentPlayerDiesBinding,
+            context!!,
             player,
+            dead,
+            lifecycleScope,
             this
         )
-        val title = "${player.card.name} ${context!!.resources.getString(R.string.he_lost_his_hps)}"
-        fragmentPlayerDiesBinding.playerDiesViewModel!!.setTitle(title)
         return fragmentPlayerDiesBinding.root
     }
 
@@ -54,7 +59,10 @@ class PlayerDiesFragment(private val player: Player, private val listener: Dialo
     }
 
     override fun onFinish() {
-        listener.onPlayerDiesDismiss(player)
+        if (dead)
+            listener.onPlayerDiesDismiss(player)
+        else
+            listener.onPlayerLeavesDismiss()
         activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
     }
 }

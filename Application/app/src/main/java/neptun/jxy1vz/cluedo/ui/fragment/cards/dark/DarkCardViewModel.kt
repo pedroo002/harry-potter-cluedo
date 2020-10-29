@@ -16,7 +16,6 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.marginBottom
 import androidx.databinding.BaseObservable
 import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.fragment_dark_card.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentDarkCardBinding
@@ -28,7 +27,7 @@ import neptun.jxy1vz.cluedo.domain.model.helper.unsafeIcons
 import neptun.jxy1vz.cluedo.domain.util.removePlayer
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.cards.card_loss.CardLossFragment
-import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesFragment
+import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesFragment
 import neptun.jxy1vz.cluedo.ui.fragment.user_dies.UserDiesFragment
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import kotlin.math.PI
@@ -191,8 +190,9 @@ class DarkCardViewModel(
                                             MapViewModel.isGameAbleToContinue = false
                                             if (MapViewModel.playerInTurn == player.id)
                                                 MapViewModel.playerInTurnDied = true
-                                            val fragment = PlayerDiesFragment(
+                                            val fragment = PlayerDiesOrLeavesFragment(
                                                 player,
+                                                true,
                                                 MapViewModel.dialogHandler
                                             )
                                             MapViewModel.insertFragment(fragment, true)

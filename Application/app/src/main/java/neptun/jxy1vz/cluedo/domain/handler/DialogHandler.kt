@@ -117,4 +117,9 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
             map.onDestroy()
         }
     }
+
+    override fun onPlayerLeavesDismiss() {
+        val fragment = NoteFragment(player, this)
+        map.insertFragment(fragment)
+    }
 }

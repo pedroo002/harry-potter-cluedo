@@ -24,6 +24,7 @@ import neptun.jxy1vz.cluedo.network.model.message.presence.PlayerPresenceMessage
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 import neptun.jxy1vz.cluedo.ui.fragment.on_back_pressed.OnBackPressedFragment
+import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesFragment
 import java.lang.Exception
 import kotlin.math.abs
 
@@ -346,7 +347,6 @@ class MapViewModel(
                     val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
                     val player = gameModels.playerList.find { p -> p.card.name == messageJson.message.playerName }!!
                     navigateToPlayerAndDelete(player)
-                    //fragment
                 }
 
                 override fun onSubscriptionSucceeded(p0: String?) {}
@@ -361,7 +361,11 @@ class MapViewModel(
     private fun navigateToPlayerAndDelete(player: Player) {
         GlobalScope.launch(Dispatchers.Main) {
             cameraHandler.moveCameraToPlayer(player.id)
+            delay(1000)
             removePlayer(player)
+
+            val fragment = PlayerDiesOrLeavesFragment(player, false, dialogHandler)
+            insertFragment(fragment, true)
         }
     }
 
