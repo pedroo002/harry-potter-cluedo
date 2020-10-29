@@ -271,13 +271,8 @@ class MapViewModel(
         insertFragment(fragment)
     }
 
-    private suspend fun subscribeToEvents() {
-        val channel = playerPref.getString(context.resources.getString(R.string.channel_id_key), "")
-        var pusherChannel: String
-        RetrofitInstance.getInstance(context).cluedo.apply {
-            pusherChannel = "presence-${getChannel(channel!!)!!.channelName}"
-        }
-        PusherInstance.getInstance().getPresenceChannel(pusherChannel).apply {
+    private fun subscribeToEvents() {
+        PusherInstance.getInstance().getPresenceChannel(channelName).apply {
             val retrofit = RetrofitInstance.getInstance(context)
 
             bind("incrimination", object :
