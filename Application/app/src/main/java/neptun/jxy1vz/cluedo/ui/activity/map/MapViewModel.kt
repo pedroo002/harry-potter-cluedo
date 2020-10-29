@@ -345,8 +345,7 @@ class MapViewModel(
                 override fun onEvent(channelName: String?, eventName: String?, message: String?) {
                     val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
                     val player = gameModels.playerList.find { p -> p.card.name == messageJson.message.playerName }!!
-                    cameraHandler.moveCameraToPlayer(player.id)
-                    removePlayer(player)
+                    navigateToPlayerAndDelete(player)
                     //fragment
                 }
 
@@ -356,6 +355,13 @@ class MapViewModel(
                 override fun userSubscribed(p0: String?, p1: User?) {}
                 override fun userUnsubscribed(p0: String?, p1: User?) {}
             })
+        }
+    }
+
+    private fun navigateToPlayerAndDelete(player: Player) {
+        GlobalScope.launch(Dispatchers.Main) {
+            cameraHandler.moveCameraToPlayer(player.id)
+            removePlayer(player)
         }
     }
 

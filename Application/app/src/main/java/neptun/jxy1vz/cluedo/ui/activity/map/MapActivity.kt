@@ -31,6 +31,10 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
     private lateinit var playMode: String
     private lateinit var playModes: Array<String>
 
+    private lateinit var retrofit: RetrofitInstance
+    private lateinit var channel: String
+    private lateinit var pusherChannel: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,6 +48,12 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
         val playerImageList: MutableList<ImageView> = ArrayList()
 
         GlobalScope.launch(Dispatchers.IO) {
+            if (playMode == playModes[1]) {
+                retrofit = RetrofitInstance.getInstance(applicationContext)
+                channel = playerPref.getString(applicationContext.resources.getString(R.string.channel_id_key), "")!!
+                pusherChannel = "presence-${retrofit.cluedo.getChannel(channel)!!.channelName}"
+            }
+
             val gameModel = GameModels(applicationContext)
             val playerList = gameModel.keepCurrentPlayers()
             gameModel.eraseNotes()
@@ -82,22 +92,16 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
 
     override fun exitToMenu() {
         if (playMode == playModes[1]) {
-            val channel = playerPref.getString(applicationContext.resources.getString(R.string.channel_id_key), "")
-            var pusherChannel: String
-            RetrofitInstance.getInstance(applicationContext).cluedo.apply {
+            retrofit.cluedo.apply {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    pusherChannel = "presence-${getChannel(channel!!)!!.channelName}"
                     if (playerPref.getBoolean(applicationContext.resources.getString(R.string.is_host_key), false)) {
-                        RetrofitInstance.getInstance(applicationContext).cluedo.apply {
-                            deleteChannel(channel)
-                        }
+                        retrofit.cluedo.deleteChannel(channel)
                     }
                     PusherInstance.getInstance().apply {
                         unsubscribe(pusherChannel)
                         disconnect()
                     }
-                    if (MapViewModel.isGameRunning)
-                        activityMapBinding.mapViewModel!!.quitDuringGame()
+                    activityMapBinding.mapViewModel!!.quitDuringGame()
                 }
             }
         }
