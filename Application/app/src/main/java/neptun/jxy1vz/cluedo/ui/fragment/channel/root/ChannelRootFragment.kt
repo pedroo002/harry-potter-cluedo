@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentChannelRootBinding
+import neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuListener
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.channel.create.CreateChannelFragment
@@ -16,6 +17,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.channel.join.JoinChannelFragment
 class ChannelRootFragment(private val listener: MenuListener) : Fragment(), ViewModelListener {
 
     private lateinit var fragmentChannelRootBinding: FragmentChannelRootBinding
+    private lateinit var parentActivity: MenuActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,6 +25,7 @@ class ChannelRootFragment(private val listener: MenuListener) : Fragment(), View
         savedInstanceState: Bundle?
     ): View? {
         fragmentChannelRootBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_channel_root, container, false)
+        parentActivity = activity!! as MenuActivity
         fragmentChannelRootBinding.channelRootViewModel = ChannelRootViewModel(fragmentChannelRootBinding, this)
         return fragmentChannelRootBinding.root
     }
@@ -33,7 +36,7 @@ class ChannelRootFragment(private val listener: MenuListener) : Fragment(), View
             "create" -> CreateChannelFragment()
             else -> JoinChannelFragment()
         }
-        activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, fragment, "FRAGMENT-$action").addToBackStack("FRAGMENT-$action").commit()
+        parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, fragment, "FRAGMENT-$action").addToBackStack("FRAGMENT-$action").commit()
         listener.onFragmentClose()
     }
 }
