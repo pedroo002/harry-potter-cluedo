@@ -65,7 +65,7 @@ interface CluedoApi {
     suspend fun sendMovingData(@Query("channel_name") channelName: String)
 
     @POST("/draw-card")
-    suspend fun sendCardEvent(@Query("channel_name") channelName: String, @Query("card_name") cardName: String)
+    suspend fun sendCardEvent(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int, @Query("card_name") cardName: String)
 
     @POST("/game-ready")
     suspend fun notifyGameReady(@Query("channel_name") channelName: String)
@@ -96,4 +96,7 @@ interface CluedoApi {
 
     @POST("/fetch-cards")
     suspend fun sendCardRequestToHost(@Query("channel_name") channelName: String)
+
+    @POST("/map-loaded")
+    suspend fun notifyMapLoaded(@Query("channel_name") channelName: String)
 }

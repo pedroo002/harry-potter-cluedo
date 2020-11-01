@@ -42,16 +42,14 @@ class CardHandler(private val map: MapViewModel.Companion) {
     }
 
     suspend fun handOutHelperCardMulti(playerId: Int) {
-        withContext(Dispatchers.Main) {
-            map.cameraHandler.moveCameraToPlayer(playerId)
-            delay(1000)
-            val card = gameModels.db.getCardBySuperType(
-                playerId,
-                mContext!!.getString(R.string.helper_prefix)
-            ) as? HelperCard
-            retrofit.cluedo.sendCardEvent(channelName, card!!.name)
-            showCard(playerId, card, DiceRollerViewModel.CardType.HELPER)
-        }
+        map.cameraHandler.moveCameraToPlayer(playerId)
+        delay(1000)
+        val card = gameModels.db.getCardBySuperType(
+            playerId,
+            mContext!!.getString(R.string.helper_prefix)
+        ) as HelperCard
+        showCard(playerId, card, DiceRollerViewModel.CardType.HELPER)
+        retrofit.cluedo.sendCardEvent(channelName, playerId, card.name)
     }
 
     fun typeOf(mysteryName: String): MysteryType {
@@ -81,57 +79,55 @@ class CardHandler(private val map: MapViewModel.Companion) {
         return null
     }
 
-    fun showCard(playerId: Int, card: Card, type: DiceRollerViewModel.CardType?) {
-        GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                map.cameraHandler.moveCameraToPlayer(playerId)
-            }
-            delay(1000)
+    suspend fun showCard(playerId: Int, card: Card, type: DiceRollerViewModel.CardType?) {
+        withContext(Dispatchers.Main) {
+            map.cameraHandler.moveCameraToPlayer(playerId)
+        }
+        delay(1000)
 
-            val cardImage = ImageView(mapRoot.mapLayout.context)
-            cardImage.layoutParams = ConstraintLayout.LayoutParams(
-                mContext!!.resources.displayMetrics.widthPixels / 3,
-                3 * mContext!!.resources.displayMetrics.heightPixels / 4
+        val cardImage = ImageView(mapRoot.mapLayout.context)
+        cardImage.layoutParams = ConstraintLayout.LayoutParams(
+            mContext!!.resources.displayMetrics.widthPixels / 3,
+            3 * mContext!!.resources.displayMetrics.heightPixels / 4
+        )
+        cardImage.setImageResource(card.imageRes)
+
+        map.uiHandler.setLayoutConstraintTop(cardImage, gameModels.rows[0])
+        map.uiHandler.setLayoutConstraintStart(cardImage, gameModels.cols[0])
+        cardImage.translationX = abs(mapRoot.panX)
+        cardImage.translationY = abs(mapRoot.panY)
+
+        cardImage.translationX -= cardImage.width.toFloat()
+        cardImage.visibility = ImageView.VISIBLE
+
+        withContext(Dispatchers.Main) {
+            mapRoot.mapLayout.addView(cardImage)
+            ObjectAnimator.ofFloat(
+                cardImage,
+                "translationX",
+                cardImage.translationX,
+                cardImage.translationX + cardImage.width.toFloat()
             )
-            cardImage.setImageResource(card.imageRes)
-
-            map.uiHandler.setLayoutConstraintTop(cardImage, gameModels.rows[0])
-            map.uiHandler.setLayoutConstraintStart(cardImage, gameModels.cols[0])
-            cardImage.translationX = abs(mapRoot.panX)
-            cardImage.translationY = abs(mapRoot.panY)
-
-            cardImage.translationX -= cardImage.width.toFloat()
-            cardImage.visibility = ImageView.VISIBLE
-
-            withContext(Dispatchers.Main) {
-                mapRoot.mapLayout.addView(cardImage)
-                ObjectAnimator.ofFloat(
-                    cardImage,
-                    "translationX",
-                    cardImage.translationX,
-                    cardImage.translationX + cardImage.width.toFloat()
-                )
-                    .apply {
-                        duration = 1000
-                        start()
-                        doOnEnd {
-                            ObjectAnimator.ofFloat(
-                                cardImage,
-                                "translationX",
-                                cardImage.translationX,
-                                cardImage.translationX - cardImage.width.toFloat()
-                            ).apply {
-                                duration = 1000
-                                startDelay = 2000
-                                start()
-                                doOnEnd {
-                                    mapRoot.mapLayout.removeView(cardImage)
-                                    evaluateCard(playerId, card, type)
-                                }
+                .apply {
+                    duration = 1000
+                    start()
+                    doOnEnd {
+                        ObjectAnimator.ofFloat(
+                            cardImage,
+                            "translationX",
+                            cardImage.translationX,
+                            cardImage.translationX - cardImage.width.toFloat()
+                        ).apply {
+                            duration = 1000
+                            startDelay = 2000
+                            start()
+                            doOnEnd {
+                                mapRoot.mapLayout.removeView(cardImage)
+                                evaluateCard(playerId, card, type)
                             }
                         }
                     }
-            }
+                }
         }
     }
 
@@ -151,18 +147,13 @@ class CardHandler(private val map: MapViewModel.Companion) {
                 if (map.playerHandler.getPlayerById(playerId).helperCards.isNullOrEmpty()) {
                     map.playerHandler.getPlayerById(playerId).helperCards = ArrayList()
                 }
+
                 map.playerHandler.getPlayerById(playerId).helperCards!!.add(randomCard as HelperCard)
 
                 if (!isGameRunning && !isGameModeMulti() && playerId == mPlayerId) {
-                    isGameRunning = true
-                    map.gameSequenceHandler.moveToNextPlayer()
-                }
-                else if (!isGameRunning && isGameModeMulti()) {
-                    val sortedPlayerList = gameModels.playerList.sortedBy { p -> p.id }
-                    if (sortedPlayerList.last().id == playerId) {
-                        isGameRunning = true
-                        map.gameSequenceHandler.moveToNextPlayer()
-                    }
+                    map.gameSequenceHandler.startGame()
+                } else if (!isGameRunning && isGameModeMulti() && gameModels.playerList.last().id == playerId) {
+                    map.gameSequenceHandler.startGame()
                 }
             }
             else -> {

@@ -24,8 +24,6 @@ class GameModels(private val context: Context) {
 
         val mysteryCards = db.getMysteryCardsOfPlayers()
 
-        debugPrint("${mysteryCards?.size} cards")
-
         val solutionList = ArrayList<MysteryCard>()
         for (card in mysteryCards!!) {
             if (card.second != -1)

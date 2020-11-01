@@ -20,11 +20,13 @@ import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.card.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
+import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.removePlayer
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.message.CardEventMessage
 import neptun.jxy1vz.cluedo.network.model.message.presence.PlayerPresenceMessage
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 import neptun.jxy1vz.cluedo.ui.fragment.on_back_pressed.OnBackPressedFragment
 import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesFragment
@@ -47,6 +49,8 @@ class MapViewModel(
         private lateinit var playMode: String
         private lateinit var playModes: Array<String>
         lateinit var channelName: String
+
+        private var playersToWait = 0
 
         lateinit var retrofit: RetrofitInstance
 
@@ -267,16 +271,16 @@ class MapViewModel(
             if (!isGameModeMulti())
                 cardHandler.handOutHelperCards()
             else {
-                playerInTurn = gameModels.playerList[0].id
-                val sortedPlayerList = gameModels.playerList.sortedBy { p -> p.id }
-                if (mPlayerId == sortedPlayerList[0].id)
-                    cardHandler.handOutHelperCardMulti(mPlayerId!!)
-            }
-
-            if (isGameModeMulti()) {
                 val channelId = playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
                 channelName = "presence-${RetrofitInstance.getInstance(context).cluedo.getChannel(channelId)!!.channelName}"
                 subscribeToEvents()
+
+                playerInTurn = gameModels.playerList[0].id
+
+                if (mPlayerId == playerInTurn)
+                    playersToWait = gameModels.playerList.size - 1
+                else
+                    retrofit.cluedo.notifyMapLoaded(channelName)
             }
         }
     }
@@ -292,6 +296,23 @@ class MapViewModel(
 
     private fun subscribeToEvents() {
         PusherInstance.getInstance().getPresenceChannel(channelName).apply {
+            bind("map-loaded", object :
+                PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    if (!isGameRunning && mPlayerId == playerInTurn) {
+                        playersToWait--
+                        if (playersToWait == 0)
+                            startCardHandOut()
+                    }
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+
             bind("incrimination", object :
                 PresenceChannelEventListener {
                 override fun onEvent(channelName: String?, eventName: String?, character: String?) {
@@ -375,20 +396,33 @@ class MapViewModel(
         }
     }
 
+    private fun startCardHandOut() {
+        GlobalScope.launch(Dispatchers.Main) {
+            cardHandler.handOutHelperCardMulti(mPlayerId!!)
+        }
+    }
+
     private fun processCardEvent(playerId: Int, cardName: String) {
+        if (playerId == mPlayerId)
+            return
         GlobalScope.launch(Dispatchers.IO) {
             val card = gameModels.db.getCardByName(cardName)
             if (card is HelperCard) {
-                //meg kéne mutatni
+                cardHandler.showCard(playerId, card, DiceRollerViewModel.CardType.HELPER)
                 if (!isGameRunning) {
-                    val sortedPlayerList = gameModels.playerList.sortedBy { p -> p.id }
-                    val idx = sortedPlayerList.indexOf(sortedPlayerList.find { p -> p.id == playerId })
-                    if (sortedPlayerList[idx + 1].id == mPlayerId)
-                        cardHandler.handOutHelperCardMulti(mPlayerId!!)
+                    val idx = gameModels.playerList.indexOf(gameModels.playerList.find { p -> p.id == playerId })
+                    val nextIdx = idx + 1
+                    if (nextIdx > gameModels.playerList.lastIndex)
+                        return@launch
+                    if (gameModels.playerList[nextIdx].id == mPlayerId) {
+                        withContext(Dispatchers.Main) {
+                            cardHandler.handOutHelperCardMulti(mPlayerId!!)
+                        }
+                    }
                 }
             }
             else {
-                //dark
+                cardHandler.showCard(playerId, card!!, DiceRollerViewModel.CardType.DARK)
             }
         }
     }

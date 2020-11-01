@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.pusher.client.Pusher
 import com.pusher.client.channel.PresenceChannelEventListener
+import com.pusher.client.channel.SubscriptionEventListener
 import com.pusher.client.channel.User
 import kotlinx.android.synthetic.main.fragment_join_channel.view.*
 import kotlinx.coroutines.Dispatchers
@@ -94,6 +95,8 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
                             pusher.getPresenceChannel(pusherChannelName).bind("game-ready", object : PresenceChannelEventListener {
                                 override fun onEvent(p0: String?, p1: String?, p2: String?) {
                                     openCharacterSelector()
+                                    pusher.getPresenceChannel(pusherChannelName).unbind("game-ready"
+                                    ) { _, _, _ -> }
                                 }
 
                                 override fun onSubscriptionSucceeded(p0: String?) {}

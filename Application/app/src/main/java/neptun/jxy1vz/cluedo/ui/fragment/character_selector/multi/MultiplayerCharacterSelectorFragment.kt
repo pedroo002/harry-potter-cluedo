@@ -102,6 +102,8 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
                 db.playerDao().insertIntoTable(it)
             }
             withContext(Dispatchers.Main) {
+                popFragments()
+
                 val mysteryCardIntent = Intent(context, MysteryCardActivity::class.java)
                 mysteryCardIntent.putExtra(
                     context!!.resources.getString(R.string.player_id),
@@ -109,8 +111,6 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
                 )
                 mysteryCardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 context!!.startActivity(mysteryCardIntent)
-
-                popFragments()
             }
         }
     }

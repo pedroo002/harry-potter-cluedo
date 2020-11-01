@@ -7,6 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameModeMulti
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
@@ -37,6 +38,12 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
         }
     }
 
+    fun startGame() {
+        isGameRunning = true
+
+        letPlayerTurn()
+    }
+
     fun moveToNextPlayer() {
         var idx = gameModels.playerList.indexOf(map.playerHandler.getPlayerById(playerInTurn))
         idx--
@@ -51,23 +58,31 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
         if (isGameRunning) {
             map.cameraHandler.moveCameraToPlayer(playerInTurn)
 
-            if (playerInTurn != mPlayerId)
-                map.interactionHandler.rollWithDice(playerInTurn)
-            else {
-                userFinishedHisTurn = false
-                userHasToIncriminate = false
-                userHasToStepOrIncriminate = false
-                userCanStep = true
+            if (!isGameModeMulti()) {
+                if (playerInTurn != mPlayerId)
+                    map.interactionHandler.rollWithDice(playerInTurn)
+                else {
+                    userFinishedHisTurn = false
+                    userHasToIncriminate = false
+                    userHasToStepOrIncriminate = false
+                    userCanStep = true
 
-                GlobalScope.launch(Dispatchers.Main) {
-                    val tileToBlink = map.playerHandler.getPairById(mPlayerId!!).second
-                    for (i in 1..3) {
-                        tileToBlink.visibility = ImageView.GONE
-                        delay(200)
-                        tileToBlink.visibility = ImageView.VISIBLE
-                        delay(200)
-                    }
+                    blinkTile(mPlayerId!!)
                 }
+            }
+            else
+                blinkTile(playerInTurn)
+        }
+    }
+
+    private fun blinkTile(playerId: Int) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val tileToBlink = map.playerHandler.getPairById(playerId).second
+            for (i in 1..3) {
+                tileToBlink.visibility = ImageView.GONE
+                delay(200)
+                tileToBlink.visibility = ImageView.VISIBLE
+                delay(200)
             }
         }
     }
