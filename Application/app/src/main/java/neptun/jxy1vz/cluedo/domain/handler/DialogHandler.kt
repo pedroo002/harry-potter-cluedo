@@ -75,9 +75,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         if (!isGameAbleToContinue)
             return
 
-        if (!isGameRunning)
-            map.cardHandler.handOutHelperCards()
-        else if (pause)
+        if (pause)
             map.gameSequenceHandler.continueGame()
         else
             map.gameSequenceHandler.moveToNextPlayer()

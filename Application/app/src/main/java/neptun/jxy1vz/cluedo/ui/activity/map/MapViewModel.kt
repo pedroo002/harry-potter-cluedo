@@ -1,6 +1,7 @@
 package neptun.jxy1vz.cluedo.ui.activity.map
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -16,10 +17,12 @@ import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.handler.*
 import neptun.jxy1vz.cluedo.domain.model.*
+import neptun.jxy1vz.cluedo.domain.model.card.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.cluedo.domain.util.removePlayer
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.cluedo.network.model.message.CardEventMessage
 import neptun.jxy1vz.cluedo.network.model.message.presence.PlayerPresenceMessage
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
@@ -38,13 +41,15 @@ class MapViewModel(
     fragmentManager: FragmentManager
 ) : BaseObservable() {
 
-    private val gamePref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
-    private val playerPref = context.getSharedPreferences(context.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
-    private val playMode = gamePref.getString(context.resources.getString(R.string.play_mode_key), "")
-    private val playModes = context.resources.getStringArray(R.array.playmodes)
-    private lateinit var channelName: String
-
     companion object {
+        private lateinit var gamePref: SharedPreferences
+        private lateinit var playerPref: SharedPreferences
+        private lateinit var playMode: String
+        private lateinit var playModes: Array<String>
+        lateinit var channelName: String
+
+        lateinit var retrofit: RetrofitInstance
+
         const val ROWS = 24
         const val COLS = 24
 
@@ -145,9 +150,19 @@ class MapViewModel(
             mapRoot.setTwoFingersScrollEnabled(true)
             mapRoot.setThreeFingersScrollEnabled(true)
         }
+
+        fun isGameModeMulti() = playMode == playModes[1]
     }
 
     init {
+        gamePref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
+        playerPref = context.getSharedPreferences(context.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
+        playMode = gamePref.getString(context.resources.getString(R.string.play_mode_key), "")!!
+        playModes = context.resources.getStringArray(R.array.playmodes)
+
+        if (isGameModeMulti())
+            retrofit = RetrofitInstance.getInstance(context)
+
         mPlayerId = playerId
         mContext = context
         mapRoot = root
@@ -249,13 +264,16 @@ class MapViewModel(
             unusedMysteryCards = ArrayList()
             unusedMysteryCards.addAll(gameModels.db.getUnusedMysteryCards())
 
-            withContext(Dispatchers.Main) {
-                delay(500)
-                val fragment = NoteFragment(player, dialogHandler)
-                insertFragment(fragment)
+            if (!isGameModeMulti())
+                cardHandler.handOutHelperCards()
+            else {
+                playerInTurn = gameModels.playerList[0].id
+                val sortedPlayerList = gameModels.playerList.sortedBy { p -> p.id }
+                if (mPlayerId == sortedPlayerList[0].id)
+                    cardHandler.handOutHelperCardMulti(mPlayerId!!)
             }
 
-            if (playMode == playModes[1]) {
+            if (isGameModeMulti()) {
                 val channelId = playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
                 channelName = "presence-${RetrofitInstance.getInstance(context).cluedo.getChannel(channelId)!!.channelName}"
                 subscribeToEvents()
@@ -274,8 +292,6 @@ class MapViewModel(
 
     private fun subscribeToEvents() {
         PusherInstance.getInstance().getPresenceChannel(channelName).apply {
-            val retrofit = RetrofitInstance.getInstance(context)
-
             bind("incrimination", object :
                 PresenceChannelEventListener {
                 override fun onEvent(channelName: String?, eventName: String?, character: String?) {
@@ -330,8 +346,9 @@ class MapViewModel(
 
             bind("card-drawing", object :
                 PresenceChannelEventListener {
-                override fun onEvent(channelName: String?, eventName: String?, character: String?) {
-
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    val messageJson = retrofit.moshi.adapter(CardEventMessage::class.java).fromJson(message!!)!!
+                    processCardEvent(messageJson.playerId, messageJson.cardName)
                 }
 
                 override fun onSubscriptionSucceeded(p0: String?) {}
@@ -355,6 +372,24 @@ class MapViewModel(
                 override fun userSubscribed(p0: String?, p1: User?) {}
                 override fun userUnsubscribed(p0: String?, p1: User?) {}
             })
+        }
+    }
+
+    private fun processCardEvent(playerId: Int, cardName: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val card = gameModels.db.getCardByName(cardName)
+            if (card is HelperCard) {
+                //meg kéne mutatni
+                if (!isGameRunning) {
+                    val sortedPlayerList = gameModels.playerList.sortedBy { p -> p.id }
+                    val idx = sortedPlayerList.indexOf(sortedPlayerList.find { p -> p.id == playerId })
+                    if (sortedPlayerList[idx + 1].id == mPlayerId)
+                        cardHandler.handOutHelperCardMulti(mPlayerId!!)
+                }
+            }
+            else {
+                //dark
+            }
         }
     }
 

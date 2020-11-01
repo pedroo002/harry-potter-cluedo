@@ -8,39 +8,58 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.card.*
-import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.channelName
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.finishedCardCheck
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameModeMulti
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mContext
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapRoot
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.otherPlayerStepsOnStar
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.retrofit
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userFinishedHisTurn
+import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import kotlin.math.abs
 
 class CardHandler(private val map: MapViewModel.Companion) {
     fun handOutHelperCards() {
-        if (!isGameRunning) {
-            GlobalScope.launch(Dispatchers.Main) {
-                for (p in gameModels.playerList) {
-                    if (p.id != mPlayerId) {
-                        map.interactionHandler.getCard(p.id, DiceRollerViewModel.CardType.HELPER)
-                        delay(5000)
-                    }
+        GlobalScope.launch(Dispatchers.Main) {
+            for (p in gameModels.playerList) {
+                if (p.id != mPlayerId) {
+                    map.interactionHandler.getCard(
+                        p.id,
+                        DiceRollerViewModel.CardType.HELPER
+                    )
+                    delay(5000)
                 }
-                map.cameraHandler.moveCameraToPlayer(mPlayerId!!)
-                delay(1000)
-                map.interactionHandler.getCard(mPlayerId!!, DiceRollerViewModel.CardType.HELPER)
             }
+            map.cameraHandler.moveCameraToPlayer(mPlayerId!!)
+            delay(1000)
+            map.interactionHandler.getCard(mPlayerId!!, DiceRollerViewModel.CardType.HELPER)
+        }
+    }
+
+    suspend fun handOutHelperCardMulti(playerId: Int) {
+        withContext(Dispatchers.Main) {
+            map.cameraHandler.moveCameraToPlayer(playerId)
+            delay(1000)
+            val card = gameModels.db.getCardBySuperType(
+                playerId,
+                mContext!!.getString(R.string.helper_prefix)
+            ) as? HelperCard
+            retrofit.cluedo.sendCardEvent(channelName, card!!.name)
+            showCard(playerId, card, DiceRollerViewModel.CardType.HELPER)
         }
     }
 
     fun typeOf(mysteryName: String): MysteryType {
         return when {
-            mContext!!.resources.getStringArray(R.array.rooms).contains(mysteryName) -> MysteryType.VENUE
-            mContext!!.resources.getStringArray(R.array.suspects).contains(mysteryName) -> MysteryType.SUSPECT
+            mContext!!.resources.getStringArray(R.array.rooms)
+                .contains(mysteryName) -> MysteryType.VENUE
+            mContext!!.resources.getStringArray(R.array.suspects)
+                .contains(mysteryName) -> MysteryType.SUSPECT
             else -> MysteryType.TOOL
         }
     }
@@ -134,9 +153,16 @@ class CardHandler(private val map: MapViewModel.Companion) {
                 }
                 map.playerHandler.getPlayerById(playerId).helperCards!!.add(randomCard as HelperCard)
 
-                if (!map.isGameRunning && playerId == mPlayerId) {
+                if (!isGameRunning && !isGameModeMulti() && playerId == mPlayerId) {
                     isGameRunning = true
                     map.gameSequenceHandler.moveToNextPlayer()
+                }
+                else if (!isGameRunning && isGameModeMulti()) {
+                    val sortedPlayerList = gameModels.playerList.sortedBy { p -> p.id }
+                    if (sortedPlayerList.last().id == playerId) {
+                        isGameRunning = true
+                        map.gameSequenceHandler.moveToNextPlayer()
+                    }
                 }
             }
             else -> {

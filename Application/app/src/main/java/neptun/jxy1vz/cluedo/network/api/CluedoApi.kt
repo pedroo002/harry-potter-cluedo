@@ -65,7 +65,7 @@ interface CluedoApi {
     suspend fun sendMovingData(@Query("channel_name") channelName: String)
 
     @POST("/draw-card")
-    suspend fun sendCardEvent(@Query("channel_name") channelName: String)
+    suspend fun sendCardEvent(@Query("channel_name") channelName: String, @Query("card_name") cardName: String)
 
     @POST("/game-ready")
     suspend fun notifyGameReady(@Query("channel_name") channelName: String)
