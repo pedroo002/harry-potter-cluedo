@@ -11,7 +11,9 @@ import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONS
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.animation.doOnEnd
 import kotlinx.android.synthetic.main.activity_map.view.*
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.DoorState
 import neptun.jxy1vz.cluedo.domain.model.Position
@@ -21,6 +23,7 @@ import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.diceList
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.finishedCardCheck
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameModeMulti
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mContext
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapRoot
@@ -477,15 +480,31 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
     override fun onAnimationRepeat(animation: Animation?) {}
 
     override fun onAnimationEnd(animation: Animation?) {
-        var dice1Value = Random.nextInt(1, 7)
-        var dice2Value = Random.nextInt(1, 7)
-        val hogwartsDice = Random.nextInt(1, 7)
+        var dice1Value: Int
+        var dice2Value: Int
+        var hogwartsDice: Int
 
-        if (map.playerHandler.getPlayerById(playerInTurn).hasFelixFelicis()) {
-            dice1Value = 6
-            dice2Value = 6
+        if (isGameModeMulti()) {
+            dice1Value = MapViewModel.diceData.dice1
+            dice2Value = MapViewModel.diceData.dice2
+            hogwartsDice = MapViewModel.diceData.hogwartsDice
+        }
+        else {
+            if (map.playerHandler.getPlayerById(playerInTurn).hasFelixFelicis()) {
+                dice1Value = 6
+                dice2Value = 6
+            }
+            else {
+                dice1Value = Random.nextInt(1, 7)
+                dice2Value = Random.nextInt(1, 7)
+            }
+            hogwartsDice = Random.nextInt(1, 7)
         }
 
+        processDice(dice1Value, dice2Value, hogwartsDice)
+    }
+
+    private fun processDice(dice1Value: Int, dice2Value: Int, hogwartsDice: Int) {
         diceList[0].setImageResource(
             when (dice1Value) {
                 1 -> R.drawable.dice1
@@ -539,7 +558,8 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
                     if (diceList.indexOf(dice) == 2) {
                         map.gameSequenceHandler.pause(playerInTurn, dice1Value + dice2Value, house)
                         cardType?.let {
-                            map.interactionHandler.getCard(playerInTurn, cardType)
+                            if (!isGameModeMulti())
+                                map.interactionHandler.getCard(playerInTurn, cardType)
                         }
                         house?.let {
                             map.stateMachineHandler.setState(playerInTurn, house)

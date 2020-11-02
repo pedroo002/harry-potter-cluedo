@@ -24,6 +24,7 @@ import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.removePlayer
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.message.CardEventMessage
+import neptun.jxy1vz.cluedo.network.model.message.dice.DiceDataMessage
 import neptun.jxy1vz.cluedo.network.model.message.presence.PlayerPresenceMessage
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
@@ -53,6 +54,8 @@ class MapViewModel(
         private var playersToWait = 0
 
         lateinit var retrofit: RetrofitInstance
+
+        lateinit var diceData: DiceDataMessage
 
         const val ROWS = 24
         const val COLS = 24
@@ -393,6 +396,22 @@ class MapViewModel(
                 override fun userSubscribed(p0: String?, p1: User?) {}
                 override fun userUnsubscribed(p0: String?, p1: User?) {}
             })
+
+            bind("dice-event", object :
+                PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    val messageJson = retrofit.moshi.adapter(DiceDataMessage::class.java).fromJson(message!!)!!
+                    processDiceEvent(messageJson)
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+
+
         }
     }
 
@@ -435,6 +454,15 @@ class MapViewModel(
 
             val fragment = PlayerDiesOrLeavesFragment(player, false, dialogHandler)
             insertFragment(fragment, true)
+        }
+    }
+
+    private fun processDiceEvent(message: DiceDataMessage) {
+        if (message.playerId == mPlayerId)
+            return
+        GlobalScope.launch(Dispatchers.Main) {
+            diceData = message
+            interactionHandler.rollWithDice(message.playerId)
         }
     }
 

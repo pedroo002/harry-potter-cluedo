@@ -98,7 +98,7 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
             val db = CluedoDatabase.getInstance(context!!)
             db.playerDao().deletePlayers()
 
-            vm().getReadyPlayers().map { playerDomainModel -> PlayerDBmodel(0, playerDomainModel.playerName, playerDomainModel.playerId, playerDomainModel.selectedCharacter) }.forEach {
+            vm().getReadyPlayers().map { playerDomainModel -> PlayerDBmodel(0, playerDomainModel.playerName, playerDomainModel.playerId, playerDomainModel.selectedCharacter, vm().channelName) }.forEach {
                 db.playerDao().insertIntoTable(it)
             }
             withContext(Dispatchers.Main) {

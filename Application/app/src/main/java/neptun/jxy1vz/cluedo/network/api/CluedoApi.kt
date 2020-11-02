@@ -9,9 +9,6 @@ interface CluedoApi {
 
     //------------------------------------ Channel API requests
 
-    @GET("/channel")
-    suspend fun getChannels(): List<ChannelApiModel>?
-
     @GET("/channel-by-limit")
     suspend fun getChannelsByPlayerLimit(@Query("max_user") limit: Int): List<ChannelApiModel>?
 
@@ -38,9 +35,6 @@ interface CluedoApi {
     @GET("/player")
     suspend fun getPlayers(): List<PlayerApiModel>?
 
-    @GET("/player/{id}")
-    suspend fun getPlayer(@Path("id") id: String, @Body body: RequestBody): PlayerApiModel?
-
     @POST("/player")
     suspend fun registerPlayer(@Body body: RequestBody): PlayerApiModel?
 
@@ -49,9 +43,6 @@ interface CluedoApi {
 
     @PUT("/logout-player")
     suspend fun logoutPlayer(@Body body: RequestBody): String?
-
-    @DELETE("/player/{id}")
-    suspend fun deletePlayer(@Path("id") id: String)
 
     //------------------------------------ Pusher event triggers
 
@@ -63,6 +54,9 @@ interface CluedoApi {
 
     @POST("/move")
     suspend fun sendMovingData(@Query("channel_name") channelName: String)
+
+    @POST("/dice")
+    suspend fun sendDiceEvent(@Query("channel_name") channelName: String, @Body diceData: RequestBody)
 
     @POST("/draw-card")
     suspend fun sendCardEvent(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int, @Query("card_name") cardName: String)
