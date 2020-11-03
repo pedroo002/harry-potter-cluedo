@@ -31,7 +31,7 @@ class CardLossFragment(private val title: String, private val cardList: List<Hel
         savedInstanceState: Bundle?
     ): View? {
         fragmentCardLossBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_card_loss, container, false)
-        fragmentCardLossBinding.cardLossViewModel = CardLossViewModel(title, this)
+        fragmentCardLossBinding.cardLossViewModel = CardLossViewModel(context!!, title, this)
         return fragmentCardLossBinding.root
     }
 

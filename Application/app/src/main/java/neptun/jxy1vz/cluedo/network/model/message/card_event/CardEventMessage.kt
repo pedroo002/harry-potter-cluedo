@@ -1,4 +1,4 @@
-package neptun.jxy1vz.cluedo.network.model.message
+package neptun.jxy1vz.cluedo.network.model.message.card_event
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

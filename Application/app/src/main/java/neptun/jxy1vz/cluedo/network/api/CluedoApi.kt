@@ -93,4 +93,13 @@ interface CluedoApi {
 
     @POST("/map-loaded")
     suspend fun notifyMapLoaded(@Query("channel_name") channelName: String)
+
+    @POST("/dark-cards-ready")
+    suspend fun notifyDarkCardsReady(@Query("channel_name") channelName: String)
+
+    @POST("/dark-cards-close")
+    suspend fun notifyDarkCardsClose(@Query("channel_name") channelName: String)
+
+    @POST("/throw-helper-card")
+    suspend fun sendCardThrowEvent(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int, @Query("card_name") cardName: String)
 }
