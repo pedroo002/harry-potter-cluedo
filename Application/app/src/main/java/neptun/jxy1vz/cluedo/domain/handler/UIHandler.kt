@@ -138,6 +138,9 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
         setLayoutConstraintStart(selection, gameModels.cols[col])
         setLayoutConstraintTop(selection, gameModels.rows[row])
         selection.setOnClickListener {
+            if (playerId != mPlayerId)
+                return@setOnClickListener
+
             if (finishedCardCheck) {
                 map.playerHandler.stepPlayer(playerId, targetPosition)
                 emptySelectionList()

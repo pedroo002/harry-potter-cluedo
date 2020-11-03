@@ -53,7 +53,7 @@ interface CluedoApi {
     suspend fun sendAccusation(@Query("channel_name") channelName: String)
 
     @POST("/move")
-    suspend fun sendMovingData(@Query("channel_name") channelName: String)
+    suspend fun sendMovingData(@Query("channel_name") channelName: String, @Body movingData: RequestBody)
 
     @POST("/dice")
     suspend fun sendDiceEvent(@Query("channel_name") channelName: String, @Body diceData: RequestBody)

@@ -24,6 +24,7 @@ import neptun.jxy1vz.cluedo.domain.util.removePlayer
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.message.card_event.CardEventMessage
 import neptun.jxy1vz.cluedo.network.model.message.dice.DiceDataMessage
+import neptun.jxy1vz.cluedo.network.model.message.move.MovingData
 import neptun.jxy1vz.cluedo.network.model.message.presence.PlayerPresenceMessage
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
@@ -340,23 +341,11 @@ class MapViewModel(
                 override fun userUnsubscribed(p0: String?, p1: User?) {}
             })
 
-            bind("incrimination", object :
-                PresenceChannelEventListener {
-                override fun onEvent(channelName: String?, eventName: String?, character: String?) {
-
-                }
-
-                override fun onSubscriptionSucceeded(p0: String?) {}
-                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                override fun userSubscribed(p0: String?, p1: User?) {}
-                override fun userUnsubscribed(p0: String?, p1: User?) {}
-            })
-
             bind("player-moves", object :
                 PresenceChannelEventListener {
-                override fun onEvent(channelName: String?, eventName: String?, character: String?) {
-
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    val messageJson = retrofit.moshi.adapter(MovingData::class.java).fromJson(message!!)!!
+                    processMovingEvent(messageJson)
                 }
 
                 override fun onSubscriptionSucceeded(p0: String?) {}
@@ -461,6 +450,13 @@ class MapViewModel(
         GlobalScope.launch(Dispatchers.Main) {
             diceData = message
             interactionHandler.rollWithDice(message.playerId)
+        }
+    }
+
+    private fun processMovingEvent(data: MovingData) {
+        GlobalScope.launch(Dispatchers.Main) {
+            uiHandler.emptySelectionList()
+            uiHandler.animatePlayerWalking(data.playerId, playerImagePairs.find { pair -> pair.first.id == data.playerId }!!.first.pos, Position(data.targetPosition.row, data.targetPosition.col))
         }
     }
 

@@ -102,10 +102,10 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
 
             if (isGameModeMulti() && playerId == mPlayerId)
                 MapViewModel.retrofit.cluedo.sendCardEvent(MapViewModel.channelName, playerId, randomCard.name)
-
-            withContext(Dispatchers.Main) {
-                map.cardHandler.showCard(playerId, randomCard, type)
-            }
+            if (!isGameModeMulti() || playerId == mPlayerId)
+                withContext(Dispatchers.Main) {
+                    map.cardHandler.showCard(playerId, randomCard, type)
+                }
         }
     }
 

@@ -128,7 +128,7 @@ class DarkCardViewModel(
                     override fun onEvent(channelName: String?, eventName: String?, message: String?) {
                         waitForPlayers--
                         if (waitForPlayers == 0)
-                            bind.darkCardRoot.btnClose.isEnabled = true
+                            enableButton()
                     }
 
                     override fun onSubscriptionSucceeded(p0: String?) {}
@@ -141,7 +141,7 @@ class DarkCardViewModel(
             else {
                 bind("dark-cards-close", object : PresenceChannelEventListener {
                     override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                        listener.onFinish()
+                        gotCloseSignal()
                     }
 
                     override fun onSubscriptionSucceeded(p0: String?) {}
@@ -180,6 +180,12 @@ class DarkCardViewModel(
     private fun sendReadySignal() {
         GlobalScope.launch(Dispatchers.IO) {
             RetrofitInstance.getInstance(context).cluedo.notifyDarkCardsReady(MapViewModel.channelName)
+        }
+    }
+
+    private fun gotCloseSignal() {
+        GlobalScope.launch(Dispatchers.Main) {
+            listener.onFinish()
         }
     }
 
@@ -416,6 +422,12 @@ class DarkCardViewModel(
         }
         else
             listener.onFinish()
+    }
+
+    private fun enableButton() {
+        GlobalScope.launch(Dispatchers.Main) {
+            bind.darkCardRoot.btnClose.isEnabled = true
+        }
     }
 
     override fun onThrow() {
