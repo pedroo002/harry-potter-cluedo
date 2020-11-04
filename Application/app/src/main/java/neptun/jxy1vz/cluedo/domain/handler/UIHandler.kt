@@ -19,6 +19,7 @@ import neptun.jxy1vz.cluedo.domain.model.DoorState
 import neptun.jxy1vz.cluedo.domain.model.Position
 import neptun.jxy1vz.cluedo.domain.model.State
 import neptun.jxy1vz.cluedo.domain.model.boolean
+import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.diceList
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.finishedCardCheck
@@ -420,10 +421,12 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
                     MapViewModel.userHasToStepOrIncriminate = false
                     MapViewModel.userCanStep = false
                 }
-                map.interactionHandler.incrimination(
-                    playerId,
-                    map.mapHandler.stepInRoom(map.playerHandler.getPlayerById(playerId).pos)
-                )
+                if (!isGameModeMulti() || playerId == mPlayerId) {
+                    map.interactionHandler.incrimination(
+                        playerId,
+                        map.mapHandler.stepInRoom(map.playerHandler.getPlayerById(playerId).pos)
+                    )
+                }
             }
             map.mapHandler.stepInRoom(map.playerHandler.getPlayerById(playerId).pos) == -1 -> {
                 if (playerId != mPlayerId) {

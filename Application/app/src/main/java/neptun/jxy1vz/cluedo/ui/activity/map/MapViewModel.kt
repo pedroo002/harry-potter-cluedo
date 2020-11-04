@@ -20,14 +20,18 @@ import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.card.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
+import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.removePlayer
+import neptun.jxy1vz.cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.message.card_event.CardEventMessage
 import neptun.jxy1vz.cluedo.network.model.message.dice.DiceDataMessage
 import neptun.jxy1vz.cluedo.network.model.message.move.MovingData
 import neptun.jxy1vz.cluedo.network.model.message.presence.PlayerPresenceMessage
+import neptun.jxy1vz.cluedo.network.model.message.suspect.SuspectMessage
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
+import neptun.jxy1vz.cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsFragment
 import neptun.jxy1vz.cluedo.ui.fragment.on_back_pressed.OnBackPressedFragment
 import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesFragment
 import java.lang.Exception
@@ -157,7 +161,9 @@ class MapViewModel(
             mapRoot.setThreeFingersScrollEnabled(true)
         }
 
-        fun isGameModeMulti() = playMode == playModes[1]
+        fun isGameModeMulti(): Boolean {
+            return playMode == playModes[1]
+        }
     }
 
     init {
@@ -165,9 +171,6 @@ class MapViewModel(
         playerPref = context.getSharedPreferences(context.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
         playMode = gamePref.getString(context.resources.getString(R.string.play_mode_key), "")!!
         playModes = context.resources.getStringArray(R.array.playmodes)
-
-        if (isGameModeMulti())
-            retrofit = RetrofitInstance.getInstance(context)
 
         mPlayerId = playerId
         mContext = context
@@ -273,9 +276,12 @@ class MapViewModel(
             if (!isGameModeMulti())
                 cardHandler.handOutHelperCards()
             else {
+                retrofit = RetrofitInstance.getInstance(context)
+
                 val channelId = playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
-                channelName = "presence-${RetrofitInstance.getInstance(context).cluedo.getChannel(channelId)!!.channelName}"
+                channelName = "presence-${retrofit.cluedo.getChannel(channelId)!!.channelName}"
                 subscribeToEvents()
+                dialogHandler.subscribeToEvent()
 
                 playerInTurn = gameModels.playerList[0].id
 
@@ -317,8 +323,11 @@ class MapViewModel(
 
             bind("incrimination", object :
                 PresenceChannelEventListener {
-                override fun onEvent(channelName: String?, eventName: String?, character: String?) {
-
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    val messageJson = retrofit.moshi.adapter(SuspectMessage::class.java).fromJson(message!!)!!
+                    val suspect = messageJson.toDomainModel()
+                    if (suspect.playerId != mPlayerId)
+                        openIncriminationDetails(suspect)
                 }
 
                 override fun onSubscriptionSucceeded(p0: String?) {}
@@ -345,7 +354,8 @@ class MapViewModel(
                 PresenceChannelEventListener {
                 override fun onEvent(channelName: String?, eventName: String?, message: String?) {
                     val messageJson = retrofit.moshi.adapter(MovingData::class.java).fromJson(message!!)!!
-                    processMovingEvent(messageJson)
+                    if (messageJson.playerId != mPlayerId)
+                        processMovingEvent(messageJson)
                 }
 
                 override fun onSubscriptionSucceeded(p0: String?) {}
@@ -457,6 +467,13 @@ class MapViewModel(
         GlobalScope.launch(Dispatchers.Main) {
             uiHandler.emptySelectionList()
             uiHandler.animatePlayerWalking(data.playerId, playerImagePairs.find { pair -> pair.first.id == data.playerId }!!.first.pos, Position(data.targetPosition.row, data.targetPosition.col))
+        }
+    }
+
+    private fun openIncriminationDetails(suspect: Suspect) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val detailsFragment = IncriminationDetailsFragment(suspect, dialogHandler)
+            insertFragment(detailsFragment)
         }
     }
 

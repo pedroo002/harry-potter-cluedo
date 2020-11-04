@@ -56,6 +56,7 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
 
             val gameModel = GameModels(applicationContext)
             val playerList = gameModel.keepCurrentPlayers()
+            gameModel.playerList = playerList.sortedBy { p -> p.id }
             gameModel.eraseNotes()
             withContext(Dispatchers.Main) {
                 for (id in gameModel.playerImageIdList) {

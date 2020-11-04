@@ -47,10 +47,10 @@ interface CluedoApi {
     //------------------------------------ Pusher event triggers
 
     @POST("/incriminate")
-    suspend fun sendIncrimination(@Query("channel_name") channelName: String)
+    suspend fun sendIncrimination(@Query("channel_name") channelName: String, @Body incrimination: RequestBody)
 
     @POST("/accuse")
-    suspend fun sendAccusation(@Query("channel_name") channelName: String)
+    suspend fun sendAccusation(@Query("channel_name") channelName: String, @Body accusation: RequestBody)
 
     @POST("/move")
     suspend fun sendMovingData(@Query("channel_name") channelName: String, @Body movingData: RequestBody)
@@ -102,4 +102,25 @@ interface CluedoApi {
 
     @POST("/throw-helper-card")
     suspend fun sendCardThrowEvent(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int, @Query("card_name") cardName: String)
+
+    @POST("/incrimination-details-ready")
+    suspend fun notifyIncriminationDetailsReady(@Query("channel_name") channelName: String)
+
+    @POST("/trigger-card-reveal")
+    suspend fun triggerPlayerToReveal(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int)
+
+    @POST("/skip-reveal")
+    suspend fun skipCardReveal(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int)
+
+    @POST("/show-helper-card")
+    suspend fun showCard(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int, @Query("card_name") cardName: String)
+
+    @POST("/no-card")
+    suspend fun notifyNobodyCouldShow(@Query("channel_name") channelName: String)
+
+    @POST("/incrimination-finished")
+    suspend fun notifyIncriminationFinished(@Query("channel_name") channelName: String)
+
+    @POST("/note-closed")
+    suspend fun notifyNoteClosed(@Query("channel_name") channelName: String)
 }
