@@ -198,6 +198,9 @@ class MultiplayerCharacterSelectorViewModel(
             isReady = true
             lifecycle.launch(Dispatchers.IO) {
                 retrofit.cluedo.notifyCharacterSubmit(channelName, playerName)
+                withContext(Dispatchers.Main) {
+                    bind.multiCharacterSelectorRoot.btnReady.isEnabled = false
+                }
             }
         }
         else
