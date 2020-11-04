@@ -54,8 +54,6 @@ class MapViewModel(
         private lateinit var playModes: Array<String>
         lateinit var channelName: String
 
-        private var playersToWait = 0
-
         lateinit var retrofit: RetrofitInstance
 
         lateinit var diceData: DiceDataMessage
@@ -279,16 +277,13 @@ class MapViewModel(
                 retrofit = RetrofitInstance.getInstance(context)
 
                 val channelId = playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
-                channelName = "presence-${retrofit.cluedo.getChannel(channelId)!!.channelName}"
+                val apiChannelName = retrofit.cluedo.getChannel(channelId)!!.channelName
+                channelName = "presence-${apiChannelName}"
                 subscribeToEvents()
                 dialogHandler.subscribeToEvent()
 
                 playerInTurn = gameModels.playerList[0].id
-
-                if (mPlayerId == playerInTurn)
-                    playersToWait = gameModels.playerList.size - 1
-                else
-                    retrofit.cluedo.notifyMapLoaded(channelName)
+                retrofit.cluedo.notifyMapLoaded(apiChannelName)
             }
         }
     }
@@ -307,10 +302,9 @@ class MapViewModel(
             bind("map-loaded", object :
                 PresenceChannelEventListener {
                 override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    debugPrint("map-loaded")
                     if (!isGameRunning && mPlayerId == playerInTurn) {
-                        playersToWait--
-                        if (playersToWait == 0)
-                            startCardHandOut()
+                        startCardHandOut()
                     }
                 }
 
@@ -407,8 +401,6 @@ class MapViewModel(
                 override fun userSubscribed(p0: String?, p1: User?) {}
                 override fun userUnsubscribed(p0: String?, p1: User?) {}
             })
-
-
         }
     }
 
