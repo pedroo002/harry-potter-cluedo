@@ -42,14 +42,13 @@ class RetrofitInstance private constructor() {
         .add(KotlinJsonAdapterFactory())
         .build()
 
-    //TODO: ez miért szar a telómon?
     private val spec = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-        //.tlsVersions(TlsVersion.TLS_1_3)
-        /*.cipherSuites(
+        .tlsVersions(TlsVersion.TLS_1_3)
+        .cipherSuites(
             CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
             CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
             CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
-        )*/
+        )
         .allEnabledCipherSuites()
         .allEnabledTlsVersions()
         .build()
