@@ -159,6 +159,8 @@ class IncriminationDetailsViewModel(
                         retrofit.moshi.adapter(CardEventMessage::class.java).fromJson(message!!)!!
                     if (messageJson.playerId != MapViewModel.mPlayerId)
                         processCardReveal(messageJson)
+                    else
+                        waitForPlayers = MapViewModel.gameModels.playerList.size
                 }
 
                 override fun onSubscriptionSucceeded(p0: String?) {}
