@@ -62,7 +62,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onIncriminationDetailsDismiss(needToTakeNotes: Boolean) {
         map.enableScrolling()
         if (needToTakeNotes) {
-            val fragment = NoteFragment(player, this)
+            val fragment = NoteFragment.newInstance(player, this)
             map.insertFragment(fragment)
         } else
             map.gameSequenceHandler.moveToNextPlayer()
@@ -71,7 +71,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onCardRevealDismiss() {
         map.enableScrolling()
         map.uiHandler.emptySelectionList()
-        val fragment = NoteFragment(player, this)
+        val fragment = NoteFragment.newInstance(player, this)
         map.insertFragment(fragment)
     }
 
@@ -89,7 +89,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
 
     override fun onAccusationDismiss(suspect: Suspect) {
         map.enableScrolling()
-        val fragment = EndOfGameFragment(suspect, this)
+        val fragment = EndOfGameFragment.newInstance(suspect, this)
         map.insertFragment(fragment)
         isGameRunning = false
     }
@@ -103,7 +103,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         if (player == null)
             activityListener.exitToMenu()
         else {
-            val fragment = NoteFragment(MapViewModel.player, this)
+            val fragment = NoteFragment.newInstance(MapViewModel.player, this)
             map.insertFragment(fragment)
         }
     }
@@ -128,11 +128,11 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
 
     override fun onOptionsDismiss(accusation: Boolean) {
         if (accusation) {
-            val fragment = AccusationFragment(playerInTurn, this)
+            val fragment = AccusationFragment.newInstance(playerInTurn, this)
             map.insertFragment(fragment)
         } else {
             val fragment =
-                UnusedMysteryCardsFragment(
+                UnusedMysteryCardsFragment.newInstance(
                     this,
                     unusedMysteryCards
                 )
@@ -144,7 +144,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         when (option) {
             NotesOrDiceFragment.Option.NOTES -> {
                 isGameAbleToContinue = false
-                val noteFragment = NoteFragment(player, this)
+                val noteFragment = NoteFragment.newInstance(player, this)
                 map.insertFragment(noteFragment)
             }
             NotesOrDiceFragment.Option.DICE -> {
@@ -162,7 +162,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onPlayerLeavesDismiss() {
-        val fragment = NoteFragment(player, this)
+        val fragment = NoteFragment.newInstance(player, this)
         map.insertFragment(fragment)
     }
 }

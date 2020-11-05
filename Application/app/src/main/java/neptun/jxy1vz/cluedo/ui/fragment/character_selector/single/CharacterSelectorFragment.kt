@@ -11,13 +11,25 @@ import neptun.jxy1vz.cluedo.databinding.FragmentCharacterSelectorBinding
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuListener
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class CharacterSelectorFragment(private val listener: MenuListener) : Fragment(),
+class CharacterSelectorFragment : Fragment(),
     ViewModelListener {
+
+    private lateinit var listener: MenuListener
+
+    fun setListener(l: MenuListener) {
+        listener = l
+    }
 
     private lateinit var fragmentCharacterSelectorBinding: FragmentCharacterSelectorBinding
 
     companion object {
         var isCanceled = false
+
+        fun newInstance(listener: MenuListener): CharacterSelectorFragment {
+            val fragment = CharacterSelectorFragment()
+            fragment.setListener(listener)
+            return fragment
+        }
     }
 
     init {

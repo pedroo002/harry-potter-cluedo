@@ -20,8 +20,24 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class IncriminationDetailsFragment(private val suspect: Suspect, private val listener: DialogDismiss) : Fragment(), ViewModelListener,
+class IncriminationDetailsFragment : Fragment(), ViewModelListener,
     IncriminationDetailsViewModel.DetailsFragmentListener {
+
+    private lateinit var suspect: Suspect
+    private lateinit var listener: DialogDismiss
+
+    fun setArgs(sus: Suspect, l: DialogDismiss) {
+        suspect = sus
+        listener = l
+    }
+
+    companion object {
+        fun newInstance(suspect: Suspect, listener: DialogDismiss): IncriminationDetailsFragment {
+            val fragment = IncriminationDetailsFragment()
+            fragment.setArgs(suspect, listener)
+            return fragment
+        }
+    }
 
     private lateinit var fragmentIncriminationDetailsBinding: FragmentIncriminationDetailsBinding
     private var needToTakeNotes = true

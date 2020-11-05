@@ -14,7 +14,21 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.channel.create.CreateChannelFragment
 import neptun.jxy1vz.cluedo.ui.fragment.channel.join.JoinChannelFragment
 
-class ChannelRootFragment(private val listener: MenuListener) : Fragment(), ViewModelListener {
+class ChannelRootFragment : Fragment(), ViewModelListener {
+
+    private lateinit var listener: MenuListener
+
+    fun setListener(l: MenuListener) {
+        listener = l
+    }
+
+    companion object {
+        fun newInstance(listener: MenuListener): ChannelRootFragment {
+            val fragment = ChannelRootFragment()
+            fragment.setListener(listener)
+            return fragment
+        }
+    }
 
     private lateinit var fragmentChannelRootBinding: FragmentChannelRootBinding
     private lateinit var parentActivity: MenuActivity

@@ -12,13 +12,27 @@ import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class ChooseOptionFragment(private val canStep: Boolean, private val listener: DialogDismiss) : Fragment(), ViewModelListener {
+class ChooseOptionFragment : Fragment(), ViewModelListener {
 
     private lateinit var fragmentChooseOptionBinding: FragmentChooseOptionBinding
+
+    private var canStep: Boolean = false
+    private lateinit var listener: DialogDismiss
+
+    fun setArgs(steppable: Boolean, l: DialogDismiss) {
+        canStep = steppable
+        listener = l
+    }
 
     companion object {
         var accusation = false
         var step = false
+
+        fun newInstance(canStep: Boolean, listener: DialogDismiss): ChooseOptionFragment {
+            val fragment = ChooseOptionFragment()
+            fragment.setArgs(canStep, listener)
+            return fragment
+        }
     }
 
     init {

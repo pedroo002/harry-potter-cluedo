@@ -295,7 +295,7 @@ class MapViewModel(
     }
 
     fun onBackPressed() {
-        val fragment = OnBackPressedFragment(dialogHandler)
+        val fragment = OnBackPressedFragment.newInstance(dialogHandler)
         insertFragment(fragment, true)
     }
 
@@ -443,7 +443,7 @@ class MapViewModel(
             delay(1000)
             removePlayer(player)
 
-            val fragment = PlayerDiesOrLeavesFragment(player, false, dialogHandler)
+            val fragment = PlayerDiesOrLeavesFragment.newInstance(player, false, dialogHandler)
             insertFragment(fragment, true)
         }
     }
@@ -466,7 +466,7 @@ class MapViewModel(
 
     private fun openIncriminationDetails(suspect: Suspect) {
         GlobalScope.launch(Dispatchers.Main) {
-            val detailsFragment = IncriminationDetailsFragment(suspect, dialogHandler)
+            val detailsFragment = IncriminationDetailsFragment.newInstance(suspect, dialogHandler)
             insertFragment(detailsFragment)
         }
     }

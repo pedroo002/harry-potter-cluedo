@@ -10,8 +10,22 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentNumPickerBinding
 import neptun.jxy1vz.cluedo.ui.fragment.channel.num_picker.NumPickerViewModel.ViewModelListener
 
-class NumPickerFragment(private val listener: NumPickerChangeListener) : Fragment(),
+class NumPickerFragment : Fragment(),
     ViewModelListener {
+
+    private lateinit var listener: NumPickerChangeListener
+
+    fun setListener(l: NumPickerChangeListener) {
+        listener = l
+    }
+
+    companion object {
+        fun newInstance(listener: NumPickerChangeListener): NumPickerFragment {
+            val fragment = NumPickerFragment()
+            fragment.setListener(listener)
+            return fragment
+        }
+    }
 
     interface NumPickerChangeListener {
         fun onValueChanged(num1: Int, num2: Int, num3: Int, num4: Int)

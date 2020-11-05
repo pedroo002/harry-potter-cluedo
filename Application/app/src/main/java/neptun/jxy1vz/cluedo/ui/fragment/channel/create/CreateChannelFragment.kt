@@ -42,7 +42,7 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
     override fun onFinish() {
         lifecycleScope.launch(Dispatchers.Main) {
-            parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment(true,
+            parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment.newInstance(true,
                 isLate = false,
                 listener = this@CreateChannelFragment
             ), MultiplayerCharacterSelectorFragment.TAG).addToBackStack(MultiplayerCharacterSelectorFragment.TAG).commit()

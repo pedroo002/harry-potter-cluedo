@@ -15,7 +15,7 @@ class MenuViewModel(private val bind: ActivityMenuBinding, private val fragmentM
     }
 
     fun openGameModeDialog() {
-        val gameModeFragment = GameModeFragment(this)
+        val gameModeFragment = GameModeFragment.newInstance(this)
         fragmentManager.beginTransaction().add(R.id.menuFrame, gameModeFragment).addToBackStack(gameModeFragment.toString()).commit()
         bind.menuFrame.bringToFront()
 

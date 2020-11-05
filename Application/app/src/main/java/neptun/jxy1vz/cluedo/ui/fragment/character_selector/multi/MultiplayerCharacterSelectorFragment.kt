@@ -24,11 +24,27 @@ import neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardActivity
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import retrofit2.HttpException
 
-class MultiplayerCharacterSelectorFragment(private val host: Boolean, private val isLate: Boolean, private val listener: MenuListener) : Fragment(),
+class MultiplayerCharacterSelectorFragment : Fragment(),
     ViewModelListener, MultiplayerCharacterSelectorViewModel.ChannelListener {
+
+    private var host: Boolean = false
+    private var isLate: Boolean = false
+    private lateinit var listener: MenuListener
+
+    fun setArgs(h: Boolean, late: Boolean, l: MenuListener) {
+        host = h
+        isLate = late
+        listener = l
+    }
 
     companion object {
         const val TAG = "FRAGMENT-MULTIPLAYER-CHARACTER-SELECTOR"
+
+        fun newInstance(host: Boolean, isLate: Boolean, listener: MenuListener): MultiplayerCharacterSelectorFragment {
+            val fragment = MultiplayerCharacterSelectorFragment()
+            fragment.setArgs(host, isLate, listener)
+            return fragment
+        }
     }
 
     private lateinit var fragmentMultiplayerCharacterSelectorBinding: FragmentMultiplayerCharacterSelectorBinding

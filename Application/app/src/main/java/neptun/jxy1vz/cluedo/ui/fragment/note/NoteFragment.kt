@@ -13,8 +13,24 @@ import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class NoteFragment(private val player: Player, private val listener: DialogDismiss) : Fragment(),
+class NoteFragment : Fragment(),
     ViewModelListener {
+
+    private lateinit var player: Player
+    private lateinit var listener: DialogDismiss
+
+    fun setArgs(p: Player, l: DialogDismiss) {
+        player = p
+        listener = l
+    }
+
+    companion object {
+        fun newInstance(player: Player, listener: DialogDismiss) : NoteFragment {
+            val fragment = NoteFragment()
+            fragment.setArgs(player, listener)
+            return fragment
+        }
+    }
 
     private lateinit var fragmentNoteBinding: FragmentNoteBinding
 

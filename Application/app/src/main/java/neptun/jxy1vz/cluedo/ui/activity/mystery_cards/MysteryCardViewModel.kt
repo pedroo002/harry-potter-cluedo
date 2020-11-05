@@ -323,7 +323,7 @@ class MysteryCardViewModel(
         for (card in cards) {
             if (card.second == playerId)
                 fragmentList.add(
-                    CardFragment(
+                    CardFragment.newInstance(
                         card.first.imageRes
                     )
                 )

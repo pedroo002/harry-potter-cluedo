@@ -12,7 +12,21 @@ import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class OnBackPressedFragment(private val listener: DialogDismiss) : Fragment(), ViewModelListener {
+class OnBackPressedFragment : Fragment(), ViewModelListener {
+
+    private lateinit var listener: DialogDismiss
+
+    fun setListener(l: DialogDismiss) {
+        listener = l
+    }
+
+    companion object {
+        fun newInstance(listener: DialogDismiss) : OnBackPressedFragment {
+            val fragment = OnBackPressedFragment()
+            fragment.setListener(listener)
+            return fragment
+        }
+    }
 
     private lateinit var fragmentOnBackPressedBinding: FragmentOnBackPressedBinding
 

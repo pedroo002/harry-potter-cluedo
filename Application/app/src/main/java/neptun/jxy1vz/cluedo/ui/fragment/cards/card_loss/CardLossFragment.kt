@@ -15,8 +15,26 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
 
-class CardLossFragment(private val title: String, private val cardList: List<HelperCard>, private val listener: ThrowCardListener) : Fragment(),
+class CardLossFragment : Fragment(),
     ViewModelListener, ViewPager.OnPageChangeListener {
+
+    private lateinit var title: String
+    private lateinit var cardList: List<HelperCard>
+    private lateinit var listener: ThrowCardListener
+
+    fun setArgs(title: String, cardList: List<HelperCard>, listener: ThrowCardListener) {
+        this.title = title
+        this.cardList = cardList
+        this.listener = listener
+    }
+
+    companion object {
+        fun newInstance(title: String, cardList: List<HelperCard>, listener: ThrowCardListener): CardLossFragment {
+            val fragment = CardLossFragment()
+            fragment.setArgs(title, cardList, listener)
+            return fragment
+        }
+    }
 
     interface ThrowCardListener {
         fun onThrow()
@@ -42,7 +60,7 @@ class CardLossFragment(private val title: String, private val cardList: List<Hel
         fragmentList = ArrayList()
         for (card in cardList) {
             fragmentList.add(
-                CardFragment(
+                CardFragment.newInstance(
                     card.imageRes
                 )
             )

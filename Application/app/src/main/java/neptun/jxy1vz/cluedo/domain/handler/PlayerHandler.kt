@@ -160,7 +160,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) {
             }
         }
 
-        val fragment = DarkCardFragment(mPlayerId!!, card, gameModels.playerList, playerIds, map.dialogHandler)
+        val fragment = DarkCardFragment.newInstance(mPlayerId!!, card, gameModels.playerList, playerIds, map.dialogHandler)
         map.insertFragment(fragment)
     }
 }

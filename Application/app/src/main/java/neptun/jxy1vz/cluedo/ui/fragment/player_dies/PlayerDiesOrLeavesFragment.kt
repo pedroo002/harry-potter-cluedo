@@ -19,7 +19,25 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
 
-class PlayerDiesOrLeavesFragment(private val player: Player, private val dead: Boolean, private val listener: DialogDismiss) : Fragment(), ViewModelListener {
+class PlayerDiesOrLeavesFragment : Fragment(), ViewModelListener {
+
+    private lateinit var player: Player
+    private var dead: Boolean = false
+    private lateinit var listener: DialogDismiss
+
+    fun setArgs(p: Player, dead: Boolean, l: DialogDismiss) {
+        player = p
+        this.dead = dead
+        listener = l
+    }
+
+    companion object {
+        fun newInstance(player: Player, dead: Boolean, listener: DialogDismiss) : PlayerDiesOrLeavesFragment {
+            val fragment = PlayerDiesOrLeavesFragment()
+            fragment.setArgs(player, dead, listener)
+            return fragment
+        }
+    }
 
     private lateinit var fragmentPlayerDiesBinding: FragmentPlayerDiesBinding
     private lateinit var adapter: CardPagerAdapter
@@ -46,7 +64,7 @@ class PlayerDiesOrLeavesFragment(private val player: Player, private val dead: B
         val fragmentList = ArrayList<CardFragment>()
         for (card in player.mysteryCards) {
             fragmentList.add(
-                CardFragment(
+                CardFragment.newInstance(
                     card.imageRes
                 )
             )

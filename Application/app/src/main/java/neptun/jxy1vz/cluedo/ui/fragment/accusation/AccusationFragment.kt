@@ -12,8 +12,24 @@ import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 
-class AccusationFragment(private val playerId: Int, private val listener: DialogDismiss) : Fragment(),
+class AccusationFragment : Fragment(),
     AccusationViewModel.FinalizationListener {
+
+    private var playerId: Int = 0
+    private lateinit var listener: DialogDismiss
+
+    fun setArgs(id: Int, l: DialogDismiss) {
+        playerId = id
+        listener = l
+    }
+
+    companion object {
+        fun newInstance(playerId: Int, listener: DialogDismiss): AccusationFragment {
+            val fragment = AccusationFragment()
+            fragment.setArgs(playerId, listener)
+            return fragment
+        }
+    }
 
     private lateinit var fragmentAccusationBinding: FragmentAccusationBinding
 

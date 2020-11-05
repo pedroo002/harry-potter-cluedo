@@ -1,18 +1,15 @@
 package neptun.jxy1vz.cluedo.ui.fragment.channel.join
 
 import android.content.Context
-import android.graphics.Color
 import android.widget.ArrayAdapter
 import androidx.databinding.BaseObservable
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleCoroutineScope
-import kotlinx.android.synthetic.main.fragment_create_channel.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentJoinChannelBinding
-import neptun.jxy1vz.cluedo.domain.util.setNumPicker
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.channel.ChannelApiModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
@@ -40,7 +37,7 @@ class JoinChannelViewModel(
     private var num3 = 0
     private var num4 = 0
 
-    private var numPicker: NumPickerFragment = NumPickerFragment(this)
+    private var numPicker: NumPickerFragment = NumPickerFragment.newInstance(this)
 
     init {
         fm.beginTransaction().add(R.id.numPicker, numPicker).commit()

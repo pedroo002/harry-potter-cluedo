@@ -12,7 +12,21 @@ import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class NotesOrDiceFragment(private val listener: DialogDismiss) : Fragment(), ViewModelListener, NotesOrDiceViewModel.OptionListener {
+class NotesOrDiceFragment : Fragment(), ViewModelListener, NotesOrDiceViewModel.OptionListener {
+
+    private lateinit var listener: DialogDismiss
+
+    fun setListener(l: DialogDismiss) {
+        listener = l
+    }
+
+    companion object {
+        fun newInstance(listener: DialogDismiss) : NotesOrDiceFragment {
+            val fragment = NotesOrDiceFragment()
+            fragment.setListener(listener)
+            return fragment
+        }
+    }
 
     enum class Option {
         NOTES,

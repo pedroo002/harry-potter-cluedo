@@ -146,7 +146,7 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
     fun openCharacterSelector(isLate: Boolean = false) {
         lifecycleScope.launch(Dispatchers.Main) {
-            parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment(false, isLate, this@JoinChannelFragment), MultiplayerCharacterSelectorFragment.TAG).addToBackStack("CharacterSelectorMulti").commit()
+            parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment.newInstance(false, isLate, this@JoinChannelFragment), MultiplayerCharacterSelectorFragment.TAG).addToBackStack("CharacterSelectorMulti").commit()
             onFragmentClose()
         }
     }

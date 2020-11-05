@@ -282,13 +282,13 @@ class DarkCardViewModel(
 
                                         if (player.id == MapViewModel.mPlayerId) {
                                             val fragment =
-                                                UserDiesFragment(player, MapViewModel.dialogHandler)
+                                                UserDiesFragment.newInstance(player, MapViewModel.dialogHandler)
                                             MapViewModel.insertFragment(fragment, true)
                                         } else if (MapViewModel.player.hp > 0) {
                                             MapViewModel.isGameAbleToContinue = false
                                             if (MapViewModel.playerInTurn == player.id)
                                                 MapViewModel.playerInTurnDied = true
-                                            val fragment = PlayerDiesOrLeavesFragment(
+                                            val fragment = PlayerDiesOrLeavesFragment.newInstance(
                                                 player,
                                                 true,
                                                 MapViewModel.dialogHandler
@@ -368,7 +368,7 @@ class DarkCardViewModel(
                                 LossType.SPELL -> context.resources.getString(R.string.spell_loss)
                                 else -> context.resources.getString(R.string.ally_loss)
                             }
-                            fm.beginTransaction().replace(R.id.cardLossFrame, CardLossFragment(title, properHelperCards, this)).commit()
+                            fm.beginTransaction().replace(R.id.cardLossFrame, CardLossFragment.newInstance(title, properHelperCards, this)).commit()
                             bind.darkCardRoot.btnClose.isEnabled = false
                         }
                         else if (!MapViewModel.isGameModeMulti()) {

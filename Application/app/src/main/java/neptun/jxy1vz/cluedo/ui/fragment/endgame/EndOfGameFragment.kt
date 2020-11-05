@@ -13,7 +13,23 @@ import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class EndOfGameFragment(private val suspect: Suspect, private val listener: DialogDismiss) : Fragment(), ViewModelListener {
+class EndOfGameFragment : Fragment(), ViewModelListener {
+
+    private lateinit var suspect: Suspect
+    private lateinit var listener: DialogDismiss
+
+    fun setArgs(sus: Suspect, l: DialogDismiss) {
+        suspect = sus
+        listener = l
+    }
+
+    companion object {
+        fun newInstance(suspect: Suspect, listener: DialogDismiss): EndOfGameFragment {
+            val fragment = EndOfGameFragment()
+            fragment.setArgs(suspect, listener)
+            return fragment
+        }
+    }
 
     private lateinit var fragmentEndOfGameBinding: FragmentEndOfGameBinding
 

@@ -11,7 +11,25 @@ import neptun.jxy1vz.cluedo.databinding.FragmentDiceRollerBinding
 import neptun.jxy1vz.cluedo.domain.handler.StateMachineHandler
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 
-class DiceRollerFragment(private val listener: DiceResultInterface, private val playerId: Int, private val felixFelicis: Boolean) : Fragment(), DiceRollerViewModel.DiceFragmentListener {
+class DiceRollerFragment : Fragment(), DiceRollerViewModel.DiceFragmentListener {
+
+    private lateinit var listener: DiceResultInterface
+    private var playerId: Int = 0
+    private var felixFelicis: Boolean = false
+
+    fun setArgs(l: DiceResultInterface, id: Int, felix: Boolean) {
+        listener = l
+        playerId = id
+        felixFelicis = felix
+    }
+
+    companion object {
+        fun newInstance(listener: DiceResultInterface, playerId: Int, felixFelicis: Boolean): DiceRollerFragment {
+            val fragment = DiceRollerFragment()
+            fragment.setArgs(listener, playerId, felixFelicis)
+            return fragment
+        }
+    }
 
     interface DiceResultInterface {
         fun onDiceRoll(playerId: Int, sum: Int, house: StateMachineHandler.HogwartsHouse?)
