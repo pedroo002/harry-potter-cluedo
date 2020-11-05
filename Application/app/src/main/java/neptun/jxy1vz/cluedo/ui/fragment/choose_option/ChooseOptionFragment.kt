@@ -42,6 +42,6 @@ class ChooseOptionFragment(private val canStep: Boolean, private val listener: D
             listener.onOptionsDismiss(accusation)
         else
             MapViewModel.enableScrolling()
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }

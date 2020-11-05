@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCardLossBinding
 import neptun.jxy1vz.cluedo.domain.model.card.HelperCard
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
@@ -58,7 +59,7 @@ class CardLossFragment(private val title: String, private val cardList: List<Hel
 
     override fun onFinish() {
         listener.onThrow()
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 
     override fun onPageScrollStateChanged(state: Int) {}

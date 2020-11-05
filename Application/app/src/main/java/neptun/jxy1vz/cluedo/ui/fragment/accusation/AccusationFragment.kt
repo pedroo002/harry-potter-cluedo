@@ -10,6 +10,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentAccusationBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Suspect
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 
 class AccusationFragment(private val playerId: Int, private val listener: DialogDismiss) : Fragment(),
     AccusationViewModel.FinalizationListener {
@@ -28,6 +29,6 @@ class AccusationFragment(private val playerId: Int, private val listener: Dialog
 
     override fun onFinalized(suspect: Suspect) {
         listener.onAccusationDismiss(suspect)
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }

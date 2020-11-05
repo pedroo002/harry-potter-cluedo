@@ -10,6 +10,7 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentUnusedMysteryCardsBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
 class UnusedMysteryCardsFragment(
@@ -43,6 +44,6 @@ class UnusedMysteryCardsFragment(
 
     override fun onFinish() {
         listener.onCardRevealDismiss()
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }

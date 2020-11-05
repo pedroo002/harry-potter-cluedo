@@ -16,6 +16,7 @@ import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
 class UserDiesFragment(private val player: Player, private val listener: DialogDismiss) : Fragment(), ViewModelListener {
@@ -34,6 +35,6 @@ class UserDiesFragment(private val player: Player, private val listener: DialogD
 
     override fun onFinish() {
         listener.onPlayerDiesDismiss(null)
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }

@@ -53,7 +53,7 @@ class IncriminationDetailsFragment(private val suspect: Suspect, private val lis
 
     override fun onFinish() {
         listener.onIncriminationDetailsDismiss(needToTakeNotes)
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 
     override fun deliverInformation(needToTakeNotes: Boolean) {

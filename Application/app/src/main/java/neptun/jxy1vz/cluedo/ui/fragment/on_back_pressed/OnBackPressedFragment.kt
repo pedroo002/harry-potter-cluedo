@@ -30,6 +30,6 @@ class OnBackPressedFragment(private val listener: DialogDismiss) : Fragment(), V
     override fun onFinish() {
         listener.onBackPressedDismiss(fragmentOnBackPressedBinding.viewModel!!.quit)
         MapViewModel.enableScrolling()
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }

@@ -41,6 +41,6 @@ class DiceRollerFragment(private val listener: DiceResultInterface, private val 
         }
         if (sum > 0)
             listener.onDiceRoll(playerId, sum, house)
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }

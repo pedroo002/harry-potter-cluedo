@@ -38,11 +38,11 @@ class IncriminationFragment(private val gameModels: GameModels,
 
     override fun onIncriminationFinalization(tool: String, suspect: String) {
         listener.getIncrimination(Suspect(playerId, gameModels.roomList[roomId].name, tool, suspect))
-        activity?.supportFragmentManager!!.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 
     override fun onSkip() {
         MapViewModel.enableScrolling()
-        activity?.supportFragmentManager!!.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }

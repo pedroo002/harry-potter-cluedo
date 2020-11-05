@@ -32,7 +32,7 @@ class NotesOrDiceFragment(private val listener: DialogDismiss) : Fragment(), Vie
     }
 
     override fun onFinish() {
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
         MapViewModel.enableScrolling()
     }
 

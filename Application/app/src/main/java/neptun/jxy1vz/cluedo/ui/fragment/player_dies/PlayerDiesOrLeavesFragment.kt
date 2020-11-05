@@ -14,6 +14,7 @@ import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.databinding.FragmentPlayerDiesBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Player
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
@@ -63,6 +64,6 @@ class PlayerDiesOrLeavesFragment(private val player: Player, private val dead: B
             listener.onPlayerDiesDismiss(player)
         else
             listener.onPlayerLeavesDismiss()
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }
