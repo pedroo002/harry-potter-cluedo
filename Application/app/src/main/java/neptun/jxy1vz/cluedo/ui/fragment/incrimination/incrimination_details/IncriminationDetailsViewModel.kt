@@ -240,6 +240,7 @@ class IncriminationDetailsViewModel(
 
     private fun processSkip(playerId: Int) {
         GlobalScope.launch(Dispatchers.Main) {
+            bind.detailsRoot.ivSkipBubble.visibility = ImageView.VISIBLE
             (AnimatorInflater.loadAnimator(
                 bind.detailsRoot.context,
                 R.animator.appear
@@ -247,11 +248,21 @@ class IncriminationDetailsViewModel(
                 setTarget(bind.detailsRoot.ivSkipBubble)
                 start()
                 doOnEnd {
-                    if (suspect.playerId == MapViewModel.mPlayerId) {
-                        val currentIdx = MapViewModel.gameModels.playerList.indexOf(
-                            MapViewModel.playerHandler.getPlayerById(playerId)
-                        )
-                        sendRequestToNextPlayer(currentIdx)
+                    (AnimatorInflater.loadAnimator(
+                        bind.detailsRoot.context,
+                        R.animator.disappear
+                    ) as AnimatorSet).apply {
+                        setTarget(bind.detailsRoot.ivSkipBubble)
+                        start()
+                        doOnEnd {
+                            bind.detailsRoot.ivSkipBubble.visibility = ImageView.GONE
+                            if (suspect.playerId == MapViewModel.mPlayerId) {
+                                val currentIdx = MapViewModel.gameModels.playerList.indexOf(
+                                    MapViewModel.playerHandler.getPlayerById(playerId)
+                                )
+                                sendRequestToNextPlayer(currentIdx)
+                            }
+                        }
                     }
                 }
             }
