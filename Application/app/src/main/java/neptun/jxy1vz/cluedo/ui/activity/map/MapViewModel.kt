@@ -165,6 +165,8 @@ class MapViewModel(
     }
 
     init {
+        debugPrint(gameModels.playerList.toString())
+
         gamePref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
         playerPref = context.getSharedPreferences(context.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
         playMode = gamePref.getString(context.resources.getString(R.string.play_mode_key), "")!!
