@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.BaseObservable
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.android.material.snackbar.Snackbar
 import com.pusher.client.channel.PresenceChannelEventListener
@@ -23,6 +24,7 @@ import neptun.jxy1vz.cluedo.network.model.channel.ChannelRequest
 import neptun.jxy1vz.cluedo.network.model.channel.JoinRequest
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
+import neptun.jxy1vz.cluedo.ui.fragment.channel.num_picker.NumPickerFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
@@ -31,8 +33,9 @@ class CreateChannelViewModel(
     private val bind: FragmentCreateChannelBinding,
     private val context: Context,
     private val lifecycleScope: LifecycleCoroutineScope,
+    fm: FragmentManager,
     private val listener: ViewModelListener
-) : BaseObservable() {
+) : BaseObservable(), NumPickerFragment.NumPickerChangeListener {
 
     private val retrofit = RetrofitInstance.getInstance(context)
     private val pusher = PusherInstance.getInstance()
@@ -43,11 +46,15 @@ class CreateChannelViewModel(
 
     private var fragmentKilled = false
 
+    private var num1 = 0
+    private var num2 = 0
+    private var num3 = 0
+    private var num4 = 0
+
+    private var numPicker: NumPickerFragment = NumPickerFragment(this)
+
     init {
-        setNumPicker(bind.root.numAuthKey1, 0, 9, Color.WHITE)
-        setNumPicker(bind.root.numAuthKey2, 0, 9, Color.WHITE)
-        setNumPicker(bind.root.numAuthKey3, 0, 9, Color.WHITE)
-        setNumPicker(bind.root.numAuthKey4, 0, 9, Color.WHITE)
+        fm.beginTransaction().add(R.id.numPicker, numPicker).commit()
 
         bind.root.txtChannelName.addTextChangedListener {
             bind.root.btnCreateChannel.isEnabled = it!!.isNotEmpty()
@@ -70,7 +77,7 @@ class CreateChannelViewModel(
     fun createChannel() {
         val channelName = bind.txtChannelName.text.toString()
         val authKey =
-            "${bind.numAuthKey1.value}${bind.numAuthKey2.value}${bind.numAuthKey3.value}${bind.numAuthKey4.value}"
+            "${num1}${num2}${num3}${num4}"
 
         val playerCount = context.getSharedPreferences(
             context.resources.getString(R.string.game_params_pref),
@@ -105,10 +112,7 @@ class CreateChannelViewModel(
                     editor.apply()
 
                     withContext(Dispatchers.Main) {
-                        bind.numAuthKey1.isEnabled = false
-                        bind.numAuthKey2.isEnabled = false
-                        bind.numAuthKey3.isEnabled = false
-                        bind.numAuthKey4.isEnabled = false
+                        numPicker.disablePickers()
                         bind.btnCreateChannel.isEnabled = false
                         bind.txtChannelName.isEnabled = false
 
@@ -177,5 +181,12 @@ class CreateChannelViewModel(
 
     fun notifyFragmentKilled() {
         fragmentKilled = true
+    }
+
+    override fun onValueChanged(num1: Int, num2: Int, num3: Int, num4: Int) {
+        this.num1 = num1
+        this.num2 = num2
+        this.num3 = num3
+        this.num4 = num4
     }
 }

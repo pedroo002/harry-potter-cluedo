@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.widget.ArrayAdapter
 import androidx.databinding.BaseObservable
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.android.synthetic.main.fragment_create_channel.view.*
 import kotlinx.coroutines.Dispatchers
@@ -15,8 +16,15 @@ import neptun.jxy1vz.cluedo.domain.util.setNumPicker
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.channel.ChannelApiModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
+import neptun.jxy1vz.cluedo.ui.fragment.channel.num_picker.NumPickerFragment
 
-class JoinChannelViewModel(private val bind: FragmentJoinChannelBinding, private val context: Context, private val lifecycleScope: LifecycleCoroutineScope, private val listener: ViewModelListener) : BaseObservable() {
+class JoinChannelViewModel(
+    private val bind: FragmentJoinChannelBinding,
+    private val context: Context,
+    private val lifecycleScope: LifecycleCoroutineScope,
+    fm: FragmentManager,
+    private val listener: ViewModelListener
+) : BaseObservable(), NumPickerFragment.NumPickerChangeListener {
 
     var authKey = ""
     var channel = ""
@@ -27,11 +35,15 @@ class JoinChannelViewModel(private val bind: FragmentJoinChannelBinding, private
     lateinit var channelNames: ArrayList<String>
     private val retrofit = RetrofitInstance.getInstance(context)
 
+    private var num1 = 0
+    private var num2 = 0
+    private var num3 = 0
+    private var num4 = 0
+
+    private var numPicker: NumPickerFragment = NumPickerFragment(this)
+
     init {
-        setNumPicker(bind.root.numAuthKey1, 0, 9, Color.WHITE)
-        setNumPicker(bind.root.numAuthKey2, 0, 9, Color.WHITE)
-        setNumPicker(bind.root.numAuthKey3, 0, 9, Color.WHITE)
-        setNumPicker(bind.root.numAuthKey4, 0, 9, Color.WHITE)
+        fm.beginTransaction().add(R.id.numPicker, numPicker).commit()
 
         bind.swipeJoin.setOnRefreshListener {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -48,7 +60,10 @@ class JoinChannelViewModel(private val bind: FragmentJoinChannelBinding, private
     }
 
     private suspend fun updateChannelList() {
-        val playerCount = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE).getInt(context.resources.getString(R.string.player_count_key), 3)
+        val playerCount = context.getSharedPreferences(
+            context.resources.getString(R.string.game_params_pref),
+            Context.MODE_PRIVATE
+        ).getInt(context.resources.getString(R.string.player_count_key), 3)
 
         channels = retrofit.cluedo.getChannelsByPlayerLimit(playerCount)
         channels?.let {
@@ -67,16 +82,21 @@ class JoinChannelViewModel(private val bind: FragmentJoinChannelBinding, private
     }
 
     fun join() {
-        bind.numAuthKey1.isEnabled = false
-        bind.numAuthKey2.isEnabled = false
-        bind.numAuthKey3.isEnabled = false
-        bind.numAuthKey4.isEnabled = false
+        numPicker.disablePickers()
         bind.swipeJoin.isEnabled = false
 
-        authKey = "${bind.numAuthKey1.value}${bind.numAuthKey2.value}${bind.numAuthKey3.value}${bind.numAuthKey4.value}"
+        authKey =
+            "${num1}${num2}${num3}${num4}"
         channel = bind.spinnerAllChannels.selectedItem.toString()
         channelId = channels!![channelNames.indexOf(channel)].id
         joinPressed = true
         listener.onFinish()
+    }
+
+    override fun onValueChanged(num1: Int, num2: Int, num3: Int, num4: Int) {
+        this.num1 = num1
+        this.num2 = num2
+        this.num3 = num3
+        this.num4 = num4
     }
 }

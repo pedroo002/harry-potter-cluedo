@@ -94,6 +94,9 @@ interface CluedoApi {
     @POST("/map-loaded")
     suspend fun notifyMapLoaded(@Query("channel_name") channelName: String)
 
+    @POST("/mystery-cards-activity-loaded")
+    suspend fun notifyMysteryCardsLoaded(@Query("channel_name") channelName: String)
+
     @POST("/dark-cards-ready")
     suspend fun notifyDarkCardsReady(@Query("channel_name") channelName: String)
 

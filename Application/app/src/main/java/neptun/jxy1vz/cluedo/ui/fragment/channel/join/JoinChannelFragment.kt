@@ -62,7 +62,7 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
         pusher.connect()
 
         fragmentJoinChannelBinding.joinChannelViewModel =
-            JoinChannelViewModel(fragmentJoinChannelBinding, context!!, lifecycleScope, this)
+            JoinChannelViewModel(fragmentJoinChannelBinding, context!!, lifecycleScope, parentActivity.supportFragmentManager, this)
         return fragmentJoinChannelBinding.root
     }
 

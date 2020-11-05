@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/semi_transparent_background">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.channel.num_picker.NumPickerViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/numPickerRoot">
+
+        <TextView
+            android:id="@+id/tvLabelAuthKey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/auth_key"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <NumberPicker
+            android:id="@+id/numAuthKey1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toStartOf="@id/numAuthKey2"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey" />
+
+        <NumberPicker
+            android:id="@+id/numAuthKey2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toStartOf="@id/guidelineMiddle"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey" />
+
+        <NumberPicker
+            android:id="@+id/numAuthKey3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toEndOf="@id/guidelineMiddle"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey" />
+
+        <NumberPicker
+            android:id="@+id/numAuthKey4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toEndOf="@id/numAuthKey3"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelAuthKey" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineMiddle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

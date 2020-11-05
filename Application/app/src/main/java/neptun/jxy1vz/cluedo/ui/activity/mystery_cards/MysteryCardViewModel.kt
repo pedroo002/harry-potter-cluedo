@@ -69,8 +69,9 @@ class MysteryCardViewModel(
 
     private lateinit var playerList: List<Player>
 
-    private var retrofit: RetrofitInstance? = null
-    private var pusherChannel: String? = null
+    private lateinit var retrofit: RetrofitInstance
+    private lateinit var apiChannelName: String
+    private lateinit var pusherChannel: String
     private var playersToWait: Int? = null
 
     private var cardsArrived = false
@@ -97,7 +98,8 @@ class MysteryCardViewModel(
                 retrofit = RetrofitInstance.getInstance(context)
                 val channelId =
                     playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
-                pusherChannel = "presence-${retrofit!!.cluedo.getChannel(channelId)!!.channelName}"
+                apiChannelName = retrofit.cluedo.getChannel(channelId)!!.channelName
+                pusherChannel = "presence-${apiChannelName}"
 
                 val pusher = PusherInstance.getInstance()
 
@@ -109,10 +111,6 @@ class MysteryCardViewModel(
                             false
                         )
                     ) {
-                        bind.refreshLayoutRoot.setOnRefreshListener {
-                            sendRequest()
-                        }
-
                         pusher.getPresenceChannel(pusherChannel)
                             .bind("mystery-card-pairs", object : PresenceChannelEventListener {
                                 override fun onEvent(
@@ -123,7 +121,7 @@ class MysteryCardViewModel(
                                     if (cardsArrived)
                                         return
                                     val messageJson =
-                                        retrofit!!.moshi.adapter(MysteryCardsMessage::class.java)
+                                        retrofit.moshi.adapter(MysteryCardsMessage::class.java)
                                             .fromJson(message!!)!!
                                     convertJsonToPairsAndLoadMysteryCards(messageJson)
                                     cardsArrived = true
@@ -140,9 +138,11 @@ class MysteryCardViewModel(
                                 override fun userSubscribed(p0: String?, p1: User?) {}
                                 override fun userUnsubscribed(p0: String?, p1: User?) {}
                             })
-                    } else {
-                        bind.refreshLayoutRoot.isEnabled = false
 
+                        withContext(Dispatchers.IO) {
+                            retrofit.cluedo.notifyMysteryCardsLoaded(apiChannelName)
+                        }
+                    } else {
                         pusher.getPresenceChannel(pusherChannel)
                             .bind("fetch-cards", object : PresenceChannelEventListener {
                                 override fun onEvent(
@@ -215,15 +215,6 @@ class MysteryCardViewModel(
         }
     }
 
-    private fun sendRequest() {
-        GlobalScope.launch(Dispatchers.IO) {
-            retrofit!!.cluedo.sendCardRequestToHost(pusherChannel!!)
-            withContext(Dispatchers.Main) {
-                bind.refreshLayoutRoot.isRefreshing = false
-            }
-        }
-    }
-
     fun openHogwarts() {
         when (gameMode) {
             gameModeList[0] -> {
@@ -232,9 +223,12 @@ class MysteryCardViewModel(
             gameModeList[1] -> {
                 GlobalScope.launch(Dispatchers.IO) {
                     RetrofitInstance.getInstance(context).cluedo.readyToLoadMap(
-                        pusherChannel!!,
+                        pusherChannel,
                         playerName
                     )
+                    withContext(Dispatchers.Main) {
+                        bind.btnGo.isEnabled = false
+                    }
                 }
             }
         }
@@ -270,13 +264,13 @@ class MysteryCardViewModel(
                         )
                     }))
                     val moshiJson =
-                        retrofit!!.moshi.adapter(MysteryCardsMessage::class.java).toJson(queryPairs)
+                        retrofit.moshi.adapter(MysteryCardsMessage::class.java).toJson(queryPairs)
                     val body =
                         moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
                     cardPairsRequestBody = body
 
-                    sendPairsToClients()
+                    retrofit.cluedo.notifyMysteryCardsLoaded(apiChannelName)
 
                     withContext(Dispatchers.Main) {
                         loadMysteryCards(cards)
@@ -288,7 +282,7 @@ class MysteryCardViewModel(
 
     private fun sendPairsToClients() {
         GlobalScope.launch(Dispatchers.IO) {
-            retrofit!!.cluedo.sendMysteryCardPairs(pusherChannel!!, cardPairsRequestBody)
+            retrofit.cluedo.sendMysteryCardPairs(pusherChannel, cardPairsRequestBody)
         }
     }
 

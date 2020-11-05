@@ -36,7 +36,7 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
         fragmentCreateChannelBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_channel, container, false)
         parentActivity = activity!! as MenuActivity
 
-        fragmentCreateChannelBinding.createChannelViewModel = CreateChannelViewModel(fragmentCreateChannelBinding, context!!, lifecycleScope,  this)
+        fragmentCreateChannelBinding.createChannelViewModel = CreateChannelViewModel(fragmentCreateChannelBinding, context!!, lifecycleScope, parentActivity.supportFragmentManager,  this)
         return fragmentCreateChannelBinding.root
     }
 
