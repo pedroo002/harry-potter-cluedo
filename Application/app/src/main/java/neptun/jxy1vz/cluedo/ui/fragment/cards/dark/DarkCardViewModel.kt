@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.databinding.FragmentDarkCardBinding
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.card.*
@@ -288,14 +289,17 @@ class DarkCardViewModel(
                                             MapViewModel.isGameAbleToContinue = false
                                             if (MapViewModel.playerInTurn == player.id)
                                                 MapViewModel.playerInTurnDied = true
+
+                                            removePlayer(player)
+
+                                            val title = "${player.card.name} ${context.resources.getString(R.string.he_lost_his_hps)}"
                                             val fragment = PlayerDiesOrLeavesFragment.newInstance(
                                                 player,
                                                 true,
-                                                MapViewModel.dialogHandler
+                                                MapViewModel.dialogHandler,
+                                                title
                                             )
                                             MapViewModel.insertFragment(fragment, true)
-
-                                            removePlayer(player)
                                         }
                                     }
                                 }

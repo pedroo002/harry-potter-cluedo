@@ -24,7 +24,10 @@ class EndOfGameFragment : Fragment(), ViewModelListener {
     }
 
     companion object {
+        var goodSolution = false
+
         fun newInstance(suspect: Suspect, listener: DialogDismiss): EndOfGameFragment {
+            goodSolution = false
             val fragment = EndOfGameFragment()
             fragment.setArgs(suspect, listener)
             return fragment

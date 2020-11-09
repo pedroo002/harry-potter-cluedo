@@ -91,7 +91,7 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
         }
     }
 
-    override fun exitToMenu() {
+    override fun exitToMenu(notify: Boolean) {
         if (playMode == playModes[1]) {
             retrofit.cluedo.apply {
                 lifecycleScope.launch(Dispatchers.IO) {
@@ -102,7 +102,8 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
                         unsubscribe(pusherChannel)
                         disconnect()
                     }
-                    activityMapBinding.mapViewModel!!.quitDuringGame()
+                    if (notify)
+                        activityMapBinding.mapViewModel!!.quitDuringGame()
                 }
             }
         }

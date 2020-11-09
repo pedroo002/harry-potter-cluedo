@@ -22,7 +22,7 @@ class PlayerDiesOrLeavesViewModel(
     private val bind: FragmentPlayerDiesBinding,
     context: Context,
     player: Player,
-    dead: Boolean,
+    title: String,
     lifecycleScope: LifecycleCoroutineScope,
     private val listener: ViewModelListener
 ) : BaseObservable() {
@@ -31,13 +31,6 @@ class PlayerDiesOrLeavesViewModel(
 
     init {
         lifecycleScope.launch(Dispatchers.IO) {
-            val title = if (dead)
-                "${player.card.name} ${context.resources.getString(R.string.he_lost_his_hps)}"
-            else {
-                val playerName = CluedoDatabase.getInstance(context).playerDao().getPlayers()!!
-                    .find { p -> p.characterName == player.card.name }!!.playerName
-                "$playerName ${context.resources.getString(R.string.left_the_game)}"
-            }
             setTitle(title)
         }
 

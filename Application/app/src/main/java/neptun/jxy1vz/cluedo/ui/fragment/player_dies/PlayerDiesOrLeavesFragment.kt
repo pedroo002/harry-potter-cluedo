@@ -24,17 +24,19 @@ class PlayerDiesOrLeavesFragment : Fragment(), ViewModelListener {
     private lateinit var player: Player
     private var dead: Boolean = false
     private lateinit var listener: DialogDismiss
+    private lateinit var title: String
 
-    fun setArgs(p: Player, dead: Boolean, l: DialogDismiss) {
+    fun setArgs(p: Player, dead: Boolean, l: DialogDismiss, t: String) {
         player = p
         this.dead = dead
         listener = l
+        title = t
     }
 
     companion object {
-        fun newInstance(player: Player, dead: Boolean, listener: DialogDismiss) : PlayerDiesOrLeavesFragment {
+        fun newInstance(player: Player, dead: Boolean, listener: DialogDismiss, title: String) : PlayerDiesOrLeavesFragment {
             val fragment = PlayerDiesOrLeavesFragment()
-            fragment.setArgs(player, dead, listener)
+            fragment.setArgs(player, dead, listener, title)
             return fragment
         }
     }
@@ -52,7 +54,7 @@ class PlayerDiesOrLeavesFragment : Fragment(), ViewModelListener {
             fragmentPlayerDiesBinding,
             context!!,
             player,
-            dead,
+            title,
             lifecycleScope,
             this
         )

@@ -5,20 +5,26 @@ import com.pusher.client.channel.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Suspect
+import neptun.jxy1vz.cluedo.domain.util.removePlayer
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.activityListener
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.channelName
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.finishedCardCheck
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameAbleToContinue
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameModeMulti
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.pause
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.player
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerHandler
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurnDied
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.retrofit
@@ -28,6 +34,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.cards.mystery.UnusedMysteryCardsFragment
 import neptun.jxy1vz.cluedo.ui.fragment.endgame.EndOfGameFragment
 import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 import neptun.jxy1vz.cluedo.ui.fragment.notes_or_dice.NotesOrDiceFragment
+import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesFragment
 import java.lang.Exception
 
 class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
@@ -95,14 +102,36 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onEndOfGameDismiss() {
-        activityListener.exitToMenu()
-        map.onDestroy()
+        if (!isGameModeMulti() || (isGameModeMulti() && playerInTurn == mPlayerId)) {
+            activityListener.exitToMenu(false)
+            map.onDestroy()
+        }
+        else {
+            if (EndOfGameFragment.goodSolution) {
+                activityListener.exitToMenu(false)
+                map.onDestroy()
+            }
+            else {
+                GlobalScope.launch(Dispatchers.IO) {
+                    val player = playerHandler.getPlayerById(playerInTurn)
+                    val playerName = CluedoDatabase.getInstance(map.mContext!!).playerDao().getPlayers()!!
+                        .find { p -> p.characterName == player.card.name }!!.playerName
+                    val title = "$playerName ${map.mContext!!.resources.getString(R.string.wrong_solution)} ${map.mContext!!.resources.getString(R.string.he_lost_the_game)}"
+                    withContext(Dispatchers.Main) {
+                        removePlayer(player)
+                        val playerLeavesFragment = PlayerDiesOrLeavesFragment.newInstance(player, false, this@DialogHandler, title)
+                        map.insertFragment(playerLeavesFragment)
+                    }
+                }
+            }
+        }
     }
 
     override fun onPlayerDiesDismiss(player: Player?) {
         if (player == null)
             activityListener.exitToMenu()
         else {
+            setWaitingQueueSize(gameModels.playerList.size)
             val fragment = NoteFragment.newInstance(MapViewModel.player, this)
             map.insertFragment(fragment)
         }
@@ -162,6 +191,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onPlayerLeavesDismiss() {
+        setWaitingQueueSize(gameModels.playerList.size)
         val fragment = NoteFragment.newInstance(player, this)
         map.insertFragment(fragment)
     }

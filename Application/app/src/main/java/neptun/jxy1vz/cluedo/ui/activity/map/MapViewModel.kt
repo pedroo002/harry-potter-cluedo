@@ -15,6 +15,7 @@ import com.pusher.client.channel.User
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.domain.handler.*
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.card.HelperCard
@@ -31,6 +32,7 @@ import neptun.jxy1vz.cluedo.network.model.message.presence.PlayerPresenceMessage
 import neptun.jxy1vz.cluedo.network.model.message.suspect.SuspectMessage
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
+import neptun.jxy1vz.cluedo.ui.fragment.endgame.EndOfGameFragment
 import neptun.jxy1vz.cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsFragment
 import neptun.jxy1vz.cluedo.ui.fragment.on_back_pressed.OnBackPressedFragment
 import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesFragment
@@ -332,8 +334,11 @@ class MapViewModel(
 
             bind("accusation", object :
                 PresenceChannelEventListener {
-                override fun onEvent(channelName: String?, eventName: String?, character: String?) {
-
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    val messageJson = retrofit.moshi.adapter(SuspectMessage::class.java).fromJson(message!!)!!
+                    val suspect = messageJson.toDomainModel()
+                    if (suspect.playerId != mPlayerId)
+                        openAccusationResult(suspect)
                 }
 
                 override fun onSubscriptionSucceeded(p0: String?) {}
@@ -440,7 +445,14 @@ class MapViewModel(
             delay(1000)
             removePlayer(player)
 
-            val fragment = PlayerDiesOrLeavesFragment.newInstance(player, false, dialogHandler)
+            var title = ""
+            withContext(Dispatchers.IO) {
+                val playerName = CluedoDatabase.getInstance(context).playerDao().getPlayers()!!
+                    .find { p -> p.characterName == player.card.name }!!.playerName
+                title = "$playerName ${context.resources.getString(R.string.left_the_game)}"
+            }
+
+            val fragment = PlayerDiesOrLeavesFragment.newInstance(player, false, dialogHandler, title)
             insertFragment(fragment, true)
         }
     }
@@ -465,6 +477,13 @@ class MapViewModel(
         GlobalScope.launch(Dispatchers.Main) {
             val detailsFragment = IncriminationDetailsFragment.newInstance(suspect, dialogHandler)
             insertFragment(detailsFragment)
+        }
+    }
+
+    fun openAccusationResult(suspect: Suspect) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val fragment = EndOfGameFragment.newInstance(suspect, dialogHandler)
+            insertFragment(fragment)
         }
     }
 

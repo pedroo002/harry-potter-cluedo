@@ -106,6 +106,7 @@
     <string name="you_lost_your_hps">Elvesztetted házpontjaidat, kiestél.</string>
     <string name="game_over">A játéknak vége.</string>
     <string name="he_lost_his_hps">elvesztette házpontjait, kiesett</string>
+    <string name="he_lost_the_game">Kiesett a játékból.</string>
     <string name="left_the_game">kilépett a játékból</string>
     <string name="his_mystery_cards">Rejtély kártyái ezek voltak:</string>
     <string name="someone_lost_hps">házpontokat vesztett</string>

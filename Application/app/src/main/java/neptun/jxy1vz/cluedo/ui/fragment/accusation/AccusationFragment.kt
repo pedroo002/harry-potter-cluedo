@@ -6,11 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentAccusationBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Suspect
+import neptun.jxy1vz.cluedo.domain.util.toApiModel
+import neptun.jxy1vz.cluedo.network.model.message.suspect.SuspectMessage
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class AccusationFragment : Fragment(),
     AccusationViewModel.FinalizationListener {
@@ -38,13 +47,26 @@ class AccusationFragment : Fragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        fragmentAccusationBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_accusation, container, false)
-        fragmentAccusationBinding.accusationViewModel = AccusationViewModel(playerId, fragmentAccusationBinding, context!!, this)
+        fragmentAccusationBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_accusation, container, false)
+        fragmentAccusationBinding.accusationViewModel =
+            AccusationViewModel(playerId, fragmentAccusationBinding, context!!, this)
         return fragmentAccusationBinding.root
     }
 
     override fun onFinalized(suspect: Suspect) {
-        listener.onAccusationDismiss(suspect)
-        MapViewModel.fm.beginTransaction().remove(this).commit()
+        GlobalScope.launch(Dispatchers.IO) {
+            if (MapViewModel.isGameModeMulti()) {
+                val suspectMessage = suspect.toApiModel()
+                val json = MapViewModel.retrofit.moshi.adapter(SuspectMessage::class.java)
+                    .toJson(suspectMessage)
+                val body = json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+                MapViewModel.retrofit.cluedo.sendAccusation(MapViewModel.channelName, body)
+            }
+            withContext(Dispatchers.Main) {
+                listener.onAccusationDismiss(suspect)
+                MapViewModel.fm.beginTransaction().remove(this@AccusationFragment).commit()
+            }
+        }
     }
 }
