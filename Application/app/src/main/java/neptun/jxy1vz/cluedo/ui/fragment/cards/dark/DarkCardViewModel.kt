@@ -30,6 +30,7 @@ import neptun.jxy1vz.cluedo.domain.model.card.*
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.domain.model.helper.safeIcons
 import neptun.jxy1vz.cluedo.domain.model.helper.unsafeIcons
+import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.removePlayer
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.message.card_event.CardEventMessage
