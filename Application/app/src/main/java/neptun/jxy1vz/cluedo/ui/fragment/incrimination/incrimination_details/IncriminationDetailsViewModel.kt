@@ -39,10 +39,6 @@ class IncriminationDetailsViewModel(
     private val listener: ViewModelListener
 ) : BaseObservable() {
 
-    interface DetailsFragmentListener {
-        fun deliverInformation(needToTakeNotes: Boolean)
-    }
-
     private var finished = false
     private var playerShowedCard = false
 
