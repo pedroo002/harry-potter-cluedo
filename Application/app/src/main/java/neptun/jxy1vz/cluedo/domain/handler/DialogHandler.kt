@@ -11,6 +11,7 @@ import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Suspect
+import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.removePlayer
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
@@ -35,6 +36,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.endgame.EndOfGameFragment
 import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 import neptun.jxy1vz.cluedo.ui.fragment.notes_or_dice.NotesOrDiceFragment
 import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesFragment
+import okhttp3.internal.wait
 import java.lang.Exception
 
 class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
@@ -66,13 +68,9 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         }
     }
 
-    override fun onIncriminationDetailsDismiss(needToTakeNotes: Boolean) {
-        map.enableScrolling()
-        if (needToTakeNotes) {
-            val fragment = NoteFragment.newInstance(player, this)
-            map.insertFragment(fragment)
-        } else
-            map.gameSequenceHandler.moveToNextPlayer()
+    override fun onIncriminationDetailsDismiss() {
+        val fragment = NoteFragment.newInstance(player, this)
+        map.insertFragment(fragment)
     }
 
     override fun onCardRevealDismiss() {

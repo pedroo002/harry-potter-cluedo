@@ -36,8 +36,7 @@ class IncriminationDetailsViewModel(
     private val bind: FragmentIncriminationDetailsBinding,
     private val context: Context,
     private val suspect: Suspect,
-    private val listener: ViewModelListener,
-    private val fragmentListener: DetailsFragmentListener
+    private val listener: ViewModelListener
 ) : BaseObservable() {
 
     interface DetailsFragmentListener {
@@ -159,8 +158,10 @@ class IncriminationDetailsViewModel(
                         retrofit.moshi.adapter(CardEventMessage::class.java).fromJson(message!!)!!
                     if (messageJson.playerId != MapViewModel.mPlayerId)
                         processCardReveal(messageJson)
-                    else
+                    else {
                         waitForPlayers = MapViewModel.gameModels.playerList.size
+                        MapViewModel.dialogHandler.setWaitingQueueSize(MapViewModel.gameModels.playerList.size)
+                    }
                 }
 
                 override fun onSubscriptionSucceeded(p0: String?) {}
@@ -277,7 +278,7 @@ class IncriminationDetailsViewModel(
             waitForPlayers = MapViewModel.gameModels.playerList.size
             bind.detailsRoot.btnOk.isEnabled = true
 
-            MapViewModel.dialogHandler.setWaitingQueueSize(MapViewModel.gameModels.playerList.size - 1)
+            MapViewModel.dialogHandler.setWaitingQueueSize(MapViewModel.gameModels.playerList.size)
         }
     }
 
@@ -441,7 +442,6 @@ class IncriminationDetailsViewModel(
                     )]
                 )
         }
-        fragmentListener.deliverInformation(false)
     }
 
     private fun showCard(

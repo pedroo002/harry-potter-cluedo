@@ -20,8 +20,7 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class IncriminationDetailsFragment : Fragment(), ViewModelListener,
-    IncriminationDetailsViewModel.DetailsFragmentListener {
+class IncriminationDetailsFragment : Fragment(), ViewModelListener {
 
     private lateinit var suspect: Suspect
     private lateinit var listener: DialogDismiss
@@ -40,7 +39,6 @@ class IncriminationDetailsFragment : Fragment(), ViewModelListener,
     }
 
     private lateinit var fragmentIncriminationDetailsBinding: FragmentIncriminationDetailsBinding
-    private var needToTakeNotes = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,7 +46,7 @@ class IncriminationDetailsFragment : Fragment(), ViewModelListener,
         savedInstanceState: Bundle?
     ): View? {
         fragmentIncriminationDetailsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_incrimination_details, container, false)
-        fragmentIncriminationDetailsBinding.incriminationDetailsViewModel = IncriminationDetailsViewModel(fragmentIncriminationDetailsBinding, context!!, suspect, this, this)
+        fragmentIncriminationDetailsBinding.incriminationDetailsViewModel = IncriminationDetailsViewModel(fragmentIncriminationDetailsBinding, context!!, suspect, this)
         return fragmentIncriminationDetailsBinding.root
     }
 
@@ -68,11 +66,7 @@ class IncriminationDetailsFragment : Fragment(), ViewModelListener,
     }
 
     override fun onFinish() {
-        listener.onIncriminationDetailsDismiss(needToTakeNotes)
+        listener.onIncriminationDetailsDismiss()
         MapViewModel.fm.beginTransaction().remove(this).commit()
-    }
-
-    override fun deliverInformation(needToTakeNotes: Boolean) {
-        this.needToTakeNotes = needToTakeNotes
     }
 }
