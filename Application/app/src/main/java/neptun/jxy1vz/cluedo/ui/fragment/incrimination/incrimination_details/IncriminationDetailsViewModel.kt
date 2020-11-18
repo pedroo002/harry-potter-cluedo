@@ -4,14 +4,10 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import com.pusher.client.channel.PresenceChannelEventListener
@@ -20,17 +16,14 @@ import kotlinx.android.synthetic.main.fragment_incrimination_details.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentIncriminationDetailsBinding
-import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.Suspect
+import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.*
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.message.card_event.CardEventMessage
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
-import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
-import okhttp3.internal.wait
-import java.lang.Exception
+import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
 class IncriminationDetailsViewModel(
     private val bind: FragmentIncriminationDetailsBinding,
@@ -58,8 +51,6 @@ class IncriminationDetailsViewModel(
             ((bind.ivSuspectToken.layoutParams as ConstraintLayout.LayoutParams).matchConstraintPercentHeight * screenHeight / 2).toInt()
         bind.ivSuspectToken.layoutParams = layoutParams
 
-        debugPrint(suspect.toString())
-
         bind.ivRoomToken.setImageResource(roomTokens[roomList.indexOf(suspect.room)])
         bind.ivToolToken.setImageResource(toolTokens[toolList.indexOf(suspect.tool)])
         bind.ivSuspectToken.setImageResource(suspectTokens[suspectList.indexOf(suspect.suspect)])
@@ -80,7 +71,7 @@ class IncriminationDetailsViewModel(
     private suspend fun subscribeToEvents() {
         PusherInstance.getInstance().getPresenceChannel(MapViewModel.channelName).apply {
             retrofit = RetrofitInstance.getInstance(context)
-            if (suspect.playerId == MapViewModel.mPlayerId) {
+            if (MapViewModel.playerInTurn == MapViewModel.mPlayerId) {
                 waitForPlayers = MapViewModel.gameModels.playerList.size - 1
                 bind("incrimination-details-ready", object : PresenceChannelEventListener {
                     override fun onEvent(
@@ -172,7 +163,7 @@ class IncriminationDetailsViewModel(
             bind("nobody-showed-card", object : PresenceChannelEventListener {
                 override fun onEvent(channelName: String?, eventName: String?, message: String?) {
                     processNobodyShowedCard()
-                    if (suspect.playerId == MapViewModel.mPlayerId)
+                    if (MapViewModel.playerInTurn == MapViewModel.mPlayerId)
                         MapViewModel.userFinishedHisTurn = true
                 }
 
@@ -255,7 +246,7 @@ class IncriminationDetailsViewModel(
                         start()
                         doOnEnd {
                             bind.detailsRoot.ivSkipBubble.visibility = ImageView.GONE
-                            if (suspect.playerId == MapViewModel.mPlayerId) {
+                            if (MapViewModel.playerInTurn == MapViewModel.mPlayerId) {
                                 val currentIdx = MapViewModel.gameModels.playerList.indexOf(
                                     MapViewModel.playerHandler.getPlayerById(playerId)
                                 )
@@ -298,27 +289,14 @@ class IncriminationDetailsViewModel(
 
             bind.detailsRoot.ivPlayerWhoShows.setImageResource(R.drawable.szereplo_hatlap)
 
-            val crossImage = ImageView(bind.detailsRoot.context)
-            val layoutParams = ConstraintLayout.LayoutParams(MATCH_CONSTRAINT, MATCH_CONSTRAINT)
-            layoutParams.matchConstraintPercentWidth =
-                (bind.ivPlayerWhoShows.layoutParams as ConstraintLayout.LayoutParams).matchConstraintPercentWidth
-            layoutParams.matchConstraintPercentHeight =
-                (bind.ivPlayerWhoShows.layoutParams as ConstraintLayout.LayoutParams).matchConstraintPercentWidth
-            layoutParams.startToStart = bind.ivPlayerWhoShows.id
-            layoutParams.endToEnd = bind.ivPlayerWhoShows.id
-            layoutParams.topToTop = bind.ivPlayerWhoShows.id
-            layoutParams.bottomToBottom = bind.ivPlayerWhoShows.id
-            crossImage.setImageResource(R.drawable.cross)
-            crossImage.layoutParams = layoutParams
-            bind.detailsRoot.addView(crossImage)
-
             (AnimatorInflater.loadAnimator(
                 bind.detailsRoot.context,
                 R.animator.appear
             ) as AnimatorSet).apply {
-                setTarget(crossImage)
+                setTarget(bind.detailsRoot.ivCross)
                 start()
                 doOnEnd {
+                    bind.detailsRoot.ivCross.visibility = ImageView.VISIBLE
                     bind.ivRoomToken.setImageResource(roomTokensBW[roomList.indexOf(suspect.room)])
                     bind.ivToolToken.setImageResource(toolTokensBW[toolList.indexOf(suspect.tool)])
                     bind.ivSuspectToken.setImageResource(suspectTokensBW[suspectList.indexOf(suspect.suspect)])
@@ -382,7 +360,7 @@ class IncriminationDetailsViewModel(
             processNobodyShowedCard()
         }
 
-        if (suspect.playerId == MapViewModel.mPlayerId)
+        if (MapViewModel.playerInTurn == MapViewModel.mPlayerId)
             MapViewModel.userFinishedHisTurn = true
     }
 
@@ -502,12 +480,11 @@ class IncriminationDetailsViewModel(
     ) {
         ivToken1.setImageResource(bwTokenList1[nameList1.indexOf(name1)])
         ivToken2.setImageResource(bwTokenList2[nameList2.indexOf(name2)])
-        val targetImageView: ImageView = ivTargetToken
         val bwToken: Int = bwTargetTokenList[targetNameList.indexOf(targetName)]
         val token: Int = targetTokenList[targetNameList.indexOf(targetName)]
 
         GlobalScope.launch(Dispatchers.Main) {
-            blinkToken(targetImageView, bwToken, token, 3, 200)
+            blinkToken(ivTargetToken, bwToken, token, 3, 200)
         }
     }
 
@@ -519,125 +496,112 @@ class IncriminationDetailsViewModel(
         val distance =
             (screenWidth - playerWhoShowsLayoutParams.marginEnd - playerWhoShowsLayoutParams.matchConstraintPercentWidth * screenWidth) - (playerWhoSuspectsLayoutParams.marginStart + playerWhoSuspectsLayoutParams.matchConstraintPercentWidth * screenWidth)
 
-        val mysteryCardImage = ImageView(bind.detailsRoot.context)
-
-        val layoutParams =
-            ConstraintLayout.LayoutParams(MATCH_CONSTRAINT, MATCH_CONSTRAINT)
-        layoutParams.topToTop = bind.ivPlayerWhoShows.id
-        layoutParams.bottomToBottom = bind.ivPlayerWhoShows.id
-        layoutParams.endToStart = bind.ivPlayerWhoShows.id
-        layoutParams.matchConstraintPercentWidth =
-            playerWhoShowsLayoutParams.matchConstraintPercentWidth / 2
-        layoutParams.matchConstraintPercentHeight =
-            playerWhoShowsLayoutParams.matchConstraintPercentHeight / 2
-        mysteryCardImage.layoutParams = layoutParams
-
-        val miniCardWidth = layoutParams.matchConstraintPercentWidth * screenWidth
-        mysteryCardImage.translationX = miniCardWidth / 2
-        mysteryCardImage.setImageResource(R.drawable.rejtely_hatlap)
-        bind.detailsRoot.addView(mysteryCardImage)
+        val miniCardWidth = (bind.detailsRoot.ivFloatingCard.layoutParams as ConstraintLayout.LayoutParams).matchConstraintPercentWidth * screenWidth
+        bind.detailsRoot.ivFloatingCard.translationX = miniCardWidth / 2
 
         (AnimatorInflater.loadAnimator(
             bind.detailsRoot.context,
             R.animator.appear
         ) as AnimatorSet).apply {
-            setTarget(mysteryCardImage)
+            setTarget(bind.detailsRoot.ivFloatingCard)
             start()
-            ObjectAnimator.ofFloat(
-                mysteryCardImage,
-                "translationX",
-                mysteryCardImage.translationX,
-                mysteryCardImage.translationX - distance
-            ).apply {
-                duration = 4000
-                startDelay = 1000
-                start()
+            doOnEnd {
+                bind.detailsRoot.ivFloatingCard.visibility = ImageView.VISIBLE
                 ObjectAnimator.ofFloat(
-                    mysteryCardImage,
-                    "translationY",
-                    mysteryCardImage.translationY,
-                    mysteryCardImage.translationY - 100f
+                    bind.detailsRoot.ivFloatingCard,
+                    "translationX",
+                    bind.detailsRoot.ivFloatingCard.translationX,
+                    bind.detailsRoot.ivFloatingCard.translationX - distance
                 ).apply {
-                    duration = 2000
+                    duration = 4000
+                    startDelay = 1000
                     start()
-                    doOnEnd {
-                        ObjectAnimator.ofFloat(
-                            mysteryCardImage,
-                            "translationY",
-                            mysteryCardImage.translationY,
-                            mysteryCardImage.translationY + 100f
-                        ).apply {
-                            duration = 2000
-                            start()
-                        }
-                    }
-                }
-                doOnEnd {
-                    if (playerShowedCard)
-                        mysteryCardImage.setImageResource(revealedCard.imageRes)
-                    (AnimatorInflater.loadAnimator(
-                        bind.detailsRoot.context,
-                        R.animator.disappear
-                    ) as AnimatorSet).apply {
-                        setTarget(mysteryCardImage)
-                        startDelay = 250
+                    ObjectAnimator.ofFloat(
+                        bind.detailsRoot.ivFloatingCard,
+                        "translationY",
+                        bind.detailsRoot.ivFloatingCard.translationY,
+                        bind.detailsRoot.ivFloatingCard.translationY - 100f
+                    ).apply {
+                        duration = 2000
                         start()
                         doOnEnd {
-                            mysteryCardImage.visibility = ImageView.GONE
-                            bind.detailsRoot.removeView(mysteryCardImage)
+                            ObjectAnimator.ofFloat(
+                                bind.detailsRoot.ivFloatingCard,
+                                "translationY",
+                                bind.detailsRoot.ivFloatingCard.translationY,
+                                bind.detailsRoot.ivFloatingCard.translationY + 100f
+                            ).apply {
+                                duration = 2000
+                                start()
+                            }
+                        }
+                    }
+                    doOnEnd {
+                        if (playerShowedCard)
+                            bind.detailsRoot.ivFloatingCard.setImageResource(revealedCard.imageRes)
+                        (AnimatorInflater.loadAnimator(
+                            bind.detailsRoot.context,
+                            R.animator.disappear
+                        ) as AnimatorSet).apply {
+                            setTarget(bind.detailsRoot.ivFloatingCard)
+                            startDelay = 250
+                            start()
+                            doOnEnd {
+                                bind.detailsRoot.ivFloatingCard.visibility = ImageView.GONE
 
-                            if (suspect.playerId == MapViewModel.mPlayerId) {
-                                when {
-                                    toolList.contains(revealedCard.name) -> {
-                                        watchCard(
-                                            bind.ivRoomToken,
-                                            bind.ivSuspectToken,
-                                            bind.ivToolToken,
-                                            roomTokensBW,
-                                            suspectTokensBW,
-                                            toolTokensBW,
-                                            toolTokens,
-                                            roomList,
-                                            suspectList,
-                                            toolList,
-                                            suspect.room,
-                                            suspect.suspect,
-                                            suspect.tool
-                                        )
-                                    }
-                                    roomList.contains(revealedCard.name) -> {
-                                        watchCard(
-                                            bind.ivToolToken,
-                                            bind.ivSuspectToken,
-                                            bind.ivRoomToken,
-                                            toolTokensBW,
-                                            suspectTokensBW,
-                                            roomTokensBW,
-                                            roomTokens,
-                                            toolList,
-                                            suspectList,
-                                            roomList,
-                                            suspect.tool,
-                                            suspect.suspect,
-                                            suspect.room
-                                        )
-                                    }
-                                    else -> {
-                                        watchCard(
-                                            bind.ivToolToken,
-                                            bind.ivRoomToken,
-                                            bind.ivSuspectToken,
-                                            toolTokensBW,
-                                            roomTokensBW,
-                                            suspectTokensBW,
-                                            suspectTokens,
-                                            toolList,
-                                            roomList,
-                                            suspectList,
-                                            suspect.tool,
-                                            suspect.room,
-                                            suspect.suspect
-                                        )
+                                if (MapViewModel.playerInTurn == MapViewModel.mPlayerId) {
+                                    when {
+                                        toolList.contains(revealedCard.name) -> {
+                                            watchCard(
+                                                bind.ivRoomToken,
+                                                bind.ivSuspectToken,
+                                                bind.ivToolToken,
+                                                roomTokensBW,
+                                                suspectTokensBW,
+                                                toolTokensBW,
+                                                toolTokens,
+                                                roomList,
+                                                suspectList,
+                                                toolList,
+                                                suspect.room,
+                                                suspect.suspect,
+                                                suspect.tool
+                                            )
+                                        }
+                                        roomList.contains(revealedCard.name) -> {
+                                            watchCard(
+                                                bind.ivToolToken,
+                                                bind.ivSuspectToken,
+                                                bind.ivRoomToken,
+                                                toolTokensBW,
+                                                suspectTokensBW,
+                                                roomTokensBW,
+                                                roomTokens,
+                                                toolList,
+                                                suspectList,
+                                                roomList,
+                                                suspect.tool,
+                                                suspect.suspect,
+                                                suspect.room
+                                            )
+                                        }
+                                        else -> {
+                                            watchCard(
+                                                bind.ivToolToken,
+                                                bind.ivRoomToken,
+                                                bind.ivSuspectToken,
+                                                toolTokensBW,
+                                                roomTokensBW,
+                                                suspectTokensBW,
+                                                suspectTokens,
+                                                toolList,
+                                                roomList,
+                                                suspectList,
+                                                suspect.tool,
+                                                suspect.room,
+                                                suspect.suspect
+                                            )
+                                        }
                                     }
                                 }
                             }

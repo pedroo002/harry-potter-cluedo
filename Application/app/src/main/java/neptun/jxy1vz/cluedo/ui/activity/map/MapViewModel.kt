@@ -73,6 +73,8 @@ class MapViewModel(
         var stateMachineHandler = StateMachineHandler(this)
         var uiHandler = UIHandler(this)
 
+        var dialogOpened = false
+
         var mPlayerId: Int? = null
         var mContext: Context? = null
 
@@ -151,6 +153,7 @@ class MapViewModel(
             mapRoot.setScrollEnabled(false)
             mapRoot.setTwoFingersScrollEnabled(false)
             mapRoot.setThreeFingersScrollEnabled(false)
+            dialogOpened = true
         }
 
         fun enableScrolling() {
@@ -159,6 +162,7 @@ class MapViewModel(
             mapRoot.setScrollEnabled(true)
             mapRoot.setTwoFingersScrollEnabled(true)
             mapRoot.setThreeFingersScrollEnabled(true)
+            dialogOpened = false
         }
 
         fun isGameModeMulti(): Boolean {
@@ -214,7 +218,8 @@ class MapViewModel(
         anim.setAnimationListener(uiHandler)
 
         mapRoot.mapLayout.setOnClickListener {
-            cameraHandler.moveCameraToPlayer(playerInTurn)
+            if (!dialogOpened)
+                cameraHandler.moveCameraToPlayer(playerInTurn)
         }
 
         val initHp = when (gameModels.playerList.size) {
@@ -469,14 +474,12 @@ class MapViewModel(
 
     private fun processMovingEvent(data: MovingData) {
         GlobalScope.launch(Dispatchers.Main) {
-            uiHandler.emptySelectionList()
             uiHandler.animatePlayerWalking(data.playerId, playerImagePairs.find { pair -> pair.first.id == data.playerId }!!.first.pos, Position(data.targetPosition.row, data.targetPosition.col))
         }
     }
 
     private fun openIncriminationDetails(suspect: Suspect) {
         GlobalScope.launch(Dispatchers.Main) {
-            uiHandler.emptySelectionList()
             val detailsFragment = IncriminationDetailsFragment.newInstance(suspect, dialogHandler)
             insertFragment(detailsFragment)
         }

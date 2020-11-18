@@ -61,7 +61,7 @@ class DarkCardViewModel(
 
     private val thrownCards = HashMap<String, Int>()
 
-    private var waitForPlayers = playerList.size - 1
+    private var waitForPlayers = playerList.size
 
     init {
         val playerNameList = context.resources.getStringArray(R.array.characters)
@@ -124,35 +124,32 @@ class DarkCardViewModel(
 
     private fun subscribeToEvents() {
         PusherInstance.getInstance().getPresenceChannel(MapViewModel.channelName).apply {
-            if (MapViewModel.playerInTurn == MapViewModel.mPlayerId) {
-                bind.darkCardRoot.btnClose.isEnabled = false
-                bind("dark-cards-ready", object : PresenceChannelEventListener {
-                    override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                        waitForPlayers--
-                        if (waitForPlayers == 0)
-                            enableButton()
-                    }
+            bind("dark-cards-ready", object : PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    waitForPlayers--
+                    if (waitForPlayers == 0)
+                        sendCloseSignal()
+                }
 
-                    override fun onSubscriptionSucceeded(p0: String?) {}
-                    override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-                    override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                    override fun userSubscribed(p0: String?, p1: User?) {}
-                    override fun userUnsubscribed(p0: String?, p1: User?) {}
-                })
-            }
-            else {
-                bind("dark-cards-close", object : PresenceChannelEventListener {
-                    override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                        gotCloseSignal()
-                    }
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
 
-                    override fun onSubscriptionSucceeded(p0: String?) {}
-                    override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-                    override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                    override fun userSubscribed(p0: String?, p1: User?) {}
-                    override fun userUnsubscribed(p0: String?, p1: User?) {}
-                })
-            }
+            bind("dark-cards-close", object : PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    gotCloseSignal()
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+
             bind("helper-card-thrown", object : PresenceChannelEventListener {
                 override fun onEvent(channelName: String?, eventName: String?, message: String?) {
                     val messageJson = RetrofitInstance.getInstance(context).moshi.adapter(CardEventMessage::class.java).fromJson(message!!)!!
@@ -419,22 +416,12 @@ class DarkCardViewModel(
     }
 
     fun close() {
-        if (MapViewModel.isGameModeMulti() && MapViewModel.mPlayerId != MapViewModel.playerInTurn) {
+        if (MapViewModel.isGameModeMulti()) {
             sendReadySignal()
             bind.darkCardRoot.btnClose.isEnabled = false
         }
-        else if (MapViewModel.isGameModeMulti() && MapViewModel.mPlayerId == MapViewModel.playerInTurn) {
-            sendCloseSignal()
-            listener.onFinish()
-        }
         else
             listener.onFinish()
-    }
-
-    private fun enableButton() {
-        GlobalScope.launch(Dispatchers.Main) {
-            bind.darkCardRoot.btnClose.isEnabled = true
-        }
     }
 
     override fun onThrow() {

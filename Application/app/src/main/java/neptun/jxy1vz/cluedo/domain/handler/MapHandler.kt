@@ -130,7 +130,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
             }
         }
 
-        if (playerId == mPlayerId || isGameModeMulti()) {
+        if (playerId == mPlayerId) {
             if (!distances.isNullOrEmpty()) {
                 for (x in 0..MapViewModel.COLS) {
                     for (y in 0..MapViewModel.ROWS) {
@@ -150,7 +150,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
                     }
                 }
             }
-        } else {
+        } else if (!isGameModeMulti()) {
             if (distances != null) {
                 val validKeys = ArrayList<Position>()
                 val playerPos = map.playerHandler.getPlayerById(playerId).pos
