@@ -107,6 +107,8 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
                 }
             }
         }
+        else
+            MapViewModel.onDestroy()
 
         finish()
     }
@@ -116,7 +118,7 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
     }
 
     override fun onDestroy() {
-        MapViewModel.onDestroy()
+        exitToMenu(true)
         super.onDestroy()
     }
 }
