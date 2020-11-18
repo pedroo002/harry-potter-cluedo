@@ -156,6 +156,8 @@ class DarkCardViewModel(
             bind("helper-card-thrown", object : PresenceChannelEventListener {
                 override fun onEvent(channelName: String?, eventName: String?, message: String?) {
                     val messageJson = RetrofitInstance.getInstance(context).moshi.adapter(CardEventMessage::class.java).fromJson(message!!)!!
+                    if (messageJson.playerId == MapViewModel.mPlayerId)
+                        return
                     val player = MapViewModel.playerHandler.getPlayerById(messageJson.playerId)
                     val cardToRemove = player.helperCards!!.find { card -> card.name == messageJson.cardName }!!
                     val thrownCard = ImageView(bind.darkCardRoot.context)

@@ -117,6 +117,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
                     val title = "$playerName ${map.mContext!!.resources.getString(R.string.wrong_solution)} ${map.mContext!!.resources.getString(R.string.he_lost_the_game)}"
                     withContext(Dispatchers.Main) {
                         removePlayer(player)
+                        debugPrint("${player.card.name} ($playerName) removed")
                         val playerLeavesFragment = PlayerDiesOrLeavesFragment.newInstance(player, false, this@DialogHandler, title)
                         map.insertFragment(playerLeavesFragment)
                     }

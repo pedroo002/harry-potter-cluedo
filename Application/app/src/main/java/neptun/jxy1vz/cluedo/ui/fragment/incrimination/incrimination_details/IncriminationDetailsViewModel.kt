@@ -58,6 +58,8 @@ class IncriminationDetailsViewModel(
             ((bind.ivSuspectToken.layoutParams as ConstraintLayout.LayoutParams).matchConstraintPercentHeight * screenHeight / 2).toInt()
         bind.ivSuspectToken.layoutParams = layoutParams
 
+        debugPrint(suspect.toString())
+
         bind.ivRoomToken.setImageResource(roomTokens[roomList.indexOf(suspect.room)])
         bind.ivToolToken.setImageResource(toolTokens[toolList.indexOf(suspect.tool)])
         bind.ivSuspectToken.setImageResource(suspectTokens[suspectList.indexOf(suspect.suspect)])
@@ -532,10 +534,7 @@ class IncriminationDetailsViewModel(
 
         val miniCardWidth = layoutParams.matchConstraintPercentWidth * screenWidth
         mysteryCardImage.translationX = miniCardWidth / 2
-        if (playerShowedCard)
-            mysteryCardImage.setImageResource(revealedCard.imageRes)
-        else
-            mysteryCardImage.setImageResource(R.drawable.rejtely_hatlap)
+        mysteryCardImage.setImageResource(R.drawable.rejtely_hatlap)
         bind.detailsRoot.addView(mysteryCardImage)
 
         (AnimatorInflater.loadAnimator(
@@ -574,11 +573,14 @@ class IncriminationDetailsViewModel(
                     }
                 }
                 doOnEnd {
+                    if (playerShowedCard)
+                        mysteryCardImage.setImageResource(revealedCard.imageRes)
                     (AnimatorInflater.loadAnimator(
                         bind.detailsRoot.context,
                         R.animator.disappear
                     ) as AnimatorSet).apply {
                         setTarget(mysteryCardImage)
+                        startDelay = 250
                         start()
                         doOnEnd {
                             mysteryCardImage.visibility = ImageView.GONE

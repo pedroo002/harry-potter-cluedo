@@ -19,6 +19,8 @@
         android:layout_height="0dp"
         android:text="@{cardLossViewModel.title}"
         android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="20sp"
         android:layout_weight="8"/>
 
     <androidx.viewpager.widget.ViewPager

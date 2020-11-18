@@ -28,10 +28,9 @@ class CardLossViewModel(
     }
 
     fun throwCard() {
+        MapViewModel.player.helperCards!!.remove(selectedCard)
         if (MapViewModel.isGameModeMulti())
             sendCardThrowEvent(selectedCard.name)
-        else
-            MapViewModel.player.helperCards!!.remove(selectedCard)
         listener.onFinish()
     }
 

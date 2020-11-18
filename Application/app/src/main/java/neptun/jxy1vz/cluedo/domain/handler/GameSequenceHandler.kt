@@ -59,8 +59,10 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
         if (isGameRunning) {
             map.cameraHandler.moveCameraToPlayer(playerInTurn)
 
+            if (playerInTurn == mPlayerId)
+                blinkTile(playerInTurn)
+
             if (isGameModeMulti() && playerInTurn != mPlayerId) {
-                blinkTile(mPlayerId!!)
                 return
             }
 
@@ -71,8 +73,6 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
                 userHasToIncriminate = false
                 userHasToStepOrIncriminate = false
                 userCanStep = true
-
-                blinkTile(mPlayerId!!)
             }
         }
     }

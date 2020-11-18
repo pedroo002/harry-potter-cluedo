@@ -422,6 +422,7 @@ class MapViewModel(
             if (card is HelperCard) {
                 cardHandler.showCard(playerId, card, DiceRollerViewModel.CardType.HELPER)
                 if (!isGameRunning) {
+                    delay(500)
                     val idx = gameModels.playerList.indexOf(gameModels.playerList.find { p -> p.id == playerId })
                     val nextIdx = idx + 1
                     if (nextIdx > gameModels.playerList.lastIndex)
@@ -475,6 +476,7 @@ class MapViewModel(
 
     private fun openIncriminationDetails(suspect: Suspect) {
         GlobalScope.launch(Dispatchers.Main) {
+            uiHandler.emptySelectionList()
             val detailsFragment = IncriminationDetailsFragment.newInstance(suspect, dialogHandler)
             insertFragment(detailsFragment)
         }
