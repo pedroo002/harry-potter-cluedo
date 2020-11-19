@@ -8,10 +8,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.database.CluedoDatabase
-import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.Suspect
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
+import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.cluedo.domain.util.removePlayer
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
@@ -36,8 +35,6 @@ import neptun.jxy1vz.cluedo.ui.fragment.endgame.EndOfGameFragment
 import neptun.jxy1vz.cluedo.ui.fragment.note.NoteFragment
 import neptun.jxy1vz.cluedo.ui.fragment.notes_or_dice.NotesOrDiceFragment
 import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesFragment
-import okhttp3.internal.wait
-import java.lang.Exception
 
 class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     private var waitForPlayers = 0
@@ -100,27 +97,20 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     }
 
     override fun onEndOfGameDismiss() {
-        if (!isGameModeMulti() || (isGameModeMulti() && playerInTurn == mPlayerId)) {
+        if (!isGameModeMulti() || (isGameModeMulti() && playerInTurn == mPlayerId) || EndOfGameFragment.goodSolution) {
             activityListener.exitToMenu(false)
             map.onDestroy()
         }
         else {
-            if (EndOfGameFragment.goodSolution) {
-                activityListener.exitToMenu(false)
-                map.onDestroy()
-            }
-            else {
-                GlobalScope.launch(Dispatchers.IO) {
-                    val player = playerHandler.getPlayerById(playerInTurn)
-                    val playerName = CluedoDatabase.getInstance(map.mContext!!).playerDao().getPlayers()!!
-                        .find { p -> p.characterName == player.card.name }!!.playerName
-                    val title = "$playerName ${map.mContext!!.resources.getString(R.string.wrong_solution)} ${map.mContext!!.resources.getString(R.string.he_lost_the_game)}"
-                    withContext(Dispatchers.Main) {
-                        removePlayer(player)
-                        debugPrint("${player.card.name} ($playerName) removed")
-                        val playerLeavesFragment = PlayerDiesOrLeavesFragment.newInstance(player, false, this@DialogHandler, title)
-                        map.insertFragment(playerLeavesFragment)
-                    }
+            GlobalScope.launch(Dispatchers.IO) {
+                val player = playerHandler.getPlayerById(playerInTurn)
+                val playerName = CluedoDatabase.getInstance(map.mContext!!).playerDao().getPlayers()!!
+                    .find { p -> p.characterName == player.card.name }!!.playerName
+                val title = "$playerName ${map.mContext!!.resources.getString(R.string.wrong_solution)} ${map.mContext!!.resources.getString(R.string.he_lost_the_game)}"
+                withContext(Dispatchers.Main) {
+                    removePlayer(player)
+                    val playerLeavesFragment = PlayerDiesOrLeavesFragment.newInstance(player, false, this@DialogHandler, title)
+                    map.insertFragment(playerLeavesFragment)
                 }
             }
         }

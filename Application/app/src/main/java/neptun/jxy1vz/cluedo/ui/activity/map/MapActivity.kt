@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.lifecycle.lifecycleScope
 import com.otaliastudios.zoom.ZoomLayout
-import com.pusher.client.channel.PresenceChannelEventListener
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
