@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCreateChannelBinding
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuListener
@@ -65,9 +64,7 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
                 vm().deleteCreatedChannel()
             }
             catch (ex: HttpException) {
-                if (ex.code() == 404) {
-                    debugPrint("Delete channel: 404")
-                }
+
             }
             finally {
                 onFragmentClose()

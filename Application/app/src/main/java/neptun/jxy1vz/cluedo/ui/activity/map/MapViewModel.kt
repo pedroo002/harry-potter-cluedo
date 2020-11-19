@@ -21,7 +21,6 @@ import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.card.HelperCard
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.removePlayer
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
@@ -36,7 +35,6 @@ import neptun.jxy1vz.cluedo.ui.fragment.endgame.EndOfGameFragment
 import neptun.jxy1vz.cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsFragment
 import neptun.jxy1vz.cluedo.ui.fragment.on_back_pressed.OnBackPressedFragment
 import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesFragment
-import java.lang.Exception
 import kotlin.math.abs
 
 class MapViewModel(

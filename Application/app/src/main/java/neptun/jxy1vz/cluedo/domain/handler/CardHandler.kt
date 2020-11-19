@@ -8,7 +8,6 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.card.*
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.channelName
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.finishedCardCheck

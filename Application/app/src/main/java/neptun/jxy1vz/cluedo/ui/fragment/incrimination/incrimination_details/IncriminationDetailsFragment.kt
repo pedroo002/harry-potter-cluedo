@@ -13,7 +13,6 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentIncriminationDetailsBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Suspect
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.toApiModel
 import neptun.jxy1vz.cluedo.network.model.message.suspect.SuspectMessage
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel

@@ -7,7 +7,6 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.card.PlayerCard
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 
 class GameModels(private val context: Context) {
 

@@ -9,7 +9,6 @@ import neptun.jxy1vz.cluedo.database.model.DarkHelperPairDBmodel
 import neptun.jxy1vz.cluedo.database.model.string
 import neptun.jxy1vz.cluedo.domain.model.card.*
 import neptun.jxy1vz.cluedo.domain.util.Interactor
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.toDatabaseModel
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
 

@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentMultiplayerCharacterSelectorBinding
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.message.presence.PlayerPresenceMessage
 import neptun.jxy1vz.cluedo.network.model.message.selection.CharacterSelectionMessage
@@ -23,7 +22,6 @@ import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.character_selector.multi.adapter.PlayerListAdapter
 import retrofit2.HttpException
-import java.lang.Exception
 
 class MultiplayerCharacterSelectorViewModel(
     private val bind: FragmentMultiplayerCharacterSelectorBinding,
@@ -185,7 +183,7 @@ class MultiplayerCharacterSelectorViewModel(
                 }
             }
             catch (ex: HttpException) {
-                debugPrint("${ex.code()}: ${ex.message()}")
+
             }
         }
     }

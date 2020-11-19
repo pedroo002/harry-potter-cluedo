@@ -15,7 +15,6 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.database.model.PlayerDBmodel
 import neptun.jxy1vz.cluedo.databinding.FragmentMultiplayerCharacterSelectorBinding
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity
@@ -88,9 +87,7 @@ class MultiplayerCharacterSelectorFragment : Fragment(),
                 retrofit.cluedo.deleteChannel(vm().channelId)
             }
             catch (ex: HttpException) {
-                if (ex.code() == 404) {
-                    debugPrint("Delete channel ${vm().channelName} - 404")
-                }
+
             }
         }
         else {

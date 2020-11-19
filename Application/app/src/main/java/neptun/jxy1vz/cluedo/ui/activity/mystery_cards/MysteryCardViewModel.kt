@@ -4,7 +4,6 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
 import android.content.Intent
-import android.os.Looper
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.animation.doOnEnd
@@ -24,7 +23,6 @@ import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.toDatabaseModel
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance

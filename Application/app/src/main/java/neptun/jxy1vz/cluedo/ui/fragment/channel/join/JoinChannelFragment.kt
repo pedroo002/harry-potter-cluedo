@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.pusher.client.Pusher
 import com.pusher.client.channel.PresenceChannelEventListener
-import com.pusher.client.channel.SubscriptionEventListener
 import com.pusher.client.channel.User
 import kotlinx.android.synthetic.main.fragment_join_channel.view.*
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +18,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentJoinChannelBinding
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.channel.JoinRequest
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
@@ -162,8 +160,7 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
             retrofit.cluedo.leaveChannel(channelId, playerName)
         }
         catch (ex: HttpException) {
-            if (ex.code() == 404)
-                debugPrint("Channel $channelId does not exist any more.")
+
         }
         finally {
             pusher.unsubscribe(pusherChannelName)

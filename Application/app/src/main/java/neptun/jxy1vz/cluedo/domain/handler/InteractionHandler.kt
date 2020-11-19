@@ -3,12 +3,9 @@ package neptun.jxy1vz.cluedo.domain.handler
 import android.widget.ImageView
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.card.HelperCard
-import neptun.jxy1vz.cluedo.domain.model.Suspect
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
-import neptun.jxy1vz.cluedo.domain.util.toApiModel
-import neptun.jxy1vz.cluedo.network.model.message.suspect.SuspectMessage
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.diceList
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
@@ -19,7 +16,6 @@ import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.pause
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.player
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.playerInTurn
-import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.retrofit
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.unusedMysteryCards
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userCanStep
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.userHasToStepOrIncriminate
@@ -30,8 +26,6 @@ import neptun.jxy1vz.cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.incrimination.IncriminationFragment
 import neptun.jxy1vz.cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsFragment
 import neptun.jxy1vz.cluedo.ui.fragment.notes_or_dice.NotesOrDiceFragment
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
 
 class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationFragment.MapInterface,
     DiceRollerFragment.DiceResultInterface {
