@@ -504,9 +504,9 @@ class IncriminationDetailsViewModel(
             R.animator.appear
         ) as AnimatorSet).apply {
             setTarget(bind.detailsRoot.ivFloatingCard)
+            bind.detailsRoot.ivFloatingCard.visibility = ImageView.VISIBLE
             start()
             doOnEnd {
-                bind.detailsRoot.ivFloatingCard.visibility = ImageView.VISIBLE
                 ObjectAnimator.ofFloat(
                     bind.detailsRoot.ivFloatingCard,
                     "translationX",
