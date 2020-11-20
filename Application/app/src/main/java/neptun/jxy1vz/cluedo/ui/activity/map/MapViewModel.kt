@@ -456,7 +456,7 @@ class MapViewModel(
                 title = "$playerName ${context.resources.getString(R.string.left_the_game)}"
             }
 
-            val fragment = PlayerDiesOrLeavesFragment.newInstance(player, false, dialogHandler, title)
+            val fragment = PlayerDiesOrLeavesFragment.newInstance(player, PlayerDiesOrLeavesFragment.ExitScenario.LEAVE, dialogHandler, title)
             insertFragment(fragment, true)
         }
     }
@@ -485,6 +485,12 @@ class MapViewModel(
 
     fun openAccusationResult(suspect: Suspect) {
         GlobalScope.launch(Dispatchers.Main) {
+            gameModels.gameSolution.map { card -> card.name }.apply {
+                if (!contains(suspect.room) || !contains(suspect.tool) || !contains(suspect.suspect)) {
+                    dialogHandler.setWaitingQueueSize(gameModels.playerList.size - 1)
+                }
+            }
+
             val fragment = EndOfGameFragment.newInstance(suspect, dialogHandler)
             insertFragment(fragment)
         }

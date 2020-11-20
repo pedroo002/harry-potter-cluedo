@@ -292,7 +292,7 @@ class DarkCardViewModel(
                                             val title = "${player.card.name} ${context.resources.getString(R.string.he_lost_his_hps)}"
                                             val fragment = PlayerDiesOrLeavesFragment.newInstance(
                                                 player,
-                                                true,
+                                                PlayerDiesOrLeavesFragment.ExitScenario.DEAD,
                                                 MapViewModel.dialogHandler,
                                                 title
                                             )

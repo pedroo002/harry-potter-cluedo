@@ -40,19 +40,20 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     private var waitForPlayers = 0
 
     fun subscribeToEvent() {
-        PusherInstance.getInstance().getPresenceChannel(channelName).bind("note-closed", object : PresenceChannelEventListener {
-            override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                waitForPlayers--
-                if (waitForPlayers == 0)
-                    moveToNextPlayer()
-            }
+        PusherInstance.getInstance().getPresenceChannel(channelName)
+            .bind("note-closed", object : PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    waitForPlayers--
+                    if (waitForPlayers == 0)
+                        moveToNextPlayer()
+                }
 
-            override fun onSubscriptionSucceeded(p0: String?) {}
-            override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-            override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-            override fun userSubscribed(p0: String?, p1: User?) {}
-            override fun userUnsubscribed(p0: String?, p1: User?) {}
-        })
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
     }
 
     fun setWaitingQueueSize(size: Int) {
@@ -100,16 +101,21 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         if (!isGameModeMulti() || (isGameModeMulti() && playerInTurn == mPlayerId) || EndOfGameFragment.goodSolution) {
             activityListener.exitToMenu(false)
             map.onDestroy()
-        }
-        else {
+        } else {
             GlobalScope.launch(Dispatchers.IO) {
                 val player = playerHandler.getPlayerById(playerInTurn)
-                val playerName = CluedoDatabase.getInstance(map.mContext!!).playerDao().getPlayers()!!
-                    .find { p -> p.characterName == player.card.name }!!.playerName
+                val playerName =
+                    CluedoDatabase.getInstance(map.mContext!!).playerDao().getPlayers()!!
+                        .find { p -> p.characterName == player.card.name }!!.playerName
                 val title = "$playerName ${map.mContext!!.resources.getString(R.string.wrong_solution)} ${map.mContext!!.resources.getString(R.string.he_lost_the_game)}"
                 withContext(Dispatchers.Main) {
                     removePlayer(player)
-                    val playerLeavesFragment = PlayerDiesOrLeavesFragment.newInstance(player, false, this@DialogHandler, title)
+                    val playerLeavesFragment = PlayerDiesOrLeavesFragment.newInstance(
+                        player,
+                        PlayerDiesOrLeavesFragment.ExitScenario.WRONG_SOLUTION,
+                        this@DialogHandler,
+                        title
+                    )
                     map.insertFragment(playerLeavesFragment)
                 }
             }
@@ -135,8 +141,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
             GlobalScope.launch(Dispatchers.IO) {
                 retrofit.cluedo.notifyNoteClosed(channelName)
             }
-        }
-        else {
+        } else {
             if (pause)
                 map.gameSequenceHandler.continueGame()
             else
@@ -179,8 +184,9 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         }
     }
 
-    override fun onPlayerLeavesDismiss() {
-        setWaitingQueueSize(gameModels.playerList.size)
+    override fun onPlayerLeavesDismiss(setWaitingQueue: Boolean) {
+        if (setWaitingQueue)
+            setWaitingQueueSize(gameModels.playerList.size)
         val fragment = NoteFragment.newInstance(player, this)
         map.insertFragment(fragment)
     }

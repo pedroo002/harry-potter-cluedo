@@ -16,5 +16,5 @@ interface DialogDismiss {
     fun onOptionsDismiss(accusation: Boolean)
     fun onShowOptionsDismiss(option: NotesOrDiceFragment.Option)
     fun onBackPressedDismiss(quit: Boolean)
-    fun onPlayerLeavesDismiss()
+    fun onPlayerLeavesDismiss(setWaitingQueue: Boolean = true)
 }

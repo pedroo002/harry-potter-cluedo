@@ -48,16 +48,16 @@ class EndOfGameViewModel(
                 bind.endOfGameRoot.ivPlayer.setImageResource(playerRes)
 
                 title = when {
-                    solution.contains(suspect.suspect) && solution.contains(suspect.room) && solution.contains(
-                        suspect.tool
-                    ) -> "$playerName ${
-                        context.resources.getString(
-                            R.string.someone_solved_the_mystery
-                        )
-                    }"
+                    solution.contains(suspect.suspect) && solution.contains(suspect.room) && solution.contains(suspect.tool) -> {
+                        if (suspect.playerId != MapViewModel.mPlayerId) "$playerName ${
+                            context.resources.getString(
+                                R.string.someone_solved_the_mystery
+                            )
+                        }" else MapViewModel.mContext!!.resources.getString(R.string.good_solution_self_message)
+                    }
                     else -> {
                         goodSolution = false
-                        "$playerName ${context.resources.getString(R.string.wrong_solution)}"
+                        if (suspect.playerId != MapViewModel.mPlayerId) "$playerName ${context.resources.getString(R.string.wrong_solution)}" else MapViewModel.mContext!!.resources.getString(R.string.wrong_solution_self_message)
                     }
                 }
                 notifyChange()

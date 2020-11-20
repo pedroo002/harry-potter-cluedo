@@ -113,6 +113,8 @@
     <string name="select_from_every_parameter">Válassz minden oszlopból egyet!</string>
     <string name="someone_solved_the_mystery">megoldotta a rejtélyt.</string>
     <string name="wrong_solution">rossz megoldást adott.</string>
+    <string name="wrong_solution_self_message">Rossz megoldást adtál, kiestél.</string>
+    <string name="good_solution_self_message">Megoldottad a rejtélyt!</string>
     <string name="player_id_key">player_id</string>
     <string name="someone_shows_you_this_card">ezt a kártyát mutatja neked: </string>
     <string name="someone_threw_card">eldobta ezt: </string>

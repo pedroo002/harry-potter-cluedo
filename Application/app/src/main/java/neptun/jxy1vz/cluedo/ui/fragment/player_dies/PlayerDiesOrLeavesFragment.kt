@@ -21,22 +21,28 @@ import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
 
 class PlayerDiesOrLeavesFragment : Fragment(), ViewModelListener {
 
+    enum class ExitScenario {
+        DEAD,
+        LEAVE,
+        WRONG_SOLUTION
+    }
+
     private lateinit var player: Player
-    private var dead: Boolean = false
+    private lateinit var scenario: ExitScenario
     private lateinit var listener: DialogDismiss
     private lateinit var title: String
 
-    fun setArgs(p: Player, dead: Boolean, l: DialogDismiss, t: String) {
+    fun setArgs(p: Player, scenario: ExitScenario, l: DialogDismiss, t: String) {
         player = p
-        this.dead = dead
+        this.scenario = scenario
         listener = l
         title = t
     }
 
     companion object {
-        fun newInstance(player: Player, dead: Boolean, listener: DialogDismiss, title: String) : PlayerDiesOrLeavesFragment {
+        fun newInstance(player: Player, scenario: ExitScenario, listener: DialogDismiss, title: String) : PlayerDiesOrLeavesFragment {
             val fragment = PlayerDiesOrLeavesFragment()
-            fragment.setArgs(player, dead, listener, title)
+            fragment.setArgs(player, scenario, listener, title)
             return fragment
         }
     }
@@ -80,10 +86,11 @@ class PlayerDiesOrLeavesFragment : Fragment(), ViewModelListener {
     }
 
     override fun onFinish() {
-        if (dead)
-            listener.onPlayerDiesDismiss(player)
-        else
-            listener.onPlayerLeavesDismiss()
+        when (scenario) {
+            ExitScenario.DEAD -> listener.onPlayerDiesDismiss(player)
+            ExitScenario.LEAVE -> listener.onPlayerLeavesDismiss()
+            ExitScenario.WRONG_SOLUTION -> listener.onPlayerLeavesDismiss(false)
+        }
         MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }
