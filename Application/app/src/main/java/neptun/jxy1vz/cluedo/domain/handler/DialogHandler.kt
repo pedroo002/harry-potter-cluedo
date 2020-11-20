@@ -74,6 +74,8 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
     override fun onCardRevealDismiss() {
         map.enableScrolling()
         map.uiHandler.emptySelectionList()
+        if (isGameModeMulti())
+            setWaitingQueueSize(1)
         val fragment = NoteFragment.newInstance(player, this)
         map.insertFragment(fragment)
     }
