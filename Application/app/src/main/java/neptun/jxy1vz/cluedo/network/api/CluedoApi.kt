@@ -70,6 +70,12 @@ interface CluedoApi {
     @POST("/character-submit")
     suspend fun notifyCharacterSubmit(@Query("channel_name") channelName: String, @Query("player_name") playerName: String)
 
+    @POST("/new-player-added")
+    suspend fun notifyNewPlayerAdded(@Query("channel_name") channelName: String)
+
+    @POST("/refresh-multi-selector")
+    suspend fun triggerCharacterSelectionsRefresh(@Query("channel_name") channelName: String, @Body selectionData: RequestBody)
+
     @POST("/channel-removed-before-join")
     suspend fun notifyChannelRemovedBeforeJoin(@Query("channel_name") channelName: String)
 
