@@ -9,5 +9,6 @@ data class PlayerDBmodel(
     val id: Long,
     val playerName: String,
     val playerId: Int,
-    val characterName: String
+    val characterName: String,
+    val channelName: String
 )

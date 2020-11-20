@@ -4,7 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -18,10 +20,11 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
 
     interface AdapterListener {
         fun onSelect(playerName: String, characterName: String, tokenSource: Int)
-        fun catchUp(playerList: ArrayList<PlayerDomainModel>)
+        fun onReady(playerName: String)
     }
 
     private lateinit var characterList: Array<String>
+    private var ready = false
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val playerName: TextView = itemView.findViewById(R.id.tvPlayerName)
@@ -35,16 +38,36 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
         private val luna: ImageView = itemView.findViewById(R.id.ivLuna)
         private val neville: ImageView = itemView.findViewById(R.id.ivNeville)
 
+        private var listOpened = false
+
         init {
             val tokenImages = listOf(ginny, harry, hermione, ron, luna, neville)
 
             characterImage.setOnClickListener {
+                if (ready)
+                    return@setOnClickListener
+
+                if (listOpened) {
+                    tokenImages.forEach {
+                        it.visibility = ImageView.GONE
+                    }
+                    listOpened = false
+                    characterName.visibility = TextView.VISIBLE
+                    return@setOnClickListener
+                }
+
                 if (playerName.text != currentPlayer) {
                     Snackbar.make(itemView, "Saját magadnak válassz karaktert!", Snackbar.LENGTH_LONG).show()
                     return@setOnClickListener
                 }
 
+                listOpened = true
                 tokenImages.forEach {listItem ->
+                    val layoutParams = listItem.layoutParams as LinearLayout.LayoutParams
+                    layoutParams.width = it.measuredWidth
+                    layoutParams.height = it.measuredHeight
+                    listItem.layoutParams = layoutParams
+
                     listItem.visibility = ImageView.VISIBLE
                     characterName.visibility = TextView.GONE
                     listItem.setOnClickListener { token ->
@@ -53,6 +76,7 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
                         tokenImages.forEach {
                             it.visibility = ImageView.GONE
                         }
+                        listOpened = false
                     }
                 }
             }
@@ -106,6 +130,10 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
         listener.onSelect(currentPlayer, tvChar.text.toString(), characterTokenList[idx])
     }
 
+    fun setReady() {
+        ready = true
+    }
+
     fun updatePlayerSelection(playerName: String, characterName: String, token: Int) {
         val item = playerList.find { player -> player.playerName == playerName }!!
         item.selectedCharacter = characterName
@@ -145,13 +173,6 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
         if (playerList.map { player -> player.playerName }.contains(playerName))
             return
         playerList.add(PlayerDomainModel(playerName, "", -1))
-        GlobalScope.launch(Dispatchers.Main) {
-            notifyItemInserted(playerList.indexOf(playerList.find { player -> player.playerName == playerName }))
-            playerList.filter { player -> player.selectedCharacter.isNotEmpty() }.forEach {
-                updatePlayerSelection(it.playerName, it.selectedCharacter, characterTokenList[characterList.indexOf(it.selectedCharacter)])
-            }
-        }
-        listener.catchUp(playerList)
     }
 
     fun setCharacterTextColor(playerName: String, color: Int) {

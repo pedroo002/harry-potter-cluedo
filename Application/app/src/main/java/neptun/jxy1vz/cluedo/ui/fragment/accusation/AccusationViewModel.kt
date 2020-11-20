@@ -5,10 +5,14 @@ import android.widget.ImageView
 import androidx.core.view.children
 import androidx.databinding.BaseObservable
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentAccusationBinding
 import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.domain.model.helper.*
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 
 class AccusationViewModel(private val playerId: Int, private val bind: FragmentAccusationBinding, private val context: Context, private val listener: FinalizationListener) : BaseObservable() {
 

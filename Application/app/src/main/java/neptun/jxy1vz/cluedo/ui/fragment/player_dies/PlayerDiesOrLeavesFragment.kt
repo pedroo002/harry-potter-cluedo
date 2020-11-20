@@ -6,15 +6,46 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.databinding.FragmentPlayerDiesBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Player
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
 
-class PlayerDiesFragment(private val player: Player, private val listener: DialogDismiss) : Fragment(), ViewModelListener {
+class PlayerDiesOrLeavesFragment : Fragment(), ViewModelListener {
+
+    enum class ExitScenario {
+        DEAD,
+        LEAVE,
+        WRONG_SOLUTION
+    }
+
+    private lateinit var player: Player
+    private lateinit var scenario: ExitScenario
+    private lateinit var listener: DialogDismiss
+    private lateinit var title: String
+
+    fun setArgs(p: Player, scenario: ExitScenario, l: DialogDismiss, t: String) {
+        player = p
+        this.scenario = scenario
+        listener = l
+        title = t
+    }
+
+    companion object {
+        fun newInstance(player: Player, scenario: ExitScenario, listener: DialogDismiss, title: String) : PlayerDiesOrLeavesFragment {
+            val fragment = PlayerDiesOrLeavesFragment()
+            fragment.setArgs(player, scenario, listener, title)
+            return fragment
+        }
+    }
 
     private lateinit var fragmentPlayerDiesBinding: FragmentPlayerDiesBinding
     private lateinit var adapter: CardPagerAdapter
@@ -25,13 +56,14 @@ class PlayerDiesFragment(private val player: Player, private val listener: Dialo
         savedInstanceState: Bundle?
     ): View? {
         fragmentPlayerDiesBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_player_dies, container, false)
-        fragmentPlayerDiesBinding.playerDiesViewModel = PlayerDiesViewModel(
+        fragmentPlayerDiesBinding.playerDiesOrViewModel = PlayerDiesOrLeavesViewModel(
             fragmentPlayerDiesBinding,
+            context!!,
             player,
+            title,
+            lifecycleScope,
             this
         )
-        val title = "${player.card.name} ${context!!.resources.getString(R.string.he_lost_his_hps)}"
-        fragmentPlayerDiesBinding.playerDiesViewModel!!.setTitle(title)
         return fragmentPlayerDiesBinding.root
     }
 
@@ -40,7 +72,7 @@ class PlayerDiesFragment(private val player: Player, private val listener: Dialo
         val fragmentList = ArrayList<CardFragment>()
         for (card in player.mysteryCards) {
             fragmentList.add(
-                CardFragment(
+                CardFragment.newInstance(
                     card.imageRes
                 )
             )
@@ -54,7 +86,11 @@ class PlayerDiesFragment(private val player: Player, private val listener: Dialo
     }
 
     override fun onFinish() {
-        listener.onPlayerDiesDismiss(player)
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        when (scenario) {
+            ExitScenario.DEAD -> listener.onPlayerDiesDismiss(player)
+            ExitScenario.LEAVE -> listener.onPlayerLeavesDismiss()
+            ExitScenario.WRONG_SOLUTION -> listener.onPlayerLeavesDismiss(false)
+        }
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }

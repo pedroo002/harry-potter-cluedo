@@ -6,7 +6,7 @@ import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.fragment.notes_or_dice.NotesOrDiceFragment
 
 interface DialogDismiss {
-    fun onIncriminationDetailsDismiss(needToTakeNotes: Boolean)
+    fun onIncriminationDetailsDismiss()
     fun onCardRevealDismiss()
     fun onDarkCardDismiss(card: DarkCard?)
     fun onAccusationDismiss(suspect: Suspect)
@@ -15,4 +15,6 @@ interface DialogDismiss {
     fun onNoteDismiss()
     fun onOptionsDismiss(accusation: Boolean)
     fun onShowOptionsDismiss(option: NotesOrDiceFragment.Option)
+    fun onBackPressedDismiss(quit: Boolean)
+    fun onPlayerLeavesDismiss(setWaitingQueue: Boolean = true)
 }

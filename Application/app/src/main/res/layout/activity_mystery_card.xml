@@ -9,64 +9,58 @@
             type="neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardViewModel" />
     </data>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardImages"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/refreshLayoutRoot">
+        android:background="@drawable/hogwarts_blur"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cardImages"
+        <TextView
+            android:id="@+id/tvLabelMysteryCards"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="@string/your_mystery_cards"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnGo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:onClick="@{()->mysteryCardViewModel.openHogwarts()}"
+            android:text="@string/go_forward"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLabelMysteryCards"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvLabelMysteryCards" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/cardPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/hogwarts_blur"
+            android:layout_height="0dp"
+            android:layout_margin="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/btnGo" />
 
-            <TextView
-                android:id="@+id/tvLabelMysteryCards"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:text="@string/your_mystery_cards"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/ivLoadingScreen"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/loading_screen"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelMysteryCards" />
 
-            <Button
-                android:id="@+id/btnGo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:onClick="@{()->mysteryCardViewModel.openHogwarts()}"
-                android:text="@string/go_forward"
-                app:layout_constraintBottom_toBottomOf="@+id/tvLabelMysteryCards"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tvLabelMysteryCards" />
-
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/cardPager"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_margin="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnGo" />
-
-            <ImageView
-                android:id="@+id/ivLoadingScreen"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:src="@drawable/loading_screen"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvLabelMysteryCards" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

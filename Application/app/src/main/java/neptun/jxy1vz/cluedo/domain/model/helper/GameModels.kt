@@ -22,6 +22,7 @@ class GameModels(private val context: Context) {
         val allPlayers = loadPlayers()
 
         val mysteryCards = db.getMysteryCardsOfPlayers()
+
         val solutionList = ArrayList<MysteryCard>()
         for (card in mysteryCards!!) {
             if (card.second != -1)
@@ -40,6 +41,7 @@ class GameModels(private val context: Context) {
 
         playerList = allPlayers
         gameSolution = solutionList
+
         return playerList
     }
 
@@ -87,7 +89,15 @@ class GameModels(private val context: Context) {
                     Player.Gender.WOMAN
                 )
             )
-            listItems.add(Player(5, playerCards[5], Position(7, 0), R.id.ivGreenPlayer, Player.Gender.MAN))
+            listItems.add(
+                Player(
+                    5,
+                    playerCards[5],
+                    Position(7, 0),
+                    R.id.ivGreenPlayer,
+                    Player.Gender.MAN
+                )
+            )
 
             playerList = listItems
         }

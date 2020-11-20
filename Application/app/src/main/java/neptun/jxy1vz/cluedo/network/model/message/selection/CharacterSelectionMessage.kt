@@ -18,3 +18,11 @@ data class SelectionMessageBody(
     @Json(name = "token_src")
     val token: Int
 )
+
+@JsonClass(generateAdapter = true)
+data class CatchUpMessage(
+    @Json(name = "selection_count")
+    val selectionCount: Int,
+    @Json(name = "selections")
+    val selections: List<SelectionMessageBody>
+)

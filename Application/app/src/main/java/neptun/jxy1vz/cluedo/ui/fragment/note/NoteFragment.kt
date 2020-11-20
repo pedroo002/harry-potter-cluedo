@@ -10,10 +10,27 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentNoteBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Player
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class NoteFragment(private val player: Player, private val listener: DialogDismiss) : Fragment(),
+class NoteFragment : Fragment(),
     ViewModelListener {
+
+    private lateinit var player: Player
+    private lateinit var listener: DialogDismiss
+
+    fun setArgs(p: Player, l: DialogDismiss) {
+        player = p
+        listener = l
+    }
+
+    companion object {
+        fun newInstance(player: Player, listener: DialogDismiss) : NoteFragment {
+            val fragment = NoteFragment()
+            fragment.setArgs(player, listener)
+            return fragment
+        }
+    }
 
     private lateinit var fragmentNoteBinding: FragmentNoteBinding
 
@@ -29,6 +46,6 @@ class NoteFragment(private val player: Player, private val listener: DialogDismi
 
     override fun onFinish() {
         listener.onNoteDismiss()
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }

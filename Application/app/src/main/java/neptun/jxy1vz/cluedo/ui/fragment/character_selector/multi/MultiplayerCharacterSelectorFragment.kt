@@ -15,7 +15,6 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.database.model.PlayerDBmodel
 import neptun.jxy1vz.cluedo.databinding.FragmentMultiplayerCharacterSelectorBinding
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity
@@ -24,11 +23,27 @@ import neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardActivity
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import retrofit2.HttpException
 
-class MultiplayerCharacterSelectorFragment(private val host: Boolean, private val isLate: Boolean, private val listener: MenuListener) : Fragment(),
+class MultiplayerCharacterSelectorFragment : Fragment(),
     ViewModelListener, MultiplayerCharacterSelectorViewModel.ChannelListener {
+
+    private var host: Boolean = false
+    private var isLate: Boolean = false
+    private lateinit var listener: MenuListener
+
+    fun setArgs(h: Boolean, late: Boolean, l: MenuListener) {
+        host = h
+        isLate = late
+        listener = l
+    }
 
     companion object {
         const val TAG = "FRAGMENT-MULTIPLAYER-CHARACTER-SELECTOR"
+
+        fun newInstance(host: Boolean, isLate: Boolean, listener: MenuListener): MultiplayerCharacterSelectorFragment {
+            val fragment = MultiplayerCharacterSelectorFragment()
+            fragment.setArgs(host, isLate, listener)
+            return fragment
+        }
     }
 
     private lateinit var fragmentMultiplayerCharacterSelectorBinding: FragmentMultiplayerCharacterSelectorBinding
@@ -72,9 +87,7 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
                 retrofit.cluedo.deleteChannel(vm().channelId)
             }
             catch (ex: HttpException) {
-                if (ex.code() == 404) {
-                    debugPrint("Delete channel ${vm().channelName} - 404")
-                }
+
             }
         }
         else {
@@ -98,10 +111,12 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
             val db = CluedoDatabase.getInstance(context!!)
             db.playerDao().deletePlayers()
 
-            vm().getReadyPlayers().map { playerDomainModel -> PlayerDBmodel(0, playerDomainModel.playerName, playerDomainModel.playerId, playerDomainModel.selectedCharacter) }.forEach {
+            vm().getReadyPlayers().map { playerDomainModel -> PlayerDBmodel(0, playerDomainModel.playerName, playerDomainModel.playerId, playerDomainModel.selectedCharacter, vm().channelName) }.forEach {
                 db.playerDao().insertIntoTable(it)
             }
             withContext(Dispatchers.Main) {
+                popFragments()
+
                 val mysteryCardIntent = Intent(context, MysteryCardActivity::class.java)
                 mysteryCardIntent.putExtra(
                     context!!.resources.getString(R.string.player_id),
@@ -109,8 +124,6 @@ class MultiplayerCharacterSelectorFragment(private val host: Boolean, private va
                 )
                 mysteryCardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 context!!.startActivity(mysteryCardIntent)
-
-                popFragments()
             }
         }
     }

@@ -9,9 +9,6 @@ interface CluedoApi {
 
     //------------------------------------ Channel API requests
 
-    @GET("/channel")
-    suspend fun getChannels(): List<ChannelApiModel>?
-
     @GET("/channel-by-limit")
     suspend fun getChannelsByPlayerLimit(@Query("max_user") limit: Int): List<ChannelApiModel>?
 
@@ -38,9 +35,6 @@ interface CluedoApi {
     @GET("/player")
     suspend fun getPlayers(): List<PlayerApiModel>?
 
-    @GET("/player/{id}")
-    suspend fun getPlayer(@Path("id") id: String, @Body body: RequestBody): PlayerApiModel?
-
     @POST("/player")
     suspend fun registerPlayer(@Body body: RequestBody): PlayerApiModel?
 
@@ -50,22 +44,22 @@ interface CluedoApi {
     @PUT("/logout-player")
     suspend fun logoutPlayer(@Body body: RequestBody): String?
 
-    @DELETE("/player/{id}")
-    suspend fun deletePlayer(@Path("id") id: String)
-
     //------------------------------------ Pusher event triggers
 
     @POST("/incriminate")
-    suspend fun sendIncrimination(@Query("channel_name") channelName: String)
+    suspend fun sendIncrimination(@Query("channel_name") channelName: String, @Body incrimination: RequestBody)
 
     @POST("/accuse")
-    suspend fun sendAccusation(@Query("channel_name") channelName: String)
+    suspend fun sendAccusation(@Query("channel_name") channelName: String, @Body accusation: RequestBody)
 
     @POST("/move")
-    suspend fun sendMovingData(@Query("channel_name") channelName: String)
+    suspend fun sendMovingData(@Query("channel_name") channelName: String, @Body movingData: RequestBody)
+
+    @POST("/dice")
+    suspend fun sendDiceEvent(@Query("channel_name") channelName: String, @Body diceData: RequestBody)
 
     @POST("/draw-card")
-    suspend fun sendCardEvent(@Query("channel_name") channelName: String)
+    suspend fun sendCardEvent(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int, @Query("card_name") cardName: String)
 
     @POST("/game-ready")
     suspend fun notifyGameReady(@Query("channel_name") channelName: String)
@@ -75,6 +69,12 @@ interface CluedoApi {
 
     @POST("/character-submit")
     suspend fun notifyCharacterSubmit(@Query("channel_name") channelName: String, @Query("player_name") playerName: String)
+
+    @POST("/new-player-added")
+    suspend fun notifyNewPlayerAdded(@Query("channel_name") channelName: String)
+
+    @POST("/refresh-multi-selector")
+    suspend fun triggerCharacterSelectionsRefresh(@Query("channel_name") channelName: String, @Body selectionData: RequestBody)
 
     @POST("/channel-removed-before-join")
     suspend fun notifyChannelRemovedBeforeJoin(@Query("channel_name") channelName: String)
@@ -94,6 +94,39 @@ interface CluedoApi {
     @POST("/ready-to-game")
     suspend fun readyToLoadMap(@Query("channel_name") channelName: String, @Query("player_name") playerName: String)
 
-    @POST("/fetch-cards")
-    suspend fun sendCardRequestToHost(@Query("channel_name") channelName: String)
+    @POST("/map-loaded")
+    suspend fun notifyMapLoaded(@Query("channel_name") channelName: String)
+
+    @POST("/mystery-cards-activity-loaded")
+    suspend fun notifyMysteryCardsLoaded(@Query("channel_name") channelName: String)
+
+    @POST("/dark-cards-ready")
+    suspend fun notifyDarkCardsReady(@Query("channel_name") channelName: String)
+
+    @POST("/dark-cards-close")
+    suspend fun notifyDarkCardsClose(@Query("channel_name") channelName: String)
+
+    @POST("/throw-helper-card")
+    suspend fun sendCardThrowEvent(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int, @Query("card_name") cardName: String)
+
+    @POST("/incrimination-details-ready")
+    suspend fun notifyIncriminationDetailsReady(@Query("channel_name") channelName: String)
+
+    @POST("/trigger-card-reveal")
+    suspend fun triggerPlayerToReveal(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int)
+
+    @POST("/skip-reveal")
+    suspend fun skipCardReveal(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int)
+
+    @POST("/show-helper-card")
+    suspend fun showCard(@Query("channel_name") channelName: String, @Query("player_id") playerId: Int, @Query("card_name") cardName: String)
+
+    @POST("/no-card")
+    suspend fun notifyNobodyCouldShow(@Query("channel_name") channelName: String)
+
+    @POST("/incrimination-finished")
+    suspend fun notifyIncriminationFinished(@Query("channel_name") channelName: String)
+
+    @POST("/note-closed")
+    suspend fun notifyNoteClosed(@Query("channel_name") channelName: String)
 }

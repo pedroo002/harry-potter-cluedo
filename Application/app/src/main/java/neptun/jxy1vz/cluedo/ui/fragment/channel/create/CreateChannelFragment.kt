@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCreateChannelBinding
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity
 import neptun.jxy1vz.cluedo.ui.activity.menu.MenuListener
@@ -36,13 +35,13 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
         fragmentCreateChannelBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_channel, container, false)
         parentActivity = activity!! as MenuActivity
 
-        fragmentCreateChannelBinding.createChannelViewModel = CreateChannelViewModel(fragmentCreateChannelBinding, context!!, lifecycleScope,  this)
+        fragmentCreateChannelBinding.createChannelViewModel = CreateChannelViewModel(fragmentCreateChannelBinding, context!!, lifecycleScope, parentActivity.supportFragmentManager,  this)
         return fragmentCreateChannelBinding.root
     }
 
     override fun onFinish() {
         lifecycleScope.launch(Dispatchers.Main) {
-            parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment(true,
+            parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment.newInstance(true,
                 isLate = false,
                 listener = this@CreateChannelFragment
             ), MultiplayerCharacterSelectorFragment.TAG).addToBackStack(MultiplayerCharacterSelectorFragment.TAG).commit()
@@ -65,9 +64,7 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
                 vm().deleteCreatedChannel()
             }
             catch (ex: HttpException) {
-                if (ex.code() == 404) {
-                    debugPrint("Delete channel: 404")
-                }
+
             }
             finally {
                 onFragmentClose()

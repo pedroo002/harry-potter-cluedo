@@ -6,6 +6,7 @@ import neptun.jxy1vz.cluedo.database.model.LossType
 import neptun.jxy1vz.cluedo.domain.model.*
 import neptun.jxy1vz.cluedo.domain.model.card.*
 import neptun.jxy1vz.cluedo.domain.model.card.CardType
+import neptun.jxy1vz.cluedo.network.model.message.suspect.SuspectMessage
 
 fun CardDBmodel.toDomainModel(): Card {
     return when (cardType) {
@@ -116,4 +117,12 @@ fun neptun.jxy1vz.cluedo.domain.model.card.LossType.toDatabaseModel(): LossType 
 
 fun Note.toDatabaseModel(): NoteDBmodel {
     return NoteDBmodel(0, this.row, this.col, this.nameRes)
+}
+
+fun SuspectMessage.toDomainModel(): Suspect {
+    return Suspect(playerId, room, tool, suspect)
+}
+
+fun Suspect.toApiModel(): SuspectMessage {
+    return SuspectMessage(playerId, room, tool, suspect)
 }

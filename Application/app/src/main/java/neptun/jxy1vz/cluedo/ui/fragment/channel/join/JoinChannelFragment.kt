@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentJoinChannelBinding
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.channel.JoinRequest
 import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
@@ -61,7 +60,7 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
         pusher.connect()
 
         fragmentJoinChannelBinding.joinChannelViewModel =
-            JoinChannelViewModel(fragmentJoinChannelBinding, context!!, lifecycleScope, this)
+            JoinChannelViewModel(fragmentJoinChannelBinding, context!!, lifecycleScope, parentActivity.supportFragmentManager, this)
         return fragmentJoinChannelBinding.root
     }
 
@@ -94,6 +93,8 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
                             pusher.getPresenceChannel(pusherChannelName).bind("game-ready", object : PresenceChannelEventListener {
                                 override fun onEvent(p0: String?, p1: String?, p2: String?) {
                                     openCharacterSelector()
+                                    pusher.getPresenceChannel(pusherChannelName).unbind("game-ready"
+                                    ) { _, _, _ -> }
                                 }
 
                                 override fun onSubscriptionSucceeded(p0: String?) {}
@@ -143,7 +144,7 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
     fun openCharacterSelector(isLate: Boolean = false) {
         lifecycleScope.launch(Dispatchers.Main) {
-            parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment(false, isLate, this@JoinChannelFragment), MultiplayerCharacterSelectorFragment.TAG).addToBackStack("CharacterSelectorMulti").commit()
+            parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, MultiplayerCharacterSelectorFragment.newInstance(false, isLate, this@JoinChannelFragment), MultiplayerCharacterSelectorFragment.TAG).addToBackStack("CharacterSelectorMulti").commit()
             onFragmentClose()
         }
     }
@@ -159,8 +160,7 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
             retrofit.cluedo.leaveChannel(channelId, playerName)
         }
         catch (ex: HttpException) {
-            if (ex.code() == 404)
-                debugPrint("Channel $channelId does not exist any more.")
+
         }
         finally {
             pusher.unsubscribe(pusherChannelName)

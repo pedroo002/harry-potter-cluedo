@@ -8,7 +8,22 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import neptun.jxy1vz.cluedo.R
 
-class CardFragment(private val cardImage: Int) : Fragment() {
+class CardFragment : Fragment() {
+
+    private var cardImage: Int = 0
+
+    fun setCardImage(imgRes: Int) {
+        cardImage = imgRes
+    }
+
+    companion object {
+        fun newInstance(cardImage: Int): CardFragment {
+            val fragment = CardFragment()
+            fragment.setCardImage(cardImage)
+            return fragment
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

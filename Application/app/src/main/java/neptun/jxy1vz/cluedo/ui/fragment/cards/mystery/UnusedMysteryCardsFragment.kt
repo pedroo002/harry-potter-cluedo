@@ -10,13 +10,27 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentUnusedMysteryCardsBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class UnusedMysteryCardsFragment(
-    private val listener: DialogDismiss,
-    private val cardList: List<MysteryCard>
-) : Fragment(),
+class UnusedMysteryCardsFragment: Fragment(),
     ViewModelListener {
+
+    private lateinit var listener: DialogDismiss
+    private lateinit var cardList: List<MysteryCard>
+
+    fun setArgs(l: DialogDismiss, list: List<MysteryCard>) {
+        listener = l
+        cardList = list
+    }
+
+    companion object {
+        fun newInstance(listener: DialogDismiss, cardList: List<MysteryCard>): UnusedMysteryCardsFragment {
+            val fragment = UnusedMysteryCardsFragment()
+            fragment.setArgs(listener, cardList)
+            return fragment
+        }
+    }
 
     private lateinit var fragmentUnusedMysteryCardsBinding: FragmentUnusedMysteryCardsBinding
 
@@ -43,6 +57,6 @@ class UnusedMysteryCardsFragment(
 
     override fun onFinish() {
         listener.onCardRevealDismiss()
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }

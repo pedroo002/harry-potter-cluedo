@@ -13,13 +13,25 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.channel.root.ChannelRootFragment
 import neptun.jxy1vz.cluedo.ui.fragment.character_selector.single.CharacterSelectorFragment
 
-class GameModeFragment(private val listener: MenuListener) : Fragment(), ViewModelListener,
+class GameModeFragment : Fragment(), ViewModelListener,
     MenuListener {
+
+    private lateinit var listener: MenuListener
+
+    fun setListener(l: MenuListener) {
+        listener = l
+    }
 
     private lateinit var fragmentGameModeBinding: FragmentGameModeBinding
 
     companion object {
         var isCanceled = false
+
+        fun newInstance(listener: MenuListener): GameModeFragment {
+            val fragment = GameModeFragment()
+            fragment.setListener(listener)
+            return fragment
+        }
     }
 
     init {
@@ -40,11 +52,11 @@ class GameModeFragment(private val listener: MenuListener) : Fragment(), ViewMod
         if (!isCanceled) {
             val fragment: Fragment = when (fragmentGameModeBinding.gameMode) {
                 resources.getStringArray(R.array.playmodes)[0] -> {
-                    CharacterSelectorFragment(this)
+                    CharacterSelectorFragment.newInstance(this)
 
                 }
                 else -> {
-                    ChannelRootFragment(this)
+                    ChannelRootFragment.newInstance(this)
                 }
             }
             activity!!.supportFragmentManager.beginTransaction().replace(R.id.menuFrame, fragment).addToBackStack("FRAGMENT-${fragmentGameModeBinding.gameMode}").commit()
