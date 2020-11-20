@@ -1,2 +1,2 @@
-# BME-VIK Önlab (Orosz Péter)
-BME-VIK Önálló laboratúrium (AUT) - Harry Potter Cluedo for Android
+# BME-VIK Önlab és Szakdolgozat (Orosz Péter)
+BME-VIK Szakdolgozat projekt (AUT) - Harry Potter Cluedo for Android
