@@ -145,12 +145,13 @@ class MultiplayerCharacterSelectorViewModel(
                             override fun onEvent(channelName: String?, eventName: String?, message: String?) {
                                 val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
                                 adapter.deletePlayer(messageJson.message.playerName)
-                                disableButton()
                                 selections.filter { it.value.second && it.key != messageJson.message.playerName }.forEach {
                                     selections[it.key] = Pair(it.value.first, false)
                                     adapter.setCharacterTextColor(it.key, Color.WHITE)
                                 }
                                 selections.remove(messageJson.message.playerName)
+                                playersWhoSelected.remove(messageJson.message.playerName)
+                                disableButton()
                                 readyPlayers.clear()
                                 isReady = false
                             }
@@ -289,8 +290,19 @@ class MultiplayerCharacterSelectorViewModel(
     override fun refreshSelection(idx: Int) {
         lifecycle.launch(Dispatchers.Main) {
             selections.forEach {
-                if (selections.entries.indexOf(it) == idx || idx == -1)
-                    adapter.updatePlayerSelection(it.key, it.value.first, adapter.getTokenFromCharacterName(it.value.first))
+                if (selections.entries.indexOf(it) == idx || idx == -1) {
+                    adapter.updatePlayerSelection(
+                        it.key,
+                        it.value.first,
+                        adapter.getTokenFromCharacterName(it.value.first)
+                    )
+
+                    if (!playersWhoSelected.contains(it.key))
+                        playersWhoSelected.add(it.key)
+
+                    if (playersWhoSelected.size == playerCount)
+                        enableButton()
+                }
             }
         }
     }
