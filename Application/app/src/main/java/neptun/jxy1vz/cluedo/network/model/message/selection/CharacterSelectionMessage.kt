@@ -14,15 +14,13 @@ data class SelectionMessageBody(
     @Json(name = "player_name")
     val playerName: String,
     @Json(name = "character_name")
-    val characterName: String,
-    @Json(name = "token_src")
-    val token: Int
+    val characterName: String
 )
 
 @JsonClass(generateAdapter = true)
 data class CatchUpMessage(
-    @Json(name = "selection_count")
-    val selectionCount: Int,
+    @Json(name = "target_player")
+    val targetPlayer: String,
     @Json(name = "selections")
     val selections: List<SelectionMessageBody>
 )

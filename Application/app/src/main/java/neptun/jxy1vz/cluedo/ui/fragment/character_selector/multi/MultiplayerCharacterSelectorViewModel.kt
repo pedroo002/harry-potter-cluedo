@@ -7,13 +7,11 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.android.material.snackbar.Snackbar
 import com.pusher.client.channel.PresenceChannelEventListener
 import com.pusher.client.channel.User
-import kotlinx.android.synthetic.main.fragment_multiplayer_character_selector.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentMultiplayerCharacterSelectorBinding
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.cluedo.network.model.message.presence.PlayerPresenceMessage
 import neptun.jxy1vz.cluedo.network.model.message.selection.CatchUpMessage
@@ -59,7 +57,6 @@ class MultiplayerCharacterSelectorViewModel(
     private val readyPlayers = ArrayList<PlayerDomainModel>()
 
     private val selections = HashMap<String, Pair<String, Boolean>>()
-    private var messageReceived = 0
 
     init {
         val editor = playerPref.edit()
@@ -111,7 +108,7 @@ class MultiplayerCharacterSelectorViewModel(
                                 if (playersWhoSelected.size == playerCount)
                                     enableButton()
 
-                                triggerUpdate(messageJson)
+                                refreshSelection(selections.keys.indexOf(messageJson.message.playerName))
                             }
 
                             override fun onSubscriptionSucceeded(p0: String?) {}
@@ -147,15 +144,15 @@ class MultiplayerCharacterSelectorViewModel(
                         bind("player-leaves", object : PresenceChannelEventListener {
                             override fun onEvent(channelName: String?, eventName: String?, message: String?) {
                                 val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
-                                if (messageJson.message.playerName != this@MultiplayerCharacterSelectorViewModel.playerName) {
-                                    adapter.deletePlayer(messageJson.message.playerName)
-                                    disableButton()
-                                    selections.filter { it.value.second }.forEach {
-                                        selections[it.key] = Pair(it.value.first, false)
-                                        readyPlayers.clear()
-                                        adapter.setCharacterTextColor(it.key, Color.WHITE)
-                                    }
+                                adapter.deletePlayer(messageJson.message.playerName)
+                                disableButton()
+                                selections.filter { it.value.second && it.key != messageJson.message.playerName }.forEach {
+                                    selections[it.key] = Pair(it.value.first, false)
+                                    adapter.setCharacterTextColor(it.key, Color.WHITE)
                                 }
+                                selections.remove(messageJson.message.playerName)
+                                readyPlayers.clear()
+                                isReady = false
                             }
 
                             override fun onSubscriptionSucceeded(p0: String?) {}
@@ -168,9 +165,38 @@ class MultiplayerCharacterSelectorViewModel(
                         bind("player-arrives", object : PresenceChannelEventListener {
                             override fun onEvent(channelName: String?, eventName: String?, message: String?) {
                                 val messageJson = retrofit.moshi.adapter(PlayerPresenceMessage::class.java).fromJson(message!!)!!
+
                                 if (messageJson.message.playerName != playerName) {
-                                    adapter.addNewPlayer(messageJson.message.playerName)
-                                    notifyNewPlayerAdded()
+                                    addPlayer(messageJson.message.playerName)
+                                }
+
+                                if (isHost) {
+                                    val selectionList = ArrayList<SelectionMessageBody>()
+                                    selections.forEach {
+                                        selectionList.add(SelectionMessageBody(it.key, it.value.first))
+                                    }
+                                    val catchUpMessage = CatchUpMessage(messageJson.message.playerName, selectionList)
+                                    val json = retrofit.moshi.adapter(CatchUpMessage::class.java).toJson(catchUpMessage)
+                                    val body = json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+                                    catchUp(body)
+                                }
+                            }
+
+                            override fun onSubscriptionSucceeded(p0: String?) {}
+                            override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                            override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                            override fun userSubscribed(p0: String?, p1: User?) {}
+                            override fun userUnsubscribed(p0: String?, p1: User?) {}
+                        })
+
+                        bind("catch-up", object : PresenceChannelEventListener {
+                            override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                                val messageJson = retrofit.moshi.adapter(CatchUpMessage::class.java).fromJson(message!!)!!
+                                if (messageJson.targetPlayer == playerName) {
+                                    messageJson.selections.forEach {
+                                        selections[it.playerName] = Pair(it.characterName, false)
+                                    }
+                                    refreshSelection()
                                 }
                             }
 
@@ -190,31 +216,6 @@ class MultiplayerCharacterSelectorViewModel(
 
                             override fun onSubscriptionSucceeded(p0: String?) {}
                             override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
-                            override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
-                            override fun userSubscribed(p0: String?, p1: User?) {}
-                            override fun userUnsubscribed(p0: String?, p1: User?) {}
-                        })
-
-                        bind("new-player-added", object : PresenceChannelEventListener {
-                            override fun onEvent(p0: String?, p1: String?, p2: String?) {
-                                messageReceived++
-                                if (messageReceived == playerCount - 1) {
-                                    messageReceived = 0
-                                    if (isHost) {
-                                        val selectionList = ArrayList<SelectionMessageBody>()
-                                        selections.forEach {
-                                            selectionList.add(SelectionMessageBody(it.key, it.value.first, adapter.getTokenFromCharacterName(it.value.first)))
-                                        }
-                                        val catchUpMessage = CatchUpMessage(selectionList.size, selectionList)
-                                        val json = retrofit.moshi.adapter(CatchUpMessage::class.java).toJson(catchUpMessage)
-                                        val body = json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-                                        catchUp(body)
-                                    }
-                                }
-                            }
-
-                            override fun onSubscriptionSucceeded(p0: String?) {}
-                            override fun onAuthenticationFailure(p0: String?, p1: java.lang.Exception?) {}
                             override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
                             override fun userSubscribed(p0: String?, p1: User?) {}
                             override fun userUnsubscribed(p0: String?, p1: User?) {}
@@ -249,12 +250,6 @@ class MultiplayerCharacterSelectorViewModel(
             Snackbar.make(bind.multiCharacterSelectorRoot, "Különböző karaktereket válasszatok!", Snackbar.LENGTH_LONG).show()
     }
 
-    private fun triggerUpdate(messageJson: CharacterSelectionMessage) {
-        lifecycle.launch(Dispatchers.Main) {
-            adapter.updatePlayerSelection(messageJson.message.playerName, messageJson.message.characterName, messageJson.message.token)
-        }
-    }
-
     override fun onSelect(playerName: String, characterName: String, tokenSource: Int) {
         lifecycle.launch(Dispatchers.IO) {
             retrofit.cluedo.notifyCharacterSelected(channelName, playerName, characterName, tokenSource)
@@ -264,12 +259,6 @@ class MultiplayerCharacterSelectorViewModel(
     override fun onReady(playerName: String) {
         lifecycle.launch(Dispatchers.IO) {
             retrofit.cluedo.notifyCharacterSubmit(channelName, playerName)
-        }
-    }
-
-    private fun notifyNewPlayerAdded() {
-        lifecycle.launch(Dispatchers.IO) {
-            retrofit.cluedo.notifyNewPlayerAdded(channelName)
         }
     }
 
@@ -288,6 +277,21 @@ class MultiplayerCharacterSelectorViewModel(
     private fun disableButton() {
         lifecycle.launch(Dispatchers.Main) {
             bind.btnReady.isEnabled = false
+        }
+    }
+
+    private fun addPlayer(playerName: String) {
+        lifecycle.launch(Dispatchers.Main) {
+            adapter.addNewPlayer(playerName)
+        }
+    }
+
+    override fun refreshSelection(idx: Int) {
+        lifecycle.launch(Dispatchers.Main) {
+            selections.forEach {
+                if (selections.entries.indexOf(it) == idx || idx == -1)
+                    adapter.updatePlayerSelection(it.key, it.value.first, adapter.getTokenFromCharacterName(it.value.first))
+            }
         }
     }
 }

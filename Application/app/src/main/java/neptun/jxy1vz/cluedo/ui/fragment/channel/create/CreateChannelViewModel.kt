@@ -41,6 +41,7 @@ class CreateChannelViewModel(
 
     private lateinit var playerName: String
     private lateinit var channelId: String
+    private var isWaiting = true
 
     private var fragmentKilled = false
 
@@ -124,12 +125,14 @@ class CreateChannelViewModel(
 
                     pusherChannelName = "presence-${res.channelName}"
                     pusher.subscribePresence(pusherChannelName, object : PresenceChannelEventListener {
-                        override fun onEvent(p0: String?, p1: String?, p2: String?) {}
+                        override fun onEvent(channelName: String?, eventName: String?, message: String?) {}
                         override fun onSubscriptionSucceeded(p0: String?) {}
                         override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
                         override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
 
                         override fun userSubscribed(channelName: String?, presenceData: User?) {
+                            if (!isWaiting)
+                                return
                             playersToWait--
                             if (!fragmentKilled)
                                 Snackbar.make(
@@ -148,11 +151,14 @@ class CreateChannelViewModel(
                                     delay(500)
                                     retrofit.cluedo.notifyGameReady(pusherChannelName!!)
                                 }
+                                isWaiting = false
                                 listener.onFinish()
                             }
                         }
 
                         override fun userUnsubscribed(channelName: String?, presenceData: User?) {
+                            if (!isWaiting)
+                                return
                             playersToWait++
                             if (!fragmentKilled)
                                 Snackbar.make(

@@ -21,6 +21,7 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
     interface AdapterListener {
         fun onSelect(playerName: String, characterName: String, tokenSource: Int)
         fun onReady(playerName: String)
+        fun refreshSelection(idx: Int = -1)
     }
 
     private lateinit var characterList: Array<String>
@@ -173,6 +174,8 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
         if (playerList.map { player -> player.playerName }.contains(playerName))
             return
         playerList.add(PlayerDomainModel(playerName, "", -1))
+        notifyItemInserted(playerList.indexOf(playerList.find { p -> p.playerName == playerName }))
+        listener.refreshSelection()
     }
 
     fun setCharacterTextColor(playerName: String, color: Int) {
