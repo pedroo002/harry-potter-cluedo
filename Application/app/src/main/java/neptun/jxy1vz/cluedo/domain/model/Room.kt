@@ -1,7 +1,5 @@
 package neptun.jxy1vz.cluedo.domain.model
 
-import androidx.annotation.DrawableRes
-
 data class Room(
     val id: Int,
     val name: String,

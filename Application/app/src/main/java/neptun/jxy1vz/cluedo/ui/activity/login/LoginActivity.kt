@@ -1,6 +1,5 @@
 package neptun.jxy1vz.cluedo.ui.activity.login
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

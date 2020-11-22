@@ -4,7 +4,6 @@ import android.content.Context
 import android.widget.ImageView
 import androidx.core.view.children
 import androidx.databinding.BaseObservable
-import com.google.android.material.snackbar.Snackbar
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentIncriminationBinding
 import neptun.jxy1vz.cluedo.domain.model.helper.suspectTokens

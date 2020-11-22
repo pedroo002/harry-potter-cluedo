@@ -23,7 +23,6 @@ import neptun.jxy1vz.cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.cluedo.domain.model.helper.GameModels
-import neptun.jxy1vz.cluedo.domain.util.debugPrint
 import neptun.jxy1vz.cluedo.domain.util.toDatabaseModel
 import neptun.jxy1vz.cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
@@ -90,8 +89,6 @@ class MysteryCardViewModel(
                     gameModel.loadPlayers().find { player -> player.id == dbModel.playerId }!!
                 }!!
             }
-
-            debugPrint("Player list: ${playerList.map { p -> p.card.name }}\nPlayer id: $playerId")
             player = playerList.find { p -> p.id == playerId }!!
 
             if (gameMode == gameModeList[1]) {

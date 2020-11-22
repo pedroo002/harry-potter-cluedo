@@ -14,10 +14,6 @@ fun setNumPicker(numPicker: NumberPicker, min: Int, max: Int, color: Int) {
     }
 }
 
-fun debugPrint(message: String) {
-    println("\n==================== <DEBUG> ====================\n$message\n==================== </DEBUG> ====================")
-}
-
 fun removePlayer(player: Player) {
     val newPlayerList = ArrayList<Player>()
     for (p in MapViewModel.gameModels.playerList) {

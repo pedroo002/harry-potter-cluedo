@@ -7,10 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.databinding.FragmentPlayerDiesBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Player

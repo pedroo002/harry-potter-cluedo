@@ -2,16 +2,9 @@ package neptun.jxy1vz.cluedo.ui.fragment.endgame
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
-import android.view.View
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import kotlinx.android.synthetic.main.fragment_end_of_game.view.*
-import kotlinx.android.synthetic.main.fragment_end_of_game.view.ivPlayer
-import kotlinx.android.synthetic.main.fragment_end_of_game.view.ivSuspectToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

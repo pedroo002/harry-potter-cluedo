@@ -7,12 +7,10 @@ import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_player_dies.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.database.CluedoDatabase
 import neptun.jxy1vz.cluedo.databinding.FragmentPlayerDiesBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.bwPlayers

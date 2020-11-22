@@ -17,7 +17,6 @@ import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.domain.util.toApiModel
 import neptun.jxy1vz.cluedo.network.model.message.suspect.SuspectMessage
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 

@@ -1,8 +1,7 @@
 package neptun.jxy1vz.cluedo.domain.model.helper
 
-import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
-import neptun.jxy1vz.cluedo.domain.model.card.HelperType
 import neptun.jxy1vz.cluedo.domain.model.Player
+import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
 
 fun getHelperObjects(player: Player, darkCard: DarkCard): ArrayList<String> {
     val helperObjects = ArrayList<String>()
@@ -13,8 +12,4 @@ fun getHelperObjects(player: Player, darkCard: DarkCard): ArrayList<String> {
         }
     }
     return helperObjects
-}
-
-fun getPixelsFromDp(dp: Int, density: Int): Int {
-    return (density / 160) * dp
 }

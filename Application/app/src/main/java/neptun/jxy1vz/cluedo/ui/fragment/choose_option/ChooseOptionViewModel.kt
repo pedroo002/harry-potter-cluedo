@@ -4,7 +4,6 @@ import android.content.Context
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BaseObservable
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_choose_option.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentChooseOptionBinding

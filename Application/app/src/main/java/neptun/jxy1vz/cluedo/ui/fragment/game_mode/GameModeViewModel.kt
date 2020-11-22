@@ -2,7 +2,6 @@ package neptun.jxy1vz.cluedo.ui.fragment.game_mode
 
 import android.content.Context
 import androidx.databinding.BaseObservable
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_game_mode.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentGameModeBinding
