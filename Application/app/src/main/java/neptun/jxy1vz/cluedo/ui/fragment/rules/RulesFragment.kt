@@ -5,39 +5,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import neptun.jxy1vz.cluedo.R
-import neptun.jxy1vz.cluedo.databinding.FragmentRulesBinding
 import neptun.jxy1vz.cluedo.ui.fragment.rules.adapter.RulesPagerAdapter
 import neptun.jxy1vz.cluedo.ui.fragment.rules.page.*
 
 class RulesFragment : Fragment() {
 
-    private lateinit var fragmentRulesBinding: FragmentRulesBinding
     private lateinit var dotList: ArrayList<ImageView>
+    private lateinit var pager: ViewPager2
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        fragmentRulesBinding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_rules, container, false)
-        fragmentRulesBinding.rulesViewModel = RulesViewModel()
+        val root = inflater.inflate(R.layout.fragment_rules, container, false)
+        pager = root.findViewById(R.id.rulesPager)
 
         dotList = ArrayList()
-        dotList.add(fragmentRulesBinding.ivDot1)
-        dotList.add(fragmentRulesBinding.ivDot2)
-        dotList.add(fragmentRulesBinding.ivDot3)
-        dotList.add(fragmentRulesBinding.ivDot4)
-        dotList.add(fragmentRulesBinding.ivDot5)
-        dotList.add(fragmentRulesBinding.ivDot6)
-        dotList.add(fragmentRulesBinding.ivDot7)
-        dotList.add(fragmentRulesBinding.ivDot8)
+        dotList.add(root.findViewById(R.id.ivDot1))
+        dotList.add(root.findViewById(R.id.ivDot2))
+        dotList.add(root.findViewById(R.id.ivDot3))
+        dotList.add(root.findViewById(R.id.ivDot4))
+        dotList.add(root.findViewById(R.id.ivDot5))
+        dotList.add(root.findViewById(R.id.ivDot6))
+        dotList.add(root.findViewById(R.id.ivDot7))
+        dotList.add(root.findViewById(R.id.ivDot8))
 
-        return fragmentRulesBinding.root
+        return root
     }
 
     override fun onResume() {
@@ -56,9 +53,9 @@ class RulesFragment : Fragment() {
 
         val adapter = RulesPagerAdapter(this)
         adapter.addFragments(fragmentList)
-        fragmentRulesBinding.rulesPager.adapter = adapter
+        pager.adapter = adapter
 
-        fragmentRulesBinding.rulesPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
