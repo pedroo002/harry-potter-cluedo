@@ -2,6 +2,7 @@
     <string name="app_name">Cluedo</string>
     <string name="game_start">Játék indítása</string>
     <string name="rules">Szabályok</string>
+    <string name="game_rules">Játékszabályok</string>
     <string name="exit">Kilépés</string>
     <string name="dob">Dobás</string>
     <string name="start">Start</string>
@@ -285,5 +286,37 @@
     <string name="map_description">The map of the game</string>
     <string name="logo_description">Logo of the game</string>
     <string name="game_logo">Game logo</string>
-    <string name="settings_icon">Settings icon</string>
+
+    <string name="round_start">A kör eleje</string>
+    <string name="start_rule_description1">Köröd elején kétféle dolgot tehetsz. Hogy az opciókat előhozd, a játékosodat szimbolizáló bábu ikonra kell tappintani.</string>
+    <string name="start_rule_description2">A köröd elején lehetőséged van megnézni jegyzeteidet, illetve dobni a dobókockákkal. Természetesen a jegyzetek megtekintését választva, azt követően újra előhozva ezt a menüt lehetőséged van dobni.</string>
+
+    <string name="note_rules">Jegyzetek</string>
+    <string name="note_rules_description1">A gyanúsítások után érdemes jegyzetelni. Többféle jegyzet is készíthető egy vonatkozó rejtélykártyához. Az egyik ilyen lehetőség, hogy saját kártyáinkat megjelöljük a választott karakterünk monogramjával. Ezt a játék automatikusan megteszi. Ezen kívül lehet jelezni azt, amiről már tudjuk kinél van. Hosszú tappintással előhozhatjuk egy cella fölött a játékos társaink neveit, és kiválaszthatjuk közülük a megfelelőt.</string>
+    <string name="note_rules_description2">Mivel nem mindig tudjuk rögtön, hogy az adott kártya kinél van biztosan, több nevet is feljegyezhetünk egy sorban. Amint tudjuk a biztos választ, jelezhetjük ezt egy pipával az alábbi módon:</string>
+    <string name="note_rules_description3">Ha rájöttünk a megoldásra, arra is alkalmas a zöld pipa, üres cellákkal az adott sorban, ha pedig egy kártya nem lett kiosztva (erről lásd a 5. oldalt), azt egy piros X-szel jelölhetjük.</string>
+
+    <string name="dice_rules">Kockadobás menete</string>
+    <string name="dice_rules_description1">A \"Dobás\" gomb megnyomásával dobhatsz a három kockával. Két számot és egy szimbólumos kockát fogsz használni.</string>
+    <string name="dice_rules_description2">A számok összege a maximális lépésszámod lesz a körödben. A szimbólumok az alábbiak lehetnek:</string>
+    <string name="dice_rules_description3">A roxforti házak a térkép sarkainak egyikét módosítják (ajtót nyitnak/zárnak, vagy titkos átjárókat módosítanak), a csillag szimbólummal mentőkártyát kaphatsz, amely segít téged, a sötét jegy viszont hátráltatni fog a játékban valamilyen módon (házpontokat veszíthetsz, sőt, akár mentőkártyát is). Szerencsére a megfelelő mentőkártyák meg is tudnak védeni bizonyos ártásoktól.</string>
+    <string name="dice_rules_description4">A lehetséges lépéseket a térképen kiemelve láthatod. Ezek egyikére tapintva megteheted a lépésedet. Amennyiben szobába mész, ott gyanúsítani tudsz. A gyanúsítás helyszín paramétere automatikusan maga a szoba, a másik kettőt te választhatod ki. Erről lásd a következő oldalt.\nHa csillag mezőre lépsz, mentőkártyát kapsz.</string>
+
+    <string name="incrimination_rules">A gyanúsítás szabályai</string>
+    <string name="incrimination_rules_description1">Ha te gyanúsítasz, ki kell választanod a szoba mellé a gyanúsított személyt, és az eszközt, amivel szerinted elkövette a bűntettet. Ha ezek megvannak, a \"Gyanúsítás\" gombra tapintva leadhatod a gyanúdat. Adott esetben (ha szobából kezded a körödet) úgy is dönthetsz, hogy mégsem gyanúsítasz, hanem inkább lépsz: erre való a \"Passz\" gomb.</string>
+    <string name="incrimination_rules_description2">A három szimbólum közül a nem fekete-fehér színű ikon jelzi számodra, hogy mit mutatott a másik játékos (akinek kilétét a jobboldali kép jelzi).</string>
+    <string name="incrimination_rules_description3">Ha épp más játékosok körei vannak, azt is megfigyelheted. Ekkor csak találgatni tudsz, hogy a három közül melyik kártyát mutatta a másik fél a harmadiknak, de épp erre való a jegyzettömb.</string>
+    <string name="incrimination_rules_description4">Amikor rajtad a sor, hogy mutass valamit a kártyáid közül, felhívja erre a figyelmedet egy felirat, és a színes ikonok közül tudsz választani (ugyanis ezekkel rendelkezel), hogy melyiket mutatod meg.</string>
+    <string name="incrimination_rules_description5">Végezetül pedig az is előfordulhat, hogy senki nem tudott mutatni lapot. Ezt az alábbi kép ábrázolja. Ekkor is lehet több dologra következtetni.</string>
+
+    <string name="dumbledores_office_rules">Dumbledore irodája</string>
+    <string name="dumbledores_office_description1">Dumbledore irodájában több dolgot is lehet tenni. A lehetőségek fel vannak sorolva a képernyőn:</string>
+    <string name="dumbledores_office_description2">Le lehet adni a végső vádat. Ezt akkor tedd, ha úgy érzed, biztos vagy a megoldásodban, de vigyázz: ha rossz megoldást adsz le, kiesel a játékból.\nHa korábbi körben léptél ide, és itt kezdted a mostanit, dönthetsz úgy, hogy lépsz és folytatod az információgyűjtést.\nElőbbi lehetőség azért áll fenn, mert ebben a szobában lehet megtekinteni a ki nem osztott rejtélykártyákat is (ha nem lehet egyenlően elosztani a lapokat a játékosok között), ez illusztrálva van alább. Ezzel mindenképpen kell számolni, ha nem 3-an játszotok, mert ekkor fognak kimaradni lapok.</string>
+
+    <string name="accusation_rules">A vád leadása</string>
+    <string name="accusation_rules_description1">Ha úgy érzed, kitaláltad a megoldást alkotó hármast, le kell adnod a vádat Dumbledore irodájában. Ilyenkor természetesen mind a három paramétert ki kell választani:</string>
+    <string name="accusation_rules_description2">Ha megvan mindhárom paraméter, a \"Vádemelés\" gombbal adható le a vád.</string>
+    <string name="accusation_rules_description3">Ekkor meg fog jelenni a következő ablakban, hogy jó-e a megoldás.\nEgyjátékos mód esetén rossz megoldásnál is kiírja a jó megoldást, mert itt véget ér a játék. Ezt szemlélteti a következő kép is.\nTöbbjátékos módban még van esélyük a többieknek rájönni a megoldásra, így ilyenkor nem kerül lelövésre a poén.</string>
+
+    <string name="good_regards">Ezek lettek volna a játékszabályok. Jó szórakozást kívánok!</string>
 </resources>

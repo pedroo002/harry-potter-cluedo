@@ -66,7 +66,7 @@ dependencies {
     kapt "com.android.databinding:compiler:$compiler_version"
 
     //Material Design
-    implementation "com.google.android.material:material:1.2.1"
+    implementation 'com.google.android.material:material:1.3.0-alpha03'
 
     //ZoomLayout
     implementation 'com.otaliastudios:zoomlayout:1.7.1'
@@ -109,6 +109,9 @@ dependencies {
 
     //GIF
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+
+    //Viewpager2
+    implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
 }
 
 kapt {
