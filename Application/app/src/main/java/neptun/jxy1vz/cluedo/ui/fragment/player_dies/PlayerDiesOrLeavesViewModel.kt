@@ -2,7 +2,6 @@ package neptun.jxy1vz.cluedo.ui.fragment.player_dies
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
-import android.content.Context
 import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
@@ -18,7 +17,6 @@ import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
 class PlayerDiesOrLeavesViewModel(
     private val bind: FragmentPlayerDiesBinding,
-    context: Context,
     player: Player,
     title: String,
     lifecycleScope: LifecycleCoroutineScope,

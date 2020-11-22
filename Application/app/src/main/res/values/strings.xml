@@ -3,7 +3,14 @@
     <string name="game_start">Játék indítása</string>
     <string name="rules">Szabályok</string>
     <string name="exit">Kilépés</string>
-    <string name="map_description">The map of the game</string>
+    <string name="dob">Dobás</string>
+    <string name="start">Start</string>
+    <string name="ok">OK</string>
+    <string name="go_forward">Tovább</string>
+    <string name="back_to_menu">Vissza a főmenübe</string>
+    <string name="cancel">Mégse</string>
+    <string name="yes">Igen</string>
+
     <string name="star1">Star1</string>
     <string name="star2">Star2</string>
     <string name="star3">Star3</string>
@@ -12,96 +19,99 @@
     <string name="star6">Star6</string>
     <string name="star7">Star7</string>
     <string name="star8">Star8</string>
+
     <string name="player1">Ginny Weasley</string>
     <string name="player2">Harry Potter</string>
     <string name="player3">Hermione Granger</string>
     <string name="player4">Ron Weasley</string>
     <string name="player5">Luna Lovegood</string>
     <string name="player6">Neville Longbottom</string>
-    <string name="logo_description">Logo of the game</string>
-    <string name="dob">Dobás</string>
+
     <string name="choose_a_character">Válassz karaktert magadnak!</string>
-    <string name="start">Start</string>
     <string name="dobj">Dobj a kockákkal!</string>
     <string name="dialog_character_title">Válaszd ki a karaktered</string>
+
     <string name="got_helper_card">Mentő kártyát kaptál</string>
     <string name="sotet_jegy">A sötét jegy feltűnt az égen!</string>
-    <string name="ok">OK</string>
+
     <string name="helper_cards_tools">Eszközeid</string>
     <string name="helper_cards_spells">Varázsigéid</string>
     <string name="helper_cards_allys">Szövetségeseid</string>
-    <string name="helper_cards_against_this_dark_card">Mentő kártyáid ez ellen a lap ellen: </string>
-    <string name="hp_loss">Házpontokat vesztettél!</string>
-    <string name="hp_loss_amount">Veszített mennyiség: </string>
+
     <string name="tool_loss">El kell dobnod egy eszköz kártyát!</string>
     <string name="spell_loss">El kell dobnod egy varázsige kártyát!</string>
     <string name="ally_loss">El kell dobnod egy szövetséges kártyát!</string>
     <string name="throw_card">Eldobás</string>
-    <string name="rescued">Megmenekültél!</string>
-    <string name="your_card_helped_you">A mentő kártyád segítségedre volt a sötét erőkkel szemben.</string>
-    <string name="remaining_hp">Megmaradt házpontok: </string>
+
     <string name="mystery_cards">Rejtélykártyák sorsolása</string>
     <string name="your_mystery_cards">A te rejtély kártyáid: </string>
-    <string name="go_forward">Tovább</string>
+    <string name="slide_for_more">Lapozz oldalra a többiért!</string>
+
     <string name="game_mode">Válaszd ki a játék paramétereit!</string>
     <string name="player_mode">Játékos mód: </string>
     <string name="player_count">Játékosok száma: </string>
-    <string name="game_logo">Game logo</string>
-    <string name="settings_icon">Settings icon</string>
-    <string name="card_tool">Mystery card tool</string>
-    <string name="card_suspect">Mystery card suspect</string>
-    <string name="card_venue">Mystery card venue</string>
-    <string name="card_character">Character card</string>
-    <string name="card_dark">Dark card</string>
-    <string name="card_helper">Helper card</string>
-    <string name="dice1">Dice 1</string>
-    <string name="dice2">Dice 2</string>
-    <string name="dice3">Dice3</string>
-    <string name="incrimination">Gyanúsítás</string>
-    <string name="accusation">Vádemelés</string>
-    <string name="tool">Eszköz</string>
-    <string name="suspect">Gyanúsított</string>
-    <string name="mystery_card">Rejtély kártya</string>
-    <string name="card_reveal">Rejtélykártya felfedése</string>
-    <string name="back_to_menu">Vissza a főmenübe</string>
-    <string name="correct_accusation">Helyes vád</string>
-    <string name="incorrect_accusation">Helytelen vád</string>
-    <string name="your_turn">Te jössz!</string>
-    <string name="show_card">Fedd fel az egyik kártyádat!</string>
-    <string name="show">Felfed</string>
-    <string name="skip">Passz</string>
-    <string name="room">Helyiség</string>
-    <string name="accuse">Vádemelés</string>
-    <string name="lucius_malfoy">Lucius Malfoy</string>
-    <string name="peter_pettigrew">Peter Pettigrew</string>
-    <string name="draco_malfoy">Draco Malfoy</string>
-    <string name="dolores_umbridge">Dolores Umbridge</string>
-    <string name="crak_es_monstro">Crak és Monstro</string>
-    <string name="bellatrix_lestrange">Bellatrix Lestrange</string>
-    <string name="zsupszkulcs">Zsupszkulcs</string>
-    <string name="volt_nincs_szekreny">Volt-nincs szekrény</string>
-    <string name="petrificus_totalus">Petrificus Totalus</string>
-    <string name="obstructo">Obstructo</string>
-    <string name="mandragora">Mandragóra</string>
-    <string name="altatoital">Altatóital</string>
-    <string name="take_note">Jegyezd fel a történteket!</string>
-    <string name="purpose_in_room">Mi a célod Dumbledore irodájában?</string>
-    <string name="choose_option">Válassz egy lehetőséget!</string>
-    <string name="check_cards">Kártyák megtekintése</string>
-    <string name="step">Lépek</string>
-    <string name="unused_cards">Ki nem osztott rejtélykártyák</string>
     <string name="player_id">Player ID</string>
-    <string name="slide_for_more">Lapozz oldalra a többiért!</string>
+    <string name="player_id_key">player_id</string>
+    <string name="first_start_pref">FirstStart</string>
     <string name="game_params_pref">Game params</string>
     <string name="player_data_pref">PLAYER DATA</string>
     <string name="player_name_key">player_name</string>
     <string name="password_key">password</string>
     <string name="player_count_key">player_count</string>
     <string name="play_mode_key">play_mode</string>
+    <string name="channel_id_key">channel_id</string>
+    <string name="is_host_key">is_host</string>
     <string name="database_name">CluedoDatabase</string>
-    <string name="first_start_pref">FirstStart</string>
-    <string name="helper_card_saved_him">Mentőkártyája megvédte őt a sötét erőkkel szemben.</string>
-    <string name="has_been_rescued">megmenekült</string>
+
+    <string name="card_tool">Mystery card tool</string>
+    <string name="card_suspect">Mystery card suspect</string>
+    <string name="card_venue">Mystery card venue</string>
+    <string name="card_character">Character card</string>
+    <string name="card_dark">Dark card</string>
+    <string name="card_helper">Helper card</string>
+
+    <string name="dice1">Dice 1</string>
+    <string name="dice2">Dice 2</string>
+    <string name="dice3">Dice3</string>
+
+    <string name="incrimination">Gyanúsítás</string>
+    <string name="accusation">Vádemelés</string>
+    <string name="tool">Eszköz</string>
+    <string name="suspect">Gyanúsított</string>
+    <string name="mystery_card">Rejtély kártya</string>
+    <string name="card_reveal">Rejtélykártya felfedése</string>
+
+    <string name="correct_accusation">Helyes vád</string>
+    <string name="incorrect_accusation">Helytelen vád</string>
+
+    <string name="show_card">Fedd fel az egyik kártyádat!</string>
+    <string name="show">Felfed</string>
+    <string name="skip">Passz</string>
+
+    <string name="room">Helyiség</string>
+
+    <string name="lucius_malfoy">Lucius Malfoy</string>
+    <string name="peter_pettigrew">Peter Pettigrew</string>
+    <string name="draco_malfoy">Draco Malfoy</string>
+    <string name="dolores_umbridge">Dolores Umbridge</string>
+    <string name="crak_es_monstro">Crak és Monstro</string>
+    <string name="bellatrix_lestrange">Bellatrix Lestrange</string>
+
+    <string name="zsupszkulcs">Zsupszkulcs</string>
+    <string name="volt_nincs_szekreny">Volt-nincs szekrény</string>
+    <string name="petrificus_totalus">Petrificus Totalus</string>
+    <string name="obstructo">Obstructo</string>
+    <string name="mandragora">Mandragóra</string>
+    <string name="altatoital">Altatóital</string>
+
+    <string name="take_note">Jegyezd fel a történteket!</string>
+    <string name="purpose_in_room">Mi a célod Dumbledore irodájában?</string>
+    <string name="choose_option">Válassz egy lehetőséget!</string>
+    <string name="check_cards">Kártyák megtekintése</string>
+    <string name="step">Lépek</string>
+    <string name="unused_cards">Ki nem osztott rejtélykártyák</string>
+    <string name="are_you_sure">Biztosan ki akarsz lépni a játékból?</string>
+
     <string name="you_died">Meghaltál!</string>
     <string name="you_lost_your_hps">Elvesztetted házpontjaidat, kiestél.</string>
     <string name="game_over">A játéknak vége.</string>
@@ -109,15 +119,11 @@
     <string name="he_lost_the_game">Kiesett a játékból.</string>
     <string name="left_the_game">kilépett a játékból</string>
     <string name="his_mystery_cards">Rejtély kártyái ezek voltak:</string>
-    <string name="someone_lost_hps">házpontokat vesztett</string>
-    <string name="select_from_every_parameter">Válassz minden oszlopból egyet!</string>
     <string name="someone_solved_the_mystery">megoldotta a rejtélyt.</string>
     <string name="wrong_solution">rossz megoldást adott.</string>
     <string name="wrong_solution_self_message">Rossz megoldást adtál, kiestél.</string>
     <string name="good_solution_self_message">Megoldottad a rejtélyt!</string>
-    <string name="player_id_key">player_id</string>
-    <string name="someone_shows_you_this_card">ezt a kártyát mutatja neked: </string>
-    <string name="someone_threw_card">eldobta ezt: </string>
+
     <string name="make_a_movement">Lépj!</string>
     <string name="dice_rolling">Kockadobás</string>
     <string name="your_options">Lehetőségek</string>
@@ -127,13 +133,11 @@
     <string name="with_this_tool">Ezzel az eszközzel: </string>
     <string name="suspect_person">Gyanúsított: </string>
     <string name="you_have_to_incriminate">Muszáj gyanúsítanod!</string>
-    <string name="no_one_could_show">Senki sem tudott mutatni…</string>
     <string name="incrimination_params">Gyanúsítás paraméterei: </string>
     <string name="current_room">Helyiség: </string>
     <string name="current_tool">Eszköz: </string>
-    <string name="card_reveal_happened">Kártyafelfedés történt</string>
-    <string name="showed_something">mutatott valamit neki: </string>
     <string name="make_your_accusation">Add le a gyanúdat!</string>
+
     <string name="player_arrived">Játékos érkezett! Még %1$d játékosra várunk.</string>
     <string name="all_players_arrived">Mindenki megérkezett!</string>
     <string name="player_left">Egy játékos kilépett</string>
@@ -171,6 +175,7 @@
     <string name="dark_card31">Frics úr - a szokásosnál is gorombább hangulatban - befordul a sarkon.</string>
     <string name="dark_card32">A Griffendéles fiúk hálótermét kifosztották. Értékes dolgok tűntek el.</string>
     <string name="dark_card33">Cormac McLaggen szerelmi bájitallal átitatott édességet evett - és csak rád tud gondolni.</string>
+
     <string name="single_player">Egyjátékos mód</string>
     <string name="multi_player">Többjátékos mód</string>
 
@@ -183,38 +188,35 @@
         <item>Neville Longbottom</item>
     </string-array>
 
-    <string name="room_dumbledore">Dumbledore irodája</string>
     <string name="mystery_prefix">MYSTERY_%</string>
     <string name="dark_prefix">DARK_%</string>
     <string name="helper_prefix">HELPER_%</string>
+
     <string name="game_solution">A rejtély megoldása ez volt:</string>
     <string name="the_correct_solution">A helyes megoldás:</string>
-    <string name="choose_from_each_game_mode_param">Válassz mindkét paraméterből egyet!</string>
-    <string name="cancel">Mégse</string>
-    <string name="choose_your_character">Válassz karaktert magadnak!</string>
+
     <string name="choose_an_option">Válassz egy opciót!</string>
     <string name="what_is_your_purpose">Mit szeretnél csinálni?</string>
     <string name="check_notes">Jegyzetek megtekintése</string>
     <string name="back">Vissza</string>
     <string name="next">Tovább</string>
+
     <string name="join_server">Csatlakozás szerverhez</string>
+    <string name="existing_channels">Jelenlegi csatornák</string>
+    <string name="join">Csatlakozás</string>
     <string name="create_server">Szerver létrehozása</string>
     <string name="channel_name">Szerver neve</string>
     <string name="auth_key">Belépési kód</string>
     <string name="create">Létrehozás</string>
-    <string name="player_name">Felhasználónév</string>
+    <string name="wait_for_other_players">Várakozás a többi játékosra</string>
+
     <string name="login">Bejelentkezés</string>
+    <string name="player_name">Felhasználónév</string>
+    <string name="password">Jelszó</string>
     <string name="new_user">Új felhasználó</string>
     <string name="existing_user">Régi felhasználó</string>
-    <string name="password">Jelszó</string>
-    <string name="join">Csatlakozás</string>
-    <string name="wait_for_other_players">Várakozás a többi játékosra</string>
-    <string name="existing_channels">Jelenlegi csatornák</string>
-    <string name="channel_id_key">channel_id</string>
-    <string name="is_host_key">is_host</string>
-    <string name="are_you_sure">Biztosan ki akarsz lépni a játékból?</string>
-    <string name="yes">Igen</string>
 
+    <string name="room_dumbledore">Dumbledore irodája</string>
     <string-array name="rooms">
         <item>Bagolyház</item>
         <item>Bájitaltan terem</item>
@@ -279,4 +281,9 @@
         <item>Egyjátékos mód</item>
         <item>Többjátékos mód</item>
     </string-array>
+
+    <string name="map_description">The map of the game</string>
+    <string name="logo_description">Logo of the game</string>
+    <string name="game_logo">Game logo</string>
+    <string name="settings_icon">Settings icon</string>
 </resources>

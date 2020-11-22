@@ -55,7 +55,6 @@ class PlayerDiesOrLeavesFragment : Fragment(), ViewModelListener {
         fragmentPlayerDiesBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_player_dies, container, false)
         fragmentPlayerDiesBinding.playerDiesOrViewModel = PlayerDiesOrLeavesViewModel(
             fragmentPlayerDiesBinding,
-            context!!,
             player,
             title,
             lifecycleScope,
