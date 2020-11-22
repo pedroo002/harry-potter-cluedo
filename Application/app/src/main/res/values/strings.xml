@@ -2,6 +2,7 @@
     <string name="app_name">Cluedo</string>
     <string name="game_start">Játék indítása</string>
     <string name="rules">Szabályok</string>
+    <string name="game_rules">Játékszabályok</string>
     <string name="exit">Kilépés</string>
     <string name="dob">Dobás</string>
     <string name="start">Start</string>

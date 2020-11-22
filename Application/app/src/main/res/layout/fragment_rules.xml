@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/hogwarts_blur">
+
+    <data>
+        <variable
+            name="rulesViewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.rules.RulesViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rulesRoot">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTitle"
+            android:text="@string/game_rules"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="10dp"/>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/rulesPager"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintBottom_toTopOf="@id/guidelineHorizontal"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivDot1"
+            android:src="@drawable/selected"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guidelineFirstQuarter"
+            app:layout_constraintTop_toTopOf="@id/guidelineHorizontal"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivDot2"
+            android:src="@drawable/unselected"
+            app:layout_constraintStart_toStartOf="@id/guidelineFirstQuarter"
+            app:layout_constraintEnd_toEndOf="@id/guidelineMiddle"
+            app:layout_constraintTop_toTopOf="@id/guidelineHorizontal"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivDot3"
+            android:src="@drawable/unselected"
+            app:layout_constraintStart_toStartOf="@id/guidelineMiddle"
+            app:layout_constraintEnd_toEndOf="@id/guidelineThirdQuarter"
+            app:layout_constraintTop_toTopOf="@id/guidelineHorizontal"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivDot4"
+            android:src="@drawable/unselected"
+            app:layout_constraintStart_toStartOf="@id/guidelineThirdQuarter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guidelineHorizontal"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineFirstQuarter"
+            app:layout_constraintGuide_percent="0.25"
+            android:orientation="vertical"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineMiddle"
+            app:layout_constraintGuide_percent="0.5"
+            android:orientation="vertical"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineThirdQuarter"
+            app:layout_constraintGuide_percent="0.75"
+            android:orientation="vertical"/>
+        
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineHorizontal"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.92"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

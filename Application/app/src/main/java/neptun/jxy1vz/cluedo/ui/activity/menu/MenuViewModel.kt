@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.ActivityMenuBinding
 import neptun.jxy1vz.cluedo.ui.fragment.game_mode.GameModeFragment
+import neptun.jxy1vz.cluedo.ui.fragment.rules.RulesFragment
 
 class MenuViewModel(private val bind: ActivityMenuBinding, private val fragmentManager: FragmentManager, private val listener: MenuListener) : BaseObservable(),
     MenuListener {
@@ -17,6 +18,16 @@ class MenuViewModel(private val bind: ActivityMenuBinding, private val fragmentM
     fun openGameModeDialog() {
         val gameModeFragment = GameModeFragment.newInstance(this)
         fragmentManager.beginTransaction().add(R.id.menuFrame, gameModeFragment).addToBackStack(gameModeFragment.toString()).commit()
+        bind.menuFrame.bringToFront()
+
+        bind.btnStart.visibility = View.GONE
+        bind.btnRules.visibility = View.GONE
+        bind.btnExit.visibility = View.GONE
+    }
+
+    fun openRules() {
+        val rulesFragment = RulesFragment()
+        fragmentManager.beginTransaction().add(R.id.menuFrame, rulesFragment).addToBackStack(rulesFragment.toString()).commit()
         bind.menuFrame.bringToFront()
 
         bind.btnStart.visibility = View.GONE
