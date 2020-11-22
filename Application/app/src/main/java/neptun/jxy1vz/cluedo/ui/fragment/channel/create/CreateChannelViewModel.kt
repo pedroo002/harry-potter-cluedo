@@ -137,14 +137,14 @@ class CreateChannelViewModel(
                             if (!fragmentKilled)
                                 Snackbar.make(
                                     bind.createChannelRoot,
-                                    "Valaki megjött!",
+                                    context.resources.getString(R.string.player_arrived, playersToWait),
                                     Snackbar.LENGTH_LONG
                                 ).show()
                             if (playersToWait == 0) {
                                 if (!fragmentKilled)
                                     Snackbar.make(
                                         bind.createChannelRoot,
-                                        "Mindenki megjött!",
+                                        context.resources.getString(R.string.all_players_arrived),
                                         Snackbar.LENGTH_LONG
                                     ).show()
                                 lifecycleScope.launch(Dispatchers.IO) {
@@ -163,7 +163,7 @@ class CreateChannelViewModel(
                             if (!fragmentKilled)
                                 Snackbar.make(
                                     bind.createChannelRoot,
-                                    "Valaki elment!",
+                                    context.resources.getString(R.string.player_left),
                                     Snackbar.LENGTH_LONG
                                 ).show()
                         }

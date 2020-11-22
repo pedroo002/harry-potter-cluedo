@@ -134,6 +134,9 @@
     <string name="card_reveal_happened">Kártyafelfedés történt</string>
     <string name="showed_something">mutatott valamit neki: </string>
     <string name="make_your_accusation">Add le a gyanúdat!</string>
+    <string name="player_arrived">Játékos érkezett! Még %1$d játékosra várunk.</string>
+    <string name="all_players_arrived">Mindenki megérkezett!</string>
+    <string name="player_left">Egy játékos kilépett</string>
 
     <string name="dark_card1">Különös csomagot kapsz: a tartalmát megátkozták.</string>
     <string name="dark_card2">Valaki megmérgezte a Vajsörödet… nem érzed jól magad.</string>
