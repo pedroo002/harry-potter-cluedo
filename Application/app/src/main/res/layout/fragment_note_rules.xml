@@ -1,16 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent">
+    android:background="@color/transparent"
+    android:fillViewport="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:id="@+id/noteRulesRoot">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTitle"
+            android:text="@string/note_rules"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="10dp"/>
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDescription1"
+            android:text="@string/note_rules_description1"
+            android:textStyle="italic"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:id="@+id/ivIllustration1"
+            android:src="@drawable/notes1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDescription1"
+            android:layout_margin="5dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/ivTapFinger1"
+            android:src="@drawable/tap"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ivIllustration1"
+            app:layout_constraintBottom_toBottomOf="@id/ivIllustration1"
+            android:translationX="160dp"
+            android:translationY="15dp"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/ivTapAction1"
+            android:src="@drawable/touch_action"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ivIllustration1"
+            app:layout_constraintBottom_toBottomOf="@id/ivIllustration1"
+            android:translationX="160dp"
+            android:translationY="15dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDescription2"
+            android:text="@string/note_rules_description2"
+            android:textStyle="italic"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivIllustration1"
+            android:translationY="15dp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:id="@+id/ivIllustration2"
+            android:src="@drawable/notes4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDescription2"
+            android:layout_margin="5dp"
+            android:translationY="15dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/ivTapFinger2"
+            android:src="@drawable/tap"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ivIllustration2"
+            app:layout_constraintBottom_toBottomOf="@id/ivIllustration2"
+            android:translationX="125dp"
+            android:translationY="100dp"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/ivTapAction2"
+            android:src="@drawable/touch_action"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ivIllustration2"
+            app:layout_constraintBottom_toBottomOf="@id/ivIllustration2"
+            android:translationX="125dp"
+            android:translationY="100dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDescription3"
+            android:text="@string/note_rules_description3"
+            android:textStyle="italic"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivIllustration2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

@@ -31,8 +31,6 @@ class RulesFragment : Fragment() {
         dotList.add(root.findViewById(R.id.ivDot4))
         dotList.add(root.findViewById(R.id.ivDot5))
         dotList.add(root.findViewById(R.id.ivDot6))
-        dotList.add(root.findViewById(R.id.ivDot7))
-        dotList.add(root.findViewById(R.id.ivDot8))
 
         return root
     }
@@ -44,8 +42,6 @@ class RulesFragment : Fragment() {
             GameTurnStartRulesFragment(),
             NoteRulesFragment(),
             DiceRulesFragment(),
-            StepRulesFragment(),
-            DarkCardRulesFragment(),
             IncriminationRulesFragment(),
             DumbledoresOfficeRulesFragment(),
             AccusationRulesFragment()

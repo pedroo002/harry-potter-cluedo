@@ -1,16 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent">
+    android:background="@color/transparent"
+    android:fillViewport="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:id="@+id/dumbledoresOfficeRoot">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTitle"
+            android:text="@string/dumbledores_office_rules"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="10dp"/>
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDescription1"
+            android:textColor="@color/white"
+            android:textStyle="italic"
+            android:textSize="16sp"
+            android:text="@string/dumbledores_office_description1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            android:layout_margin="5dp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/ivIllustration"
+            android:src="@drawable/dumbledore1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDescription1"
+            android:layout_margin="5dp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/ivIllustrationAnim"
+            android:src="@drawable/dumbledore2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDescription1"
+            android:layout_margin="5dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDescription2"
+            android:textColor="@color/white"
+            android:textStyle="italic"
+            android:textSize="16sp"
+            android:text="@string/dumbledores_office_description2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivIllustration"
+            android:layout_margin="5dp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/ivIllustration2"
+            android:src="@drawable/unused_cards_template"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDescription2"
+            android:layout_margin="5dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
