@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/hogwarts_blur">
+
+    <data>
+        <variable
+            name="channelRootViewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.channel.root.ChannelRootViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivCreate"
+            android:onClick="@{()->channelRootViewModel.createServer()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineTop"
+            android:src="@drawable/host_server"
+            app:layout_constraintWidth_percent="0.3"
+            app:layout_constraintHeight_percent="0.2"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivJoin"
+            android:onClick="@{()->channelRootViewModel.joinServer()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"
+            app:layout_constraintTop_toTopOf="@id/guidelineTop"
+            android:src="@drawable/join_server"
+            app:layout_constraintWidth_percent="0.3"
+            app:layout_constraintHeight_percent="0.2"/>
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_server"
+        android:id="@+id/tvCreate"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/ivCreate"
+        app:layout_constraintStart_toStartOf="@id/ivCreate"
+        app:layout_constraintEnd_toEndOf="@id/ivCreate"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/join_server"
+            android:id="@+id/tvJoin"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/ivJoin"
+            app:layout_constraintStart_toStartOf="@id/ivJoin"
+            app:layout_constraintEnd_toEndOf="@id/ivJoin"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->channelRootViewModel.next()}"
+            android:enabled="false"
+            android:id="@+id/btnNext"
+            android:text="@string/next"
+            app:layout_constraintTop_toTopOf="@id/guidelineBottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guidelineMiddle"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->channelRootViewModel.cancel()}"
+            android:id="@+id/btnCancel"
+            android:text="@string/cancel"
+            app:layout_constraintTop_toTopOf="@id/guidelineBottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guidelineMiddle"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/guidelineTop"
+            app:layout_constraintGuide_percent="0.33"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/guidelineBottom"
+            app:layout_constraintGuide_percent="0.67"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineMiddle"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

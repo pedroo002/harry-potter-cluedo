@@ -8,6 +8,10 @@
         <variable
             name="gameModeViewModel"
             type="neptun.jxy1vz.cluedo.ui.fragment.game_mode.GameModeViewModel" />
+
+        <variable
+            name="gameMode"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

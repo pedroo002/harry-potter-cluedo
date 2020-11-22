@@ -16,20 +16,28 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.marginBottom
 import androidx.databinding.BaseObservable
 import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.activity_map.view.*
+import com.pusher.client.channel.PresenceChannelEventListener
+import com.pusher.client.channel.User
 import kotlinx.android.synthetic.main.fragment_dark_card.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentDarkCardBinding
-import neptun.jxy1vz.cluedo.domain.model.*
+import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.card.*
 import neptun.jxy1vz.cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.cluedo.domain.model.helper.safeIcons
 import neptun.jxy1vz.cluedo.domain.model.helper.unsafeIcons
+import neptun.jxy1vz.cluedo.domain.util.removePlayer
+import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.cluedo.network.model.message.card_event.CardEventMessage
+import neptun.jxy1vz.cluedo.network.pusher.PusherInstance
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.cards.card_loss.CardLossFragment
-import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesFragment
+import neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesFragment
 import neptun.jxy1vz.cluedo.ui.fragment.user_dies.UserDiesFragment
-import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -37,7 +45,7 @@ import kotlin.math.sin
 class DarkCardViewModel(
     private val bind: FragmentDarkCardBinding,
     private val context: Context,
-    playerList: List<Player>,
+    private val playerList: List<Player>,
     playerIds: List<Int>,
     card: DarkCard,
     private val listener: ViewModelListener,
@@ -46,8 +54,11 @@ class DarkCardViewModel(
 
     private val safePlayerIcons = HashMap<String, Int>()
     private val playerIcons = HashMap<String, Int>()
+    private var radius = 0
 
     private val thrownCards = HashMap<String, Int>()
+
+    private var waitForPlayers = playerList.size
 
     init {
         val playerNameList = context.resources.getStringArray(R.array.characters)
@@ -56,8 +67,7 @@ class DarkCardViewModel(
             playerIcons[playerName] = unsafeIcons[playerNameList.indexOf(playerName)]
         }
 
-        val radius =
-            (context.resources.displayMetrics.heightPixels - (bind.darkCardRoot.btnClose.height + bind.darkCardRoot.btnClose.marginBottom)) / 4
+        radius = (context.resources.displayMetrics.heightPixels - (bind.darkCardRoot.btnClose.height + bind.darkCardRoot.btnClose.marginBottom)) / 4
 
         for (player in playerList) {
             val i = playerList.indexOf(player)
@@ -99,6 +109,92 @@ class DarkCardViewModel(
                 radius * sin(i * (2 * PI / playerList.size)),
                 radius * cos(i * (2 * PI / playerList.size)),
                 lossTextView,
+                thrownCard,
+                player
+            )
+        }
+
+        if (MapViewModel.isGameModeMulti()) {
+            subscribeToEvents()
+        }
+    }
+
+    private fun subscribeToEvents() {
+        PusherInstance.getInstance().getPresenceChannel(MapViewModel.channelName).apply {
+            bind("dark-cards-ready", object : PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    waitForPlayers--
+                    if (waitForPlayers == 0)
+                        sendCloseSignal()
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+
+            bind("dark-cards-close", object : PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    gotCloseSignal()
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+
+            bind("helper-card-thrown", object : PresenceChannelEventListener {
+                override fun onEvent(channelName: String?, eventName: String?, message: String?) {
+                    val messageJson = RetrofitInstance.getInstance(context).moshi.adapter(CardEventMessage::class.java).fromJson(message!!)!!
+                    if (messageJson.playerId == MapViewModel.mPlayerId)
+                        return
+                    val player = MapViewModel.playerHandler.getPlayerById(messageJson.playerId)
+                    val cardToRemove = player.helperCards!!.find { card -> card.name == messageJson.cardName }!!
+                    val thrownCard = ImageView(bind.darkCardRoot.context)
+                    thrownCard.setImageResource(cardToRemove.imageRes)
+                    processCardThrownEvent(playerIcons[player.card.name]!!, thrownCard, player)
+                    MapViewModel.playerHandler.getPlayerById(messageJson.playerId).helperCards!!.remove(cardToRemove)
+                }
+
+                override fun onSubscriptionSucceeded(p0: String?) {}
+                override fun onAuthenticationFailure(p0: String?, p1: Exception?) {}
+                override fun onUsersInformationReceived(p0: String?, p1: MutableSet<User>?) {}
+                override fun userSubscribed(p0: String?, p1: User?) {}
+                override fun userUnsubscribed(p0: String?, p1: User?) {}
+            })
+        }
+    }
+
+    private fun sendCloseSignal() {
+        GlobalScope.launch(Dispatchers.IO) {
+            RetrofitInstance.getInstance(context).cluedo.notifyDarkCardsClose(MapViewModel.channelName)
+        }
+    }
+
+    private fun sendReadySignal() {
+        GlobalScope.launch(Dispatchers.IO) {
+            RetrofitInstance.getInstance(context).cluedo.notifyDarkCardsReady(MapViewModel.channelName)
+        }
+    }
+
+    private fun gotCloseSignal() {
+        GlobalScope.launch(Dispatchers.Main) {
+            listener.onFinish()
+        }
+    }
+
+    private fun processCardThrownEvent(imgRes: Int, thrownCard: ImageView, player: Player) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val i = playerList.indexOf(player)
+            drawImage(
+                imgRes,
+                radius * sin(i * (2 * PI / playerList.size)),
+                radius * cos(i * (2 * PI / playerList.size)),
+                null,
                 thrownCard,
                 player
             )
@@ -184,33 +280,23 @@ class DarkCardViewModel(
 
                                         if (player.id == MapViewModel.mPlayerId) {
                                             val fragment =
-                                                UserDiesFragment(player, MapViewModel.dialogHandler)
+                                                UserDiesFragment.newInstance(player, MapViewModel.dialogHandler)
                                             MapViewModel.insertFragment(fragment, true)
                                         } else if (MapViewModel.player.hp > 0) {
                                             MapViewModel.isGameAbleToContinue = false
                                             if (MapViewModel.playerInTurn == player.id)
                                                 MapViewModel.playerInTurnDied = true
-                                            val fragment = PlayerDiesFragment(
+
+                                            removePlayer(player)
+
+                                            val title = "${player.card.name} ${context.resources.getString(R.string.he_lost_his_hps)}"
+                                            val fragment = PlayerDiesOrLeavesFragment.newInstance(
                                                 player,
-                                                MapViewModel.dialogHandler
+                                                PlayerDiesOrLeavesFragment.ExitScenario.DEAD,
+                                                MapViewModel.dialogHandler,
+                                                title
                                             )
                                             MapViewModel.insertFragment(fragment, true)
-                                            val newPlayerList = ArrayList<Player>()
-                                            for (p in MapViewModel.gameModels.playerList) {
-                                                if (p.id != player.id)
-                                                    newPlayerList.add(p)
-                                            }
-                                            MapViewModel.gameModels.playerList = newPlayerList
-                                            val pair =
-                                                MapViewModel.playerHandler.getPairById(player.id)
-                                            MapViewModel.mapRoot.mapLayout.removeView(pair.second)
-                                            val newPlayerImagePairs =
-                                                ArrayList<Pair<Player, ImageView>>()
-                                            for (p in MapViewModel.playerImagePairs) {
-                                                if (p.first.id != player.id)
-                                                    newPlayerImagePairs.add(p)
-                                            }
-                                            MapViewModel.playerImagePairs = newPlayerImagePairs
                                         }
                                     }
                                 }
@@ -283,10 +369,10 @@ class DarkCardViewModel(
                                 LossType.SPELL -> context.resources.getString(R.string.spell_loss)
                                 else -> context.resources.getString(R.string.ally_loss)
                             }
-                            fm.beginTransaction().replace(R.id.cardLossFrame, CardLossFragment(title, properHelperCards, this)).commit()
+                            fm.beginTransaction().replace(R.id.cardLossFrame, CardLossFragment.newInstance(title, properHelperCards, this)).commit()
                             bind.darkCardRoot.btnClose.isEnabled = false
                         }
-                        else {
+                        else if (!MapViewModel.isGameModeMulti()) {
                             val cardToThrow = chooseWisely(properHelperCards)
                             thrownCards[player.card.name] = cardToThrow.imageRes
                             MapViewModel.playerHandler.getPlayerById(player.id).helperCards!!.remove(cardToThrow)
@@ -327,7 +413,12 @@ class DarkCardViewModel(
     }
 
     fun close() {
-        listener.onFinish()
+        if (MapViewModel.isGameModeMulti()) {
+            sendReadySignal()
+            bind.darkCardRoot.btnClose.isEnabled = false
+        }
+        else
+            listener.onFinish()
     }
 
     override fun onThrow() {

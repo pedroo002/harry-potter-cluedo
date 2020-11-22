@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/hogwarts_blur">
+
+    <data>
+
+        <variable
+            name="joinChannelViewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.channel.join.JoinChannelViewModel" />
+    </data>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/swipeJoin">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvChannels"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/existing_channels"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/spinnerAllChannels"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvChannels" />
+
+            <FrameLayout
+                android:id="@+id/numPicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinnerAllChannels"/>
+
+            <Button
+                android:id="@+id/btnJoin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:onClick="@{()->joinChannelViewModel.join()}"
+                android:text="@string/join"
+                android:enabled="false"
+                app:layout_constraintEnd_toEndOf="@id/numPicker"
+                app:layout_constraintStart_toStartOf="@id/numPicker"
+                app:layout_constraintTop_toBottomOf="@id/numPicker" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guidelineMiddle"
+                app:layout_constraintGuide_percent="0.5"
+                android:orientation="vertical"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</layout>

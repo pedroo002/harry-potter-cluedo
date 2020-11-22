@@ -16,7 +16,7 @@ class DatabaseAccess(private val context: Context) {
 
     private val interactor = Interactor(CluedoDatabase.getInstance(context))
 
-    private suspend fun resetCards() {
+    suspend fun resetCards() {
         val allCards = interactor.getCards()
         for (card in allCards!!) {
             val clearCard = CardDBmodel(card.id, card.name, card.imageRes, card.versoRes, card.cardType, null, card.lossType, card.hpLoss)
@@ -26,6 +26,10 @@ class DatabaseAccess(private val context: Context) {
 
     suspend fun eraseNotes() {
         interactor.eraseNotes()
+    }
+
+    suspend fun updateCard(card: CardDBmodel) {
+        interactor.updateCards(card)
     }
 
     suspend fun getUnusedMysteryCards(): List<MysteryCard> {
@@ -101,6 +105,7 @@ class DatabaseAccess(private val context: Context) {
 
     suspend fun getMysteryCardsOfPlayers(): List<Pair<MysteryCard, Int>>? {
         val cards = interactor.getUsedMysteryCards()
+
         val pairList = ArrayList<Pair<MysteryCard, Int>>()
         for (card in cards!!) {
             pairList.add(Pair(card.toDomainModel() as MysteryCard, card.ownerId!!))

@@ -5,22 +5,31 @@ import android.animation.AnimatorSet
 import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
+import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.android.synthetic.main.fragment_player_dies.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentPlayerDiesBinding
 import neptun.jxy1vz.cluedo.domain.model.Player
 import neptun.jxy1vz.cluedo.domain.model.helper.bwPlayers
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class PlayerDiesViewModel(
+class PlayerDiesOrLeavesViewModel(
     private val bind: FragmentPlayerDiesBinding,
     player: Player,
+    title: String,
+    lifecycleScope: LifecycleCoroutineScope,
     private val listener: ViewModelListener
 ) : BaseObservable() {
 
     private lateinit var title: String
 
     init {
+        lifecycleScope.launch(Dispatchers.IO) {
+            setTitle(title)
+        }
+
         val bwRes = bwPlayers[player.id]
         val res = player.card.imageRes
         bind.playerDiesRoot.ivDeadPlayer.setImageResource(bwRes)
@@ -36,7 +45,7 @@ class PlayerDiesViewModel(
         }
     }
 
-    fun setTitle(text: String) {
+    private fun setTitle(text: String) {
         title = text
         notifyChange()
     }

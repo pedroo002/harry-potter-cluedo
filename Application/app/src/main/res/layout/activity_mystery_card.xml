@@ -3,63 +3,64 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="mysteryCardViewModel"
             type="neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardViewModel" />
     </data>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cardImages"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardImages"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/hogwarts_blur"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvLabelMysteryCards"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="@string/your_mystery_cards"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/hogwarts_blur">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvLabelMysteryCards"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:layout_margin="20dp"
-                android:text="@string/your_mystery_cards"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/btnGo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:onClick="@{()->mysteryCardViewModel.openHogwarts()}"
+            android:text="@string/go_forward"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLabelMysteryCards"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvLabelMysteryCards" />
 
-            <Button
-                android:id="@+id/btnGo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:onClick="@{()->mysteryCardViewModel.openHogwarts()}"
-                android:text="@string/go_forward"
-                app:layout_constraintTop_toTopOf="@id/tvLabelMysteryCards"
-                app:layout_constraintBottom_toBottomOf="@+id/tvLabelMysteryCards"
-                app:layout_constraintEnd_toEndOf="parent" />
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/cardPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnGo" />
 
-            <androidx.viewpager.widget.ViewPager
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:id="@+id/cardPager"
-                app:layout_constraintTop_toBottomOf="@id/btnGo"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_margin="20dp"/>
+        <ImageView
+            android:id="@+id/ivLoadingScreen"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/loading_screen"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelMysteryCards" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:id="@+id/ivLoadingScreen"
-                android:src="@drawable/loading_screen"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvLabelMysteryCards"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

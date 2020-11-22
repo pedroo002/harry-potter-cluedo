@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/semi_transparent_background">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="neptun.jxy1vz.cluedo.ui.fragment.on_back_pressed.OnBackPressedViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/onBackPressedRoot">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvWarning"
+            android:text="@string/are_you_sure"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="30dp"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/ivWarning"
+            android:src="@drawable/deathly_hallows_warning"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvWarning"
+            app:layout_constraintBottom_toTopOf="@id/btnCancel"
+            android:layout_margin="20dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnYes"
+            android:text="@string/yes"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guidelineMiddle"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="50dp"
+            android:onClick="@{()->viewModel.ok()}"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnCancel"
+            android:text="@string/cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guidelineMiddle"
+            android:layout_marginBottom="50dp"
+            android:onClick="@{()->viewModel.cancel()}"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineMiddle"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

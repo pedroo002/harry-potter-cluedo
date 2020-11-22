@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="neptun.jxy1vz.cluedo">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/game_icon"
@@ -9,20 +12,22 @@
         android:roundIcon="@drawable/game_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.CluedoStyle">
-        <activity android:name="neptun.jxy1vz.cluedo.ui.activity.map.MapActivity"
-            android:screenOrientation="landscape">
-        </activity>
-        <activity android:name="neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardActivity"
+        <activity android:name=".ui.activity.login.LoginActivity"
             android:screenOrientation="portrait"
             android:noHistory="true">
-        </activity>
-        <activity android:name="neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity"
-            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name="neptun.jxy1vz.cluedo.ui.activity.map.MapActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name="neptun.jxy1vz.cluedo.ui.activity.mystery_cards.MysteryCardActivity"
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
+        <activity android:name="neptun.jxy1vz.cluedo.ui.activity.menu.MenuActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

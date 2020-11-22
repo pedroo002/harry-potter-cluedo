@@ -2,7 +2,6 @@ package neptun.jxy1vz.cluedo.ui.fragment.game_mode
 
 import android.content.Context
 import androidx.databinding.BaseObservable
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_game_mode.view.*
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentGameModeBinding
@@ -15,6 +14,7 @@ class GameModeViewModel(private val bind: FragmentGameModeBinding, private val c
 
     fun selectPlayerMode(mode: Int) {
         gameMode = context.resources.getStringArray(R.array.playmodes)[mode]
+        bind.gameMode = gameMode
 
         when (mode) {
             0 -> {

@@ -3,12 +3,19 @@ package neptun.jxy1vz.cluedo.ui.fragment.dice_roller
 import android.content.Context
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BaseObservable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentDiceRollerBinding
 import neptun.jxy1vz.cluedo.domain.handler.StateMachineHandler
+import neptun.jxy1vz.cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.cluedo.network.model.message.dice.DiceDataMessage
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import kotlin.random.Random
 
 class DiceRollerViewModel(
@@ -47,7 +54,7 @@ class DiceRollerViewModel(
         return num1 + num2
     }
 
-    private val diceImageList = listOf<ImageView>(
+    private val diceImageList = listOf(
         bind.ivDice1,
         bind.ivDice2,
         bind.ivDice3
@@ -95,9 +102,7 @@ class DiceRollerViewModel(
         disableButton()
     }
 
-    override fun onAnimationRepeat(animation: Animation?) {
-
-    }
+    override fun onAnimationRepeat(animation: Animation?) {}
 
     override fun onAnimationEnd(animation: Animation?) {
         diceValue1 = getNumericDiceResource(num1)
@@ -111,6 +116,10 @@ class DiceRollerViewModel(
         setDice3(num3)
 
         bind.btnSubmit.isEnabled = true
+
+        if (MapViewModel.isGameModeMulti()) {
+            sendDiceEvent()
+        }
     }
 
     override fun onAnimationStart(animation: Animation?) {
@@ -137,6 +146,17 @@ class DiceRollerViewModel(
 
     private fun disableButton() {
         bind.btnRoll.isEnabled = false
+    }
+
+    private fun sendDiceEvent() {
+        GlobalScope.launch(Dispatchers.IO) {
+            val retrofit = RetrofitInstance.getInstance(context)
+            val diceData = DiceDataMessage(MapViewModel.mPlayerId!!, num1, num2, num3)
+            val moshiJson = retrofit.moshi.adapter(DiceDataMessage::class.java).toJson(diceData)
+            val body = moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+            retrofit.cluedo.sendDiceEvent(MapViewModel.channelName, body)
+        }
     }
 
     fun finish() {

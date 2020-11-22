@@ -10,9 +10,29 @@ import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentEndOfGameBinding
 import neptun.jxy1vz.cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.cluedo.domain.model.Suspect
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 
-class EndOfGameFragment(private val suspect: Suspect, private val listener: DialogDismiss) : Fragment(), ViewModelListener {
+class EndOfGameFragment : Fragment(), ViewModelListener {
+
+    private lateinit var suspect: Suspect
+    private lateinit var listener: DialogDismiss
+
+    fun setArgs(sus: Suspect, l: DialogDismiss) {
+        suspect = sus
+        listener = l
+    }
+
+    companion object {
+        var goodSolution = false
+
+        fun newInstance(suspect: Suspect, listener: DialogDismiss): EndOfGameFragment {
+            goodSolution = false
+            val fragment = EndOfGameFragment()
+            fragment.setArgs(suspect, listener)
+            return fragment
+        }
+    }
 
     private lateinit var fragmentEndOfGameBinding: FragmentEndOfGameBinding
 
@@ -28,6 +48,6 @@ class EndOfGameFragment(private val suspect: Suspect, private val listener: Dial
 
     override fun onFinish() {
         listener.onEndOfGameDismiss()
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 }

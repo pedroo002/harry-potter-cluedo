@@ -10,12 +10,31 @@ import androidx.viewpager.widget.ViewPager
 import neptun.jxy1vz.cluedo.R
 import neptun.jxy1vz.cluedo.databinding.FragmentCardLossBinding
 import neptun.jxy1vz.cluedo.domain.model.card.HelperCard
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
 
-class CardLossFragment(private val title: String, private val cardList: List<HelperCard>, private val listener: ThrowCardListener) : Fragment(),
+class CardLossFragment : Fragment(),
     ViewModelListener, ViewPager.OnPageChangeListener {
+
+    private lateinit var title: String
+    private lateinit var cardList: List<HelperCard>
+    private lateinit var listener: ThrowCardListener
+
+    fun setArgs(title: String, cardList: List<HelperCard>, listener: ThrowCardListener) {
+        this.title = title
+        this.cardList = cardList
+        this.listener = listener
+    }
+
+    companion object {
+        fun newInstance(title: String, cardList: List<HelperCard>, listener: ThrowCardListener): CardLossFragment {
+            val fragment = CardLossFragment()
+            fragment.setArgs(title, cardList, listener)
+            return fragment
+        }
+    }
 
     interface ThrowCardListener {
         fun onThrow()
@@ -31,7 +50,7 @@ class CardLossFragment(private val title: String, private val cardList: List<Hel
         savedInstanceState: Bundle?
     ): View? {
         fragmentCardLossBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_card_loss, container, false)
-        fragmentCardLossBinding.cardLossViewModel = CardLossViewModel(title, this)
+        fragmentCardLossBinding.cardLossViewModel = CardLossViewModel(context!!, title, this)
         return fragmentCardLossBinding.root
     }
 
@@ -41,7 +60,7 @@ class CardLossFragment(private val title: String, private val cardList: List<Hel
         fragmentList = ArrayList()
         for (card in cardList) {
             fragmentList.add(
-                CardFragment(
+                CardFragment.newInstance(
                     card.imageRes
                 )
             )
@@ -58,7 +77,7 @@ class CardLossFragment(private val title: String, private val cardList: List<Hel
 
     override fun onFinish() {
         listener.onThrow()
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        MapViewModel.fm.beginTransaction().remove(this).commit()
     }
 
     override fun onPageScrollStateChanged(state: Int) {}

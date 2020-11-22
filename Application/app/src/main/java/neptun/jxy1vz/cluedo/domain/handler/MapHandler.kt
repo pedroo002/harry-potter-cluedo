@@ -8,6 +8,7 @@ import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gryffindorState
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.hufflepuffState
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameModeMulti
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mapGraph
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.ravenclawState
@@ -149,7 +150,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
                     }
                 }
             }
-        } else {
+        } else if (!isGameModeMulti()) {
             if (distances != null) {
                 val validKeys = ArrayList<Position>()
                 val playerPos = map.playerHandler.getPlayerById(playerId).pos

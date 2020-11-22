@@ -3,12 +3,13 @@ package neptun.jxy1vz.cluedo.domain.handler
 import android.widget.ImageView
 import kotlinx.coroutines.*
 import neptun.jxy1vz.cluedo.R
+import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.cluedo.domain.model.card.HelperCard
-import neptun.jxy1vz.cluedo.domain.model.Suspect
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.diceList
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.gameModels
+import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameModeMulti
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.isGameRunning
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mContext
 import neptun.jxy1vz.cluedo.ui.activity.map.MapViewModel.Companion.mPlayerId
@@ -33,7 +34,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
             if (playerId == mPlayerId && playerId == playerInTurn) {
                 val roomId = map.mapHandler.stepInRoom(player.pos)
                 if (!userHasToStepOrIncriminate && userCanStep) {
-                    val optionsFragment = NotesOrDiceFragment(map.dialogHandler)
+                    val optionsFragment = NotesOrDiceFragment.newInstance(map.dialogHandler)
                     map.insertFragment(optionsFragment)
                 } else if (roomId != -1) {
                     incrimination(playerId, roomId)
@@ -66,7 +67,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                 diceList[i].startAnimation(map.anim)
             }
         } else {
-            val fragment = DiceRollerFragment(this, playerId, player.hasFelixFelicis())
+            val fragment = DiceRollerFragment.newInstance(this, playerId, player.hasFelixFelicis())
             map.insertFragment(fragment)
         }
     }
@@ -98,25 +99,28 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
             }
                 ?: return@launch
 
-            withContext(Dispatchers.Main) {
-                map.cardHandler.showCard(playerId, randomCard, type)
-            }
+            if (isGameModeMulti() && playerId == mPlayerId)
+                MapViewModel.retrofit.cluedo.sendCardEvent(MapViewModel.channelName, playerId, randomCard.name)
+            if (!isGameModeMulti() || playerId == mPlayerId)
+                withContext(Dispatchers.Main) {
+                    map.cardHandler.showCard(playerId, randomCard, type)
+                }
         }
     }
 
     fun incrimination(playerId: Int, roomId: Int) {
         if (playerId == mPlayerId) {
             if (roomId != 4) {
-                val fragment = IncriminationFragment(gameModels, playerId, roomId, this)
+                val fragment = IncriminationFragment.newInstance(gameModels, playerId, roomId, this)
                 map.insertFragment(fragment)
             }
             else {
                 if (unusedMysteryCards.isNotEmpty()) {
-                    val fragment = ChooseOptionFragment(userHasToStepOrIncriminate, map.dialogHandler)
+                    val fragment = ChooseOptionFragment.newInstance(userHasToStepOrIncriminate, map.dialogHandler)
                     map.insertFragment(fragment)
                 }
                 else {
-                    val fragment = AccusationFragment(playerId, map.dialogHandler)
+                    val fragment = AccusationFragment.newInstance(playerId, map.dialogHandler)
                     map.insertFragment(fragment)
                 }
             }
@@ -168,7 +172,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
         map.uiHandler.emptySelectionList()
         GlobalScope.launch(Dispatchers.Main) {
             delay(1000)
-            val detailsFragment = IncriminationDetailsFragment(suspect, map.dialogHandler)
+            val detailsFragment = IncriminationDetailsFragment.newInstance(suspect, map.dialogHandler)
             map.insertFragment(detailsFragment)
         }
     }
