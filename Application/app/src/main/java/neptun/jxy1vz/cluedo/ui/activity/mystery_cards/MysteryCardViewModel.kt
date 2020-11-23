@@ -317,7 +317,7 @@ class MysteryCardViewModel(
 
     private fun loadMysteryCards(cards: List<Pair<MysteryCard, Int>>) {
         val fragmentList = ArrayList<CardFragment>()
-        cards.find { card -> card.second == playerId
+        cards.filter { card -> card.second == playerId }.forEach { card ->
             fragmentList.add(CardFragment.newInstance(card.first.imageRes))
         }
         (AnimatorInflater.loadAnimator(context, R.animator.disappear) as AnimatorSet).apply {
