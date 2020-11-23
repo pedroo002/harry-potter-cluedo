@@ -23,14 +23,9 @@ class Player(
 ) {
 
     fun updateConclusions(allMysteryCards: List<MysteryCard>) {
-        for (conclusion in conclusions!!) {
-            if (conclusion.value == -1) {
-                for (card in allMysteryCards) {
-                    if (card.name == conclusion.key) {
-                        fillSolution(card.type as MysteryType, card.name)
-                        break
-                    }
-                }
+        conclusions!!.filter { con -> con.value == -1 }.forEach { conclusion ->
+            allMysteryCards.filter { c -> c.name == conclusion.key }.forEach {card ->
+                fillSolution(card.type as MysteryType, card.name)
             }
         }
     }
@@ -65,10 +60,10 @@ class Player(
             suspicions = HashMap()
         }
         val suspectParams = suspect.let { listOf(it.room, it.suspect, it.tool) }
-        for (suspectParam in suspectParams) {
+        suspectParams.forEach { suspectParam ->
             if (!ownCard(suspectParam)) {
                 val otherTwo = ArrayList<String>()
-                for (param in suspectParams) {
+                suspectParams.forEach { param ->
                     if (param != suspectParam)
                         otherTwo.add(param)
                 }
@@ -111,7 +106,7 @@ class Player(
     }
 
     fun ownCard(name: String): Boolean {
-        for (card in mysteryCards) {
+        mysteryCards.forEach { card ->
             if (card.name == name)
                 return true
         }
@@ -121,7 +116,7 @@ class Player(
     private fun containsAny(list: Array<String>): Boolean {
         if (conclusions.isNullOrEmpty())
             return false
-        for (item in list) {
+        list.forEach { item ->
             if (conclusions!!.containsKey(item))
                 return true
         }
@@ -181,10 +176,9 @@ class Player(
         }
 
         if (revealedMysteryCards!!.containsKey(playerId)) {
-            for (card in cardOptions) {
-                for (entry in revealedMysteryCards!!.entries) {
-                    if (entry.key == playerId && entry.value == card.name)
-                        return card
+            cardOptions.forEach { card ->
+                revealedMysteryCards!!.entries.find { entry -> entry.key == playerId && entry.value == card.name
+                    return card
                 }
             }
         }
@@ -196,20 +190,16 @@ class Player(
     fun hasAlohomora(): Boolean {
         if (helperCards.isNullOrEmpty())
             return false
-        for (card in helperCards!!) {
-            if (card.name == mContext!!.resources.getStringArray(R.array.helper_cards)[26])
-                return true
-        }
+        if (helperCards!!.map { card -> card.name }.contains(mContext!!.resources.getStringArray(R.array.helper_cards)[26]))
+            return true
         return false
     }
 
     fun hasFelixFelicis(): Boolean {
         if (helperCards.isNullOrEmpty())
             return false
-        for (card in helperCards!!) {
-            if (card.name == mContext!!.resources.getStringArray(R.array.helper_cards)[9])
-                return true
-        }
+        if (helperCards!!.map { card -> card.name }.contains(mContext!!.resources.getStringArray(R.array.helper_cards)[9]))
+            return true
         return false
     }
 

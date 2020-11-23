@@ -96,7 +96,7 @@ class DiceRollerViewModel(
     fun rollDice() {
         val anim = AnimationUtils.loadAnimation(context, R.anim.shake)
         anim.setAnimationListener(this)
-        for (dice in diceImageList) {
+        diceImageList.forEach { dice ->
             dice.startAnimation(anim)
         }
         disableButton()

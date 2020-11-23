@@ -66,7 +66,7 @@ class PlayerDiesOrLeavesFragment : Fragment(), ViewModelListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val fragmentList = ArrayList<CardFragment>()
-        for (card in player.mysteryCards) {
+        player.mysteryCards.forEach { card ->
             fragmentList.add(
                 CardFragment.newInstance(
                     card.imageRes

@@ -26,14 +26,12 @@ import kotlin.math.abs
 class CardHandler(private val map: MapViewModel.Companion) {
     fun handOutHelperCards() {
         GlobalScope.launch(Dispatchers.Main) {
-            for (p in gameModels.playerList) {
-                if (p.id != mPlayerId) {
-                    map.interactionHandler.getCard(
-                        p.id,
-                        DiceRollerViewModel.CardType.HELPER
-                    )
-                    delay(5000)
-                }
+            gameModels.playerList.filter { p -> p.id != mPlayerId }.forEach {
+                map.interactionHandler.getCard(
+                    it.id,
+                    DiceRollerViewModel.CardType.HELPER
+                )
+                delay(5000)
             }
             map.cameraHandler.moveCameraToPlayer(mPlayerId!!)
             delay(1000)
@@ -69,9 +67,8 @@ class CardHandler(private val map: MapViewModel.Companion) {
         suspect: String
     ): List<MysteryCard>? {
         val cardList: ArrayList<MysteryCard> = ArrayList()
-        for (card in gameModels.playerList[playerIdx].mysteryCards) {
-            if (card.name == room || card.name == tool || card.name == suspect)
-                cardList.add(card)
+        gameModels.playerList[playerIdx].mysteryCards.filter { card -> card.name == room || card.name == tool || card.name == suspect }.forEach {
+            cardList.add(it)
         }
 
         if (cardList.isNotEmpty())
@@ -163,8 +160,9 @@ class CardHandler(private val map: MapViewModel.Companion) {
                     withContext(Dispatchers.Main) {
                         helperCards?.let {
                             val idList = ArrayList<Int>()
-                            for (card in helperCards)
-                                idList.add(card.id)
+                            helperCards.forEach {
+                                idList.add(it.id)
+                            }
                             randomCard.helperIds = idList
                         }
                         map.playerHandler.harmToAffectedPlayers(randomCard)

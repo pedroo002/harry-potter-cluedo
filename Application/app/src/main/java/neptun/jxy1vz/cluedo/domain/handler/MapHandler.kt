@@ -31,7 +31,7 @@ import kotlin.random.Random
 
 class MapHandler(private val map: MapViewModel.Companion) {
     fun stepInRoom(pos: Position): Int {
-        for (room: Room in gameModels.roomList) {
+        gameModels.roomList.forEach { room ->
             if (pos.row >= room.top && pos.row <= room.bottom && pos.col >= room.left && pos.col <= room.right)
                 return room.id
         }
@@ -39,7 +39,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
     }
 
     fun stepOnStar(pos: Position): Boolean {
-        for (star in gameModels.starList) {
+        gameModels.starList.forEach {star ->
             if (star == pos)
                 return true
         }
@@ -47,7 +47,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
     }
 
     fun isFieldOccupied(pos: Position): Boolean {
-        for (player in gameModels.playerList) {
+        gameModels.playerList.forEach { player ->
             if (player.pos == pos)
                 return true
         }
@@ -55,7 +55,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
     }
 
     fun isDoor(pos: Position): Boolean {
-        for (door in gameModels.doorList) {
+        gameModels.doorList.forEach {door ->
             if (door.position == pos)
                 return true
         }
@@ -66,7 +66,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
         val distances = HashMap<Position, Int>()
         val unvisited = HashSet<Position>()
 
-        for (field in mapGraph.adjacencyMap.keys) {
+        mapGraph.adjacencyMap.keys.forEach {field ->
             unvisited.add(field)
             if (field == current)
                 distances[field] = 0
@@ -76,12 +76,12 @@ class MapHandler(private val map: MapViewModel.Companion) {
 
         while (unvisited.isNotEmpty()) {
             var field: Position = unvisited.elementAt(0)
-            for (pair in distances) {
+            distances.forEach {pair ->
                 if (unvisited.contains(pair.key) && pair.value < distances[field]!!)
                     field = pair.key
             }
 
-            for (neighbour in mapGraph.adjacencyMap[field]!!) {
+            mapGraph.adjacencyMap[field]!!.forEach {neighbour ->
                 if (unvisited.contains(neighbour)) {
                     if (stepInRoom(field) == -1 || !isDoor(neighbour))
                         distances[neighbour] = min(distances[neighbour]!!, distances[field]!! + 1)
@@ -98,11 +98,11 @@ class MapHandler(private val map: MapViewModel.Companion) {
         map2: HashMap<Position, Int>? = null
     ): HashMap<Position, Int> {
         val intersection: HashMap<Position, Int> = HashMap()
-        for (pos in map1.keys) {
+        map1.keys.forEach {pos ->
             intersection[pos] = map1[pos]!!
         }
         if (map2 != null) {
-            for (pos in map2.keys) {
+            map2.keys.forEach {pos ->
                 if (intersection.containsKey(pos))
                     intersection[pos] = min(map1[pos]!!, map2[pos]!!)
                 else
@@ -123,7 +123,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
         else {
             limit--
             val roomId = stepInRoom(map.playerHandler.getPlayerById(playerId).pos)
-            for (door in gameModels.doorList) {
+            gameModels.doorList.forEach {door ->
                 if (door.room.id == roomId && (door.state == DoorState.OPENED || map.playerHandler.getPlayerById(playerId).hasAlohomora())) {
                     distances = mergeDistances(dijkstra(door.position), distances)
                 }
@@ -135,7 +135,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
                 for (x in 0..MapViewModel.COLS) {
                     for (y in 0..MapViewModel.ROWS) {
                         val current = Position(y, x)
-                        if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances[current]!! <= limit) {
+                        if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances!![current]!! <= limit) {
                             val sel = if (stepOnStar(current)) R.drawable.star_selection else R.drawable.field_selection
                             map.uiHandler.drawSelection(sel, y, x, playerId)
                         }
@@ -144,7 +144,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
             }
 
             if (stepInRoom(map.playerHandler.getPlayerById(playerId).pos) == -1) {
-                for (door in gameModels.doorList) {
+                gameModels.doorList.forEach { door ->
                     if (distances!![door.position]!! <= limit - 1 && (door.state == DoorState.OPENED || map.playerHandler.getPlayerById(playerId).hasAlohomora())) {
                         map.uiHandler.drawSelection(door.room.selection, door.room.top, door.room.left, playerId)
                     }
@@ -154,12 +154,12 @@ class MapHandler(private val map: MapViewModel.Companion) {
             if (distances != null) {
                 val validKeys = ArrayList<Position>()
                 val playerPos = map.playerHandler.getPlayerById(playerId).pos
-                for (pos in distances.keys) {
+                distances!!.keys.forEach { pos ->
                     if (stepInRoom(pos) != -1 && (stepInRoom(playerPos) == -1 || stepInRoom(playerPos) == stepInRoom(pos))) {
                         val roomId = stepInRoom(pos)
-                        for (door in gameModels.doorList) {
+                        gameModels.doorList.forEach { door ->
                             if (door.room.id == roomId) {
-                                if (!validKeys.contains(pos) && distances[door.position]!! < limit && (door.state == DoorState.OPENED || map.playerHandler.getPlayerById(playerId).hasAlohomora() || stepInRoom(playerPos) == stepInRoom(pos)))
+                                if (!validKeys.contains(pos) && distances!![door.position]!! < limit && (door.state == DoorState.OPENED || map.playerHandler.getPlayerById(playerId).hasAlohomora() || stepInRoom(playerPos) == stepInRoom(pos)))
                                     validKeys.add(pos)
                             }
                         }
@@ -167,7 +167,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
                     else if (stepInRoom(pos) == -1 && !(
                                 ((isFieldOccupied(pos) && stepInRoom(playerPos) == -1)
                                         || (isFieldOccupied(pos) && stepInRoom(playerPos) != -1 && playerPos != pos))
-                                        || distances[pos]!! > limit)
+                                        || distances!![pos]!! > limit)
                     )
                         validKeys.add(pos)
                 }
@@ -186,13 +186,13 @@ class MapHandler(private val map: MapViewModel.Companion) {
                 }
 
                 val roomDistances = HashMap<Room, Int>()
-                for (room in desiredRooms) {
-                    for (door in gameModels.doorList) {
+                desiredRooms.forEach { room ->
+                    gameModels.doorList.forEach { door ->
                         if (door.room.id == room.id && (door.state == DoorState.OPENED || map.playerHandler.getPlayerById(playerId).hasAlohomora())) {
                             if (roomDistances.containsKey(room))
-                                roomDistances[room] = min(roomDistances[room]!!, distances[door.position]!! + 1)
+                                roomDistances[room] = min(roomDistances[room]!!, distances!![door.position]!! + 1)
                             else
-                                roomDistances[room] = distances[door.position]!! + 1
+                                roomDistances[room] = distances!![door.position]!! + 1
                         }
                     }
                 }
@@ -241,7 +241,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
                     for (i in sortedDistances.keys.toList().indices) {
                         var distancesFromRoom = HashMap<Position, Int>()
                         val roomId = sortedDistances.keys.toList()[i].id
-                        for (door in gameModels.doorList) {
+                        gameModels.doorList.forEach {door ->
                             if (door.room.id == roomId && (door.state == DoorState.OPENED || map.playerHandler.getPlayerById(playerId).hasAlohomora())) {
                                 distancesFromRoom =
                                     mergeDistances(dijkstra(door.position), distancesFromRoom)

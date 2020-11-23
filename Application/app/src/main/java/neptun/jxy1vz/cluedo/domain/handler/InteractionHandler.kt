@@ -30,22 +30,22 @@ import neptun.jxy1vz.cluedo.ui.fragment.notes_or_dice.NotesOrDiceFragment
 class InteractionHandler(private val map: MapViewModel.Companion) : IncriminationFragment.MapInterface,
     DiceRollerFragment.DiceResultInterface {
     fun showOptions(playerId: Int) {
-        if (isGameRunning) {
-            if (playerId == mPlayerId && playerId == playerInTurn) {
-                val roomId = map.mapHandler.stepInRoom(player.pos)
-                if (!userHasToStepOrIncriminate && userCanStep) {
-                    val optionsFragment = NotesOrDiceFragment.newInstance(map.dialogHandler)
-                    map.insertFragment(optionsFragment)
-                } else if (roomId != -1) {
-                    incrimination(playerId, roomId)
-                }
+        if (!isGameRunning)
+            return
+        if (playerId == mPlayerId && playerId == playerInTurn) {
+            val roomId = map.mapHandler.stepInRoom(player.pos)
+            if (!userHasToStepOrIncriminate && userCanStep) {
+                val optionsFragment = NotesOrDiceFragment.newInstance(map.dialogHandler)
+                map.insertFragment(optionsFragment)
+            } else if (roomId != -1) {
+                incrimination(playerId, roomId)
             }
         }
     }
 
     fun rollWithDice(playerId: Int) {
         if (mPlayerId != playerId) {
-            for (i in diceList.indices) {
+            diceList.indices.forEach {i ->
                 val row = when (map.playerHandler.getPlayerById(playerId).pos.row) {
                     MapViewModel.ROWS -> MapViewModel.ROWS - 1
                     else -> map.playerHandler.getPlayerById(
@@ -149,14 +149,14 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                 getIncrimination(suspect)
             else {
                 var hasConclusionsOfThem = true
-                for (card in unusedMysteryCards) {
-                    if (!map.playerHandler.getPlayerById(playerId).hasConclusion(card.name))
-                        hasConclusionsOfThem = false
-                }
+                if (unusedMysteryCards.any { card ->
+                        !map.playerHandler.getPlayerById(playerId).hasConclusion(card.name)
+                    })
+                    hasConclusionsOfThem = false
                 if (hasConclusionsOfThem)
                     map.dialogHandler.onAccusationDismiss(map.playerHandler.getPlayerById(playerId).solution!!)
                 else {
-                    for (card in unusedMysteryCards) {
+                    unusedMysteryCards.forEach {card ->
                         map.playerHandler.getPlayerById(playerId).getConclusion(card.name, -2)
                     }
                     GlobalScope.launch(Dispatchers.IO) {
@@ -183,7 +183,7 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
         revealedMysteryCardName: String? = null
     ) {
         if (playerWhoShowed != null && revealedMysteryCardName != null) {
-            for (p in gameModels.playerList) {
+            gameModels.playerList.forEach { p ->
                 if (p.id != playerWhoShowed && p.id != mPlayerId) {
                     if (p.id == suspect.playerId)
                         p.getConclusion(revealedMysteryCardName, playerWhoShowed)
@@ -192,11 +192,11 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                 }
             }
         } else {
-            for (p in gameModels.playerList) {
+            gameModels.playerList.forEach { p ->
                 if (p.id != mPlayerId && suspect.playerId != p.id)
                     p.getSuspicion(suspect)
                 else if (p.id == suspect.playerId) {
-                    for (suspectParam in listOf(suspect.room, suspect.tool, suspect.suspect))
+                    listOf(suspect.room, suspect.tool, suspect.suspect).forEach { suspectParam ->
                         if (!p.ownCard(suspectParam)) {
                             GlobalScope.launch(Dispatchers.IO) {
                                 if (map.playerHandler.hasKnowledgeOfUnusedCards(p.id) && !unusedMysteryCards.contains(
@@ -204,11 +204,15 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
                                     )
                                 ) {
                                     p.getConclusion(suspectParam, -1)
-                                    p.fillSolution(map.cardHandler.typeOf(suspectParam), suspectParam)
+                                    p.fillSolution(
+                                        map.cardHandler.typeOf(suspectParam),
+                                        suspectParam
+                                    )
                                 } else
                                     p.getConclusion(suspectParam, -1)
                             }
                         }
+                    }
                 }
             }
         }

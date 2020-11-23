@@ -99,12 +99,11 @@ class StateMachineHandler(private val map: MapViewModel.Companion) {
         }
 
         val visibleGatewaySerialNumbers: MutableList<Int> = ArrayList()
-        for (i in visibilities[state].indices) {
-            if (visibilities[state][i])
-                visibleGatewaySerialNumbers.add(i)
+        visibilities[state].filter { it }.forEach {
+            visibleGatewaySerialNumbers.add(visibilities[state].indexOf(it))
         }
 
-        for (i in gatewayNumbers.indices) {
+        gatewayNumbers.indices.forEach { i ->
             mapRoot.mapLayout.findViewById<ImageView>(gateways[visibleGatewaySerialNumbers[i]])
                 .setOnClickListener {
                     if (it.visibility == View.VISIBLE && playerInTurn == mPlayerId && userHasToStepOrIncriminate)
@@ -117,7 +116,7 @@ class StateMachineHandler(private val map: MapViewModel.Companion) {
         }
 
         val gatewayAnimations: MutableList<Pair<ImageView, Boolean>> = ArrayList()
-        for (p in gateways) {
+        gateways.forEach { p ->
             val visibility = visibilities[state][gateways.indexOf(p)]
 
             if (state > 0) {
@@ -130,7 +129,7 @@ class StateMachineHandler(private val map: MapViewModel.Companion) {
                 map.uiHandler.setViewVisibility(mapRoot.mapLayout.findViewById(p), visibility)
         }
 
-        for (s in stateList) {
+        stateList.forEach { s ->
             if (s.serialNum == state) {
                 val oldState = gameModels.doorList[s.doorId].state
                 val doorAnimation = oldState != s.doorState

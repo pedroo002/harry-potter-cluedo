@@ -317,13 +317,8 @@ class MysteryCardViewModel(
 
     private fun loadMysteryCards(cards: List<Pair<MysteryCard, Int>>) {
         val fragmentList = ArrayList<CardFragment>()
-        for (card in cards) {
-            if (card.second == playerId)
-                fragmentList.add(
-                    CardFragment.newInstance(
-                        card.first.imageRes
-                    )
-                )
+        cards.find { card -> card.second == playerId
+            fragmentList.add(CardFragment.newInstance(card.first.imageRes))
         }
         (AnimatorInflater.loadAnimator(context, R.animator.disappear) as AnimatorSet).apply {
             setTarget(bind.ivLoadingScreen)
@@ -352,9 +347,9 @@ class MysteryCardViewModel(
                 idList.add(playerId)
                 var playerCount =
                     gamePref.getInt(context.getString(R.string.player_count_key), 0) - 1
-                for (p in playerList) {
-                    if (p.id != player.id && playerCount > 0) {
-                        idList.add(p.id)
+                playerList.filter { p -> p.id != player.id }.forEach {
+                    if (playerCount > 0) {
+                        idList.add(it.id)
                         playerCount--
                     }
                 }

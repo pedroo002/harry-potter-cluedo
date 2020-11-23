@@ -34,7 +34,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) {
     }
 
     fun getPlayerById(id: Int): Player {
-        for (player in gameModels.playerList) {
+        gameModels.playerList.forEach { player ->
             if (player.id == id)
                 return player
         }
@@ -42,7 +42,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) {
     }
 
     fun getPairById(id: Int): Pair<Player, ImageView> {
-        for (pair in playerImagePairs) {
+        playerImagePairs.forEach { pair ->
             if (pair.first.id == id)
                 return pair
         }
@@ -53,7 +53,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) {
         if (unusedMysteryCards.isNullOrEmpty())
             return true
         val p = getPlayerById(playerId)
-        for (unusedCard in unusedMysteryCards) {
+        unusedMysteryCards.forEach { unusedCard ->
             if (!p.hasConclusion(unusedCard.name))
                 return false
         }
@@ -79,83 +79,71 @@ class PlayerHandler(private val map: MapViewModel.Companion) {
         val playerIds = ArrayList<Int>()
         when (card.type) {
             DarkType.CORRIDOR -> {
-                for (player in gameModels.playerList) {
-                    if (map.mapHandler.stepInRoom(player.pos) == -1)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  map.mapHandler.stepInRoom(player.pos) == -1 }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
             DarkType.PLAYER_IN_TURN -> {
                 playerIds.add(playerInTurn)
             }
             DarkType.ROOM_BAGOLYHAZ -> {
-                for (player in gameModels.playerList) {
-                    if (map.mapHandler.stepInRoom(player.pos) == 6)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  map.mapHandler.stepInRoom(player.pos) == 6 }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
             DarkType.ROOM_BAJITALTAN -> {
-                for (player in gameModels.playerList) {
-                    if (map.mapHandler.stepInRoom(player.pos) == 9)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  map.mapHandler.stepInRoom(player.pos) == 9 }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
             DarkType.ROOM_GYENGELKEDO -> {
-                for (player in gameModels.playerList) {
-                    if (map.mapHandler.stepInRoom(player.pos) == 2)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  map.mapHandler.stepInRoom(player.pos) == 2 }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
             DarkType.ROOM_JOSLASTAN -> {
-                for (player in gameModels.playerList) {
-                    if (map.mapHandler.stepInRoom(player.pos) == 7)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  map.mapHandler.stepInRoom(player.pos) == 7 }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
             DarkType.ROOM_KONYVTAR -> {
-                for (player in gameModels.playerList) {
-                    if (map.mapHandler.stepInRoom(player.pos) == 3)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  map.mapHandler.stepInRoom(player.pos) == 3 }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
             DarkType.ROOM_NAGYTEREM -> {
-                for (player in gameModels.playerList) {
-                    if (map.mapHandler.stepInRoom(player.pos) == 1)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  map.mapHandler.stepInRoom(player.pos) == 1 }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
             DarkType.ROOM_SERLEG -> {
-                for (player in gameModels.playerList) {
-                    if (map.mapHandler.stepInRoom(player.pos) == 8)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  map.mapHandler.stepInRoom(player.pos) == 8 }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
             DarkType.ROOM_SVK -> {
-                for (player in gameModels.playerList) {
-                    if (map.mapHandler.stepInRoom(player.pos) == 0)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  map.mapHandler.stepInRoom(player.pos) == 0 }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
             DarkType.ROOM_SZUKSEG_SZOBAJA -> {
-                for (player in gameModels.playerList) {
-                    if (map.mapHandler.stepInRoom(player.pos) == 5)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  map.mapHandler.stepInRoom(player.pos) == 5 }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
             DarkType.ALL_PLAYERS -> {
-                for (player in gameModels.playerList) {
+                gameModels.playerList.forEach { player ->
                     playerIds.add(player.id)
                 }
             }
             DarkType.GENDER_MEN -> {
-                for (player in gameModels.playerList) {
-                    if (player.gender == Player.Gender.MAN)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  player.gender == Player.Gender.MAN }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
             DarkType.GENDER_WOMEN -> {
-                for (player in gameModels.playerList) {
-                    if (player.gender == Player.Gender.WOMAN)
-                        playerIds.add(player.id)
+                gameModels.playerList.filter { player ->  player.gender == Player.Gender.WOMAN }.forEach { player ->
+                    playerIds.add(player.id)
                 }
             }
         }

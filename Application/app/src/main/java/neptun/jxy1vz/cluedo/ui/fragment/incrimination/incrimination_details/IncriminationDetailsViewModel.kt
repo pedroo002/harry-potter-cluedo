@@ -377,7 +377,7 @@ class IncriminationDetailsViewModel(
             }
         }
 
-        for (card in cards) {
+        cards.forEach { card ->
             if (roomList.contains(card.name))
                 showCard(
                     card,

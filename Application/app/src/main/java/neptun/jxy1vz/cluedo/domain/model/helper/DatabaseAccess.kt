@@ -18,7 +18,7 @@ class DatabaseAccess(private val context: Context) {
 
     suspend fun resetCards() {
         val allCards = interactor.getCards()
-        for (card in allCards!!) {
+        allCards!!.forEach { card ->
             val clearCard = CardDBmodel(card.id, card.name, card.imageRes, card.versoRes, card.cardType, null, card.lossType, card.hpLoss)
             interactor.updateCards(clearCard)
         }
@@ -107,7 +107,7 @@ class DatabaseAccess(private val context: Context) {
         val cards = interactor.getUsedMysteryCards()
 
         val pairList = ArrayList<Pair<MysteryCard, Int>>()
-        for (card in cards!!) {
+        cards!!.forEach { card ->
             pairList.add(Pair(card.toDomainModel() as MysteryCard, card.ownerId!!))
         }
         return pairList
@@ -117,7 +117,7 @@ class DatabaseAccess(private val context: Context) {
         val helperIds = interactor.getHelperCardsToDarkCard(card.id.toLong())
         helperIds?.let {
             val cardList: MutableList<HelperCard> = ArrayList()
-            for (id in helperIds) {
+            helperIds.forEach { id ->
                 val c = interactor.getCardById(id)
                 cardList.add(c!!.toDomainModel() as HelperCard)
             }
@@ -127,28 +127,28 @@ class DatabaseAccess(private val context: Context) {
     }
 
     suspend fun uploadDatabase() {
-        for (card in playerCards) {
+        playerCards.forEach { card ->
             val dbCard = CardDBmodel(0, card.name, card.imageRes, card.verso, PLAYER.string(), null, null, null)
             interactor.insertIntoCards(dbCard)
         }
 
-        for (card in helperCards) {
+        helperCards.forEach { card ->
             val dbCard = CardDBmodel(0, card.name, card.imageRes, card.verso, card.type.toDatabaseModel().string(), null, null, null)
             for (i in 0 until card.count)
                 interactor.insertIntoCards(dbCard)
         }
 
-        for (card in mysteryCards) {
+        mysteryCards.forEach { card ->
             val dbCard = CardDBmodel(0, card.name, card.imageRes, card.verso, card.type.toDatabaseModel().string(), null, null, null)
             interactor.insertIntoCards(dbCard)
         }
 
-        for (card in darkCards) {
+        darkCards.forEach { card ->
             val dbCard = CardDBmodel(0, card.name, card.imageRes, card.verso, card.type.toDatabaseModel().string(), null, card.lossType.toDatabaseModel().string(), card.hpLoss)
             interactor.insertIntoCards(dbCard)
 
             card.helperIds?.let {
-                for (id in card.helperIds!!) {
+                card.helperIds!!.forEach { id ->
                     interactor.insertIntoDarkHelperPairs(DarkHelperPairDBmodel(0, interactor.getCardIdByName(card.name)!!, interactor.getCardIdByName(helperCards[id].name)!!))
                 }
             }

@@ -17,7 +17,7 @@ class Graph<T> {
     }
 
     override fun toString(): String = StringBuffer().apply {
-        for (key in adjacencyMap.keys) {
+        adjacencyMap.keys.forEach { key ->
             append("$key -> ")
             append(adjacencyMap[key]?.joinToString(", ", "[", "]\n"))
         }

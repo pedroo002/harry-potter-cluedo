@@ -207,7 +207,7 @@ class MapViewModel(
         dice3.visibility = ImageView.GONE
 
         diceList = listOf(dice1, dice2, dice3)
-        for (dice in diceList) {
+        diceList.forEach { dice ->
             uiHandler.setLayoutConstraintStart(dice, gameModels.cols[0])
             uiHandler.setLayoutConstraintTop(dice, gameModels.rows[0])
             mapRoot.mapLayout.addView(dice)
@@ -226,7 +226,7 @@ class MapViewModel(
             else -> 80
         }
 
-        for (p in gameModels.playerList) {
+        gameModels.playerList.forEach { p ->
             p.hp = initHp
         }
 
@@ -235,7 +235,7 @@ class MapViewModel(
         stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.GRYFFINDOR)
         stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.HUFFLEPUFF)
 
-        for (pair in playerImagePairs) {
+        playerImagePairs.forEach { pair ->
             uiHandler.setLayoutConstraintStart(pair.second, gameModels.cols[pair.first.pos.col])
             uiHandler.setLayoutConstraintTop(pair.second, gameModels.rows[pair.first.pos.row])
         }
@@ -259,15 +259,15 @@ class MapViewModel(
             }
         }
 
-        for (door: Door in gameModels.doorList) {
+        gameModels.doorList.forEach { door ->
             for (i in 0..4) {
                 mapGraph.addEdge(Position(door.room.top, door.room.left + i), door.position)
                 mapGraph.addEdge(door.position, Position(door.room.top, door.room.left + i))
             }
         }
 
-        for (p in gameModels.playerList) {
-            for (card in p.mysteryCards) {
+        gameModels.playerList.forEach { p ->
+            p.mysteryCards.forEach { card ->
                 p.getConclusion(card.name, p.id)
             }
         }

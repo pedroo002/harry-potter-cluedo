@@ -24,7 +24,7 @@ class GameModels(private val context: Context) {
         val mysteryCards = db.getMysteryCardsOfPlayers()
 
         val solutionList = ArrayList<MysteryCard>()
-        for (card in mysteryCards!!) {
+        mysteryCards!!.forEach { card ->
             if (card.second != -1)
                 allPlayers[card.second].mysteryCards.add(card.first)
             else
@@ -33,7 +33,7 @@ class GameModels(private val context: Context) {
 
         val playerIds = mysteryCards.map { card -> card.second }.distinct()
         val playersToDelete = ArrayList<Player>()
-        for (player in allPlayers) {
+        allPlayers.forEach { player ->
             if (!playerIds.contains(player.id))
                 playersToDelete.add(player)
         }
@@ -47,8 +47,9 @@ class GameModels(private val context: Context) {
 
     suspend fun loadPlayers(): ArrayList<Player> {
         val playerCards: ArrayList<PlayerCard> = ArrayList()
-        for (name in context.resources.getStringArray(R.array.characters))
+        context.resources.getStringArray(R.array.characters).forEach { name ->
             playerCards.add(db.getCardByName(name) as PlayerCard)
+        }
 
         val listItems = ArrayList<Player>()
         withContext(Dispatchers.Main) {

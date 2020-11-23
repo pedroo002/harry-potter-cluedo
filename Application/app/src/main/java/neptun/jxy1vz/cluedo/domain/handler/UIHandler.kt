@@ -91,7 +91,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             }
         }
         if (gatewayAnimations.isNotEmpty()) {
-            for (pair in gatewayAnimations) {
+            gatewayAnimations.forEach { pair ->
                 val gatewayAnimId = when (pair.second) {
                     true -> R.animator.appear
                     else -> R.animator.disappear
@@ -242,7 +242,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
 
             if (path.indexOf(position) == 0) {
                 if (map.mapHandler.stepInRoom(start) != -1) {
-                    for (room in map.gameModels.roomList) {
+                    map.gameModels.roomList.forEach { room ->
                         if (room.left <= start.col && room.right >= start.col) {
                             val roomPos = Position(room.top, room.left)
                             direction = when {
@@ -326,7 +326,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
                 map.mapHandler.isDoor(currentPosition) -> {
                     var roomPos = Position(-1, -1)
                     var roomWidth = 0
-                    for (door in map.gameModels.doorList) {
+                    map.gameModels.doorList.forEach { door ->
                         if (door.position == currentPosition) {
                             roomPos = Position(door.room.top, door.room.left)
                             roomWidth = door.room.right - door.room.left
@@ -378,7 +378,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
     private fun mergeRoutesFromRoom(playerId: Int, roomPos: Position): HashMap<Position, Int> {
         val roomId = map.mapHandler.stepInRoom(roomPos)
         var distances: HashMap<Position, Int>? = null
-        for (door in map.gameModels.doorList) {
+        map.gameModels.doorList.forEach { door ->
             if (door.room.id == roomId && (door.state == DoorState.OPENED || map.playerHandler.getPlayerById(
                     playerId
                 ).hasAlohomora())
@@ -460,8 +460,9 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
     }
 
     fun emptySelectionList() {
-        for (sel in selectionList)
+        selectionList.forEach { sel ->
             mapRoot.mapLayout.removeView(sel)
+        }
         selectionList = ArrayList()
     }
 
@@ -551,7 +552,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             6 -> cardType = DiceRollerViewModel.CardType.DARK
         }
 
-        for (dice in diceList) {
+        diceList.forEach { dice ->
             (AnimatorInflater.loadAnimator(mContext!!, R.animator.disappear) as AnimatorSet).apply {
                 setTarget(dice)
                 start()

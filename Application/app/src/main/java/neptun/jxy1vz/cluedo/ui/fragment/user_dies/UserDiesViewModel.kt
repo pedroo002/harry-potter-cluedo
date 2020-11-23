@@ -48,7 +48,7 @@ class UserDiesViewModel(private val bind: FragmentUserDiesBinding, context: Cont
 
         val solution = MapViewModel.gameModels.gameSolution
 
-        for (solutionParameter in solution) {
+        solution.forEach { solutionParameter ->
             when {
                 suspectList.contains(solutionParameter.name) -> bind.userDiesRoot.ivSuspectToken.setImageResource(suspectTokens[suspectList.indexOf(solutionParameter.name)])
                 toolList.contains(solutionParameter.name) -> bind.userDiesRoot.ivToolToken.setImageResource(toolTokens[toolList.indexOf(solutionParameter.name)])

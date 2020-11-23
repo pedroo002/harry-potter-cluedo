@@ -46,10 +46,10 @@ class IncriminationViewModel(
     init {
         room = roomName
 
-        for (child in bind.layoutToolImages.children.asSequence()) {
+        bind.layoutToolImages.children.asSequence().forEach { child ->
             toolList.add(child as ImageView)
         }
-        for (child in bind.layoutSuspectImages.children.asSequence()) {
+        bind.layoutSuspectImages.children.asSequence().forEach { child ->
             suspectList.add(child as ImageView)
         }
     }

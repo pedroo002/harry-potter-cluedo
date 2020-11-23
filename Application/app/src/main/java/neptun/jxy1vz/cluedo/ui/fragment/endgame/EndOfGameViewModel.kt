@@ -69,7 +69,7 @@ class EndOfGameViewModel(
 
                 if (goodSolution) {
                     bind.endOfGameRoot.tvTitle.setTextColor(Color.GREEN)
-                    for (solutionParameter in solution) {
+                    solution.forEach { solutionParameter ->
                         when {
                             suspectList.contains(solutionParameter) -> bind.endOfGameRoot.ivSuspectToken.setImageResource(
                                 suspectTokens[suspectList.indexOf(solutionParameter)]
@@ -87,7 +87,7 @@ class EndOfGameViewModel(
                 } else {
                     bind.endOfGameRoot.tvTitle.setTextColor(Color.RED)
                     val correctSuspect = Suspect(-1, "", "", "")
-                    for (solutionParameter in solution) {
+                    solution.forEach { solutionParameter ->
                         when {
                             suspectList.contains(solutionParameter) -> correctSuspect.suspect =
                                 solutionParameter

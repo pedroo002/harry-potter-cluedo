@@ -58,7 +58,7 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
             gameModel.playerList = playerList.sortedBy { p -> p.id }
             gameModel.eraseNotes()
             withContext(Dispatchers.Main) {
-                for (id in gameModel.playerImageIdList) {
+                gameModel.playerImageIdList.forEach { id ->
                     var delete = true
                     for (player in playerList) {
                         if (player.tile == id)
@@ -72,8 +72,8 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
                 }
 
                 val playerImagePairs: MutableList<Pair<Player, ImageView>> = ArrayList()
-                for (i in playerList.indices) {
-                    playerImagePairs.add(Pair(playerList[i], playerImageList[i]))
+                playerList.forEach {
+                    playerImagePairs.add(Pair(it, playerImageList[playerList.indexOf(it)]))
                 }
 
                 activityMapBinding.mapViewModel = MapViewModel(

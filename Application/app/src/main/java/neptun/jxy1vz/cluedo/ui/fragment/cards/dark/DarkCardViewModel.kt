@@ -62,14 +62,14 @@ class DarkCardViewModel(
 
     init {
         val playerNameList = context.resources.getStringArray(R.array.characters)
-        for (playerName in playerNameList) {
+        playerNameList.forEach { playerName ->
             safePlayerIcons[playerName] = safeIcons[playerNameList.indexOf(playerName)]
             playerIcons[playerName] = unsafeIcons[playerNameList.indexOf(playerName)]
         }
 
         radius = (context.resources.displayMetrics.heightPixels - (bind.darkCardRoot.btnClose.height + bind.darkCardRoot.btnClose.marginBottom)) / 4
 
-        for (player in playerList) {
+        playerList.forEach { player ->
             val i = playerList.indexOf(player)
 
             val imgRes = if (playerIds.contains(player.id)) {
@@ -79,10 +79,11 @@ class DarkCardViewModel(
                     getLoss(player, card)
                     playerIcons[player.card.name]!!
                 } else {
-                    for (tool in helperObjects)
-                        for (helperCard in player.helperCards!!)
-                            if (helperCard.name == tool)
-                                helperCard.numberOfHelpingCases++
+                    helperObjects.forEach { tool ->
+                        player.helperCards!!.filter { it.name == tool }.forEach { helperCard ->
+                            helperCard.numberOfHelpingCases++
+                        }
+                    }
                     safePlayerIcons[player.card.name]!!
                 }
             } else
@@ -385,17 +386,15 @@ class DarkCardViewModel(
 
     private fun getProperHelperCards(player: Player, lossType: LossType): List<HelperCard> {
         val properHelperCards: ArrayList<HelperCard> = ArrayList()
-        for (helperCard in player.helperCards!!) {
-            if ((helperCard.type as HelperType).compareTo(lossType))
-                properHelperCards.add(helperCard)
+        player.helperCards!!.filter { (it.type as HelperType).compareTo(lossType) }.forEach { helperCard ->
+            properHelperCards.add(helperCard)
         }
         return properHelperCards
     }
 
     private fun chooseWisely(cardList: List<HelperCard>): HelperCard {
-        for (card in cardList) {
-            if (countOccurrences(card, cardList) > 1)
-                return card
+        cardList.filter { countOccurrences(it, cardList) > 1 }.forEach { card ->
+            return card
         }
         cardList.sortedBy {
             it.numberOfHelpingCases
@@ -405,9 +404,8 @@ class DarkCardViewModel(
 
     private fun countOccurrences(card: HelperCard, list: List<HelperCard>): Int {
         var count = 0
-        for (c in list) {
-            if (c.name == card.name)
-                count++
+        repeat(list.filter { c -> c.name == card.name }.size) {
+            count++
         }
         return count
     }

@@ -142,7 +142,7 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
             val dbNotes = interactor.getNotes()
             withContext(Dispatchers.Main) {
                 dbNotes?.let {
-                    for (note in dbNotes) {
+                    dbNotes.forEach { note ->
                         var guidelineTop: Guideline
                         var guidelineBottom: Guideline
                         when {
@@ -266,7 +266,7 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
             return@setOnLongClickListener true
         }
 
-        for (res in nameRes) {
+        nameRes.forEach { res ->
             val background = ImageView(bind.svNotepad.noteLayout.context)
             background.layoutParams = ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
@@ -288,7 +288,7 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
             names.add(name)
         }
 
-        for (img in conclusionTypes) {
+        conclusionTypes.forEach { img ->
             val iv = ImageView(bind.svNotepad.noteLayout.context)
             val params = ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
@@ -302,7 +302,7 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
             conclusionList.add(iv)
         }
 
-        for (card in ownCards) {
+        ownCards.forEach { card ->
             val params = ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
                 ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
@@ -383,7 +383,7 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
         }
         val note = Note(row, cols.indexOf(left), imgRes)
 
-        for (n in noteList) {
+        noteList.forEach { n ->
             if (note.row == n.row && note.col == n.col)
                 return
         }

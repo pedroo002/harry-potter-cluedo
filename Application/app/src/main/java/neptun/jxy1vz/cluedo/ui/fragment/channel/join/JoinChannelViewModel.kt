@@ -65,7 +65,7 @@ class JoinChannelViewModel(
         channels = retrofit.cluedo.getChannelsByPlayerLimit(playerCount)
         channels?.let {
             channelNames = ArrayList()
-            for (channel in channels!!) {
+            channels!!.forEach { channel ->
                 channelNames.add(channel.channelName)
             }
 
