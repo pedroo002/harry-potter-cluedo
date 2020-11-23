@@ -53,11 +53,10 @@
             android:layout_height="0dp"
             android:id="@+id/ivTapFinger1"
             android:src="@drawable/tap"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/ivIllustration1"
+            app:layout_constraintStart_toStartOf="@id/guidelineCell1Left"
+            app:layout_constraintEnd_toEndOf="@id/guidelineCell1Right"
+            app:layout_constraintTop_toTopOf="@id/guidelineCell1Top"
             app:layout_constraintBottom_toBottomOf="@id/ivIllustration1"
-            android:translationX="160dp"
-            android:translationY="15dp"
             android:visibility="gone"/>
 
         <ImageView
@@ -65,11 +64,10 @@
             android:layout_height="0dp"
             android:id="@+id/ivTapAction1"
             android:src="@drawable/touch_action"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/ivIllustration1"
+            app:layout_constraintStart_toStartOf="@id/guidelineCell1Left"
+            app:layout_constraintEnd_toEndOf="@id/guidelineCell1Right"
+            app:layout_constraintTop_toTopOf="@id/guidelineCell1Top"
             app:layout_constraintBottom_toBottomOf="@id/ivIllustration1"
-            android:translationX="160dp"
-            android:translationY="15dp"
             android:visibility="gone"/>
 
         <TextView
@@ -102,11 +100,10 @@
             android:layout_height="0dp"
             android:id="@+id/ivTapFinger2"
             android:src="@drawable/tap"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/ivIllustration2"
+            app:layout_constraintStart_toStartOf="@id/guidelineCell2Left"
+            app:layout_constraintEnd_toEndOf="@id/guidelineCell2Right"
+            app:layout_constraintTop_toTopOf="@id/guidelineCell2Top"
             app:layout_constraintBottom_toBottomOf="@id/ivIllustration2"
-            android:translationX="125dp"
-            android:translationY="100dp"
             android:visibility="gone"/>
 
         <ImageView
@@ -114,11 +111,10 @@
             android:layout_height="0dp"
             android:id="@+id/ivTapAction2"
             android:src="@drawable/touch_action"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/ivIllustration2"
+            app:layout_constraintStart_toStartOf="@id/guidelineCell2Left"
+            app:layout_constraintEnd_toEndOf="@id/guidelineCell2Right"
+            app:layout_constraintTop_toTopOf="@id/guidelineCell2Top"
             app:layout_constraintBottom_toBottomOf="@id/ivIllustration2"
-            android:translationX="125dp"
-            android:translationY="100dp"
             android:visibility="gone"/>
 
         <TextView
@@ -133,6 +129,69 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivIllustration2" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineCell1Left"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.565"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineCell1Right"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.65"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineCell1Top"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.295"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineCell1Bottom"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.34"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineCell2Left"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.484"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineCell2Right"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.55"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineCell2Top"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.782"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineCell2Bottom"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.815"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guidelineTickTop"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.732"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -9,6 +9,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 
 class DumbledoresOfficeRulesFragment: Fragment() {
@@ -53,11 +57,14 @@ class DumbledoresOfficeRulesFragment: Fragment() {
             duration = 1000
             start()
             doOnEnd {
-                image.visibility = ImageView.GONE
-                baseImage.setImageResource(imageList[currentIndex])
-                currentIndex = if (currentIndex + 1 == imageList.size) 0 else currentIndex + 1
-                image.setImageResource(imageList[currentIndex])
-                startAnimation()
+                lifecycleScope.launch(Dispatchers.Main) {
+                    delay(500)
+                    image.visibility = ImageView.GONE
+                    baseImage.setImageResource(imageList[currentIndex])
+                    currentIndex = if (currentIndex + 1 == imageList.size) 0 else currentIndex + 1
+                    image.setImageResource(imageList[currentIndex])
+                    startAnimation()
+                }
             }
         }
     }

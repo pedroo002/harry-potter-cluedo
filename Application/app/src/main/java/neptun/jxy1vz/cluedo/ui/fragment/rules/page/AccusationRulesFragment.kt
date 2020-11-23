@@ -9,6 +9,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.cluedo.R
 
 class AccusationRulesFragment: Fragment() {
@@ -45,11 +49,14 @@ class AccusationRulesFragment: Fragment() {
         image.visibility = ImageView.VISIBLE
         (AnimatorInflater.loadAnimator(context, R.animator.appear) as AnimatorSet).apply {
             setTarget(image)
-            duration = 1000
+            duration = 2000
             start()
             doOnEnd {
-                image.visibility = ImageView.GONE
-                startAnimation()
+                lifecycleScope.launch(Dispatchers.Main) {
+                    delay(1000)
+                    image.visibility = ImageView.GONE
+                    startAnimation()
+                }
             }
         }
     }
