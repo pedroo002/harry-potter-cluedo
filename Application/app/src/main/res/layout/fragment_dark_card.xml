@@ -6,7 +6,7 @@
     <data>
         <variable
             name="darkCardViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.cards.dark.DarkCardViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.fragment.cards.dark.DarkCardViewModel" />
     </data>
 
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.channel.num_picker.NumPickerViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.fragment.channel.num_picker.NumPickerViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

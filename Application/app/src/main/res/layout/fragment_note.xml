@@ -6,7 +6,7 @@
     <data>
         <variable
             name="noteViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.note.NoteViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.fragment.note.NoteViewModel" />
     </data>
 
     <LinearLayout

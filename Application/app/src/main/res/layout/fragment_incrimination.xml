@@ -7,7 +7,7 @@
 
         <variable
             name="incriminationViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.incrimination.IncriminationViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.fragment.incrimination.IncriminationViewModel" />
     </data>
 
     <LinearLayout

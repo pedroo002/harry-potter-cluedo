@@ -6,7 +6,7 @@
     <data>
         <variable
             name="notesOrDiceViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.notes_or_dice.NotesOrDiceViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.fragment.notes_or_dice.NotesOrDiceViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

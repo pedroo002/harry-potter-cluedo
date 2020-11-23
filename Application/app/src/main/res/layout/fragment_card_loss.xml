@@ -4,7 +4,7 @@
     <data>
         <variable
             name="cardLossViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.cards.card_loss.CardLossViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.fragment.cards.card_loss.CardLossViewModel" />
     </data>
 
     <LinearLayout

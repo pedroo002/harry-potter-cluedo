@@ -7,7 +7,7 @@
 
         <variable
             name="joinChannelViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.channel.join.JoinChannelViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.fragment.channel.join.JoinChannelViewModel" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

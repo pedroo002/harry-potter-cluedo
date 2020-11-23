@@ -6,7 +6,7 @@
     <data>
         <variable
             name="incriminationDetailsViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.fragment.incrimination.incrimination_details.IncriminationDetailsViewModel" />
     </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="loginViewModel"
-            type="neptun.jxy1vz.cluedo.ui.activity.login.LoginViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.activity.login.LoginViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -7,7 +7,7 @@
 
         <variable
             name="playerDiesOrViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -7,7 +7,7 @@
 
         <variable
             name="accusationViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.accusation.AccusationViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.fragment.accusation.AccusationViewModel" />
     </data>
 
     <HorizontalScrollView

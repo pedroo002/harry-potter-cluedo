@@ -7,7 +7,7 @@
     <data>
         <variable
             name="createChannelViewModel"
-            type="neptun.jxy1vz.cluedo.ui.fragment.channel.create.CreateChannelViewModel" />
+            type="neptun.jxy1vz.hp_cluedo.ui.fragment.channel.create.CreateChannelViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
