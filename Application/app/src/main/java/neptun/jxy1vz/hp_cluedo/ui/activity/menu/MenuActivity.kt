@@ -8,20 +8,24 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.databinding.ActivityMenuBinding
 import neptun.jxy1vz.hp_cluedo.domain.model.helper.DatabaseAccess
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.network.model.player.PlayerRequest
+import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.retrofit
 import neptun.jxy1vz.hp_cluedo.ui.fragment.channel.create.CreateChannelFragment
 import neptun.jxy1vz.hp_cluedo.ui.fragment.channel.join.JoinChannelFragment
 import neptun.jxy1vz.hp_cluedo.ui.fragment.character_selector.multi.MultiplayerCharacterSelectorFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import kotlin.math.log
 
 class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
 
     private lateinit var activityMenuBinding: ActivityMenuBinding
+    private lateinit var retrofit: RetrofitInstance
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +44,8 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
         } else
             editor.putBoolean(getString(R.string.first_start_pref), false)
         editor.apply()
+
+        retrofit = RetrofitInstance.getInstance(applicationContext)
 
         activityMenuBinding = DataBindingUtil.setContentView(this, R.layout.activity_menu)
 
@@ -68,6 +74,20 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
     }
 
     override fun exitGame() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            logout()
+        }
+        finish()
+    }
+
+    override fun onDestroy() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            logout()
+        }
+        super.onDestroy()
+    }
+
+    private suspend fun logout() {
         val pref = applicationContext.getSharedPreferences(
             resources.getString(R.string.player_data_pref),
             Context.MODE_PRIVATE
@@ -76,14 +96,7 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
             pref.getString(resources.getString(R.string.player_name_key), "")!!,
             pref.getString(resources.getString(R.string.password_key), "")!!
         )
-
-        val retrofit = RetrofitInstance.getInstance(applicationContext)
         val body = retrofit.moshi.adapter(PlayerRequest::class.java).toJson(playerRequest).toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            retrofit.cluedo.logoutPlayer(body)
-        }
-
-        finish()
+        retrofit.cluedo.logoutPlayer(body)
     }
 }
