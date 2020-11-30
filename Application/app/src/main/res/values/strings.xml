@@ -28,6 +28,8 @@
     <string name="player5">Luna Lovegood</string>
     <string name="player6">Neville Longbottom</string>
 
+    <string name="no_internet_connection">Nincs interkapcsolat</string>
+    <string name="connected">Sikeres csatlakozás</string>
     <string name="loading_assets">Erőforrások letöltése… %1$d/%2$d</string>
     <string name="choose_a_character">Válassz karaktert magadnak!</string>
     <string name="dobj">Dobj a kockákkal!</string>

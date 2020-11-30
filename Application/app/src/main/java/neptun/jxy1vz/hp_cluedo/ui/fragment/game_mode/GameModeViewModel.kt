@@ -2,6 +2,7 @@ package neptun.jxy1vz.hp_cluedo.ui.fragment.game_mode
 
 import android.content.Context
 import androidx.databinding.BaseObservable
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_game_mode.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -9,6 +10,7 @@ import kotlinx.coroutines.launch
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentGameModeBinding
+import neptun.jxy1vz.hp_cluedo.domain.util.isOnline
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
@@ -95,6 +97,10 @@ class GameModeViewModel(private val bind: FragmentGameModeBinding, private val c
     }
 
     fun setGameMode() {
+        if (gameMode == context.resources.getStringArray(R.array.playmodes)[1] && !isOnline()) {
+            Snackbar.make(bind.root, context.resources.getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG).show()
+            return
+        }
         val pref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
         val editor = pref.edit()
         editor.putString(context.resources.getString(R.string.play_mode_key), gameMode)
