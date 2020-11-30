@@ -14,7 +14,10 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 
 class GameTurnStartRulesFragment: Fragment() {
 
@@ -24,7 +27,9 @@ class GameTurnStartRulesFragment: Fragment() {
     private lateinit var finger2: ImageView
     private lateinit var tap2: ImageView
 
-    private lateinit var image: ImageView
+    private lateinit var ivIllustration1Anim: ImageView
+    private lateinit var ivIllustration1: ImageView
+    private lateinit var ivIllustration2: ImageView
 
     private var canAnimate = true
 
@@ -41,16 +46,37 @@ class GameTurnStartRulesFragment: Fragment() {
         finger2 = root.findViewById(R.id.ivTapFinger2)
         tap2 = root.findViewById(R.id.ivTapAction2)
 
-        image = root.findViewById(R.id.ivIllustration1Anim)
+        ivIllustration1Anim = root.findViewById(R.id.ivIllustration1Anim)
+        ivIllustration1 = root.findViewById(R.id.ivIllustration1)
+        ivIllustration2 = root.findViewById(R.id.ivIllustration2)
 
         return root
     }
 
     override fun onResume() {
         super.onResume()
-        canAnimate = true
-        startFirstAnimation()
-        startSecondAnimation()
+        lifecycleScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context!!).assetDao().apply {
+                val mapTemplate = getAssetByTag("resources/menu/tutorial/map_template.png")!!.url
+                val notesOrDice = getAssetByTag("resources/menu/tutorial/notes_or_dice.png")!!.url
+                val tapRotated = getAssetByTag("resources/menu/tutorial/tap_rotated.png")!!.url
+                val touchActionRotated = getAssetByTag("resources/menu/tutorial/touch_action_rotated.png")!!.url
+                val tap = getAssetByTag("resources/menu/tutorial/tap.png")!!.url
+                val touchAction = getAssetByTag("resources/menu/tutorial/touch_action.png")!!.url
+                withContext(Dispatchers.Main) {
+                    loadUrlImageIntoImageView(mapTemplate, context!!, ivIllustration1)
+                    loadUrlImageIntoImageView(notesOrDice, context!!, ivIllustration1Anim)
+                    loadUrlImageIntoImageView(tapRotated, context!!, finger1)
+                    loadUrlImageIntoImageView(touchActionRotated, context!!, tap1)
+                    loadUrlImageIntoImageView(notesOrDice, context!!, ivIllustration2)
+                    loadUrlImageIntoImageView(tap, context!!, finger2)
+                    loadUrlImageIntoImageView(touchAction, context!!, tap2)
+                    canAnimate = true
+                    startFirstAnimation()
+                    startSecondAnimation()
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -59,7 +85,7 @@ class GameTurnStartRulesFragment: Fragment() {
         tap1.visibility = ImageView.GONE
         finger2.visibility = ImageView.GONE
         tap2.visibility = ImageView.GONE
-        image.visibility = ImageView.GONE
+        ivIllustration1Anim.visibility = ImageView.GONE
         super.onPause()
     }
 
@@ -88,15 +114,15 @@ class GameTurnStartRulesFragment: Fragment() {
             doOnEnd {
                 finger1.visibility = ImageView.GONE
                 tap1.visibility = ImageView.GONE
-                image.visibility = ImageView.VISIBLE
+                ivIllustration1Anim.visibility = ImageView.VISIBLE
                 (AnimatorInflater.loadAnimator(context, R.animator.appear) as AnimatorSet).apply {
-                    setTarget(image)
+                    setTarget(ivIllustration1Anim)
                     duration = 1000
                     start()
                     doOnEnd {
                         lifecycleScope.launch(Dispatchers.Main) {
                             delay(1000)
-                            image.visibility = ImageView.GONE
+                            ivIllustration1Anim.visibility = ImageView.GONE
                             startFirstAnimation()
                         }
                     }

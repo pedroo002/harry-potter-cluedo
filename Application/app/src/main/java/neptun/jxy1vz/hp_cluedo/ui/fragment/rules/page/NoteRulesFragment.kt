@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
@@ -15,7 +17,10 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 
 class NoteRulesFragment: Fragment() {
 
@@ -27,8 +32,8 @@ class NoteRulesFragment: Fragment() {
     private lateinit var tap2: ImageView
     private lateinit var illustration2: ImageView
 
-    private val imageList1 = listOf(R.drawable.notes1, R.drawable.notes2, R.drawable.notes3)
-    private val imageList2 = listOf(R.drawable.notes4, R.drawable.notes5, R.drawable.notes6)
+    private lateinit var imageList1: List<String>
+    private lateinit var imageList2: List<String>
 
     private lateinit var constraintIdListFinger1First: List<Int>
     private lateinit var constraintIdListFinger1Second: List<Int>
@@ -85,9 +90,35 @@ class NoteRulesFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        canAnimate = true
-        startAnimation(tap1, finger1, illustration1, imageList1)
-        startAnimation(tap2, finger2, illustration2, imageList2)
+        lifecycleScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context!!).assetDao().apply {
+                imageList1 = listOf(
+                    getAssetByTag("resources/menu/tutorial/notes1.png")!!.url,
+                    getAssetByTag("resources/menu/tutorial/notes2.png")!!.url,
+                    getAssetByTag("resources/menu/tutorial/notes3.png")!!.url
+                )
+                imageList2 = listOf(
+                    getAssetByTag("resources/menu/tutorial/notes4.png")!!.url,
+                    getAssetByTag("resources/menu/tutorial/notes5.png")!!.url,
+                    getAssetByTag("resources/menu/tutorial/notes6.png")!!.url
+                )
+                val tap = getAssetByTag("resources/menu/tutorial/tap.png")!!.url
+                val touchAction = getAssetByTag("resources/menu/tutorial/touch_action.png")!!.url
+                withContext(Dispatchers.Main) {
+                    loadUrlImageIntoImageView(tap, context!!, finger1)
+                    loadUrlImageIntoImageView(tap, context!!, finger2)
+                    loadUrlImageIntoImageView(touchAction, context!!, tap1)
+                    loadUrlImageIntoImageView(touchAction, context!!, tap2)
+
+                    loadUrlImageIntoImageView(imageList1[0], context!!, illustration1)
+                    loadUrlImageIntoImageView(imageList2[0], context!!, illustration2)
+
+                    canAnimate = true
+                    startAnimation(tap1, finger1, illustration1, imageList1)
+                    startAnimation(tap2, finger2, illustration2, imageList2)
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -99,7 +130,7 @@ class NoteRulesFragment: Fragment() {
         super.onPause()
     }
 
-    private fun startAnimation(tap: ImageView, finger: ImageView, illustration: ImageView, images: List<Int>) {
+    private fun startAnimation(tap: ImageView, finger: ImageView, illustration: ImageView, images: List<String>) {
         finger.visibility = ImageView.VISIBLE
         (AnimatorInflater.loadAnimator(context, R.animator.appear) as AnimatorSet).apply {
             setTarget(finger)
@@ -110,7 +141,7 @@ class NoteRulesFragment: Fragment() {
         }
     }
 
-    private fun animateLongTap(tap: ImageView, finger: ImageView, illustration: ImageView, images: List<Int>) {
+    private fun animateLongTap(tap: ImageView, finger: ImageView, illustration: ImageView, images: List<String>) {
         if (!canAnimate)
             return
         tap.visibility = ImageView.VISIBLE
@@ -120,7 +151,7 @@ class NoteRulesFragment: Fragment() {
             start()
             doOnEnd {
                 tap.visibility = ImageView.GONE
-                illustration.setImageResource(images[1])
+                loadUrlImageIntoImageView(images[1], context!!, illustration)
                 if (tap.id == R.id.ivTapAction1) {
                     setConstraints(finger, constraintIdListFinger1Second)
                     setConstraints(tap, constraintIdListFinger1Second)
@@ -128,13 +159,15 @@ class NoteRulesFragment: Fragment() {
                 else {
                     setConstraints(finger, constraintIdListFinger2Second)
                     setConstraints(tap, constraintIdListFinger2Second)
+
+                    setWidthType(finger, tap, MATCH_CONSTRAINT)
                 }
                 animateShortTap(tap, finger, illustration, images)
             }
         }
     }
 
-    private fun animateShortTap(tap: ImageView, finger: ImageView, illustration: ImageView, images: List<Int>) {
+    private fun animateShortTap(tap: ImageView, finger: ImageView, illustration: ImageView, images: List<String>) {
         if (!canAnimate)
             return
         tap.visibility = ImageView.VISIBLE
@@ -146,7 +179,7 @@ class NoteRulesFragment: Fragment() {
                 lifecycleScope.launch(Dispatchers.Main) {
                     tap.visibility = ImageView.GONE
                     finger.visibility = ImageView.GONE
-                    illustration.setImageResource(images[2])
+                    loadUrlImageIntoImageView(images[2], context!!, illustration)
                     if (tap.id == R.id.ivTapAction1) {
                         setConstraints(finger, constraintIdListFinger1First)
                         setConstraints(tap, constraintIdListFinger1First)
@@ -154,9 +187,11 @@ class NoteRulesFragment: Fragment() {
                     else {
                         setConstraints(finger, constraintIdListFinger2First)
                         setConstraints(tap, constraintIdListFinger2First)
+
+                        setWidthType(finger, tap, WRAP_CONTENT)
                     }
                     delay(1500)
-                    illustration.setImageResource(images[0])
+                    loadUrlImageIntoImageView(images[0], context!!, illustration)
                     finger.visibility = ImageView.VISIBLE
                     animateLongTap(tap, finger, illustration, images)
                 }
@@ -171,5 +206,23 @@ class NoteRulesFragment: Fragment() {
         layoutParams.topToTop = idList[2]
         layoutParams.bottomToBottom = idList[3]
         iv.layoutParams = layoutParams
+    }
+
+    private fun setWidthType(finger: ImageView, tap: ImageView, width: Int) {
+        val layoutParams1 = ConstraintLayout.LayoutParams(width, MATCH_CONSTRAINT)
+        val layoutParams2 = ConstraintLayout.LayoutParams(width, MATCH_CONSTRAINT)
+
+        layoutParams1.startToStart = (finger.layoutParams as ConstraintLayout.LayoutParams).startToStart
+        layoutParams1.endToEnd = (finger.layoutParams as ConstraintLayout.LayoutParams).endToEnd
+        layoutParams1.topToTop = (finger.layoutParams as ConstraintLayout.LayoutParams).topToTop
+        layoutParams1.bottomToBottom = (finger.layoutParams as ConstraintLayout.LayoutParams).bottomToBottom
+
+        layoutParams2.startToStart = (tap.layoutParams as ConstraintLayout.LayoutParams).startToStart
+        layoutParams2.endToEnd = (tap.layoutParams as ConstraintLayout.LayoutParams).endToEnd
+        layoutParams2.topToTop = (tap.layoutParams as ConstraintLayout.LayoutParams).topToTop
+        layoutParams2.bottomToBottom = (tap.layoutParams as ConstraintLayout.LayoutParams).bottomToBottom
+
+        finger.layoutParams = layoutParams1
+        tap.layoutParams = layoutParams2
     }
 }

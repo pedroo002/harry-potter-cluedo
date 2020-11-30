@@ -3,7 +3,7 @@ package neptun.jxy1vz.hp_cluedo.domain.model.card
 data class MysteryCard(
     override val id: Int,
     override val name: String,
-    override val imageRes: Int,
-    override val verso: Int,
-    val type: CardType
+    val type: CardType,
+    override val imageRes: String = "",
+    override val verso: String = ""
 ) : Card(id, name, imageRes, verso)

@@ -3,14 +3,18 @@ package neptun.jxy1vz.hp_cluedo.ui.fragment.dice_roller
 import android.content.Context
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import androidx.annotation.DrawableRes
 import androidx.databinding.BaseObservable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentDiceRollerBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.StateMachineHandler
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.network.model.message.dice.DiceDataMessage
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
@@ -26,6 +30,8 @@ class DiceRollerViewModel(
 ) : BaseObservable(),
     Animation.AnimationListener {
 
+    private lateinit var diceList: List<String>
+
     interface DiceFragmentListener {
         fun onFinish()
     }
@@ -36,7 +42,13 @@ class DiceRollerViewModel(
     }
 
     init {
-        bind.btnSubmit.isEnabled = false
+        GlobalScope.launch(Dispatchers.IO) {
+            diceList = CluedoDatabase.getInstance(context).assetDao().getAssetsByPrefix(AssetPrefixes.DICE.string())!!.map { assetDBmodel -> assetDBmodel.url }
+            withContext(Dispatchers.Main) {
+                bind.btnSubmit.isEnabled = false
+                bind.btnRoll.isEnabled = true
+            }
+        }
     }
 
     private var cardType: CardType? = null
@@ -60,36 +72,33 @@ class DiceRollerViewModel(
         bind.ivDice3
     )
 
-    @DrawableRes
-    var diceValue1: Int = R.drawable.dice1
-    @DrawableRes
-    var diceValue2: Int = R.drawable.dice4
-    @DrawableRes
-    var diceValue3: Int = R.drawable.helper_card
+    private lateinit var diceValue1: String
+    private lateinit var diceValue2: String
+    private lateinit var diceValue3: String
 
     private var num1 = 0
     private var num2 = 0
     private var num3 = 0
 
-    private fun getNumericDiceResource(number: Int): Int {
+    private fun getNumericDiceResource(number: Int): String {
         return when (number) {
-            1 -> R.drawable.dice1
-            2 -> R.drawable.dice2
-            3 -> R.drawable.dice3
-            4 -> R.drawable.dice4
-            5 -> R.drawable.dice5
-            else -> R.drawable.dice6
+            1 -> diceList[0]
+            2 -> diceList[1]
+            3 -> diceList[2]
+            4 -> diceList[3]
+            5 -> diceList[4]
+            else -> diceList[5]
         }
     }
 
-    private fun getGraphicalDiceResource(number: Int): Int {
+    private fun getGraphicalDiceResource(number: Int): String {
         return when (number) {
-            1 -> R.drawable.helper_card
-            2 -> R.drawable.gryffindor
-            3 -> R.drawable.slytherin
-            4 -> R.drawable.hufflepuff
-            5 -> R.drawable.ravenclaw
-            else -> R.drawable.dark_mark
+            1 -> diceList[6]
+            2 -> diceList[7]
+            3 -> diceList[8]
+            4 -> diceList[9]
+            5 -> diceList[10]
+            else -> diceList[11]
         }
     }
 
@@ -109,9 +118,9 @@ class DiceRollerViewModel(
         diceValue2 = getNumericDiceResource(num2)
         diceValue3 = getGraphicalDiceResource(num3)
 
-        diceImageList[0].setImageResource(diceValue1)
-        diceImageList[1].setImageResource(diceValue2)
-        diceImageList[2].setImageResource(diceValue3)
+        loadUrlImageIntoImageView(diceValue1, context, diceImageList[0])
+        loadUrlImageIntoImageView(diceValue2, context, diceImageList[1])
+        loadUrlImageIntoImageView(diceValue3, context, diceImageList[2])
 
         setDice3(num3)
 
@@ -135,12 +144,12 @@ class DiceRollerViewModel(
 
     private fun setDice3(dice3: Int) {
         when (dice3) {
-            1 -> cardType = CardType.HELPER
-            2 -> house = StateMachineHandler.HogwartsHouse.GRYFFINDOR
-            3 -> house = StateMachineHandler.HogwartsHouse.SLYTHERIN
+            1 -> cardType = CardType.DARK
+            2 -> cardType = CardType.HELPER
+            3 -> house = StateMachineHandler.HogwartsHouse.GRYFFINDOR
             4 -> house = StateMachineHandler.HogwartsHouse.HUFFLEPUFF
             5 -> house = StateMachineHandler.HogwartsHouse.RAVENCLAW
-            6 -> cardType = CardType.DARK
+            6 -> house = StateMachineHandler.HogwartsHouse.SLYTHERIN
         }
     }
 

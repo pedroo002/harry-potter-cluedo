@@ -4,20 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 
 class CardFragment : Fragment() {
 
-    private var cardImage: Int = 0
+    private lateinit var cardImage: String
 
-    fun setCardImage(imgRes: Int) {
+    fun setCardImage(imgRes: String) {
         cardImage = imgRes
     }
 
     companion object {
-        fun newInstance(cardImage: Int): CardFragment {
+        fun newInstance(cardImage: String): CardFragment {
             val fragment = CardFragment()
             fragment.setCardImage(cardImage)
             return fragment
@@ -30,7 +30,7 @@ class CardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_lost_card, container, false)
-        view.findViewById<ImageView>(R.id.ivLostCard).setImageResource(cardImage)
+        loadUrlImageIntoImageView(cardImage, context!!, view.findViewById(R.id.ivLostCard))
         return view
     }
 }

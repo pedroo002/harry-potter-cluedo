@@ -1,6 +1,5 @@
 package neptun.jxy1vz.hp_cluedo.domain.handler
 
-import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.domain.model.DoorState
 import neptun.jxy1vz.hp_cluedo.domain.model.Position
 import neptun.jxy1vz.hp_cluedo.domain.model.Room
@@ -16,16 +15,7 @@ import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.slytherinS
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.collections.elementAt
-import kotlin.collections.indices
-import kotlin.collections.isNotEmpty
-import kotlin.collections.isNullOrEmpty
-import kotlin.collections.iterator
-import kotlin.collections.listOf
 import kotlin.collections.set
-import kotlin.collections.sortedBy
-import kotlin.collections.toList
-import kotlin.collections.toMap
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -136,7 +126,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
                     for (y in 0..MapViewModel.ROWS) {
                         val current = Position(y, x)
                         if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances!![current]!! <= limit) {
-                            val sel = if (stepOnStar(current)) R.drawable.star_selection else R.drawable.field_selection
+                            val sel = if (stepOnStar(current)) map.gameModels.starSelection else map.gameModels.fieldSelection
                             map.uiHandler.drawSelection(sel, y, x, playerId)
                         }
                     }

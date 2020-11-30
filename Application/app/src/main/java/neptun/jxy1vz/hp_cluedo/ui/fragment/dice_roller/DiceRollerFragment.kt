@@ -6,9 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentDiceRollerBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.StateMachineHandler
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 
 class DiceRollerFragment : Fragment(), DiceRollerViewModel.DiceFragmentListener {
@@ -44,7 +50,20 @@ class DiceRollerFragment : Fragment(), DiceRollerViewModel.DiceFragmentListener 
         savedInstanceState: Bundle?
     ): View? {
         fragmentDiceRollerBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_dice_roller, container, false)
-        fragmentDiceRollerBinding.diceRollerViewModel = DiceRollerViewModel(fragmentDiceRollerBinding, context!!, felixFelicis, this)
+        lifecycleScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context!!).assetDao().apply {
+                val dice1 = getAssetByTag("resources/map/dice/dice01.png")!!.url
+                val dice2 = getAssetByTag("resources/map/dice/dice02.png")!!.url
+                val helper = getAssetByTag("resources/map/dice/dice08_helper_card.png")!!.url
+                withContext(Dispatchers.Main) {
+                    loadUrlImageIntoImageView(dice1, context!!, fragmentDiceRollerBinding.ivDice1)
+                    loadUrlImageIntoImageView(dice2, context!!, fragmentDiceRollerBinding.ivDice2)
+                    loadUrlImageIntoImageView(helper, context!!, fragmentDiceRollerBinding.ivDice3)
+                    fragmentDiceRollerBinding.btnRoll.isEnabled = false
+                    fragmentDiceRollerBinding.diceRollerViewModel = DiceRollerViewModel(fragmentDiceRollerBinding, context!!, felixFelicis, this@DiceRollerFragment)
+                }
+            }
+        }
         return fragmentDiceRollerBinding.root
     }
 

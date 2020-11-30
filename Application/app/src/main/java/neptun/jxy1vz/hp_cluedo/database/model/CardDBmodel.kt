@@ -11,9 +11,9 @@ data class CardDBmodel(
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "obverse")
-    val imageRes: Int,
+    val imageRes: String,
     @ColumnInfo(name = "verso")
-    val versoRes: Int,
+    val versoRes: String,
     @ColumnInfo(name = "type")
     val cardType: String,
     @ColumnInfo(name = "owner")

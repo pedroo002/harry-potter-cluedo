@@ -22,13 +22,16 @@ import kotlinx.android.synthetic.main.fragment_dark_card.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentDarkCardBinding
 import neptun.jxy1vz.hp_cluedo.domain.model.Player
 import neptun.jxy1vz.hp_cluedo.domain.model.card.*
 import neptun.jxy1vz.hp_cluedo.domain.model.helper.getHelperObjects
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.safeIcons
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.unsafeIcons
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.domain.util.removePlayer
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.network.model.message.card_event.CardEventMessage
@@ -52,71 +55,82 @@ class DarkCardViewModel(
     private val fm: FragmentManager
 ) : BaseObservable(), CardLossFragment.ThrowCardListener {
 
-    private val safePlayerIcons = HashMap<String, Int>()
-    private val playerIcons = HashMap<String, Int>()
+    private val safePlayerIcons = HashMap<String, String>()
+    private val playerIcons = HashMap<String, String>()
     private var radius = 0
 
-    private val thrownCards = HashMap<String, Int>()
+    private val thrownCards = HashMap<String, String>()
 
     private var waitForPlayers = playerList.size
 
     init {
-        val playerNameList = context.resources.getStringArray(R.array.characters)
-        playerNameList.forEach { playerName ->
-            safePlayerIcons[playerName] = safeIcons[playerNameList.indexOf(playerName)]
-            playerIcons[playerName] = unsafeIcons[playerNameList.indexOf(playerName)]
-        }
-
-        radius = (context.resources.displayMetrics.heightPixels - (bind.darkCardRoot.btnClose.height + bind.darkCardRoot.btnClose.marginBottom)) / 4
-
-        playerList.forEach { player ->
-            val i = playerList.indexOf(player)
-
-            val imgRes = if (playerIds.contains(player.id)) {
-                val helperObjects = getHelperObjects(player, card)
-
-                if (helperObjects.isEmpty()) {
-                    getLoss(player, card)
-                    playerIcons[player.card.name]!!
-                } else {
-                    helperObjects.forEach { tool ->
-                        player.helperCards!!.filter { it.name == tool }.forEach { helperCard ->
-                            helperCard.numberOfHelpingCases++
-                        }
+        GlobalScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context).assetDao().apply {
+                val darkCardFragmentImages = getAssetsByPrefix(AssetPrefixes.DARK_CARD_FRAGMENT.string())!!.map { assetDBmodel -> assetDBmodel.url }
+                val darkMark = darkCardFragmentImages[0]
+                val safeIcons = darkCardFragmentImages.filter { url -> url.contains("safe") }
+                val unsafeIcons = darkCardFragmentImages.filter { url -> !url.contains("safe") && !url.contains("dark_mark") }
+                withContext(Dispatchers.Main) {
+                    loadUrlImageIntoImageView(darkMark, context, bind.ivDarkMark)
+                    val playerNameList = context.resources.getStringArray(R.array.characters)
+                    playerNameList.forEach { playerName ->
+                        safePlayerIcons[playerName] = safeIcons[playerNameList.indexOf(playerName)]
+                        playerIcons[playerName] = unsafeIcons[playerNameList.indexOf(playerName)]
                     }
-                    safePlayerIcons[player.card.name]!!
+
+                    radius = (context.resources.displayMetrics.heightPixels - (bind.darkCardRoot.btnClose.height + bind.darkCardRoot.btnClose.marginBottom)) / 4
+
+                    playerList.forEach { player ->
+                        val i = playerList.indexOf(player)
+
+                        val imgRes = if (playerIds.contains(player.id)) {
+                            val helperObjects = getHelperObjects(player, card)
+
+                            if (helperObjects.isEmpty()) {
+                                getLoss(player, card)
+                                playerIcons[player.card.name]!!
+                            } else {
+                                helperObjects.forEach { tool ->
+                                    player.helperCards!!.filter { it.name == tool }.forEach { helperCard ->
+                                        helperCard.numberOfHelpingCases++
+                                    }
+                                }
+                                safePlayerIcons[player.card.name]!!
+                            }
+                        } else
+                            safePlayerIcons[player.card.name]!!
+
+                        var lossTextView: TextView? = null
+                        if (card.lossType == LossType.HP && playerIds.contains(player.id) && imgRes != safePlayerIcons[player.card.name]!!) {
+                            val lossString = "-${card.hpLoss} HP"
+                            lossTextView = TextView(bind.darkCardRoot.context)
+                            lossTextView.text = lossString
+                            lossTextView.setTextColor(Color.RED)
+                            lossTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                            lossTextView.setTypeface(null, Typeface.BOLD)
+                        }
+
+                        var thrownCard: ImageView? = null
+                        if (thrownCards.containsKey(player.card.name)) {
+                            thrownCard = ImageView(bind.darkCardRoot.context)
+                            loadUrlImageIntoImageView(thrownCards[player.card.name]!!, context, thrownCard)
+                        }
+
+                        drawImage(
+                            imgRes,
+                            radius * sin(i * (2 * PI / playerList.size)),
+                            radius * cos(i * (2 * PI / playerList.size)),
+                            lossTextView,
+                            thrownCard,
+                            player
+                        )
+                    }
+
+                    if (MapViewModel.isGameModeMulti()) {
+                        subscribeToEvents()
+                    }
                 }
-            } else
-                safePlayerIcons[player.card.name]!!
-
-            var lossTextView: TextView? = null
-            if (card.lossType == LossType.HP && playerIds.contains(player.id) && imgRes != safePlayerIcons[player.card.name]!!) {
-                val lossString = "-${card.hpLoss} HP"
-                lossTextView = TextView(bind.darkCardRoot.context)
-                lossTextView.text = lossString
-                lossTextView.setTextColor(Color.RED)
-                lossTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
-                lossTextView.setTypeface(null, Typeface.BOLD)
             }
-
-            var thrownCard: ImageView? = null
-            if (thrownCards.containsKey(player.card.name)) {
-                thrownCard = ImageView(bind.darkCardRoot.context)
-                thrownCard.setImageResource(thrownCards[player.card.name]!!)
-            }
-
-            drawImage(
-                imgRes,
-                radius * sin(i * (2 * PI / playerList.size)),
-                radius * cos(i * (2 * PI / playerList.size)),
-                lossTextView,
-                thrownCard,
-                player
-            )
-        }
-
-        if (MapViewModel.isGameModeMulti()) {
-            subscribeToEvents()
         }
     }
 
@@ -156,7 +170,7 @@ class DarkCardViewModel(
                     val player = MapViewModel.playerHandler.getPlayerById(messageJson.playerId)
                     val cardToRemove = player.helperCards!!.find { card -> card.name == messageJson.cardName }!!
                     val thrownCard = ImageView(bind.darkCardRoot.context)
-                    thrownCard.setImageResource(cardToRemove.imageRes)
+                    loadUrlImageIntoImageView(cardToRemove.imageRes, context, thrownCard)
                     processCardThrownEvent(playerIcons[player.card.name]!!, thrownCard, player)
                     MapViewModel.playerHandler.getPlayerById(messageJson.playerId).helperCards!!.remove(cardToRemove)
                 }
@@ -188,7 +202,7 @@ class DarkCardViewModel(
         }
     }
 
-    private fun processCardThrownEvent(imgRes: Int, thrownCard: ImageView, player: Player) {
+    private fun processCardThrownEvent(imgRes: String, thrownCard: ImageView, player: Player) {
         GlobalScope.launch(Dispatchers.Main) {
             val i = playerList.indexOf(player)
             drawImage(
@@ -203,7 +217,7 @@ class DarkCardViewModel(
     }
 
     private fun drawImage(
-        imgRes: Int,
+        imgRes: String,
         tranX: Double,
         tranY: Double,
         lossTextView: TextView?,
@@ -218,7 +232,7 @@ class DarkCardViewModel(
         layoutParams.startToStart = bind.darkCardRoot.ivDarkMark.id
         layoutParams.endToEnd = bind.darkCardRoot.ivDarkMark.id
         val image = ImageView(bind.darkCardRoot.context)
-        image.setImageResource(imgRes)
+        loadUrlImageIntoImageView(imgRes, context, image)
         image.visibility = ImageView.VISIBLE
         image.layoutParams = layoutParams
         image.translationX = tranX.toFloat() - image.width / 2

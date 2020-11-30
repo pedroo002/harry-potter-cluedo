@@ -9,5 +9,5 @@ data class NoteDBmodel(
     val id: Long,
     val row: Int,
     val col: Int,
-    val res: Int
+    val res: String
 )

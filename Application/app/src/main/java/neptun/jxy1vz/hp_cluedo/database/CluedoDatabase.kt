@@ -4,21 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import neptun.jxy1vz.hp_cluedo.database.dao.CardDAO
-import neptun.jxy1vz.hp_cluedo.database.dao.DarkHelperDAO
-import neptun.jxy1vz.hp_cluedo.database.dao.NoteDAO
-import neptun.jxy1vz.hp_cluedo.database.dao.PlayerDAO
-import neptun.jxy1vz.hp_cluedo.database.model.CardDBmodel
-import neptun.jxy1vz.hp_cluedo.database.model.DarkHelperPairDBmodel
-import neptun.jxy1vz.hp_cluedo.database.model.NoteDBmodel
-import neptun.jxy1vz.hp_cluedo.database.model.PlayerDBmodel
+import neptun.jxy1vz.hp_cluedo.database.dao.*
+import neptun.jxy1vz.hp_cluedo.database.model.*
 
-@Database(entities = [CardDBmodel::class, DarkHelperPairDBmodel::class, NoteDBmodel::class, PlayerDBmodel::class], version = 1)
+@Database(entities = [CardDBmodel::class, DarkHelperPairDBmodel::class, NoteDBmodel::class, PlayerDBmodel::class, AssetDBmodel::class], version = 1)
 abstract class CluedoDatabase : RoomDatabase() {
     abstract fun cardDao(): CardDAO
     abstract fun darkHelperDao(): DarkHelperDAO
     abstract fun noteDao(): NoteDAO
     abstract fun playerDao(): PlayerDAO
+    abstract fun assetDao(): AssetDAO
 
     companion object {
         private lateinit var db: CluedoDatabase

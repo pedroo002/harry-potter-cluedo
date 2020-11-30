@@ -11,6 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentMultiplayerCharacterSelectorBinding
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.network.model.message.presence.PlayerPresenceMessage
@@ -87,9 +90,13 @@ class MultiplayerCharacterSelectorViewModel(
                         ?.toList()!!
                 )
 
+                val playerTokens = CluedoDatabase.getInstance(context).assetDao().getAssetsByPrefix(AssetPrefixes.PLAYER_TOKENS.string())!!.map { assetDBmodel -> assetDBmodel.url }
+
                 withContext(Dispatchers.Main) {
                     adapter = PlayerListAdapter(
+                        context,
                         playersOfChannel,
+                        playerTokens,
                         playerName,
                         this@MultiplayerCharacterSelectorViewModel
                     )
@@ -251,9 +258,9 @@ class MultiplayerCharacterSelectorViewModel(
             Snackbar.make(bind.multiCharacterSelectorRoot, "Különböző karaktereket válasszatok!", Snackbar.LENGTH_LONG).show()
     }
 
-    override fun onSelect(playerName: String, characterName: String, tokenSource: Int) {
+    override fun onSelect(playerName: String, characterName: String) {
         lifecycle.launch(Dispatchers.IO) {
-            retrofit.cluedo.notifyCharacterSelected(channelName, playerName, characterName, tokenSource)
+            retrofit.cluedo.notifyCharacterSelected(channelName, playerName, characterName)
         }
     }
 

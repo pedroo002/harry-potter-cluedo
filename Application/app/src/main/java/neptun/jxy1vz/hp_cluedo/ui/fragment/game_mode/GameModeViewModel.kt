@@ -2,9 +2,16 @@ package neptun.jxy1vz.hp_cluedo.ui.fragment.game_mode
 
 import android.content.Context
 import androidx.databinding.BaseObservable
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_game_mode.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentGameModeBinding
+import neptun.jxy1vz.hp_cluedo.domain.util.isOnline
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
 class GameModeViewModel(private val bind: FragmentGameModeBinding, private val context: Context, private val listener: ViewModelListener) : BaseObservable() {
@@ -12,18 +19,49 @@ class GameModeViewModel(private val bind: FragmentGameModeBinding, private val c
     private var gameMode = ""
     private var playerCount = 0
 
+    private lateinit var single: String
+    private lateinit var singleSelected: String
+    private lateinit var multi: String
+    private lateinit var multiSelected: String
+
+    private lateinit var count3: String
+    private lateinit var count4: String
+    private lateinit var count5: String
+    private lateinit var count3Selected: String
+    private lateinit var count4Selected: String
+    private lateinit var count5Selected: String
+
+    init {
+        GlobalScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context).assetDao().apply {
+                single = getAssetByTag("resources/menu/other/singleplayer.png")!!.url
+                multi = getAssetByTag("resources/menu/other/multiplayer.png")!!.url
+                singleSelected = getAssetByTag("resources/menu/other/singleplayer_selected.png")!!.url
+                multiSelected = getAssetByTag("resources/menu/other/multiplayer_selected.png")!!.url
+                count3 = getAssetByTag("resources/menu/other/count3.png")!!.url
+                count4 = getAssetByTag("resources/menu/other/count4.png")!!.url
+                count5 = getAssetByTag("resources/menu/other/count5.png")!!.url
+                count3Selected = getAssetByTag("resources/menu/other/count3selected.png")!!.url
+                count4Selected = getAssetByTag("resources/menu/other/count4selected.png")!!.url
+                count5Selected = getAssetByTag("resources/menu/other/count5selected.png")!!.url
+            }
+        }
+    }
+
     fun selectPlayerMode(mode: Int) {
+        if (!this::multiSelected.isInitialized)
+            return
         gameMode = context.resources.getStringArray(R.array.playmodes)[mode]
         bind.gameMode = gameMode
 
         when (mode) {
             0 -> {
-                bind.gameModeRoot.ivSinglePlayer.setImageResource(R.drawable.singleplayer_selected)
-                bind.gameModeRoot.ivMultiPlayer.setImageResource(R.drawable.multiplayer)
+                loadUrlImageIntoImageView(singleSelected, context, bind.gameModeRoot.ivSinglePlayer)
+                loadUrlImageIntoImageView(multi, context, bind.gameModeRoot.ivMultiPlayer)
             }
             1 -> {
-                bind.gameModeRoot.ivSinglePlayer.setImageResource(R.drawable.singleplayer)
-                bind.gameModeRoot.ivMultiPlayer.setImageResource(R.drawable.multiplayer_selected)
+                loadUrlImageIntoImageView(single, context, bind.gameModeRoot.ivSinglePlayer)
+                loadUrlImageIntoImageView(multiSelected, context, bind.gameModeRoot.ivMultiPlayer)
             }
         }
 
@@ -32,23 +70,25 @@ class GameModeViewModel(private val bind: FragmentGameModeBinding, private val c
     }
 
     fun selectPlayerCount(count: Int) {
-        playerCount = count
+        if (!this::count5Selected.isInitialized)
+            return
 
+        playerCount = count
         when (count) {
             3 -> {
-                bind.gameModeRoot.ivPlayerCount3.setImageResource(R.drawable.count3selected)
-                bind.gameModeRoot.ivPlayerCount4.setImageResource(R.drawable.count4)
-                bind.gameModeRoot.ivPlayerCount5.setImageResource(R.drawable.count5)
+                loadUrlImageIntoImageView(count3Selected, context, bind.gameModeRoot.ivPlayerCount3)
+                loadUrlImageIntoImageView(count4, context, bind.gameModeRoot.ivPlayerCount4)
+                loadUrlImageIntoImageView(count5, context, bind.gameModeRoot.ivPlayerCount5)
             }
             4 -> {
-                bind.gameModeRoot.ivPlayerCount3.setImageResource(R.drawable.count3)
-                bind.gameModeRoot.ivPlayerCount4.setImageResource(R.drawable.count4selected)
-                bind.gameModeRoot.ivPlayerCount5.setImageResource(R.drawable.count5)
+                loadUrlImageIntoImageView(count3, context, bind.gameModeRoot.ivPlayerCount3)
+                loadUrlImageIntoImageView(count4Selected, context, bind.gameModeRoot.ivPlayerCount4)
+                loadUrlImageIntoImageView(count5, context, bind.gameModeRoot.ivPlayerCount5)
             }
             5 -> {
-                bind.gameModeRoot.ivPlayerCount3.setImageResource(R.drawable.count3)
-                bind.gameModeRoot.ivPlayerCount4.setImageResource(R.drawable.count4)
-                bind.gameModeRoot.ivPlayerCount5.setImageResource(R.drawable.count5selected)
+                loadUrlImageIntoImageView(count3, context, bind.gameModeRoot.ivPlayerCount3)
+                loadUrlImageIntoImageView(count4, context, bind.gameModeRoot.ivPlayerCount4)
+                loadUrlImageIntoImageView(count5Selected, context, bind.gameModeRoot.ivPlayerCount5)
             }
         }
 
@@ -57,6 +97,10 @@ class GameModeViewModel(private val bind: FragmentGameModeBinding, private val c
     }
 
     fun setGameMode() {
+        if (gameMode == context.resources.getStringArray(R.array.playmodes)[1] && !isOnline()) {
+            Snackbar.make(bind.root, context.resources.getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG).show()
+            return
+        }
         val pref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
         val editor = pref.edit()
         editor.putString(context.resources.getString(R.string.play_mode_key), gameMode)

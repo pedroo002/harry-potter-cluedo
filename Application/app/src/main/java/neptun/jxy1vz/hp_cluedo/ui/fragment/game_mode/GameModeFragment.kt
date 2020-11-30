@@ -6,8 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentGameModeBinding
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.activity.menu.MenuListener
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.hp_cluedo.ui.fragment.channel.root.ChannelRootFragment
@@ -44,7 +50,23 @@ class GameModeFragment : Fragment(), ViewModelListener,
         savedInstanceState: Bundle?
     ): View? {
         fragmentGameModeBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_game_mode, container, false)
-        fragmentGameModeBinding.gameModeViewModel = GameModeViewModel(fragmentGameModeBinding, context!!, this)
+        lifecycleScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context!!).assetDao().apply {
+                val single = getAssetByTag("resources/menu/other/singleplayer.png")!!.url
+                val multi = getAssetByTag("resources/menu/other/multiplayer.png")!!.url
+                val count3 = getAssetByTag("resources/menu/other/count3.png")!!.url
+                val count4 = getAssetByTag("resources/menu/other/count4.png")!!.url
+                val count5 = getAssetByTag("resources/menu/other/count5.png")!!.url
+                withContext(Dispatchers.Main) {
+                    loadUrlImageIntoImageView(single, context!!, fragmentGameModeBinding.ivSinglePlayer)
+                    loadUrlImageIntoImageView(multi, context!!, fragmentGameModeBinding.ivMultiPlayer)
+                    loadUrlImageIntoImageView(count3, context!!, fragmentGameModeBinding.ivPlayerCount3)
+                    loadUrlImageIntoImageView(count4, context!!, fragmentGameModeBinding.ivPlayerCount4)
+                    loadUrlImageIntoImageView(count5, context!!, fragmentGameModeBinding.ivPlayerCount5)
+                    fragmentGameModeBinding.gameModeViewModel = GameModeViewModel(fragmentGameModeBinding, context!!, this@GameModeFragment)
+                }
+            }
+        }
         return fragmentGameModeBinding.root
     }
 

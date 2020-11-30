@@ -45,10 +45,12 @@ class IncriminationFragment : Fragment(), IncriminationViewModel.IncriminationDi
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        fragmentIncriminationBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_incrimination, container, false)
-        val roomName = gameModels.roomList[roomId].name
-        fragmentIncriminationBinding.incriminationViewModel = IncriminationViewModel(fragmentIncriminationBinding, context!!, roomName, this)
+        fragmentIncriminationBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_incrimination, container, false)
         fragmentIncriminationBinding.btnSkip.isEnabled = !MapViewModel.userHasToIncriminate
+        val roomName = gameModels.roomList[roomId].name
+        fragmentIncriminationBinding.incriminationViewModel =
+            IncriminationViewModel(fragmentIncriminationBinding, context!!, roomName, this)
         return fragmentIncriminationBinding.root
     }
 

@@ -11,9 +11,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentEndOfGameBinding
 import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.*
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
@@ -27,8 +29,21 @@ class EndOfGameViewModel(
     private var title = ""
     private var goodSolution = true
 
+    private lateinit var roomTokens: List<String>
+    private lateinit var toolTokens: List<String>
+    private lateinit var suspectTokens: List<String>
+
     init {
         GlobalScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context).assetDao().apply {
+                roomTokens =
+                    getAssetsByPrefix(AssetPrefixes.MYSTERY_ROOM_TOKENS.string())!!.map { assetDBmodel -> assetDBmodel.url }
+                toolTokens =
+                    getAssetsByPrefix(AssetPrefixes.MYSTERY_TOOL_TOKENS.string())!!.map { assetDBmodel -> assetDBmodel.url }
+                suspectTokens =
+                    getAssetsByPrefix(AssetPrefixes.MYSTERY_SUSPECT_TOKENS.string())!!.map { assetDBmodel -> assetDBmodel.url }
+            }
+
             val player = MapViewModel.playerHandler.getPlayerById(suspect.playerId)
             val playerName =
                 if (MapViewModel.isGameModeMulti()) CluedoDatabase.getInstance(context).playerDao()
@@ -38,10 +53,12 @@ class EndOfGameViewModel(
             val solution = MapViewModel.gameModels.gameSolution.map { card -> card.name }
 
             withContext(Dispatchers.Main) {
-                bind.endOfGameRoot.ivPlayer.setImageResource(playerRes)
+                loadUrlImageIntoImageView(playerRes, context, bind.endOfGameRoot.ivPlayer)
 
                 title = when {
-                    solution.contains(suspect.suspect) && solution.contains(suspect.room) && solution.contains(suspect.tool) -> {
+                    solution.contains(suspect.suspect) && solution.contains(suspect.room) && solution.contains(
+                        suspect.tool
+                    ) -> {
                         if (suspect.playerId != MapViewModel.mPlayerId) "$playerName ${
                             context.resources.getString(
                                 R.string.someone_solved_the_mystery
@@ -50,7 +67,11 @@ class EndOfGameViewModel(
                     }
                     else -> {
                         goodSolution = false
-                        if (suspect.playerId != MapViewModel.mPlayerId) "$playerName ${context.resources.getString(R.string.wrong_solution)}" else MapViewModel.mContext!!.resources.getString(R.string.wrong_solution_self_message)
+                        if (suspect.playerId != MapViewModel.mPlayerId) "$playerName ${
+                            context.resources.getString(
+                                R.string.wrong_solution
+                            )
+                        }" else MapViewModel.mContext!!.resources.getString(R.string.wrong_solution_self_message)
                     }
                 }
                 notifyChange()
@@ -71,17 +92,17 @@ class EndOfGameViewModel(
                     bind.endOfGameRoot.tvTitle.setTextColor(Color.GREEN)
                     solution.forEach { solutionParameter ->
                         when {
-                            suspectList.contains(solutionParameter) -> bind.endOfGameRoot.ivSuspectToken.setImageResource(
-                                suspectTokens[suspectList.indexOf(solutionParameter)]
+                            suspectList.contains(solutionParameter) -> loadUrlImageIntoImageView(
+                                suspectTokens[suspectList.indexOf(solutionParameter) * 2],
+                                context,
+                                bind.endOfGameRoot.ivSuspectToken
                             )
-                            toolList.contains(solutionParameter) -> bind.endOfGameRoot.ivToolToken.setImageResource(
-                                toolTokens[toolList.indexOf(solutionParameter)]
+                            toolList.contains(solutionParameter) -> loadUrlImageIntoImageView(
+                                toolTokens[toolList.indexOf(solutionParameter) * 2],
+                                context,
+                                bind.endOfGameRoot.ivToolToken
                             )
-                            else -> bind.endOfGameRoot.ivRoomToken.setImageResource(
-                                roomTokens[roomList.indexOf(
-                                    solutionParameter
-                                )]
-                            )
+                            else -> loadUrlImageIntoImageView(roomTokens[roomList.indexOf(solutionParameter) * 2], context, bind.endOfGameRoot.ivRoomToken)
                         }
                     }
                 } else {
@@ -91,42 +112,26 @@ class EndOfGameViewModel(
                         when {
                             suspectList.contains(solutionParameter) -> correctSuspect.suspect =
                                 solutionParameter
-                            toolList.contains(solutionParameter) -> correctSuspect.tool = solutionParameter
+                            toolList.contains(solutionParameter) -> correctSuspect.tool =
+                                solutionParameter
                             else -> correctSuspect.room = solutionParameter
                         }
                     }
 
-                    bind.endOfGameRoot.ivSuspectToken.setImageResource(
-                        suspectTokensBW[suspectList.indexOf(
-                            suspect.suspect
-                        )]
-                    )
-                    bind.endOfGameRoot.ivToolToken.setImageResource(toolTokensBW[toolList.indexOf(suspect.tool)])
-                    bind.endOfGameRoot.ivRoomToken.setImageResource(roomTokensBW[roomList.indexOf(suspect.room)])
+                    loadUrlImageIntoImageView(suspectTokens[suspectList.indexOf(suspect.suspect) * 2 + 1], context, bind.endOfGameRoot.ivSuspectToken)
+                    loadUrlImageIntoImageView(toolTokens[toolList.indexOf(suspect.tool) * 2 + 1], context, bind.endOfGameRoot.ivToolToken)
+                    loadUrlImageIntoImageView(roomTokens[roomList.indexOf(suspect.room) * 2 + 1], context, bind.endOfGameRoot.ivRoomToken)
 
                     if (!MapViewModel.isGameModeMulti()) {
                         bind.endOfGameRoot.tvGoodSolution.text =
                             context.getString(R.string.the_correct_solution)
-                        bind.endOfGameRoot.ivGoodSuspectToken.setImageResource(
-                            suspectTokens[suspectList.indexOf(
-                                correctSuspect.suspect
-                            )]
-                        )
-                        bind.endOfGameRoot.ivGoodToolToken.setImageResource(
-                            toolTokens[toolList.indexOf(
-                                correctSuspect.tool
-                            )]
-                        )
-                        bind.endOfGameRoot.ivGoodRoomToken.setImageResource(
-                            roomTokens[roomList.indexOf(
-                                correctSuspect.room
-                            )]
-                        )
+                        loadUrlImageIntoImageView(suspectTokens[suspectList.indexOf(correctSuspect.suspect) * 2], context, bind.endOfGameRoot.ivGoodSuspectToken)
+                        loadUrlImageIntoImageView(toolTokens[toolList.indexOf(correctSuspect.tool) * 2], context, bind.endOfGameRoot.ivGoodToolToken)
+                        loadUrlImageIntoImageView(roomTokens[roomList.indexOf(correctSuspect.room) * 2], context, bind.endOfGameRoot.ivGoodRoomToken)
 
                         (bind.ivGoodSuspectToken.layoutParams as ConstraintLayout.LayoutParams).bottomMargin =
                             layoutParams.bottomMargin
-                    }
-                    else
+                    } else
                         bind.endOfGameRoot.btnQuit.text = context.resources.getString(R.string.ok)
                 }
             }

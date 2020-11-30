@@ -48,6 +48,7 @@ class UnusedMysteryCardsFragment: Fragment(),
         fragmentUnusedMysteryCardsBinding.unusedCardsViewModel =
             UnusedMysteryCardsViewModel(
                 fragmentUnusedMysteryCardsBinding,
+                context!!,
                 cardList,
                 this
             )

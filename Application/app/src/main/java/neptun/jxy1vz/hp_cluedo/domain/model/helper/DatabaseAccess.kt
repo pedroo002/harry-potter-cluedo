@@ -1,8 +1,12 @@
 package neptun.jxy1vz.hp_cluedo.domain.model.helper
 
 import android.content.Context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.database.model.AssetDBmodel
 import neptun.jxy1vz.hp_cluedo.database.model.CardDBmodel
 import neptun.jxy1vz.hp_cluedo.database.model.CardType.PLAYER
 import neptun.jxy1vz.hp_cluedo.database.model.DarkHelperPairDBmodel
@@ -11,15 +15,27 @@ import neptun.jxy1vz.hp_cluedo.domain.model.card.*
 import neptun.jxy1vz.hp_cluedo.domain.util.Interactor
 import neptun.jxy1vz.hp_cluedo.domain.util.toDatabaseModel
 import neptun.jxy1vz.hp_cluedo.domain.util.toDomainModel
+import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.hp_cluedo.ui.activity.login.LoginActivityListener
 
 class DatabaseAccess(private val context: Context) {
 
-    private val interactor = Interactor(CluedoDatabase.getInstance(context))
+    val interactor =
+        Interactor(CluedoDatabase.getInstance(context), RetrofitInstance.getInstance(context))
 
     suspend fun resetCards() {
         val allCards = interactor.getCards()
         allCards!!.forEach { card ->
-            val clearCard = CardDBmodel(card.id, card.name, card.imageRes, card.versoRes, card.cardType, null, card.lossType, card.hpLoss)
+            val clearCard = CardDBmodel(
+                card.id,
+                card.name,
+                card.imageRes,
+                card.versoRes,
+                card.cardType,
+                null,
+                card.lossType,
+                card.hpLoss
+            )
             interactor.updateCards(clearCard)
         }
     }
@@ -33,11 +49,13 @@ class DatabaseAccess(private val context: Context) {
     }
 
     suspend fun getUnusedMysteryCards(): List<MysteryCard> {
-        return interactor.getCardBySuperType(context.getString(R.string.mystery_prefix))!!.map { cardDBmodel -> cardDBmodel.toDomainModel() as MysteryCard }
+        return interactor.getCardBySuperType(context.getString(R.string.mystery_prefix))!!
+            .map { cardDBmodel -> cardDBmodel.toDomainModel(context) as MysteryCard }
     }
 
     suspend fun getAllMysteryCards(): List<MysteryCard> {
-        return interactor.getAllMysteryCards()!!.map { cardDBmodel -> cardDBmodel.toDomainModel() as MysteryCard }
+        return interactor.getAllMysteryCards()!!
+            .map { cardDBmodel -> cardDBmodel.toDomainModel(context) as MysteryCard }
     }
 
     suspend fun getCardBySuperType(playerId: Int, prefix: String): Card? {
@@ -57,17 +75,17 @@ class DatabaseAccess(private val context: Context) {
                 )
             )
             return when (prefix) {
-                context.getString(R.string.dark_prefix) -> card.toDomainModel() as DarkCard
-                context.getString(R.string.helper_prefix) -> card.toDomainModel() as HelperCard
-                context.getString(R.string.mystery_prefix) -> card.toDomainModel() as MysteryCard
-                else -> card.toDomainModel() as PlayerCard
+                context.getString(R.string.dark_prefix) -> card.toDomainModel(context) as DarkCard
+                context.getString(R.string.helper_prefix) -> card.toDomainModel(context) as HelperCard
+                context.getString(R.string.mystery_prefix) -> card.toDomainModel(context) as MysteryCard
+                else -> card.toDomainModel(context) as PlayerCard
             }
         }
         return null
     }
 
     suspend fun getCardByName(name: String): Card? {
-        return interactor.getCardByName(name)?.toDomainModel()
+        return interactor.getCardByName(name)?.toDomainModel(context)
     }
 
     suspend fun getMysteryCardsForPlayers(playerIds: List<Int>): List<Pair<MysteryCard, Int>> {
@@ -75,15 +93,51 @@ class DatabaseAccess(private val context: Context) {
 
         val mcList = ArrayList<Pair<MysteryCard, Int>>()
 
-        val suspectSolution = interactor.getCardsByType(MysteryType.SUSPECT.toDatabaseModel().toString())!!.random()
-        val toolSolution = interactor.getCardsByType(MysteryType.TOOL.toDatabaseModel().toString())!!.random()
-        val roomSolution = interactor.getCardsByType(MysteryType.VENUE.toDatabaseModel().toString())!!.random()
-        mcList.add(Pair(suspectSolution.toDomainModel() as MysteryCard, -1))
-        mcList.add(Pair(toolSolution.toDomainModel() as MysteryCard, -1))
-        mcList.add(Pair(roomSolution.toDomainModel() as MysteryCard, -1))
-        interactor.updateCards(CardDBmodel(suspectSolution.id, suspectSolution.name, suspectSolution.imageRes, suspectSolution.versoRes, suspectSolution.cardType, -1, suspectSolution.lossType, suspectSolution.hpLoss))
-        interactor.updateCards(CardDBmodel(toolSolution.id, toolSolution.name, toolSolution.imageRes, toolSolution.versoRes, toolSolution.cardType, -1, toolSolution.lossType, toolSolution.hpLoss))
-        interactor.updateCards(CardDBmodel(roomSolution.id, roomSolution.name, roomSolution.imageRes, roomSolution.versoRes, roomSolution.cardType, -1, roomSolution.lossType, roomSolution.hpLoss))
+        val suspectSolution =
+            interactor.getCardsByType(MysteryType.SUSPECT.toDatabaseModel().toString())!!.random()
+        val toolSolution =
+            interactor.getCardsByType(MysteryType.TOOL.toDatabaseModel().toString())!!.random()
+        val roomSolution =
+            interactor.getCardsByType(MysteryType.VENUE.toDatabaseModel().toString())!!.random()
+        mcList.add(Pair(suspectSolution.toDomainModel(context) as MysteryCard, -1))
+        mcList.add(Pair(toolSolution.toDomainModel(context) as MysteryCard, -1))
+        mcList.add(Pair(roomSolution.toDomainModel(context) as MysteryCard, -1))
+        interactor.updateCards(
+            CardDBmodel(
+                suspectSolution.id,
+                suspectSolution.name,
+                suspectSolution.imageRes,
+                suspectSolution.versoRes,
+                suspectSolution.cardType,
+                -1,
+                suspectSolution.lossType,
+                suspectSolution.hpLoss
+            )
+        )
+        interactor.updateCards(
+            CardDBmodel(
+                toolSolution.id,
+                toolSolution.name,
+                toolSolution.imageRes,
+                toolSolution.versoRes,
+                toolSolution.cardType,
+                -1,
+                toolSolution.lossType,
+                toolSolution.hpLoss
+            )
+        )
+        interactor.updateCards(
+            CardDBmodel(
+                roomSolution.id,
+                roomSolution.name,
+                roomSolution.imageRes,
+                roomSolution.versoRes,
+                roomSolution.cardType,
+                -1,
+                roomSolution.lossType,
+                roomSolution.hpLoss
+            )
+        )
 
         val cardsPerPlayers = when (playerIds.size - 1) {
             3 -> 6
@@ -93,9 +147,22 @@ class DatabaseAccess(private val context: Context) {
         for (i in 1..cardsPerPlayers) {
             for (id in playerIds) {
                 if (id != -1) {
-                    val card = interactor.getCardBySuperType(context.resources.getString(R.string.mystery_prefix))!!.random()
-                    interactor.updateCards(CardDBmodel(card.id, card.name, card.imageRes, card.versoRes, card.cardType, id, card.lossType, card.hpLoss))
-                    mcList.add(Pair(card.toDomainModel() as MysteryCard, id))
+                    val card =
+                        interactor.getCardBySuperType(context.resources.getString(R.string.mystery_prefix))!!
+                            .random()
+                    interactor.updateCards(
+                        CardDBmodel(
+                            card.id,
+                            card.name,
+                            card.imageRes,
+                            card.versoRes,
+                            card.cardType,
+                            id,
+                            card.lossType,
+                            card.hpLoss
+                        )
+                    )
+                    mcList.add(Pair(card.toDomainModel(context) as MysteryCard, id))
                 }
             }
         }
@@ -108,7 +175,7 @@ class DatabaseAccess(private val context: Context) {
 
         val pairList = ArrayList<Pair<MysteryCard, Int>>()
         cards!!.forEach { card ->
-            pairList.add(Pair(card.toDomainModel() as MysteryCard, card.ownerId!!))
+            pairList.add(Pair(card.toDomainModel(context) as MysteryCard, card.ownerId!!))
         }
         return pairList
     }
@@ -119,38 +186,221 @@ class DatabaseAccess(private val context: Context) {
             val cardList: MutableList<HelperCard> = ArrayList()
             helperIds.forEach { id ->
                 val c = interactor.getCardById(id)
-                cardList.add(c!!.toDomainModel() as HelperCard)
+                cardList.add(c!!.toDomainModel(context) as HelperCard)
             }
             return cardList
         }
         return null
     }
 
-    suspend fun uploadDatabase() {
+    suspend fun uploadDatabase(listener: LoginActivityListener) {
+        val assetCount = interactor.getAssetCount()!!.count
+        withContext(Dispatchers.Main) {
+            listener.setMaxProgress(assetCount)
+        }
+
+        val playerCardUrls =
+            interactor.getPlayerCardsFromServer()!!.fileNames.map { path -> path.path }
+        val helperCardUrls =
+            interactor.getHelperCardsFromServer()!!.fileNames.map { path -> path.path }
+        val mysteryCardUrls =
+            interactor.getMysteryCardsFromServer()!!.fileNames.map { path -> path.path }
+        val darkCardUrls = interactor.getDarkCardsFromServer()!!.fileNames.map { path -> path.path }
+
+        playerCardUrls.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+
+        helperCardUrls.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+
+        mysteryCardUrls.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+
+        darkCardUrls.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+
         playerCards.forEach { card ->
-            val dbCard = CardDBmodel(0, card.name, card.imageRes, card.verso, PLAYER.string(), null, null, null)
+            val dbCard = CardDBmodel(
+                0,
+                card.name,
+                playerCardUrls[card.id * 2],
+                playerCardUrls.last(),
+                PLAYER.string(),
+                null,
+                null,
+                null
+            )
             interactor.insertIntoCards(dbCard)
+            delay(500)
         }
 
         helperCards.forEach { card ->
-            val dbCard = CardDBmodel(0, card.name, card.imageRes, card.verso, card.type.toDatabaseModel().string(), null, null, null)
+            val dbCard = CardDBmodel(
+                0,
+                card.name,
+                helperCardUrls[helperCards.indexOf(card)],
+                helperCardUrls.last(),
+                card.type.toDatabaseModel().string(),
+                null,
+                null,
+                null
+            )
             for (i in 0 until card.count)
                 interactor.insertIntoCards(dbCard)
+            delay(500)
         }
 
         mysteryCards.forEach { card ->
-            val dbCard = CardDBmodel(0, card.name, card.imageRes, card.verso, card.type.toDatabaseModel().string(), null, null, null)
+            val dbCard = CardDBmodel(
+                0,
+                card.name,
+                mysteryCardUrls[mysteryCards.indexOf(card)],
+                mysteryCardUrls.last(),
+                card.type.toDatabaseModel().string(),
+                null,
+                null,
+                null
+            )
             interactor.insertIntoCards(dbCard)
+            delay(500)
         }
 
         darkCards.forEach { card ->
-            val dbCard = CardDBmodel(0, card.name, card.imageRes, card.verso, card.type.toDatabaseModel().string(), null, card.lossType.toDatabaseModel().string(), card.hpLoss)
+            val dbCard = CardDBmodel(
+                0,
+                card.name,
+                darkCardUrls[darkCards.indexOf(card)],
+                darkCardUrls.last(),
+                card.type.toDatabaseModel().string(),
+                null,
+                card.lossType.toDatabaseModel().string(),
+                card.hpLoss
+            )
             interactor.insertIntoCards(dbCard)
-
+            delay(500)
             card.helperIds?.let {
                 card.helperIds!!.forEach { id ->
-                    interactor.insertIntoDarkHelperPairs(DarkHelperPairDBmodel(0, interactor.getCardIdByName(card.name)!!, interactor.getCardIdByName(helperCards[id].name)!!))
+                    interactor.insertIntoDarkHelperPairs(
+                        DarkHelperPairDBmodel(
+                            0,
+                            interactor.getCardIdByName(card.name)!!,
+                            interactor.getCardIdByName(helperCards[id].name)!!
+                        )
+                    )
                 }
+            }
+        }
+
+        interactor.getDarkMarkAssetsFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getDarkCardFragmentAssetsFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getDiceAssetsFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getDoorAssetsFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getFootprintsFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getGatewaysFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getNoteAssetsFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getMapRelatedAssetsFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getSelectionAssetsFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getTilesFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getMenuRelatedAssetsFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getTutorialAssetsFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getMysteryRoomTokensFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getMysteryToolTokensFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getMysterySuspectTokensFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
+            }
+        }
+        interactor.getPlayerTokensFromServer()!!.fileNames.map { path -> path.path }.forEach {
+            interactor.insertIntoAssets(AssetDBmodel(0, "${RetrofitInstance.URL}${it}", it))
+            withContext(Dispatchers.Main) {
+                listener.increaseProgress()
             }
         }
     }
@@ -160,233 +410,168 @@ class DatabaseAccess(private val context: Context) {
     private val playerCards = listOf(
         PlayerCard(
             0,
-            playerNameList[0],
-            R.drawable.szereplo_ginny,
-            R.drawable.szereplo_hatlap
+            playerNameList[0]
         ),
         PlayerCard(
             1,
-            playerNameList[1],
-            R.drawable.szereplo_harry,
-            R.drawable.szereplo_hatlap
+            playerNameList[1]
         ),
         PlayerCard(
             2,
-            playerNameList[2],
-            R.drawable.szereplo_hermione,
-            R.drawable.szereplo_hatlap
+            playerNameList[2]
         ),
         PlayerCard(
             3,
-            playerNameList[3],
-            R.drawable.szereplo_ron,
-            R.drawable.szereplo_hatlap
+            playerNameList[3]
         ),
         PlayerCard(
             4,
-            playerNameList[4],
-            R.drawable.szereplo_luna,
-            R.drawable.szereplo_hatlap
+            playerNameList[4]
         ),
         PlayerCard(
             5,
-            playerNameList[5],
-            R.drawable.szereplo_neville,
-            R.drawable.szereplo_hatlap
+            playerNameList[5]
         )
     )
 
-    private val helperCardNames: Array<String> = context.resources.getStringArray(R.array.helper_cards)
+    private val helperCardNames: Array<String> =
+        context.resources.getStringArray(R.array.helper_cards)
 
     private val helperCards = listOf(
         HelperCard(
             0,
             helperCardNames[0],
-            R.drawable.mento_bezoar,
-            R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             1,
             helperCardNames[1],
-            R.drawable.mento_sepru,
-            R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             2,
             helperCardNames[2],
-            R.drawable.mento_alsagdetektor,
-            R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             3,
             helperCardNames[3],
-            R.drawable.mento_onolto,
-            R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             4,
             helperCardNames[4],
-            R.drawable.mento_varangydudva,
-            R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             5,
             helperCardNames[5],
-            R.drawable.mento_lathatatlanna_tevo_kopeny,
-            R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             6,
             helperCardNames[6],
-            R.drawable.mento_mandragoras_gyogyszirup,
-            R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             7,
             helperCardNames[7],
-            R.drawable.mento_tekergok_terkepe,
-            R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             8,
             helperCardNames[8],
-            R.drawable.mento_zsupszkulcs,
-            R.drawable.mento_hatlap,
             HelperType.TOOL
         ),
         HelperCard(
             9,
             helperCardNames[9],
-            R.drawable.mento_felix_felicis,
-            R.drawable.mento_hatlap,
             HelperType.TOOL,
             3
         ),
         HelperCard(
             10,
             helperCardNames[10],
-            R.drawable.mento_albus_dumbledore,
-            R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             11,
             helperCardNames[11],
-            R.drawable.mento_dobby,
-            R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             12,
             helperCardNames[12],
-            R.drawable.mento_fawkes,
-            R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             13,
             helperCardNames[13],
-            R.drawable.mento_madam_pomfrey,
-            R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             14,
             helperCardNames[14],
-            R.drawable.mento_mcgalagony_professzor,
-            R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             15,
             helperCardNames[15],
-            R.drawable.mento_piton_professzor,
-            R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             16,
             helperCardNames[16],
-            R.drawable.mento_rubeus_hagrid,
-            R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             17,
             helperCardNames[17],
-            R.drawable.mento_weasley_ikrek,
-            R.drawable.mento_hatlap,
             HelperType.ALLY
         ),
         HelperCard(
             18,
             helperCardNames[18],
-            R.drawable.mento_capitulatus,
-            R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             19,
             helperCardNames[19],
-            R.drawable.mento_immobilus,
-            R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             20,
             helperCardNames[20],
-            R.drawable.mento_lumos,
-            R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             21,
             helperCardNames[21],
-            R.drawable.mento_petrificus_totalus,
-            R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             22,
             helperCardNames[22],
-            R.drawable.mento_protego,
-            R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             23,
             helperCardNames[23],
-            R.drawable.mento_commikulissimus,
-            R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             24,
             helperCardNames[24],
-            R.drawable.mento_stupor,
-            R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             25,
             helperCardNames[25],
-            R.drawable.mento_vingardium_leviosa,
-            R.drawable.mento_hatlap,
             HelperType.SPELL
         ),
         HelperCard(
             26,
             helperCardNames[26],
-            R.drawable.mento_alohomora,
-            R.drawable.mento_hatlap,
             HelperType.SPELL,
             5
         )
@@ -400,158 +585,116 @@ class DatabaseAccess(private val context: Context) {
         MysteryCard(
             0,
             toolNames[0],
-            R.drawable.rejtely_altatoital,
-            R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             1,
             toolNames[1],
-            R.drawable.rejtely_mandragora,
-            R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             2,
             toolNames[2],
-            R.drawable.rejtely_obstructo,
-            R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             3,
             toolNames[3],
-            R.drawable.rejtely_petrificus_totalus,
-            R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             4,
             toolNames[4],
-            R.drawable.rejtely_volt_nincs,
-            R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             5,
             toolNames[5],
-            R.drawable.rejtely_zsupszkulcs,
-            R.drawable.rejtely_hatlap,
             MysteryType.TOOL
         ),
         MysteryCard(
             6,
             suspectNames[0],
-            R.drawable.rejtely_bellatrix_lestrange,
-            R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             7,
             suspectNames[1],
-            R.drawable.rejtely_crak_es_monstro,
-            R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             8,
             suspectNames[2],
-            R.drawable.rejtely_draco_malfoy,
-            R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             9,
             suspectNames[3],
-            R.drawable.rejtely_lucius_malfoy,
-            R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             10,
             suspectNames[4],
-            R.drawable.rejtely_dolores_umbridge,
-            R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             11,
             suspectNames[5],
-            R.drawable.rejtely_peter_pettigrew,
-            R.drawable.rejtely_hatlap,
             MysteryType.SUSPECT
         ),
         MysteryCard(
             12,
             roomNames[0],
-            R.drawable.rejtely_bagolyhaz,
-            R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             13,
             roomNames[1],
-            R.drawable.rejtely_bajitaltan,
-            R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             14,
             roomNames[2],
-            R.drawable.rejtely_gyengelkedo,
-            R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             15,
             roomNames[3],
-            R.drawable.rejtely_joslastan,
-            R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             16,
             roomNames[4],
-            R.drawable.rejtely_konyvtar,
-            R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             17,
             roomNames[5],
-            R.drawable.rejtely_nagyterem,
-            R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             18,
             roomNames[6],
-            R.drawable.rejtely_serleg,
-            R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             19,
             roomNames[7],
-            R.drawable.rejtely_svk,
-            R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         ),
         MysteryCard(
             20,
             roomNames[8],
-            R.drawable.rejtely_szukseg_szobaja,
-            R.drawable.rejtely_hatlap,
             MysteryType.VENUE
         )
     )
 
+    private val darkCardNames = context.resources.getStringArray(R.array.dark_cards)
+
     private val darkCards = listOf(
         DarkCard(
             0,
-            context.getString(R.string.dark_card1),
-            R.drawable.sotet_pakli_corridor_1,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[0],
             DarkType.CORRIDOR,
             LossType.HP,
             15,
@@ -559,9 +702,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             1,
-            context.getString(R.string.dark_card2),
-            R.drawable.sotet_pakli_corridor_2,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[1],
             DarkType.CORRIDOR,
             LossType.HP,
             10,
@@ -569,9 +710,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             2,
-            context.getString(R.string.dark_card3),
-            R.drawable.sotet_pakli_corridor_3,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[2],
             DarkType.CORRIDOR,
             LossType.HP,
             20,
@@ -579,9 +718,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             3,
-            context.getString(R.string.dark_card4),
-            R.drawable.sotet_pakli_corridor_4,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[3],
             DarkType.CORRIDOR,
             LossType.HP,
             10,
@@ -589,9 +726,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             4,
-            context.getString(R.string.dark_card5),
-            R.drawable.sotet_pakli_corridor_5,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[4],
             DarkType.CORRIDOR,
             LossType.HP,
             20,
@@ -599,9 +734,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             5,
-            context.getString(R.string.dark_card6),
-            R.drawable.sotet_pakli_corridor_6,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[5],
             DarkType.CORRIDOR,
             LossType.HP,
             5,
@@ -609,9 +742,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             6,
-            context.getString(R.string.dark_card7),
-            R.drawable.sotet_pakli_corridor_7,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[6],
             DarkType.CORRIDOR,
             LossType.HP,
             15,
@@ -619,9 +750,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             7,
-            context.getString(R.string.dark_card8),
-            R.drawable.sotet_pakli_picker_1,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[7],
             DarkType.PLAYER_IN_TURN,
             LossType.HP,
             10,
@@ -629,9 +758,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             8,
-            context.getString(R.string.dark_card9),
-            R.drawable.sotet_pakli_picker_2,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[8],
             DarkType.PLAYER_IN_TURN,
             LossType.HP,
             15,
@@ -639,9 +766,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             9,
-            context.getString(R.string.dark_card10),
-            R.drawable.sotet_pakli_picker_3,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[9],
             DarkType.PLAYER_IN_TURN,
             LossType.HP,
             15,
@@ -649,9 +774,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             10,
-            context.getString(R.string.dark_card11),
-            R.drawable.sotet_pakli_picker_4,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[10],
             DarkType.PLAYER_IN_TURN,
             LossType.HP,
             15,
@@ -659,9 +782,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             11,
-            context.getString(R.string.dark_card12),
-            R.drawable.sotet_pakli_picker_5,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[11],
             DarkType.PLAYER_IN_TURN,
             LossType.HP,
             20,
@@ -669,9 +790,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             12,
-            context.getString(R.string.dark_card13),
-            R.drawable.sotet_pakli_bagolyhaz,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[12],
             DarkType.ROOM_BAGOLYHAZ,
             LossType.HP,
             15,
@@ -679,9 +798,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             13,
-            context.getString(R.string.dark_card14),
-            R.drawable.sotet_pakli_bajitaltan,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[13],
             DarkType.ROOM_BAJITALTAN,
             LossType.HP,
             25,
@@ -689,9 +806,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             14,
-            context.getString(R.string.dark_card15),
-            R.drawable.sotet_pakli_gyengelkedo,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[14],
             DarkType.ROOM_GYENGELKEDO,
             LossType.HP,
             15,
@@ -699,9 +814,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             15,
-            context.getString(R.string.dark_card16),
-            R.drawable.sotet_pakli_joslastan,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[15],
             DarkType.ROOM_JOSLASTAN,
             LossType.HP,
             5,
@@ -709,9 +822,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             16,
-            context.getString(R.string.dark_card17),
-            R.drawable.sotet_pakli_konyvtar,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[16],
             DarkType.ROOM_KONYVTAR,
             LossType.HP,
             10,
@@ -719,9 +830,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             17,
-            context.getString(R.string.dark_card18),
-            R.drawable.sotet_pakli_nagyterem,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[17],
             DarkType.ROOM_NAGYTEREM,
             LossType.HP,
             15,
@@ -729,18 +838,14 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             18,
-            context.getString(R.string.dark_card19),
-            R.drawable.sotet_pakli_serleg,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[18],
             DarkType.ROOM_SERLEG,
             LossType.HP,
             5
         ),
         DarkCard(
             19,
-            context.getString(R.string.dark_card20),
-            R.drawable.sotet_pakli_svk,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[19],
             DarkType.ROOM_SVK,
             LossType.HP,
             20,
@@ -748,9 +853,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             20,
-            context.getString(R.string.dark_card21),
-            R.drawable.sotet_pakli_szukseg_szobaja,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[20],
             DarkType.ROOM_SZUKSEG_SZOBAJA,
             LossType.HP,
             20,
@@ -758,18 +861,14 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             21,
-            context.getString(R.string.dark_card22),
-            R.drawable.sotet_pakli_all_players_1,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[21],
             DarkType.ALL_PLAYERS,
             LossType.ALLY,
             0
         ),
         DarkCard(
             22,
-            context.getString(R.string.dark_card23),
-            R.drawable.sotet_pakli_all_players_2,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[22],
             DarkType.ALL_PLAYERS,
             LossType.HP,
             15,
@@ -777,9 +876,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             23,
-            context.getString(R.string.dark_card24),
-            R.drawable.sotet_pakli_all_players_3,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[23],
             DarkType.ALL_PLAYERS,
             LossType.HP,
             10,
@@ -787,9 +884,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             24,
-            context.getString(R.string.dark_card25),
-            R.drawable.sotet_pakli_all_players_4,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[24],
             DarkType.ALL_PLAYERS,
             LossType.HP,
             5,
@@ -797,18 +892,14 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             25,
-            context.getString(R.string.dark_card26),
-            R.drawable.sotet_pakli_all_players_5,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[25],
             DarkType.ALL_PLAYERS,
             LossType.SPELL,
             0
         ),
         DarkCard(
             26,
-            context.getString(R.string.dark_card27),
-            R.drawable.sotet_pakli_all_players_6,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[26],
             DarkType.ALL_PLAYERS,
             LossType.HP,
             15,
@@ -816,9 +907,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             27,
-            context.getString(R.string.dark_card28),
-            R.drawable.sotet_pakli_all_players_7,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[27],
             DarkType.ALL_PLAYERS,
             LossType.HP,
             10,
@@ -826,9 +915,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             28,
-            context.getString(R.string.dark_card29),
-            R.drawable.sotet_pakli_all_players_8,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[28],
             DarkType.ALL_PLAYERS,
             LossType.HP,
             15,
@@ -836,9 +923,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             29,
-            context.getString(R.string.dark_card30),
-            R.drawable.sotet_pakli_all_players_9,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[29],
             DarkType.ALL_PLAYERS,
             LossType.HP,
             5,
@@ -846,18 +931,14 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             30,
-            context.getString(R.string.dark_card31),
-            R.drawable.sotet_pakli_all_players_10,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[30],
             DarkType.ALL_PLAYERS,
             LossType.TOOL,
             0
         ),
         DarkCard(
             31,
-            context.getString(R.string.dark_card32),
-            R.drawable.sotet_pakli_ferfiaknak,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[31],
             DarkType.GENDER_MEN,
             LossType.HP,
             20,
@@ -865,9 +946,7 @@ class DatabaseAccess(private val context: Context) {
         ),
         DarkCard(
             32,
-            context.getString(R.string.dark_card33),
-            R.drawable.sotet_pakli_noknek,
-            R.drawable.sotet_pakli_hatlap,
+            darkCardNames[32],
             DarkType.GENDER_WOMEN,
             LossType.HP,
             20,

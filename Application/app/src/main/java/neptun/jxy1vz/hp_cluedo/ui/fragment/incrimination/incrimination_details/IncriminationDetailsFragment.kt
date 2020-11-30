@@ -6,13 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentIncriminationDetailsBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.domain.util.toApiModel
 import neptun.jxy1vz.hp_cluedo.network.model.message.suspect.SuspectMessage
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
@@ -46,7 +50,19 @@ class IncriminationDetailsFragment : Fragment(), ViewModelListener {
         savedInstanceState: Bundle?
     ): View? {
         fragmentIncriminationDetailsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_incrimination_details, container, false)
-        fragmentIncriminationDetailsBinding.incriminationDetailsViewModel = IncriminationDetailsViewModel(fragmentIncriminationDetailsBinding, context!!, suspect, this)
+        lifecycleScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context!!).assetDao().apply {
+                val cross = getAssetByTag("resources/map/note/cross.png")!!.url
+                val skip = getAssetByTag("resources/map/other/skip.png")!!.url
+                val cardVerso = getAssetByTag("resources/cards/mystery/rejtely22_hatlap.jpg")!!.url
+                withContext(Dispatchers.Main) {
+                    loadUrlImageIntoImageView(cross, context!!, fragmentIncriminationDetailsBinding.ivCross)
+                    loadUrlImageIntoImageView(skip, context!!, fragmentIncriminationDetailsBinding.ivSkipBubble)
+                    loadUrlImageIntoImageView(cardVerso, context!!, fragmentIncriminationDetailsBinding.ivFloatingCard)
+                    fragmentIncriminationDetailsBinding.incriminationDetailsViewModel = IncriminationDetailsViewModel(fragmentIncriminationDetailsBinding, context!!, suspect, this@IncriminationDetailsFragment)
+                }
+            }
+        }
         return fragmentIncriminationDetailsBinding.root
     }
 

@@ -10,12 +10,16 @@ import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONS
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.animation.doOnEnd
 import kotlinx.android.synthetic.main.activity_map.view.*
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.database.model.string
 import neptun.jxy1vz.hp_cluedo.domain.model.DoorState
 import neptun.jxy1vz.hp_cluedo.domain.model.Position
 import neptun.jxy1vz.hp_cluedo.domain.model.State
 import neptun.jxy1vz.hp_cluedo.domain.model.boolean
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.diceList
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.finishedCardCheck
@@ -121,19 +125,28 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             imageView.visibility = View.GONE
     }
 
-    fun drawSelection(selRes: Int, row: Int, col: Int, playerId: Int) {
+    fun drawSelection(selRes: String, row: Int, col: Int, playerId: Int) {
         val targetPosition = Position(row, col)
 
         val selection = ImageView(mapRoot.mapLayout.context)
         selectionList.add(selection)
         selection.layoutParams = ConstraintLayout.LayoutParams(
-            ConstraintLayout.LayoutParams.WRAP_CONTENT,
-            ConstraintLayout.LayoutParams.WRAP_CONTENT
+            MATCH_CONSTRAINT,
+            MATCH_CONSTRAINT
         )
-        selection.setImageResource(selRes)
+        loadUrlImageIntoImageView(selRes, mContext!!, selection)
         selection.visibility = ImageView.VISIBLE
         setLayoutConstraintStart(selection, gameModels.cols[col])
         setLayoutConstraintTop(selection, gameModels.rows[row])
+        val roomId =map.mapHandler.stepInRoom(Position(row, col))
+        if (roomId != -1) {
+            setLayoutConstraintEnd(selection, gameModels.cols[gameModels.roomList[roomId].right + 1])
+            setLayoutConstraintBottom(selection, gameModels.rows[gameModels.roomList[roomId].bottom + 1])
+        }
+        else {
+            setLayoutConstraintEnd(selection, gameModels.cols[col + 1])
+            setLayoutConstraintBottom(selection, gameModels.rows[row + 1])
+        }
         selection.setOnClickListener {
             if (playerId != mPlayerId)
                 return@setOnClickListener
@@ -186,25 +199,30 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             }
         }
 
+        var footprints: List<String>
+        withContext(Dispatchers.IO) {
+            footprints = CluedoDatabase.getInstance(mContext!!).assetDao().getAssetsByPrefix(AssetPrefixes.FOOTPRINT.string())!!.map { assetDBmodel -> assetDBmodel.url }
+        }
+
         val forwardFeet = listOf(
-            R.drawable.footprints_forward1,
-            R.drawable.footprints_forward2,
-            R.drawable.footprints_standing_forward
+            footprints[2],
+            footprints[4],
+            footprints[10]
         )
         val backwardFeet = listOf(
-            R.drawable.footprints_backward1,
-            R.drawable.footprints_backward2,
-            R.drawable.footprints_standing_backward
+            footprints[0],
+            footprints[1],
+            footprints[9]
         )
         val leftFeet = listOf(
-            R.drawable.footprints_left1,
-            R.drawable.footprints_left2,
-            R.drawable.footprints_standing_left
+            footprints[5],
+            footprints[6],
+            footprints[11]
         )
         val rightFeet = listOf(
-            R.drawable.footprints_right1,
-            R.drawable.footprints_right2,
-            R.drawable.footprints_standing_right
+            footprints[7],
+            footprints[8],
+            footprints[12]
         )
 
         if (map.mapHandler.stepInRoom(start) != -1) {
@@ -238,7 +256,7 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
             var rowConstraintTop: Int
             var colConstraintRight: Int
             var rowConstraintBottom: Int
-            var imgRes = 0
+            var imgRes = ""
 
             if (path.indexOf(position) == 0) {
                 if (map.mapHandler.stepInRoom(start) != -1) {
@@ -356,9 +374,9 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
         finishPlayerStep(playerId, destination)
     }
 
-    private suspend fun drawFoot(imgRes: Int, top: Int, bottom: Int, left: Int, right: Int) {
+    private suspend fun drawFoot(imgRes: String, top: Int, bottom: Int, left: Int, right: Int) {
         val footImage = ImageView(mapRoot.mapLayout.context)
-        footImage.setImageResource(imgRes)
+        loadUrlImageIntoImageView(imgRes, mContext!!, footImage)
         val layoutParams =
             ConstraintLayout.LayoutParams(MATCH_CONSTRAINT, MATCH_CONSTRAINT)
         layoutParams.topToTop = map.gameModels.rows[top]
@@ -400,6 +418,14 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
         map.uiHandler.setLayoutConstraintTop(
             pair.second,
             gameModels.rows[map.playerHandler.getPlayerById(playerId).pos.row]
+        )
+        map.uiHandler.setLayoutConstraintEnd(
+            pair.second,
+            gameModels.cols[map.playerHandler.getPlayerById(playerId).pos.col + 1]
+        )
+        map.uiHandler.setLayoutConstraintBottom(
+            pair.second,
+            gameModels.rows[map.playerHandler.getPlayerById(playerId).pos.row + 1]
         )
 
         delay(500)
@@ -480,6 +506,20 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
         view.layoutParams = layoutParams
     }
 
+    fun setLayoutConstraintBottom(view: View, row: Int) {
+        val layoutParams: ConstraintLayout.LayoutParams =
+            view.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.bottomToBottom = row
+        view.layoutParams = layoutParams
+    }
+
+    fun setLayoutConstraintEnd(view: View, col: Int) {
+        val layoutParams: ConstraintLayout.LayoutParams =
+            view.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.endToEnd = col
+        view.layoutParams = layoutParams
+    }
+
     override fun onAnimationRepeat(animation: Animation?) {}
 
     override fun onAnimationEnd(animation: Animation?) {
@@ -508,64 +548,63 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
     }
 
     private fun processDice(dice1Value: Int, dice2Value: Int, hogwartsDice: Int) {
-        diceList[0].setImageResource(
-            when (dice1Value) {
-                1 -> R.drawable.dice1
-                2 -> R.drawable.dice2
-                3 -> R.drawable.dice3
-                4 -> R.drawable.dice4
-                5 -> R.drawable.dice5
-                else -> R.drawable.dice6
-            }
-        )
+        GlobalScope.launch(Dispatchers.IO) {
+            val diceUrlList = CluedoDatabase.getInstance(mContext!!).assetDao().getAssetsByPrefix(AssetPrefixes.DICE.string())!!.map { assetDBmodel -> assetDBmodel.url }
+            withContext(Dispatchers.Main) {
+                loadUrlImageIntoImageView(when (dice1Value) {
+                    1 -> diceUrlList[0]
+                    2 -> diceUrlList[1]
+                    3 -> diceUrlList[2]
+                    4 -> diceUrlList[3]
+                    5 -> diceUrlList[4]
+                    else -> diceUrlList[5]
+                }, mContext!!, diceList[0])
 
-        diceList[2].setImageResource(
-            when (dice2Value) {
-                1 -> R.drawable.dice1
-                2 -> R.drawable.dice2
-                3 -> R.drawable.dice3
-                4 -> R.drawable.dice4
-                5 -> R.drawable.dice5
-                else -> R.drawable.dice6
-            }
-        )
+                loadUrlImageIntoImageView(when (dice2Value) {
+                    1 -> diceUrlList[0]
+                    2 -> diceUrlList[1]
+                    3 -> diceUrlList[2]
+                    4 -> diceUrlList[3]
+                    5 -> diceUrlList[4]
+                    else -> diceUrlList[5]
+                }, mContext!!, diceList[2])
 
-        diceList[1].setImageResource(
-            when (hogwartsDice) {
-                1 -> R.drawable.helper_card
-                2 -> R.drawable.gryffindor
-                3 -> R.drawable.slytherin
-                4 -> R.drawable.hufflepuff
-                5 -> R.drawable.ravenclaw
-                else -> R.drawable.dark_mark
-            }
-        )
+                loadUrlImageIntoImageView(when (hogwartsDice) {
+                    1 -> diceUrlList[6]
+                    2 -> diceUrlList[7]
+                    3 -> diceUrlList[8]
+                    4 -> diceUrlList[9]
+                    5 -> diceUrlList[10]
+                    else -> diceUrlList[11]
+                }, mContext!!, diceList[1])
 
-        var cardType: DiceRollerViewModel.CardType? = null
-        var house: StateMachineHandler.HogwartsHouse? = null
-        when (hogwartsDice) {
-            1 -> cardType = DiceRollerViewModel.CardType.HELPER
-            2 -> house = StateMachineHandler.HogwartsHouse.GRYFFINDOR
-            3 -> house = StateMachineHandler.HogwartsHouse.SLYTHERIN
-            4 -> house = StateMachineHandler.HogwartsHouse.HUFFLEPUFF
-            5 -> house = StateMachineHandler.HogwartsHouse.RAVENCLAW
-            6 -> cardType = DiceRollerViewModel.CardType.DARK
-        }
+                var cardType: DiceRollerViewModel.CardType? = null
+                var house: StateMachineHandler.HogwartsHouse? = null
+                when (hogwartsDice) {
+                    1 -> cardType = DiceRollerViewModel.CardType.DARK
+                    2 -> cardType = DiceRollerViewModel.CardType.HELPER
+                    3 -> house = StateMachineHandler.HogwartsHouse.GRYFFINDOR
+                    4 -> house = StateMachineHandler.HogwartsHouse.HUFFLEPUFF
+                    5 -> house = StateMachineHandler.HogwartsHouse.RAVENCLAW
+                    6 -> house = StateMachineHandler.HogwartsHouse.SLYTHERIN
+                }
 
-        diceList.forEach { dice ->
-            (AnimatorInflater.loadAnimator(mContext!!, R.animator.disappear) as AnimatorSet).apply {
-                setTarget(dice)
-                start()
-                doOnEnd {
-                    dice.visibility = ImageView.GONE
-                    if (diceList.indexOf(dice) == 2) {
-                        map.gameSequenceHandler.pause(playerInTurn, dice1Value + dice2Value, house)
-                        cardType?.let {
-                            if (!isGameModeMulti())
-                                map.interactionHandler.getCard(playerInTurn, cardType)
-                        }
-                        house?.let {
-                            map.stateMachineHandler.setState(playerInTurn, house)
+                diceList.forEach { dice ->
+                    (AnimatorInflater.loadAnimator(mContext!!, R.animator.disappear) as AnimatorSet).apply {
+                        setTarget(dice)
+                        start()
+                        doOnEnd {
+                            dice.visibility = ImageView.GONE
+                            if (diceList.indexOf(dice) == 2) {
+                                map.gameSequenceHandler.pause(playerInTurn, dice1Value + dice2Value, house)
+                                cardType?.let {
+                                    if (!isGameModeMulti())
+                                        map.interactionHandler.getCard(playerInTurn, cardType)
+                                }
+                                house?.let {
+                                    map.stateMachineHandler.setState(playerInTurn, house)
+                                }
+                            }
                         }
                     }
                 }

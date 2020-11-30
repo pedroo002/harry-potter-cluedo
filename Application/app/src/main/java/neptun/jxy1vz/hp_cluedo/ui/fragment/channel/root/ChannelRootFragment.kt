@@ -6,8 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentChannelRootBinding
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.activity.menu.MenuActivity
 import neptun.jxy1vz.hp_cluedo.ui.activity.menu.MenuListener
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
@@ -40,7 +46,17 @@ class ChannelRootFragment : Fragment(), ViewModelListener {
     ): View? {
         fragmentChannelRootBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_channel_root, container, false)
         parentActivity = activity!! as MenuActivity
-        fragmentChannelRootBinding.channelRootViewModel = ChannelRootViewModel(fragmentChannelRootBinding, this)
+        lifecycleScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context!!).assetDao().apply {
+                val hostServer = getAssetByTag("resources/menu/other/host_server.png")!!.url
+                val joinServer = getAssetByTag("resources/menu/other/join_server.png")!!.url
+                withContext(Dispatchers.Main) {
+                    loadUrlImageIntoImageView(hostServer, context!!, fragmentChannelRootBinding.ivCreate)
+                    loadUrlImageIntoImageView(joinServer, context!!, fragmentChannelRootBinding.ivJoin)
+                    fragmentChannelRootBinding.channelRootViewModel = ChannelRootViewModel(fragmentChannelRootBinding, context!!, this@ChannelRootFragment)
+                }
+            }
+        }
         return fragmentChannelRootBinding.root
     }
 

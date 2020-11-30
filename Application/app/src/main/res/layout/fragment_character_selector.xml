@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/hogwarts_blur">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -12,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/characterSelectorRoot">
+        android:id="@+id/characterSelectorRoot"
+        android:background="@drawable/hogwarts_blur">
 
         <TextView
             android:layout_width="wrap_content"
@@ -34,7 +34,6 @@
             android:id="@+id/ivGinny"
             android:layout_marginStart="8dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/ginny_token_bw"
             app:layout_constraintWidth_percent="0.16"
             app:layout_constraintHeight_percent="0.1"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +44,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/ivHarry"
-            android:src="@drawable/harry_token_bw"
             android:layout_marginTop="10dp"
             app:layout_constraintWidth_percent="0.16"
             app:layout_constraintHeight_percent="0.1"
@@ -57,7 +55,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/ivHermione"
-            android:src="@drawable/hermione_token_bw"
             android:layout_marginTop="10dp"
             app:layout_constraintWidth_percent="0.16"
             app:layout_constraintHeight_percent="0.1"
@@ -69,7 +66,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/ivRon"
-            android:src="@drawable/ron_token_bw"
             android:layout_marginTop="10dp"
             app:layout_constraintWidth_percent="0.16"
             app:layout_constraintHeight_percent="0.1"
@@ -81,7 +77,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/ivLuna"
-            android:src="@drawable/luna_token_bw"
             android:layout_marginTop="10dp"
             app:layout_constraintWidth_percent="0.16"
             app:layout_constraintHeight_percent="0.1"
@@ -93,7 +88,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/ivNeville"
-            android:src="@drawable/neville_token_bw"
             android:layout_marginTop="10dp"
             app:layout_constraintWidth_percent="0.16"
             app:layout_constraintHeight_percent="0.1"
@@ -106,7 +100,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="20dp"
-            android:src="@drawable/szereplo_hatlap"
             app:layout_constraintBottom_toTopOf="@+id/btnStart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.7"

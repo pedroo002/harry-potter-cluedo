@@ -3,9 +3,15 @@ package neptun.jxy1vz.hp_cluedo.ui.activity.mystery_cards
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.ActivityMysteryCardBinding
 import neptun.jxy1vz.hp_cluedo.domain.model.helper.GameModels
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 
 class MysteryCardActivity : AppCompatActivity() {
 
@@ -18,8 +24,14 @@ class MysteryCardActivity : AppCompatActivity() {
         val gameModel = GameModels(applicationContext)
         playerId = intent.getIntExtra(applicationContext.resources.getString(R.string.player_id), 0)
 
-        activityMysteryCardBinding = DataBindingUtil.setContentView(this, R.layout.activity_mystery_card)
-        activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(gameModel, applicationContext, playerId, activityMysteryCardBinding, supportFragmentManager)
-        activityMysteryCardBinding.executePendingBindings()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val loadingScreen = CluedoDatabase.getInstance(applicationContext).assetDao().getAssetByTag("resources/menu/other/loading_screen.png")!!.url
+            withContext(Dispatchers.Main) {
+                activityMysteryCardBinding = DataBindingUtil.setContentView(this@MysteryCardActivity, R.layout.activity_mystery_card)
+                loadUrlImageIntoImageView(loadingScreen, applicationContext, activityMysteryCardBinding.ivLoadingScreen)
+                activityMysteryCardBinding.mysteryCardViewModel = MysteryCardViewModel(gameModel, applicationContext, playerId, activityMysteryCardBinding, supportFragmentManager)
+                activityMysteryCardBinding.executePendingBindings()
+            }
+        }
     }
 }

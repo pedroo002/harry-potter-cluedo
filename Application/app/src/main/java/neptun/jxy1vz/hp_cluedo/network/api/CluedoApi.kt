@@ -1,5 +1,7 @@
 package neptun.jxy1vz.hp_cluedo.network.api
 
+import neptun.jxy1vz.hp_cluedo.network.model.asset_list.AssetCount
+import neptun.jxy1vz.hp_cluedo.network.model.asset_list.AssetList
 import neptun.jxy1vz.hp_cluedo.network.model.channel.ChannelApiModel
 import neptun.jxy1vz.hp_cluedo.network.model.player.PlayerApiModel
 import okhttp3.RequestBody
@@ -65,7 +67,7 @@ interface CluedoApi {
     suspend fun notifyGameReady(@Query("channel_name") channelName: String)
 
     @POST("/character-selected")
-    suspend fun notifyCharacterSelected(@Query("channel_name") channelName: String, @Query("player_name") playerName: String, @Query("character_name") characterName: String, @Query("token_src") tokenImageSource: Int)
+    suspend fun notifyCharacterSelected(@Query("channel_name") channelName: String, @Query("player_name") playerName: String, @Query("character_name") characterName: String)
 
     @POST("/character-submit")
     suspend fun notifyCharacterSubmit(@Query("channel_name") channelName: String, @Query("player_name") playerName: String)
@@ -126,4 +128,69 @@ interface CluedoApi {
 
     @POST("/note-closed")
     suspend fun notifyNoteClosed(@Query("channel_name") channelName: String)
+
+    //------------------------------------ Assets
+
+    @GET("/assets/dark-cards")
+    suspend fun getDarkCardsFromServer(): AssetList?
+
+    @GET("/assets/helper-cards")
+    suspend fun getHelperCardsFromServer(): AssetList?
+
+    @GET("/assets/mystery-cards")
+    suspend fun getMysteryCardsFromServer(): AssetList?
+
+    @GET("/assets/player-cards")
+    suspend fun getPlayerCardsFromServer(): AssetList?
+
+    @GET("/assets/dark-mark")
+    suspend fun getDarkMarkAssetsFromServer(): AssetList?
+
+    @GET("/assets/map-dark-card")
+    suspend fun getDarkCardFragmentAssetsFromServer(): AssetList?
+
+    @GET("/assets/dice")
+    suspend fun getDiceAssetsFromServer(): AssetList?
+
+    @GET("/assets/door")
+    suspend fun getDoorAssetsFromServer(): AssetList?
+
+    @GET("/assets/footprint")
+    suspend fun getFootprintsFromServer(): AssetList?
+
+    @GET("/assets/gateway")
+    suspend fun getGatewaysFromServer(): AssetList?
+
+    @GET("/assets/note")
+    suspend fun getNoteAssetsFromServer(): AssetList?
+
+    @GET("/assets/other-map")
+    suspend fun getMapRelatedAssetsFromServer(): AssetList?
+
+    @GET("/assets/selection")
+    suspend fun getSelectionAssetsFromServer(): AssetList?
+
+    @GET("/assets/tile")
+    suspend fun getTilesFromServer(): AssetList?
+
+    @GET("/assets/other-menu")
+    suspend fun getMenuRelatedAssetsFromServer(): AssetList?
+
+    @GET("/assets/tutorial")
+    suspend fun getTutorialAssetsFromServer(): AssetList?
+
+    @GET("/assets/tokens/mystery-room")
+    suspend fun getMysteryRoomTokensFromServer(): AssetList?
+
+    @GET("/assets/tokens/mystery-tool")
+    suspend fun getMysteryToolTokensFromServer(): AssetList?
+
+    @GET("/assets/tokens/mystery-suspect")
+    suspend fun getMysterySuspectTokensFromServer(): AssetList?
+
+    @GET("/assets/tokens/player")
+    suspend fun getPlayerTokensFromServer(): AssetList?
+
+    @GET("/asset-count")
+    suspend fun getAssetCount(): AssetCount?
 }

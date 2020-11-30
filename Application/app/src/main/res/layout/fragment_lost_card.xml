@@ -8,6 +8,5 @@
         android:id="@+id/ivLostCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/card_helper"
-        android:src="@drawable/mento_hatlap" />
+        android:contentDescription="@string/card_helper" />
 </LinearLayout>
