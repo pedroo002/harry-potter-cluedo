@@ -1,5 +1,6 @@
 package neptun.jxy1vz.hp_cluedo.ui.fragment.character_selector.multi.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +13,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.hp_cluedo.R
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.characterTokenList
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.network.model.player.PlayerDomainModel
 
-class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, private val currentPlayer: String, private val listener: AdapterListener) : RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
+class PlayerListAdapter(private val context: Context, private val playerList: ArrayList<PlayerDomainModel>, private val playerTokens: List<String>, private val currentPlayer: String, private val listener: AdapterListener) : RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
 
     interface AdapterListener {
-        fun onSelect(playerName: String, characterName: String, tokenSource: Int)
+        fun onSelect(playerName: String, characterName: String)
         fun onReady(playerName: String)
         fun refreshSelection(idx: Int = -1)
     }
@@ -82,9 +83,9 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
             }
         }
 
-        fun setViewHolder(character: String, token: Int) {
+        fun setViewHolder(character: String, token: String) {
             characterName.text = character
-            characterImage.setImageResource(token)
+            loadUrlImageIntoImageView(token, context, characterImage)
         }
 
         fun setColor(color: Int) {
@@ -96,13 +97,20 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
         characterList = parent.context.resources.getStringArray(R.array.characters)
 
         val view = LayoutInflater.from(parent.context).inflate(R.layout.player_list_item, parent, false)
+        loadUrlImageIntoImageView(playerTokens.last(), context, view.findViewById(R.id.ivCharacterIcon))
+        loadUrlImageIntoImageView(playerTokens[0], context, view.findViewById(R.id.ivGinny))
+        loadUrlImageIntoImageView(playerTokens[2], context, view.findViewById(R.id.ivHarry))
+        loadUrlImageIntoImageView(playerTokens[4], context, view.findViewById(R.id.ivHermione))
+        loadUrlImageIntoImageView(playerTokens[6], context, view.findViewById(R.id.ivRon))
+        loadUrlImageIntoImageView(playerTokens[8], context, view.findViewById(R.id.ivLuna))
+        loadUrlImageIntoImageView(playerTokens[10], context, view.findViewById(R.id.ivNeville))
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.playerName.text = playerList[position].playerName
         holder.characterName.text = ""
-        holder.characterImage.setImageResource(R.drawable.szereplo_token)
+        loadUrlImageIntoImageView(playerTokens.last(), context, holder.characterImage)
 
     }
 
@@ -112,7 +120,7 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
         else {
             val payload = payloads[0] as ArrayList<*>
             if (payload.size > 1)
-                holder.setViewHolder(payload[0].toString(), payload[1].toString().toInt())
+                holder.setViewHolder(payload[0].toString(), payload[1].toString())
             else
                 holder.setColor(payload[0].toString().toInt())
         }
@@ -123,24 +131,24 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
     private fun doSelection(idx: Int, tvChar: TextView, ivChar: ImageView, pos: Int, tokenImages: List<ImageView>, listItem: ImageView) {
         tvChar.text = characterList[idx]
         tvChar.visibility = TextView.VISIBLE
-        ivChar.setImageResource(characterTokenList[idx])
+        loadUrlImageIntoImageView(playerTokens[idx * 2], context, ivChar)
         playerList[pos].playerId = tokenImages.indexOf(listItem)
         playerList[pos].selectedCharacter = tvChar.text.toString()
 
-        listener.onSelect(currentPlayer, tvChar.text.toString(), characterTokenList[idx])
+        listener.onSelect(currentPlayer, tvChar.text.toString())
     }
 
     fun setReady() {
         ready = true
     }
 
-    fun updatePlayerSelection(playerName: String, characterName: String, token: Int) {
+    fun updatePlayerSelection(playerName: String, characterName: String, token: String) {
         val item = playerList.find { player -> player.playerName == playerName }!!
         item.selectedCharacter = characterName
         item.playerId = characterList.indexOf(characterName)
         val payloads: MutableList<String> = ArrayList()
         payloads.add(characterName)
-        payloads.add(token.toString())
+        payloads.add(token)
         notifyItemRangeChanged(playerList.indexOf(item), 1, payloads)
     }
 
@@ -152,8 +160,8 @@ class PlayerListAdapter(private val playerList: ArrayList<PlayerDomainModel>, pr
         return playerList.find { player -> player.playerName == playerName }!!
     }
 
-    fun getTokenFromCharacterName(characterName: String): Int {
-        return characterTokenList[characterList.indexOf(characterName)]
+    fun getTokenFromCharacterName(characterName: String): String {
+        return playerTokens[characterList.indexOf(characterName) * 2]
     }
 
     fun areSelectionsDifferent(): Boolean {

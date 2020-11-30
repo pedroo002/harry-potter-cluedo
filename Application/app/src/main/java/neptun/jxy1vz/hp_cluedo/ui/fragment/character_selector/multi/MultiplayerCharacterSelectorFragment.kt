@@ -62,6 +62,8 @@ class MultiplayerCharacterSelectorFragment : Fragment(),
             container,
             false
         )
+        retrofit = RetrofitInstance.getInstance(context!!)
+        parentActivity = activity!! as MenuActivity
         fragmentMultiplayerCharacterSelectorBinding.characterSelectorViewModel =
             MultiplayerCharacterSelectorViewModel(
                 fragmentMultiplayerCharacterSelectorBinding,
@@ -72,10 +74,6 @@ class MultiplayerCharacterSelectorFragment : Fragment(),
                 this,
                 this
             )
-
-        retrofit = RetrofitInstance.getInstance(context!!)
-        parentActivity = activity!! as MenuActivity
-
         return fragmentMultiplayerCharacterSelectorBinding.root
     }
 

@@ -4,12 +4,16 @@ import android.content.Context
 import android.widget.ImageView
 import androidx.core.view.children
 import androidx.databinding.BaseObservable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentIncriminationBinding
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.suspectTokens
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.suspectTokensBW
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.toolTokens
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.toolTokensBW
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 
 class IncriminationViewModel(
     private val bind: FragmentIncriminationBinding,
@@ -22,6 +26,9 @@ class IncriminationViewModel(
         fun onIncriminationFinalization(tool: String, suspect: String)
         fun onSkip()
     }
+
+    private lateinit var toolTokens: List<String>
+    private lateinit var suspectTokens: List<String>
 
     private val toolList: ArrayList<ImageView> = ArrayList()
     private val suspectList: ArrayList<ImageView> = ArrayList()
@@ -46,22 +53,38 @@ class IncriminationViewModel(
     init {
         room = roomName
 
-        bind.layoutToolImages.children.asSequence().forEach { child ->
-            toolList.add(child as ImageView)
-        }
-        bind.layoutSuspectImages.children.asSequence().forEach { child ->
-            suspectList.add(child as ImageView)
+        GlobalScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context).assetDao().apply {
+                toolTokens =
+                    getAssetsByPrefix(AssetPrefixes.MYSTERY_TOOL_TOKENS.string())!!.map { assetDBmodel -> assetDBmodel.url }
+                suspectTokens =
+                    getAssetsByPrefix(AssetPrefixes.MYSTERY_SUSPECT_TOKENS.string())!!.map { assetDBmodel -> assetDBmodel.url }
+
+                withContext(Dispatchers.Main) {
+                    bind.layoutToolImages.children.asSequence().forEach { child ->
+                        val idx = bind.layoutToolImages.children.indexOf(child)
+                        loadUrlImageIntoImageView(toolTokens[idx * 2 + 1], context, (child as ImageView))
+                        toolList.add(child)
+                    }
+                    bind.layoutSuspectImages.children.asSequence().forEach { child ->
+                        val idx = bind.layoutSuspectImages.children.indexOf(child)
+                        loadUrlImageIntoImageView(suspectTokens[idx * 2 + 1], context, (child as ImageView))
+                        suspectList.add(child)
+                    }
+                }
+            }
         }
     }
 
     fun selectTool(idx: Int) {
         for (i in toolList.indices) {
             if (i == idx) {
-                toolList[i].setImageResource(toolTokens[i])
+                loadUrlImageIntoImageView(toolTokens[i * 2], context, toolList[i])
                 tool = context.resources.getStringArray(R.array.tools)[i]
             }
             else
-                toolList[i].setImageResource(toolTokensBW[i])
+                loadUrlImageIntoImageView(toolTokens[i * 2 + 1], context, toolList[i])
+
         }
 
         notifyChange()
@@ -72,11 +95,12 @@ class IncriminationViewModel(
     fun selectSuspect(idx: Int) {
         for (i in suspectList.indices) {
             if (i == idx) {
-                suspectList[i].setImageResource(suspectTokens[i])
+                loadUrlImageIntoImageView(suspectTokens[i * 2], context, suspectList[i])
                 suspect = context.resources.getStringArray(R.array.suspects)[i]
             }
             else
-                suspectList[i].setImageResource(suspectTokensBW[i])
+                loadUrlImageIntoImageView(suspectTokens[i * 2 + 1], context, suspectList[i])
+
         }
 
         notifyChange()

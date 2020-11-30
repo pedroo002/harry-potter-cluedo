@@ -136,7 +136,7 @@ class MapHandler(private val map: MapViewModel.Companion) {
                     for (y in 0..MapViewModel.ROWS) {
                         val current = Position(y, x)
                         if (stepInRoom(current) == -1 && !isFieldOccupied(current) && distances!![current]!! <= limit) {
-                            val sel = if (stepOnStar(current)) R.drawable.star_selection else R.drawable.field_selection
+                            val sel = if (stepOnStar(current)) map.gameModels.starSelection else map.gameModels.fieldSelection
                             map.uiHandler.drawSelection(sel, y, x, playerId)
                         }
                     }

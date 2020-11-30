@@ -4,6 +4,8 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.database.model.string
 import neptun.jxy1vz.hp_cluedo.domain.model.*
 import neptun.jxy1vz.hp_cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.hp_cluedo.domain.model.card.PlayerCard
@@ -14,11 +16,69 @@ class GameModels(private val context: Context) {
     lateinit var gameSolution: List<MysteryCard>
     lateinit var playerList: List<Player>
 
+    private val roomNameList: Array<String> = context.resources.getStringArray(R.array.rooms)
+    lateinit var roomList: List<Room>
+    lateinit var doorList: List<Door>
+    lateinit var fieldSelection: String
+    lateinit var starSelection: String
+
+    private suspend fun loadSelections() {
+        val selections = db.interactor.getAssetsByPrefix(AssetPrefixes.SELECTION.string())!!.map { assetDBmodel -> assetDBmodel.url }
+        roomList = listOf(
+            Room(0, roomNameList[7], 0, 6, 5, 0, selections[0]),
+            Room(1, roomNameList[5], 0, 15, 6, 9, selections[1]),
+            Room(2, roomNameList[2], 0, 24, 6, 18, selections[2]),
+            Room(3, roomNameList[4], 8, 6, 11, 0, selections[3]),
+            Room(
+                4,
+                context.resources.getString(R.string.room_dumbledore),
+                10,
+                14,
+                15,
+                10,
+                selections[4]
+            ),
+            Room(5, roomNameList[8], 9, 24, 15, 18, selections[5]),
+            Room(6, roomNameList[0], 13, 6, 16, 0, selections[6]),
+            Room(7, roomNameList[3], 19, 6, 24, 0, selections[7]),
+            Room(8, roomNameList[6], 18, 15, 24, 9, selections[8]),
+            Room(9, roomNameList[1], 18, 24, 24, 18, selections[9])
+        )
+
+        doorList = listOf(
+            Door(0, Position(1, 7), roomList[0]),
+            Door(1, Position(6, 1), roomList[0]),
+            Door(2, Position(5, 8), roomList[1]),
+            Door(3, Position(7, 12), roomList[1]),
+            Door(4, Position(5, 16), roomList[1]),
+            Door(5, Position(1, 17), roomList[2]),
+            Door(6, Position(7, 23), roomList[2]),
+            Door(7, Position(8, 7), roomList[3]),
+            Door(8, Position(12, 2), roomList[3]),
+            Door(9, Position(11, 9), roomList[4]),
+            Door(10, Position(14, 9), roomList[4]),
+            Door(11, Position(13, 15), roomList[4]),
+            Door(12, Position(8, 19), roomList[5]),
+            Door(13, Position(16, 19), roomList[5]),
+            Door(14, Position(12, 4), roomList[6]),
+            Door(15, Position(16, 7), roomList[6]),
+            Door(16, Position(18, 2), roomList[7]),
+            Door(17, Position(22, 7), roomList[7]),
+            Door(18, Position(17, 12), roomList[8]),
+            Door(19, Position(19, 8), roomList[8]),
+            Door(20, Position(19, 16), roomList[8]),
+            Door(21, Position(17, 22), roomList[9]),
+            Door(22, Position(21, 17), roomList[9])
+        )
+    }
+
     suspend fun eraseNotes() {
         db.eraseNotes()
     }
 
     suspend fun keepCurrentPlayers(): List<Player> {
+        loadSelections()
+
         val allPlayers = loadPlayers()
 
         val mysteryCards = db.getMysteryCardsOfPlayers()
@@ -57,7 +117,7 @@ class GameModels(private val context: Context) {
                 Player(
                     0,
                     playerCards[0],
-                    Position(0, 17),
+                    Position(17, 0),
                     R.id.ivBluePlayer,
                     Player.Gender.WOMAN
                 )
@@ -66,17 +126,25 @@ class GameModels(private val context: Context) {
                 Player(
                     1,
                     playerCards[1],
-                    Position(24, 17),
+                    Position(17, 24),
                     R.id.ivPurplePlayer,
                     Player.Gender.MAN
                 )
             )
-            listItems.add(Player(2, playerCards[2], Position(0, 7), R.id.ivRedPlayer, Player.Gender.WOMAN))
+            listItems.add(
+                Player(
+                    2,
+                    playerCards[2],
+                    Position(0, 7),
+                    R.id.ivRedPlayer,
+                    Player.Gender.WOMAN
+                )
+            )
             listItems.add(
                 Player(
                     3,
                     playerCards[3],
-                    Position(24, 7),
+                    Position(7, 24),
                     R.id.ivYellowPlayer,
                     Player.Gender.MAN
                 )
@@ -85,7 +153,7 @@ class GameModels(private val context: Context) {
                 Player(
                     4,
                     playerCards[4],
-                    Position(17, 24),
+                    Position(24, 17),
                     R.id.ivWhitePlayer,
                     Player.Gender.WOMAN
                 )
@@ -104,56 +172,6 @@ class GameModels(private val context: Context) {
         }
         return listItems
     }
-
-    val playerImageIdList = listOf(
-        R.id.ivBluePlayer,
-        R.id.ivPurplePlayer,
-        R.id.ivRedPlayer,
-        R.id.ivYellowPlayer,
-        R.id.ivWhitePlayer,
-        R.id.ivGreenPlayer
-    )
-
-    private val roomNameList: Array<String> = context.resources.getStringArray(R.array.rooms)
-
-    val roomList = listOf(
-        Room(0, roomNameList[7], 0, 6, 5, 0, R.drawable.selection_room_sotet_varazslatok_kivedese),
-        Room(1, roomNameList[5], 0, 15, 6, 9, R.drawable.selection_room_nagyterem),
-        Room(2, roomNameList[2], 0, 24, 6, 18, R.drawable.selection_room_gyengelkedo),
-        Room(3, roomNameList[4], 8, 6, 11, 0, R.drawable.selection_room_konyvtar),
-        Room(4, context.resources.getString(R.string.room_dumbledore), 10, 14, 15, 10, R.drawable.selection_room_dumbledore),
-        Room(5, roomNameList[8], 9, 24, 15, 18, R.drawable.selection_room_szukseg_szobaja),
-        Room(6, roomNameList[0], 13, 6, 16, 0, R.drawable.selection_room_bagolyhaz),
-        Room(7, roomNameList[3], 19, 6, 24, 0, R.drawable.selection_room_joslastan_terem),
-        Room(8, roomNameList[6], 18, 15, 24, 9, R.drawable.selection_room_serleg_terem),
-        Room(9, roomNameList[1], 18, 24, 24, 18, R.drawable.selection_room_bajitaltan_terem)
-    )
-
-    val doorList = listOf(
-        Door(0, Position(1, 7), roomList[0]),
-        Door(1, Position(6, 1), roomList[0]),
-        Door(2, Position(5, 8), roomList[1]),
-        Door(3, Position(7, 12), roomList[1]),
-        Door(4, Position(5, 16), roomList[1]),
-        Door(5, Position(1, 17), roomList[2]),
-        Door(6, Position(7, 23), roomList[2]),
-        Door(7, Position(8, 7), roomList[3]),
-        Door(8, Position(12, 2), roomList[3]),
-        Door(9, Position(11, 9), roomList[4]),
-        Door(10, Position(14, 9), roomList[4]),
-        Door(11, Position(13, 15), roomList[4]),
-        Door(12, Position(8, 19), roomList[5]),
-        Door(13, Position(16, 19), roomList[5]),
-        Door(14, Position(12, 4), roomList[6]),
-        Door(15, Position(16, 7), roomList[6]),
-        Door(16, Position(18, 2), roomList[7]),
-        Door(17, Position(22, 7), roomList[7]),
-        Door(18, Position(17, 12), roomList[8]),
-        Door(19, Position(19, 8), roomList[8]),
-        Door(20, Position(19, 16), roomList[8]),
-        Door(21, Position(17, 22), roomList[9]),
-        Door(22, Position(21, 17), roomList[9])
-    )
 
     val starList = listOf(
         Position(2, 8),

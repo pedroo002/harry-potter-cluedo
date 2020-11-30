@@ -7,10 +7,18 @@ import android.content.Intent
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
 import kotlinx.android.synthetic.main.fragment_character_selector.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentCharacterSelectorBinding
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.characterTokenList
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.characterTokenListBW
+import neptun.jxy1vz.hp_cluedo.domain.model.card.PlayerCard
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
+import neptun.jxy1vz.hp_cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.hp_cluedo.ui.activity.mystery_cards.MysteryCardActivity
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
@@ -27,9 +35,25 @@ class CharacterSelectorViewModel(private val bind: FragmentCharacterSelectorBind
         bind.ivNeville
     )
 
+    private lateinit var playerTokens: List<String>
+    private lateinit var playerCards: List<PlayerCard>
+
     init {
-        val scale = context.resources.displayMetrics.density
-        bind.ivCharacterCard.cameraDistance = 8000 * scale
+        GlobalScope.launch(Dispatchers.IO) {
+            playerTokens = CluedoDatabase.getInstance(context).assetDao().getAssetsByPrefix(AssetPrefixes.PLAYER_TOKENS.string())!!.map { assetDBmodel -> assetDBmodel.url }
+            playerCards = CluedoDatabase.getInstance(context).cardDao().getCardsByType(neptun.jxy1vz.hp_cluedo.database.model.CardType.PLAYER.string())!!.map { dbModel -> dbModel.toDomainModel(context) as PlayerCard }
+            withContext(Dispatchers.Main) {
+                loadUrlImageIntoImageView(playerTokens[1], context, bind.ivGinny)
+                loadUrlImageIntoImageView(playerTokens[3], context, bind.ivHarry)
+                loadUrlImageIntoImageView(playerTokens[5], context, bind.ivHermione)
+                loadUrlImageIntoImageView(playerTokens[7], context, bind.ivRon)
+                loadUrlImageIntoImageView(playerTokens[9], context, bind.ivLuna)
+                loadUrlImageIntoImageView(playerTokens[11], context, bind.ivNeville)
+                loadUrlImageIntoImageView(playerCards[0].verso, context, bind.ivCharacterCard)
+                val scale = context.resources.displayMetrics.density
+                bind.ivCharacterCard.cameraDistance = 8000 * scale
+            }
+        }
     }
 
     fun startGame() {
@@ -52,25 +76,17 @@ class CharacterSelectorViewModel(private val bind: FragmentCharacterSelectorBind
 
         for (i in 0..5) {
             if (i == id)
-                ivList[i].setImageResource(characterTokenList[i])
+                loadUrlImageIntoImageView(playerTokens[2 * i], context, ivList[i])
             else
-                ivList[i].setImageResource(characterTokenListBW[i])
+                loadUrlImageIntoImageView(playerTokens[2 * i + 1], context, ivList[i])
         }
 
-        bind.ivCharacterCard.setImageResource(R.drawable.szereplo_hatlap)
+        loadUrlImageIntoImageView(playerCards[id].verso, context, bind.ivCharacterCard)
         (AnimatorInflater.loadAnimator(context, R.animator.card_flip) as AnimatorSet).apply {
             setTarget(bind.ivCharacterCard)
             start()
             doOnEnd {
-                val img = when (id) {
-                    0 -> R.drawable.szereplo_ginny
-                    1 -> R.drawable.szereplo_harry
-                    2 -> R.drawable.szereplo_hermione
-                    3 -> R.drawable.szereplo_ron
-                    4 -> R.drawable.szereplo_luna
-                    else -> R.drawable.szereplo_neville
-                }
-                bind.ivCharacterCard.setImageResource(img)
+                loadUrlImageIntoImageView(playerCards[id].imageRes, context, bind.ivCharacterCard)
             }
         }
     }

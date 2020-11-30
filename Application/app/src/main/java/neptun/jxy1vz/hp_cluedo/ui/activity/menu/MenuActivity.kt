@@ -6,21 +6,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.databinding.ActivityMenuBinding
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.DatabaseAccess
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.network.model.player.PlayerRequest
-import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.retrofit
 import neptun.jxy1vz.hp_cluedo.ui.fragment.channel.create.CreateChannelFragment
 import neptun.jxy1vz.hp_cluedo.ui.fragment.channel.join.JoinChannelFragment
 import neptun.jxy1vz.hp_cluedo.ui.fragment.character_selector.multi.MultiplayerCharacterSelectorFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import kotlin.math.log
 
 class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
 
@@ -30,25 +25,9 @@ class MenuActivity : AppCompatActivity(), MenuViewModel.MenuListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val pref = applicationContext.getSharedPreferences(
-            getString(R.string.database_name),
-            Context.MODE_PRIVATE
-        )
-        val editor = pref.edit()
-        if (!pref.contains(getString(R.string.first_start_pref))) {
-            editor.putBoolean(getString(R.string.first_start_pref), true)
-            GlobalScope.launch(Dispatchers.IO) {
-                val db = DatabaseAccess(applicationContext)
-                db.uploadDatabase()
-            }
-        } else
-            editor.putBoolean(getString(R.string.first_start_pref), false)
-        editor.apply()
-
         retrofit = RetrofitInstance.getInstance(applicationContext)
 
         activityMenuBinding = DataBindingUtil.setContentView(this, R.layout.activity_menu)
-
         activityMenuBinding.menuViewModel = MenuViewModel(activityMenuBinding, supportFragmentManager, this)
     }
 

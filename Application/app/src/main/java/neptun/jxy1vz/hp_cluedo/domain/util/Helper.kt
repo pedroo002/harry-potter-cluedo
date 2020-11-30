@@ -1,7 +1,9 @@
 package neptun.jxy1vz.hp_cluedo.domain.util
 
+import android.content.Context
 import android.widget.ImageView
 import android.widget.NumberPicker
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_map.view.*
 import neptun.jxy1vz.hp_cluedo.domain.model.Player
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
@@ -33,4 +35,8 @@ fun removePlayer(player: Player) {
             newPlayerImagePairs.add(p)
     }
     playerImagePairs = newPlayerImagePairs
+}
+
+fun loadUrlImageIntoImageView(url: String, context: Context, iv: ImageView) {
+    Glide.with(context).load(url).into(iv)
 }

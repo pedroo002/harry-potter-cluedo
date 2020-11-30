@@ -1,14 +1,17 @@
 package neptun.jxy1vz.hp_cluedo.ui.fragment.cards.mystery
 
+import android.content.Context
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import kotlinx.android.synthetic.main.fragment_unused_mystery_cards.view.*
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentUnusedMysteryCardsBinding
 import neptun.jxy1vz.hp_cluedo.domain.model.card.MysteryCard
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
 class UnusedMysteryCardsViewModel(
     bind: FragmentUnusedMysteryCardsBinding,
+    context: Context,
     cardList: List<MysteryCard>,
     private val listener: ViewModelListener
 ) : BaseObservable() {
@@ -16,8 +19,8 @@ class UnusedMysteryCardsViewModel(
     init {
         when (cardList.size) {
             2 -> {
-                bind.unusedCardsRoot.ivCardLeft.setImageResource(cardList[0].imageRes)
-                bind.unusedCardsRoot.ivCardRight.setImageResource(cardList[1].imageRes)
+                loadUrlImageIntoImageView(cardList[0].imageRes, context, bind.unusedCardsRoot.ivCardLeft)
+                loadUrlImageIntoImageView(cardList[1].imageRes, context, bind.unusedCardsRoot.ivCardRight)
 
                 val newParamsLeft = bind.unusedCardsRoot.ivCardLeft.layoutParams as ConstraintLayout.LayoutParams
                 val newParamsRight = bind.unusedCardsRoot.ivCardRight.layoutParams as ConstraintLayout.LayoutParams
@@ -29,9 +32,9 @@ class UnusedMysteryCardsViewModel(
                 bind.unusedCardsRoot.ivCardRight.layoutParams = newParamsRight
             }
             3 -> {
-                bind.unusedCardsRoot.ivCardLeft.setImageResource(cardList[0].imageRes)
-                bind.unusedCardsRoot.ivCardCenter.setImageResource(cardList[1].imageRes)
-                bind.unusedCardsRoot.ivCardRight.setImageResource(cardList[2].imageRes)
+                loadUrlImageIntoImageView(cardList[0].imageRes, context, bind.unusedCardsRoot.ivCardLeft)
+                loadUrlImageIntoImageView(cardList[1].imageRes, context, bind.unusedCardsRoot.ivCardCenter)
+                loadUrlImageIntoImageView(cardList[2].imageRes, context, bind.unusedCardsRoot.ivCardRight)
             }
         }
     }

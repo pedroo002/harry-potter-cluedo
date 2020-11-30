@@ -6,9 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentOnBackPressedBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.DialogDismiss
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
@@ -36,8 +42,15 @@ class OnBackPressedFragment : Fragment(), ViewModelListener {
         savedInstanceState: Bundle?
     ): View? {
         fragmentOnBackPressedBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_on_back_pressed, container, false)
-        fragmentOnBackPressedBinding.viewModel = OnBackPressedViewModel(this)
-
+        lifecycleScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context!!).assetDao().apply {
+                val warning = getAssetByTag("resources/map/other/deathly_hallows_warning.png")!!.url
+                withContext(Dispatchers.Main) {
+                    loadUrlImageIntoImageView(warning, context!!, fragmentOnBackPressedBinding.ivWarning)
+                    fragmentOnBackPressedBinding.viewModel = OnBackPressedViewModel(this@OnBackPressedFragment)
+                }
+            }
+        }
         return fragmentOnBackPressedBinding.root
     }
 

@@ -19,12 +19,14 @@ import neptun.jxy1vz.hp_cluedo.databinding.FragmentNoteBinding
 import neptun.jxy1vz.hp_cluedo.domain.model.Note
 import neptun.jxy1vz.hp_cluedo.domain.model.Player
 import neptun.jxy1vz.hp_cluedo.domain.util.Interactor
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.domain.util.toDatabaseModel
+import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
-class NoteViewModel(context: Context, player: Player, private val bind: FragmentNoteBinding, private val listener: ViewModelListener) : BaseObservable() {
+class NoteViewModel(private val context: Context, player: Player, private val bind: FragmentNoteBinding, private val listener: ViewModelListener) : BaseObservable() {
 
-    private val interactor = Interactor(CluedoDatabase.getInstance(context))
+    private val interactor = Interactor(CluedoDatabase.getInstance(context), RetrofitInstance.getInstance(context))
     private val ownCards = player.mysteryCards
 
     private val suspectNames = context.resources.getStringArray(R.array.suspects)
@@ -38,18 +40,15 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
 
     private val noteList = ArrayList<Note>()
 
-    private val nameRes = mutableListOf(
-        R.drawable.gw,
-        R.drawable.hp,
-        R.drawable.hg,
-        R.drawable.rw,
-        R.drawable.ll,
-        R.drawable.nl
-    )
+    private lateinit var nameRes: MutableList<String>
+    private lateinit var frameRes: String
+    private lateinit var cross: String
+    private lateinit var tick: String
+    private lateinit var nameBackground: String
 
-    private val conclusionTypes = ArrayList<Int>()
+    private val conclusionTypes = ArrayList<String>()
 
-    private var ownName: Int
+    private lateinit var ownName: String
 
     private val names = ArrayList<ImageView>()
     private val conclusionList = ArrayList<ImageView>()
@@ -116,7 +115,7 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
             params.setMargins(0, 0, 20, 0)
             addImageToLayout(
                 frame,
-                R.drawable.frame,
+                frameRes,
                 params,
                 list[i],
                 cols[1],
@@ -139,6 +138,21 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
 
     init {
         GlobalScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context).assetDao().apply {
+                nameRes = mutableListOf(
+                    getAssetByTag("resources/map/note/gw.png")!!.url,
+                    getAssetByTag("resources/map/note/hp.png")!!.url,
+                    getAssetByTag("resources/map/note/hg.png")!!.url,
+                    getAssetByTag("resources/map/note/rw.png")!!.url,
+                    getAssetByTag("resources/map/note/ll.png")!!.url,
+                    getAssetByTag("resources/map/note/nl.png")!!.url
+                )
+                frameRes = getAssetByTag("resources/map/note/frame.png")!!.url
+                cross = getAssetByTag("resources/map/note/cross.png")!!.url
+                tick = getAssetByTag("resources/map/note/tick.png")!!.url
+                nameBackground = getAssetByTag("resources/map/other/name_background.png")!!.url
+            }
+
             val dbNotes = interactor.getNotes()
             withContext(Dispatchers.Main) {
                 dbNotes?.let {
@@ -180,138 +194,138 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
                         )
                     }
                 }
-            }
-        }
+                val nameList = context.resources.getStringArray(R.array.characters)
+                ownName = nameRes[nameList.indexOf(player.card.name)]
+                nameRes.remove(ownName)
 
-        val nameList = context.resources.getStringArray(R.array.characters)
-        ownName = nameRes[nameList.indexOf(player.card.name)]
-        nameRes.remove(ownName)
+                conclusionTypes.add(ownName)
+                conclusionTypes.add(cross)
+                conclusionTypes.add(tick)
 
-        conclusionTypes.add(ownName)
-        conclusionTypes.add(R.drawable.cross)
-        conclusionTypes.add(R.drawable.tick)
+                addFrames(rowsSuspects)
+                addFrames(rowsTools)
+                addFrames(rowsVenues)
 
-        addFrames(rowsSuspects)
-        addFrames(rowsTools)
-        addFrames(rowsVenues)
+                bind.svNotepad.noteLayout.ivNotepad.setOnTouchListener { _, event ->
+                    if (event?.action == MotionEvent.ACTION_DOWN) {
+                        val x = event.x
+                        val y = event.y
 
-        bind.svNotepad.noteLayout.ivNotepad.setOnTouchListener { _, event ->
-            if (event?.action == MotionEvent.ACTION_DOWN) {
-                val x = event.x
-                val y = event.y
+                        if (x >= cols[1].x) {
+                            var guideLineLeft: Guideline? = null
+                            var guideLineRight: Guideline? = null
+                            for (i in 0 until cols.lastIndex) {
+                                if (cols[i].x <= x && cols[i + 1].x >= x) {
+                                    guideLineLeft = cols[i]
+                                    guideLineRight = cols[i + 1]
+                                    break
+                                }
+                            }
 
-                if (x >= cols[1].x) {
-                    var guideLineLeft: Guideline? = null
-                    var guideLineRight: Guideline? = null
-                    for (i in 0 until cols.lastIndex) {
-                        if (cols[i].x <= x && cols[i + 1].x >= x) {
-                            guideLineLeft = cols[i]
-                            guideLineRight = cols[i + 1]
-                            break
+                            var guideLineTop: Guideline? = null
+                            var guideLineBottom: Guideline? = null
+                            if (y >= rowsSuspects[1].y && y <= rowsSuspects.last().y) {
+                                for (i in 0 until rowsSuspects.lastIndex) {
+                                    if (rowsSuspects[i].y <= y && rowsSuspects[i + 1].y >= y) {
+                                        guideLineTop = rowsSuspects[i]
+                                        guideLineBottom = rowsSuspects[i + 1]
+                                        break
+                                    }
+                                }
+                            } else if (y >= rowsTools[1].y && y <= rowsTools.last().y) {
+                                for (i in 0 until rowsTools.lastIndex) {
+                                    if (rowsTools[i].y <= y && rowsTools[i + 1].y >= y) {
+                                        guideLineTop = rowsTools[i]
+                                        guideLineBottom = rowsTools[i + 1]
+                                        break
+                                    }
+                                }
+                            } else if (y >= rowsVenues[1].y && y <= rowsVenues.last().y) {
+                                for (i in 0 until rowsVenues.lastIndex) {
+                                    if (rowsVenues[i].y <= y && rowsVenues[i + 1].y >= y) {
+                                        guideLineTop = rowsVenues[i]
+                                        guideLineBottom = rowsVenues[i + 1]
+                                        break
+                                    }
+                                }
+                            }
+
+                            guidelineTop = guideLineTop
+                            guidelineBottom = guideLineBottom
+                            guidelineLeft = guideLineLeft
+                            guidelineRight = guideLineRight
+                        }
+                        else {
+                            guidelineTop = null
+                            guidelineBottom = null
+                            guidelineLeft = null
+                            guidelineRight = null
                         }
                     }
+                    return@setOnTouchListener false
+                }
 
-                    var guideLineTop: Guideline? = null
-                    var guideLineBottom: Guideline? = null
-                    if (y >= rowsSuspects[1].y && y <= rowsSuspects.last().y) {
-                        for (i in 0 until rowsSuspects.lastIndex) {
-                            if (rowsSuspects[i].y <= y && rowsSuspects[i + 1].y >= y) {
-                                guideLineTop = rowsSuspects[i]
-                                guideLineBottom = rowsSuspects[i + 1]
-                                break
-                            }
-                        }
-                    } else if (y >= rowsTools[1].y && y <= rowsTools.last().y) {
-                        for (i in 0 until rowsTools.lastIndex) {
-                            if (rowsTools[i].y <= y && rowsTools[i + 1].y >= y) {
-                                guideLineTop = rowsTools[i]
-                                guideLineBottom = rowsTools[i + 1]
-                                break
-                            }
-                        }
-                    } else if (y >= rowsVenues[1].y && y <= rowsVenues.last().y) {
-                        for (i in 0 until rowsVenues.lastIndex) {
-                            if (rowsVenues[i].y <= y && rowsVenues[i + 1].y >= y) {
-                                guideLineTop = rowsVenues[i]
-                                guideLineBottom = rowsVenues[i + 1]
-                                break
-                            }
-                        }
+                bind.svNotepad.noteLayout.ivNotepad.setOnLongClickListener {
+                    if (guidelineTop != null && guidelineBottom != null && guidelineLeft != null && guidelineRight != null)
+                        showOptionsAbove(
+                            guidelineLeft!!,
+                            guidelineRight!!,
+                            guidelineTop!!,
+                            guidelineBottom!!,
+                            nameRes, NoteType.NAME
+                        )
+
+                    return@setOnLongClickListener true
+                }
+
+                nameRes.forEach { res ->
+                    val background = ImageView(bind.svNotepad.noteLayout.context)
+                    background.layoutParams = ConstraintLayout.LayoutParams(
+                        ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                        ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+                    )
+                    loadUrlImageIntoImageView(nameBackground, context, background)
+                    background.visibility = ImageView.GONE
+                    bind.svNotepad.noteLayout.addView(background)
+                    backgrounds.add(background)
+
+                    val name = ImageView(bind.svNotepad.noteLayout.context)
+                    name.layoutParams = ConstraintLayout.LayoutParams(
+                        ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                        ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+                    )
+                    loadUrlImageIntoImageView(res, context, name)
+                    name.visibility = ImageView.GONE
+                    bind.svNotepad.noteLayout.addView(name)
+                    names.add(name)
+                }
+
+                conclusionTypes.forEach { img ->
+                    val iv = ImageView(bind.svNotepad.noteLayout.context)
+                    val params = ConstraintLayout.LayoutParams(
+                        ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                        ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+                    )
+                    params.setMargins(0, 0, 20, 0)
+                    iv.layoutParams = params
+                    loadUrlImageIntoImageView(img, context, iv)
+                    iv.visibility = ImageView.GONE
+                    bind.svNotepad.noteLayout.addView(iv)
+                    conclusionList.add(iv)
+                }
+
+                ownCards.forEach { card ->
+                    val params = ConstraintLayout.LayoutParams(
+                        ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                        ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+                    )
+                    params.setMargins(0, 0, 20, 0)
+                    when {
+                        suspectNames.contains(card.name) -> noteInCell(ownName, cols[0], cols[1], rowsSuspects[suspectNames.indexOf(card.name) + 1], rowsSuspects[suspectNames.indexOf(card.name) + 2], params)
+                        toolNames.contains(card.name) -> noteInCell(ownName, cols[0], cols[1], rowsTools[toolNames.indexOf(card.name) + 1], rowsTools[toolNames.indexOf(card.name) + 2], params)
+                        else -> noteInCell(ownName, cols[0], cols[1], rowsVenues[roomNames.indexOf(card.name) + 1], rowsVenues[roomNames.indexOf(card.name) + 2], params)
                     }
-
-                    guidelineTop = guideLineTop
-                    guidelineBottom = guideLineBottom
-                    guidelineLeft = guideLineLeft
-                    guidelineRight = guideLineRight
                 }
-                else {
-                    guidelineTop = null
-                    guidelineBottom = null
-                    guidelineLeft = null
-                    guidelineRight = null
-                }
-            }
-            return@setOnTouchListener false
-        }
-        bind.svNotepad.noteLayout.ivNotepad.setOnLongClickListener {
-            if (guidelineTop != null && guidelineBottom != null && guidelineLeft != null && guidelineRight != null)
-                showOptionsAbove(
-                    guidelineLeft!!,
-                    guidelineRight!!,
-                    guidelineTop!!,
-                    guidelineBottom!!,
-                    nameRes, NoteType.NAME
-                )
-
-            return@setOnLongClickListener true
-        }
-
-        nameRes.forEach { res ->
-            val background = ImageView(bind.svNotepad.noteLayout.context)
-            background.layoutParams = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-            )
-            background.setImageResource(R.drawable.name_background)
-            background.visibility = ImageView.GONE
-            bind.svNotepad.noteLayout.addView(background)
-            backgrounds.add(background)
-
-            val name = ImageView(bind.svNotepad.noteLayout.context)
-            name.layoutParams = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-            )
-            name.setImageResource(res)
-            name.visibility = ImageView.GONE
-            bind.svNotepad.noteLayout.addView(name)
-            names.add(name)
-        }
-
-        conclusionTypes.forEach { img ->
-            val iv = ImageView(bind.svNotepad.noteLayout.context)
-            val params = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-            )
-            params.setMargins(0, 0, 20, 0)
-            iv.layoutParams = params
-            iv.setImageResource(img)
-            iv.visibility = ImageView.GONE
-            bind.svNotepad.noteLayout.addView(iv)
-            conclusionList.add(iv)
-        }
-
-        ownCards.forEach { card ->
-            val params = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-            )
-            params.setMargins(0, 0, 20, 0)
-            when {
-                suspectNames.contains(card.name) -> noteInCell(ownName, cols[0], cols[1], rowsSuspects[suspectNames.indexOf(card.name) + 1], rowsSuspects[suspectNames.indexOf(card.name) + 2], params)
-                toolNames.contains(card.name) -> noteInCell(ownName, cols[0], cols[1], rowsTools[toolNames.indexOf(card.name) + 1], rowsTools[toolNames.indexOf(card.name) + 2], params)
-                else -> noteInCell(ownName, cols[0], cols[1], rowsVenues[roomNames.indexOf(card.name) + 1], rowsVenues[roomNames.indexOf(card.name) + 2], params)
             }
         }
     }
@@ -321,7 +335,7 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
         right: Guideline,
         top: Guideline,
         bottom: Guideline,
-        optionList: List<Int>,
+        optionList: List<String>,
         type: NoteType
     ) {
         for (i in optionList.indices) {
@@ -369,7 +383,7 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
     }
 
     private fun noteInCell(
-        imgRes: Int,
+        imgRes: String,
         left: Guideline,
         right: Guideline,
         top: Guideline,
@@ -427,14 +441,14 @@ class NoteViewModel(context: Context, player: Player, private val bind: Fragment
 
     private fun addImageToLayout(
         image: ImageView,
-        imgRes: Int,
+        imgRes: String,
         layoutParams: ConstraintLayout.LayoutParams,
         constraintTop: Guideline,
         constraintRight: Guideline,
         constraintBottom: Guideline,
         constraintLeft: Guideline
     ) {
-        image.setImageResource(imgRes)
+        loadUrlImageIntoImageView(imgRes, context, image)
         image.layoutParams = layoutParams
         image.visibility = ImageView.VISIBLE
         setLayoutConstraintHorizontal(image, constraintLeft.id, constraintRight.id)

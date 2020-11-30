@@ -8,6 +8,7 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.domain.model.card.*
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.channelName
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.finishedCardCheck
@@ -87,7 +88,7 @@ class CardHandler(private val map: MapViewModel.Companion) {
             mContext!!.resources.displayMetrics.widthPixels / 3,
             3 * mContext!!.resources.displayMetrics.heightPixels / 4
         )
-        cardImage.setImageResource(card.imageRes)
+        loadUrlImageIntoImageView(card.imageRes, mContext!!, cardImage)
 
         map.uiHandler.setLayoutConstraintTop(cardImage, gameModels.rows[0])
         map.uiHandler.setLayoutConstraintStart(cardImage, gameModels.cols[0])

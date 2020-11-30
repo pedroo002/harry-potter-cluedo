@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/hogwarts_blur">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -17,7 +16,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/gameModeRoot"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/hogwarts_blur">
 
         <TextView
             android:id="@+id/tvPlayerMode"
@@ -38,7 +38,6 @@
             android:layout_height="0dp"
             android:layout_margin="20dp"
             android:onClick="@{()->gameModeViewModel.selectPlayerMode(0)}"
-            android:src="@drawable/singleplayer"
             app:layout_constraintEnd_toStartOf="@id/tvPlayerMode"
             app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +50,6 @@
             android:layout_height="0dp"
             android:layout_margin="20dp"
             android:onClick="@{()->gameModeViewModel.selectPlayerMode(1)}"
-            android:src="@drawable/multiplayer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toEndOf="@id/tvPlayerMode"
@@ -101,7 +99,6 @@
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
             android:onClick="@{()->gameModeViewModel.selectPlayerCount(3)}"
-            android:src="@drawable/count3"
             app:layout_constraintEnd_toStartOf="@id/ivPlayerCount4"
             app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toStartOf="parent"
@@ -114,7 +111,6 @@
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
             android:onClick="@{()->gameModeViewModel.selectPlayerCount(4)}"
-            android:src="@drawable/count4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toStartOf="parent"
@@ -127,7 +123,6 @@
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
             android:onClick="@{()->gameModeViewModel.selectPlayerCount(5)}"
-            android:src="@drawable/count5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toEndOf="@id/ivPlayerCount4"

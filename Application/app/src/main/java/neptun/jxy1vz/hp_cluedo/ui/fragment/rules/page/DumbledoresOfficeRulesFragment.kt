@@ -13,16 +13,20 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 
 class DumbledoresOfficeRulesFragment: Fragment() {
 
-    private lateinit var baseImage: ImageView
-    private lateinit var image: ImageView
+    private lateinit var ivIllustration: ImageView
+    private lateinit var ivIllustrationAnim: ImageView
+    private lateinit var ivIllustration2: ImageView
     private var canAnimate = true
 
     private var currentIndex = 1
-    private val imageList = listOf(R.drawable.dumbledore1, R.drawable.dumbledore2, R.drawable.dumbledore3, R.drawable.dumbledore4)
+    private lateinit var imageList: List<String>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,16 +35,31 @@ class DumbledoresOfficeRulesFragment: Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_dumbledores_office_rules, container, false)
 
-        baseImage = root.findViewById(R.id.ivIllustration)
-        image = root.findViewById(R.id.ivIllustrationAnim)
+        ivIllustration = root.findViewById(R.id.ivIllustration)
+        ivIllustrationAnim = root.findViewById(R.id.ivIllustrationAnim)
+        ivIllustration2 = root.findViewById(R.id.ivIllustration2)
 
         return root
     }
 
     override fun onResume() {
         super.onResume()
-        canAnimate = true
-        startAnimation()
+        lifecycleScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context!!).assetDao().apply {
+                imageList = listOf(
+                    getAssetByTag("resources/menu/tutorial/dumbledore1.png")!!.url,
+                    getAssetByTag("resources/menu/tutorial/dumbledore2.png")!!.url,
+                    getAssetByTag("resources/menu/tutorial/dumbledore3.png")!!.url,
+                    getAssetByTag("resources/menu/tutorial/dumbledore4.png")!!.url
+                )
+                val unusedCardsTemplate = getAssetByTag("resources/menu/tutorial/unused_cards_template.png")!!.url
+                withContext(Dispatchers.Main) {
+                    loadUrlImageIntoImageView(unusedCardsTemplate, context!!, ivIllustration2)
+                    canAnimate = true
+                    startAnimation()
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -51,18 +70,18 @@ class DumbledoresOfficeRulesFragment: Fragment() {
     private fun startAnimation() {
         if (!canAnimate)
             return
-        image.visibility = ImageView.VISIBLE
+        ivIllustrationAnim.visibility = ImageView.VISIBLE
         (AnimatorInflater.loadAnimator(context, R.animator.appear) as AnimatorSet).apply {
-            setTarget(image)
+            setTarget(ivIllustrationAnim)
             duration = 1000
             start()
             doOnEnd {
                 lifecycleScope.launch(Dispatchers.Main) {
                     delay(500)
-                    image.visibility = ImageView.GONE
-                    baseImage.setImageResource(imageList[currentIndex])
+                    ivIllustrationAnim.visibility = ImageView.GONE
+                    loadUrlImageIntoImageView(imageList[currentIndex], context!!, ivIllustration)
                     currentIndex = if (currentIndex + 1 == imageList.size) 0 else currentIndex + 1
-                    image.setImageResource(imageList[currentIndex])
+                    loadUrlImageIntoImageView(imageList[currentIndex], context!!, ivIllustrationAnim)
                     startAnimation()
                 }
             }

@@ -15,10 +15,13 @@ import com.pusher.client.channel.User
 import kotlinx.android.synthetic.main.fragment_incrimination_details.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentIncriminationDetailsBinding
 import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
 import neptun.jxy1vz.hp_cluedo.domain.model.card.MysteryCard
-import neptun.jxy1vz.hp_cluedo.domain.model.helper.*
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.network.model.message.card_event.CardEventMessage
 import neptun.jxy1vz.hp_cluedo.network.pusher.PusherInstance
@@ -45,27 +48,44 @@ class IncriminationDetailsViewModel(
     private lateinit var retrofit: RetrofitInstance
     private var waitForPlayers = 0
 
+    private lateinit var roomTokens: List<String>
+    private lateinit var toolTokens: List<String>
+    private lateinit var suspectTokens: List<String>
+
     init {
-        val layoutParams = bind.ivSuspectToken.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.bottomMargin =
-            ((bind.ivSuspectToken.layoutParams as ConstraintLayout.LayoutParams).matchConstraintPercentHeight * screenHeight / 2).toInt()
-        bind.ivSuspectToken.layoutParams = layoutParams
+        GlobalScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context).assetDao().apply {
+                roomTokens =
+                    getAssetsByPrefix(AssetPrefixes.MYSTERY_ROOM_TOKENS.string())!!.map { assetDBmodel -> assetDBmodel.url }
+                toolTokens =
+                    getAssetsByPrefix(AssetPrefixes.MYSTERY_TOOL_TOKENS.string())!!.map { assetDBmodel -> assetDBmodel.url }
+                suspectTokens =
+                    getAssetsByPrefix(AssetPrefixes.MYSTERY_SUSPECT_TOKENS.string())!!.map { assetDBmodel -> assetDBmodel.url }
 
-        bind.ivRoomToken.setImageResource(roomTokens[roomList.indexOf(suspect.room)])
-        bind.ivToolToken.setImageResource(toolTokens[toolList.indexOf(suspect.tool)])
-        bind.ivSuspectToken.setImageResource(suspectTokens[suspectList.indexOf(suspect.suspect)])
+                withContext(Dispatchers.Main) {
+                    val layoutParams = bind.ivSuspectToken.layoutParams as ConstraintLayout.LayoutParams
+                    layoutParams.bottomMargin =
+                        ((bind.ivSuspectToken.layoutParams as ConstraintLayout.LayoutParams).matchConstraintPercentHeight * screenHeight / 2).toInt()
+                    bind.ivSuspectToken.layoutParams = layoutParams
 
-        bind.ivPlayerWhoSuspects.setImageResource(MapViewModel.playerHandler.getPlayerById(suspect.playerId).card.imageRes)
+                    loadUrlImageIntoImageView(roomTokens[roomList.indexOf(suspect.room) * 2], context, bind.ivRoomToken)
+                    loadUrlImageIntoImageView(toolTokens[toolList.indexOf(suspect.tool) * 2], context, bind.ivToolToken)
+                    loadUrlImageIntoImageView(suspectTokens[suspectList.indexOf(suspect.suspect) * 2], context, bind.ivSuspectToken)
 
-        if (MapViewModel.isGameModeMulti()) {
-            GlobalScope.launch(Dispatchers.Main) {
-                bind.detailsRoot.btnOk.isEnabled = false
-                withContext(Dispatchers.IO) {
-                    subscribeToEvents()
+                    loadUrlImageIntoImageView(MapViewModel.playerHandler.getPlayerById(suspect.playerId).card.imageRes, context, bind.ivPlayerWhoSuspects)
+
+                    if (MapViewModel.isGameModeMulti()) {
+                        GlobalScope.launch(Dispatchers.Main) {
+                            bind.detailsRoot.btnOk.isEnabled = false
+                            withContext(Dispatchers.IO) {
+                                subscribeToEvents()
+                            }
+                        }
+                    } else
+                        processSuspect(suspect)
                 }
             }
-        } else
-            processSuspect(suspect)
+        }
     }
 
     private suspend fun subscribeToEvents() {
@@ -189,7 +209,7 @@ class IncriminationDetailsViewModel(
 
     private suspend fun askPlayerToReveal(currentIndex: Int) {
         withContext(Dispatchers.Main) {
-            bind.ivPlayerWhoShows.setImageResource(MapViewModel.gameModels.playerList[currentIndex].card.imageRes)
+            loadUrlImageIntoImageView(MapViewModel.gameModels.playerList[currentIndex].card.imageRes, context, bind.ivPlayerWhoShows)
         }
         retrofit.cluedo.triggerPlayerToReveal(
             MapViewModel.channelName,
@@ -199,10 +219,10 @@ class IncriminationDetailsViewModel(
 
     private fun processRequest(playerId: Int) {
         GlobalScope.launch(Dispatchers.Main) {
-            bind.ivPlayerWhoShows.setImageResource(MapViewModel.playerHandler.getPlayerById(playerId).card.imageRes)
-            bind.ivRoomToken.setImageResource(roomTokens[roomList.indexOf(suspect.room)])
-            bind.ivToolToken.setImageResource(toolTokens[toolList.indexOf(suspect.tool)])
-            bind.ivSuspectToken.setImageResource(suspectTokens[suspectList.indexOf(suspect.suspect)])
+            loadUrlImageIntoImageView(MapViewModel.playerHandler.getPlayerById(playerId).card.imageRes, context, bind.ivPlayerWhoShows)
+            loadUrlImageIntoImageView(roomTokens[roomList.indexOf(suspect.room) * 2], context, bind.ivRoomToken)
+            loadUrlImageIntoImageView(toolTokens[toolList.indexOf(suspect.tool) * 2], context, bind.ivToolToken)
+            loadUrlImageIntoImageView(suspectTokens[suspectList.indexOf(suspect.suspect) * 2], context, bind.ivSuspectToken)
 
             if (playerId == MapViewModel.mPlayerId) {
                 val properMysteryCards = MapViewModel.cardHandler.revealMysteryCards(
@@ -216,12 +236,37 @@ class IncriminationDetailsViewModel(
                 }
 
                 if (properMysteryCards.isNullOrEmpty()) {
-                    bind.ivRoomToken.setImageResource(roomTokensBW[roomList.indexOf(suspect.room)])
-                    bind.ivToolToken.setImageResource(toolTokensBW[toolList.indexOf(suspect.tool)])
-                    bind.ivSuspectToken.setImageResource(suspectTokensBW[suspectList.indexOf(suspect.suspect)])
+                    loadUrlImageIntoImageView(roomTokens[roomList.indexOf(suspect.room) * 2 + 1], context, bind.ivRoomToken)
+                    loadUrlImageIntoImageView(toolTokens[toolList.indexOf(suspect.tool) * 2 + 1], context, bind.ivToolToken)
+                    loadUrlImageIntoImageView(suspectTokens[suspectList.indexOf(suspect.suspect) * 2 + 1], context, bind.ivSuspectToken)
                     bind.detailsRoot.btnSkip.apply {
                         isEnabled = true
                         visibility = Button.VISIBLE
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showSkipBubble() {
+        bind.detailsRoot.ivSkipBubble.visibility = ImageView.VISIBLE
+        (AnimatorInflater.loadAnimator(
+            bind.detailsRoot.context,
+            R.animator.appear
+        ) as AnimatorSet).apply {
+            setTarget(bind.detailsRoot.ivSkipBubble)
+            duration = 2000
+            start()
+            doOnEnd {
+                (AnimatorInflater.loadAnimator(
+                    bind.detailsRoot.context,
+                    R.animator.disappear
+                ) as AnimatorSet).apply {
+                    setTarget(bind.detailsRoot.ivSkipBubble)
+                    duration = 2500
+                    start()
+                    doOnEnd {
+                        bind.detailsRoot.ivSkipBubble.visibility = ImageView.GONE
                     }
                 }
             }
@@ -246,11 +291,13 @@ class IncriminationDetailsViewModel(
                         start()
                         doOnEnd {
                             bind.detailsRoot.ivSkipBubble.visibility = ImageView.GONE
-                            if (MapViewModel.playerInTurn == MapViewModel.mPlayerId) {
-                                val currentIdx = MapViewModel.gameModels.playerList.indexOf(
-                                    MapViewModel.playerHandler.getPlayerById(playerId)
-                                )
-                                sendRequestToNextPlayer(currentIdx)
+                            if (MapViewModel.isGameModeMulti()) {
+                                if (MapViewModel.playerInTurn == MapViewModel.mPlayerId) {
+                                    val currentIdx = MapViewModel.gameModels.playerList.indexOf(
+                                        MapViewModel.playerHandler.getPlayerById(playerId)
+                                    )
+                                    sendRequestToNextPlayer(currentIdx)
+                                }
                             }
                         }
                     }
@@ -287,7 +334,7 @@ class IncriminationDetailsViewModel(
                 MapViewModel.dialogHandler.setWaitingQueueSize(MapViewModel.gameModels.playerList.size)
             }
 
-            bind.detailsRoot.ivPlayerWhoShows.setImageResource(R.drawable.szereplo_hatlap)
+            loadUrlImageIntoImageView(MapViewModel.gameModels.playerList[0].card.verso, context, bind.detailsRoot.ivPlayerWhoShows)
 
             (AnimatorInflater.loadAnimator(
                 bind.detailsRoot.context,
@@ -297,15 +344,15 @@ class IncriminationDetailsViewModel(
                 start()
                 doOnEnd {
                     bind.detailsRoot.ivCross.visibility = ImageView.VISIBLE
-                    bind.ivRoomToken.setImageResource(roomTokensBW[roomList.indexOf(suspect.room)])
-                    bind.ivToolToken.setImageResource(toolTokensBW[toolList.indexOf(suspect.tool)])
-                    bind.ivSuspectToken.setImageResource(suspectTokensBW[suspectList.indexOf(suspect.suspect)])
+                    loadUrlImageIntoImageView(roomTokens[roomList.indexOf(suspect.room) * 2 + 1], context, bind.ivRoomToken)
+                    loadUrlImageIntoImageView(toolTokens[toolList.indexOf(suspect.tool) * 2 + 1], context, bind.ivToolToken)
+                    loadUrlImageIntoImageView(suspectTokens[suspectList.indexOf(suspect.suspect) * 2 + 1], context, bind.ivSuspectToken)
                 }
             }
         }
     }
 
-    private fun processSuspect(suspect: Suspect) {
+    private suspend fun processSuspect(suspect: Suspect) {
         var someoneShowedSomething = false
         var playerIdx = MapViewModel.gameModels.playerList.indexOf(
             MapViewModel.playerHandler.getPlayerById(suspect.playerId)
@@ -314,6 +361,7 @@ class IncriminationDetailsViewModel(
             playerIdx--
             if (playerIdx < 0)
                 playerIdx = MapViewModel.gameModels.playerList.lastIndex
+            loadUrlImageIntoImageView(MapViewModel.gameModels.playerList[playerIdx].card.imageRes, context, bind.ivPlayerWhoShows)
             if (playerIdx == MapViewModel.gameModels.playerList.indexOf(MapViewModel.player)) {
                 val cards =
                     MapViewModel.cardHandler.revealMysteryCards(
@@ -323,11 +371,15 @@ class IncriminationDetailsViewModel(
                         suspect.suspect
                     )
                 if (cards != null) {
-                    bind.ivPlayerWhoShows.setImageResource(MapViewModel.player.card.imageRes)
+                    loadUrlImageIntoImageView(MapViewModel.player.card.imageRes, context, bind.ivPlayerWhoShows)
                     bind.detailsRoot.btnOk.isEnabled = false
 
                     showCaution(cards)
                     someoneShowedSomething = true
+                }
+                else {
+                    showSkipBubble()
+                    delay(6000)
                 }
             } else {
                 val cards =
@@ -338,7 +390,6 @@ class IncriminationDetailsViewModel(
                         suspect.suspect
                     )
                 if (cards != null) {
-                    bind.ivPlayerWhoShows.setImageResource(MapViewModel.gameModels.playerList[playerIdx].card.imageRes)
                     val revealedCard =
                         MapViewModel.gameModels.playerList[playerIdx].revealCardToPlayer(
                             suspect.playerId,
@@ -351,6 +402,10 @@ class IncriminationDetailsViewModel(
                         revealedCard.name
                     )
                     floatCard(revealedCard)
+                }
+                else {
+                    showSkipBubble()
+                    delay(6000)
                 }
             }
             if (someoneShowedSomething)
@@ -382,55 +437,47 @@ class IncriminationDetailsViewModel(
                 showCard(
                     card,
                     roomTokens,
-                    roomTokensBW,
                     bind.ivRoomToken,
                     roomList,
                     bind.detailsRoot.tvShowCard
                 )
             else
-                bind.ivRoomToken.setImageResource(roomTokensBW[roomList.indexOf(suspect.room)])
+                loadUrlImageIntoImageView(roomTokens[roomList.indexOf(suspect.room) * 2 + 1], context, bind.ivRoomToken)
 
             if (toolList.contains(card.name))
                 showCard(
                     card,
                     toolTokens,
-                    toolTokensBW,
                     bind.ivToolToken,
                     toolList,
                     bind.detailsRoot.tvShowCard
                 )
             else
-                bind.ivToolToken.setImageResource(toolTokensBW[toolList.indexOf(suspect.tool)])
+                loadUrlImageIntoImageView(toolTokens[toolList.indexOf(suspect.tool) * 2 + 1], context, bind.ivToolToken)
 
             if (suspectList.contains(card.name))
                 showCard(
                     card,
                     suspectTokens,
-                    suspectTokensBW,
                     bind.ivSuspectToken,
                     suspectList,
                     bind.detailsRoot.tvShowCard
                 )
             else
-                bind.ivSuspectToken.setImageResource(
-                    suspectTokensBW[suspectList.indexOf(
-                        suspect.suspect
-                    )]
-                )
+                loadUrlImageIntoImageView(suspectTokens[suspectList.indexOf(suspect.suspect) * 2 + 1], context, bind.ivSuspectToken)
         }
     }
 
     private fun showCard(
         card: MysteryCard,
-        tokenList: List<Int>,
-        tokenListBW: List<Int>,
+        tokenList: List<String>,
         ivToken: ImageView,
         nameList: Array<String>,
         cautionTextView: TextView
     ) {
         GlobalScope.launch(Dispatchers.Main) {
-            val res = tokenList[nameList.indexOf(card.name)]
-            val bwRes = tokenListBW[nameList.indexOf(card.name)]
+            val res = tokenList[nameList.indexOf(card.name) * 2]
+            val bwRes = tokenList[nameList.indexOf(card.name) * 2 + 1]
             blinkToken(ivToken, bwRes, res, 3, 200)
 
             ivToken.setOnClickListener {
@@ -467,10 +514,10 @@ class IncriminationDetailsViewModel(
         ivToken1: ImageView,
         ivToken2: ImageView,
         ivTargetToken: ImageView,
-        bwTokenList1: List<Int>,
-        bwTokenList2: List<Int>,
-        bwTargetTokenList: List<Int>,
-        targetTokenList: List<Int>,
+        bwTokenList1: List<String>,
+        bwTokenList2: List<String>,
+        bwTargetTokenList: List<String>,
+        targetTokenList: List<String>,
         nameList1: Array<String>,
         nameList2: Array<String>,
         targetNameList: Array<String>,
@@ -478,10 +525,10 @@ class IncriminationDetailsViewModel(
         name2: String,
         targetName: String
     ) {
-        ivToken1.setImageResource(bwTokenList1[nameList1.indexOf(name1)])
-        ivToken2.setImageResource(bwTokenList2[nameList2.indexOf(name2)])
-        val bwToken: Int = bwTargetTokenList[targetNameList.indexOf(targetName)]
-        val token: Int = targetTokenList[targetNameList.indexOf(targetName)]
+        loadUrlImageIntoImageView(bwTokenList1[nameList1.indexOf(name1)], context, ivToken1)
+        loadUrlImageIntoImageView(bwTokenList2[nameList2.indexOf(name2)], context, ivToken2)
+        val bwToken = bwTargetTokenList[targetNameList.indexOf(targetName)]
+        val token = targetTokenList[targetNameList.indexOf(targetName)]
 
         GlobalScope.launch(Dispatchers.Main) {
             blinkToken(ivTargetToken, bwToken, token, 3, 200)
@@ -538,7 +585,8 @@ class IncriminationDetailsViewModel(
                     }
                     doOnEnd {
                         if (playerShowedCard)
-                            bind.detailsRoot.ivFloatingCard.setImageResource(revealedCard.imageRes)
+                            loadUrlImageIntoImageView(revealedCard.imageRes, context, bind.detailsRoot.ivFloatingCard)
+
                         (AnimatorInflater.loadAnimator(
                             bind.detailsRoot.context,
                             R.animator.disappear
@@ -556,10 +604,10 @@ class IncriminationDetailsViewModel(
                                                 bind.ivRoomToken,
                                                 bind.ivSuspectToken,
                                                 bind.ivToolToken,
-                                                roomTokensBW,
-                                                suspectTokensBW,
-                                                toolTokensBW,
-                                                toolTokens,
+                                                roomTokens.filter { token -> roomTokens.indexOf(token) % 2 == 1 },
+                                                suspectTokens.filter { token -> suspectTokens.indexOf(token) % 2 == 1 },
+                                                toolTokens.filter { token -> toolTokens.indexOf(token) % 2 == 1 },
+                                                toolTokens.filter { token -> toolTokens.indexOf(token) % 2 == 0 },
                                                 roomList,
                                                 suspectList,
                                                 toolList,
@@ -573,10 +621,10 @@ class IncriminationDetailsViewModel(
                                                 bind.ivToolToken,
                                                 bind.ivSuspectToken,
                                                 bind.ivRoomToken,
-                                                toolTokensBW,
-                                                suspectTokensBW,
-                                                roomTokensBW,
-                                                roomTokens,
+                                                toolTokens.filter { token -> toolTokens.indexOf(token) % 2 == 1 },
+                                                suspectTokens.filter { token -> suspectTokens.indexOf(token) % 2 == 1 },
+                                                roomTokens.filter { token -> roomTokens.indexOf(token) % 2 == 1 },
+                                                roomTokens.filter { token -> roomTokens.indexOf(token) % 2 == 0 },
                                                 toolList,
                                                 suspectList,
                                                 roomList,
@@ -590,10 +638,10 @@ class IncriminationDetailsViewModel(
                                                 bind.ivToolToken,
                                                 bind.ivRoomToken,
                                                 bind.ivSuspectToken,
-                                                toolTokensBW,
-                                                roomTokensBW,
-                                                suspectTokensBW,
-                                                suspectTokens,
+                                                toolTokens.filter { token -> toolTokens.indexOf(token) % 2 == 1 },
+                                                roomTokens.filter { token -> roomTokens.indexOf(token) % 2 == 1 },
+                                                suspectTokens.filter { token -> suspectTokens.indexOf(token) % 2 == 1 },
+                                                suspectTokens.filter { token -> suspectTokens.indexOf(token) % 2 == 0 },
                                                 toolList,
                                                 roomList,
                                                 suspectList,
@@ -614,15 +662,15 @@ class IncriminationDetailsViewModel(
 
     private suspend fun blinkToken(
         token: ImageView,
-        bwRes: Int,
-        res: Int,
+        bwRes: String,
+        res: String,
         repeat: Int,
         delayTimeMillis: Long
     ) {
         for (x in 1..repeat) {
-            token.setImageResource(bwRes)
+            loadUrlImageIntoImageView(bwRes, context, token)
             delay(delayTimeMillis)
-            token.setImageResource(res)
+            loadUrlImageIntoImageView(res, context, token)
             delay(delayTimeMillis)
         }
     }

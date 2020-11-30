@@ -291,7 +291,7 @@ class MysteryCardViewModel(
 
             cards.addAll(message.message.pairs.map { pair ->
                 Pair(
-                    db.cardDao().getCardByName(pair.cardName)?.toDomainModel() as MysteryCard,
+                    db.cardDao().getCardByName(pair.cardName)?.toDomainModel(context) as MysteryCard,
                     pair.ownerPlayerId
                 )
             })

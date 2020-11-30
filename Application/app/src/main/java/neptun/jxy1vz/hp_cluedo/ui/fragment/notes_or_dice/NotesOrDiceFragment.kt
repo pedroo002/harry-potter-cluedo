@@ -6,9 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentNotesOrDiceBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.DialogDismiss
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
@@ -41,7 +47,17 @@ class NotesOrDiceFragment : Fragment(), ViewModelListener, NotesOrDiceViewModel.
         savedInstanceState: Bundle?
     ): View? {
         fragmentNotesOrDiceBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_notes_or_dice, container, false)
-        fragmentNotesOrDiceBinding.notesOrDiceViewModel = NotesOrDiceViewModel(this, this)
+        lifecycleScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context!!).assetDao().apply {
+                val notes = getAssetByTag("resources/map/other/notes.png")!!.url
+                val dice = getAssetByTag("resources/map/other/dice.png")!!.url
+                withContext(Dispatchers.Main) {
+                    loadUrlImageIntoImageView(notes, context!!, fragmentNotesOrDiceBinding.ivNotes)
+                    loadUrlImageIntoImageView(dice, context!!, fragmentNotesOrDiceBinding.ivDice)
+                    fragmentNotesOrDiceBinding.notesOrDiceViewModel = NotesOrDiceViewModel(this@NotesOrDiceFragment, this@NotesOrDiceFragment)
+                }
+            }
+        }
         return fragmentNotesOrDiceBinding.root
     }
 

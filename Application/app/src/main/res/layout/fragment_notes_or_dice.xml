@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/semi_transparent_background">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -12,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/notesOrDiceRoot">
+        android:id="@+id/notesOrDiceRoot"
+        android:background="@drawable/semi_transparent_background">
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,7 +32,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/ivNotes"
-            android:src="@drawable/notes"
             android:layout_marginStart="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -45,7 +44,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/ivDice"
-            android:src="@drawable/dice"
             android:layout_marginEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

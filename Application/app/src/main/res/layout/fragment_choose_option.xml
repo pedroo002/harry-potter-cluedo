@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/black_background">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -12,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/optionRoot">
+        android:id="@+id/optionRoot"
+        android:background="@drawable/black_background">
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,7 +32,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/ivWizengamot"
-            android:src="@drawable/wizengamot_bw"
             android:layout_marginStart="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitle"
@@ -45,7 +44,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/ivStep"
-            android:src="@drawable/footprints_forward1_bw"
             app:layout_constraintStart_toEndOf="@id/ivWizengamot"
             app:layout_constraintEnd_toStartOf="@id/ivCards"
             app:layout_constraintBottom_toTopOf="@id/btnOk"
@@ -57,7 +55,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/ivCards"
-            android:src="@drawable/check_out_cards_bw"
             android:layout_marginEnd="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitle"

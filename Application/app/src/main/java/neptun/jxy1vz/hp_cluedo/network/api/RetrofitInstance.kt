@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 class RetrofitInstance private constructor() {
 
     companion object {
-        private const val URL = "https://pedro.sch.bme.hu/"
+        const val URL = "https://pedro.sch.bme.hu/"
 
         private lateinit var retrofit: RetrofitInstance
         private lateinit var context: Context

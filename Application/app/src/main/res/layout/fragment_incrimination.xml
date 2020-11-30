@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/semi_transparent_background">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -13,7 +12,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/semi_transparent_background">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -92,48 +92,42 @@
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectTool(0)}"
-                            android:src="@drawable/tool_altatoital_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectTool(0)}" />
 
                         <ImageView
                             android:id="@+id/ivToolMandragora"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectTool(1)}"
-                            android:src="@drawable/tool_mandragora_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectTool(1)}" />
 
                         <ImageView
                             android:id="@+id/ivToolObstructo"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectTool(2)}"
-                            android:src="@drawable/tool_obstructo_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectTool(2)}" />
 
                         <ImageView
                             android:id="@+id/ivToolPetrificusTotalus"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectTool(3)}"
-                            android:src="@drawable/tool_petrificus_totalus_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectTool(3)}" />
 
                         <ImageView
                             android:id="@+id/ivToolVoltNincs"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectTool(4)}"
-                            android:src="@drawable/tool_volt_nincs_szekreny_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectTool(4)}" />
 
                         <ImageView
                             android:id="@+id/ivToolZsupszkulcs"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectTool(5)}"
-                            android:src="@drawable/tool_zsupszkulcs_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectTool(5)}" />
 
                     </LinearLayout>
                 </ScrollView>
@@ -170,48 +164,42 @@
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectSuspect(0)}"
-                            android:src="@drawable/suspect_bellatrix_lestrange_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(0)}" />
 
                         <ImageView
                             android:id="@+id/ivSuspectCrakEsMonstro"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectSuspect(1)}"
-                            android:src="@drawable/suspect_crak_and_monstro_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(1)}" />
 
                         <ImageView
                             android:id="@+id/ivSuspectDraco"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectSuspect(2)}"
-                            android:src="@drawable/suspect_draco_malfoy_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(2)}" />
 
                         <ImageView
                             android:id="@+id/ivSuspectLucius"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectSuspect(3)}"
-                            android:src="@drawable/suspect_lucius_malfoy_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(3)}" />
 
                         <ImageView
                             android:id="@+id/ivSuspectUmbridge"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectSuspect(4)}"
-                            android:src="@drawable/suspect_dolores_umbridge_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(4)}" />
 
                         <ImageView
                             android:id="@+id/ivSuspectFeregfark"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
-                            android:onClick="@{()->incriminationViewModel.selectSuspect(5)}"
-                            android:src="@drawable/suspect_peter_pettigrew_bw" />
+                            android:onClick="@{()->incriminationViewModel.selectSuspect(5)}" />
 
                     </LinearLayout>
                 </ScrollView>

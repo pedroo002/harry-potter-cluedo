@@ -1,21 +1,27 @@
 package neptun.jxy1vz.hp_cluedo.domain.util
 
+import android.content.Context
+import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.database.model.*
 import neptun.jxy1vz.hp_cluedo.database.model.CardType.*
 import neptun.jxy1vz.hp_cluedo.database.model.LossType
-import neptun.jxy1vz.hp_cluedo.domain.model.*
+import neptun.jxy1vz.hp_cluedo.domain.model.Note
+import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
 import neptun.jxy1vz.hp_cluedo.domain.model.card.*
 import neptun.jxy1vz.hp_cluedo.domain.model.card.CardType
 import neptun.jxy1vz.hp_cluedo.network.model.message.suspect.SuspectMessage
 
-fun CardDBmodel.toDomainModel(): Card {
+suspend fun CardDBmodel.toDomainModel(context: Context): Card {
+    val imageAsset = CluedoDatabase.getInstance(context).assetDao().getAssetByTag(imageRes)
+    val versoAsset = CluedoDatabase.getInstance(context).assetDao().getAssetByTag(versoRes)
+
     return when (cardType) {
         "HELPER_TOOL", "HELPER_SPELL", "HELPER_ALLY"-> HelperCard(
             id.toInt(),
             name,
-            imageRes,
-            versoRes,
-            toCardType(cardType).toDomainModel()
+            toCardType(cardType).toDomainModel(),
+            imageRes = imageAsset!!.url,
+            verso = versoAsset!!.url
         )
         "DARK_CORRIDOR", "DARK_PLAYER_IN_TURN", "DARK_ROOM_BAGOLYHAZ", "DARK_ROOM_BAJITALTAN", "DARK_ROOM_GYENGELKEDO",
         "DARK_ROOM_JOSLASTAN", "DARK_ROOM_KONYVTAR", "DARK_ROOM_NAGYTEREM", "DARK_ROOM_SERLEG_TEREM", "DARK_ROOM_SVK",
@@ -23,24 +29,24 @@ fun CardDBmodel.toDomainModel(): Card {
         -> DarkCard(
             id.toInt(),
             name,
-            imageRes,
-            versoRes,
             toCardType(cardType).toDomainModel(),
             toLossType(lossType!!).toDomainModel(),
-            hpLoss!!
+            hpLoss!!,
+            imageRes = imageAsset!!.url,
+            verso = versoAsset!!.url
         )
         "MYSTERY_TOOL", "MYSTERY_SUSPECT", "MYSTERY_VENUE"-> MysteryCard(
             id.toInt(),
             name,
-            imageRes,
-            versoRes,
-            toCardType(cardType).toDomainModel()
+            toCardType(cardType).toDomainModel(),
+            imageRes = imageAsset!!.url,
+            verso = versoAsset!!.url
         )
         else -> PlayerCard(
             id.toInt(),
             name,
-            imageRes,
-            versoRes
+            imageAsset!!.url,
+            versoAsset!!.url
         )
     }
 }

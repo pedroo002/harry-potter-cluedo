@@ -52,15 +52,13 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
     ): View? {
         fragmentJoinChannelBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_join_channel, container, false)
-
         parentActivity = activity!! as MenuActivity
 
         retrofit = RetrofitInstance.getInstance(context!!)
         pusher = PusherInstance.getInstance()
         pusher.connect()
 
-        fragmentJoinChannelBinding.joinChannelViewModel =
-            JoinChannelViewModel(fragmentJoinChannelBinding, context!!, lifecycleScope, parentActivity.supportFragmentManager, this)
+        fragmentJoinChannelBinding.joinChannelViewModel = JoinChannelViewModel(fragmentJoinChannelBinding, context!!, lifecycleScope, parentActivity.supportFragmentManager, this)
         return fragmentJoinChannelBinding.root
     }
 

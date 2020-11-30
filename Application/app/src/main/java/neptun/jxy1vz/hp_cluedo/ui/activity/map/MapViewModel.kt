@@ -16,11 +16,15 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.database.model.string
+import neptun.jxy1vz.hp_cluedo.databinding.ActivityMapBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.*
 import neptun.jxy1vz.hp_cluedo.domain.model.*
 import neptun.jxy1vz.hp_cluedo.domain.model.card.HelperCard
 import neptun.jxy1vz.hp_cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.hp_cluedo.domain.model.helper.GameModels
+import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.domain.util.removePlayer
 import neptun.jxy1vz.hp_cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
@@ -40,6 +44,7 @@ import kotlin.math.abs
 class MapViewModel(
     gm: GameModels,
     listener: MapActivityListener,
+    private val bind: ActivityMapBinding,
     private val context: Context,
     playerId: Int,
     pairs: List<Pair<Player, ImageView>>,
@@ -169,110 +174,118 @@ class MapViewModel(
     }
 
     init {
-        gamePref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
-        playerPref = context.getSharedPreferences(context.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
-        playMode = gamePref.getString(context.resources.getString(R.string.play_mode_key), "")!!
-        playModes = context.resources.getStringArray(R.array.playmodes)
+        GlobalScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context).assetDao().apply {
+                val dice1 = getAssetByTag("resources/map/dice/dice01.png")!!.url
+                val dice2 = getAssetByTag("resources/map/dice/dice02.png")!!.url
+                val helperCard = getAssetByTag("resources/map/dice/dice08_helper_card.png")!!.url
 
-        mPlayerId = playerId
-        mContext = context
-        mapRoot = root
-        gameModels = gm
-        playerImagePairs = pairs
-        fm = fragmentManager
-        activityListener = listener
-        player = playerHandler.getPlayerById(mPlayerId!!)
-        anim = AnimationUtils.loadAnimation(mContext!!, R.anim.shake)
-        playerInTurn = mPlayerId!!
+                withContext(Dispatchers.Main) {
+                    gamePref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
+                    playerPref = context.getSharedPreferences(context.resources.getString(R.string.player_data_pref), Context.MODE_PRIVATE)
+                    playMode = gamePref.getString(context.resources.getString(R.string.play_mode_key), "")!!
+                    playModes = context.resources.getStringArray(R.array.playmodes)
 
-        var idx = gameModels.playerList.indexOf(player)
-        idx++
-        if (idx == gameModels.playerList.size)
-            idx = 0
-        playerInTurn = gameModels.playerList[idx].id
+                    mPlayerId = playerId
+                    mContext = context
+                    gameModels = gm
+                    mapRoot = root
+                    playerImagePairs = pairs
+                    fm = fragmentManager
+                    activityListener = listener
+                    player = playerHandler.getPlayerById(mPlayerId!!)
+                    anim = AnimationUtils.loadAnimation(mContext!!, R.anim.shake)
+                    playerInTurn = mPlayerId!!
 
-        val dice1 = ImageView(mapRoot.mapLayout.context)
-        dice1.layoutParams = ConstraintLayout.LayoutParams(100, 100)
-        dice1.setImageResource(R.drawable.dice1)
-        dice1.visibility = ImageView.GONE
+                    var idx = gameModels.playerList.indexOf(player)
+                    idx++
+                    if (idx == gameModels.playerList.size)
+                        idx = 0
+                    playerInTurn = gameModels.playerList[idx].id
 
-        val dice2 = ImageView(mapRoot.mapLayout.context)
-        dice2.layoutParams = ConstraintLayout.LayoutParams(100, 100)
-        dice2.setImageResource(R.drawable.helper_card)
-        dice2.visibility = ImageView.GONE
+                    val ivDice1 = ImageView(mapRoot.mapLayout.context)
+                    ivDice1.layoutParams = ConstraintLayout.LayoutParams(100, 100)
+                    loadUrlImageIntoImageView(dice1, mContext!!, ivDice1)
+                    ivDice1.visibility = ImageView.GONE
 
-        val dice3 = ImageView(mapRoot.mapLayout.context)
-        dice3.layoutParams = ConstraintLayout.LayoutParams(100, 100)
-        dice3.setImageResource(R.drawable.dice2)
-        dice3.visibility = ImageView.GONE
+                    val ivDice2 = ImageView(mapRoot.mapLayout.context)
+                    ivDice2.layoutParams = ConstraintLayout.LayoutParams(100, 100)
+                    loadUrlImageIntoImageView(helperCard, mContext!!, ivDice2)
+                    ivDice2.visibility = ImageView.GONE
 
-        diceList = listOf(dice1, dice2, dice3)
-        diceList.forEach { dice ->
-            uiHandler.setLayoutConstraintStart(dice, gameModels.cols[0])
-            uiHandler.setLayoutConstraintTop(dice, gameModels.rows[0])
-            mapRoot.mapLayout.addView(dice)
-        }
+                    val ivDice3 = ImageView(mapRoot.mapLayout.context)
+                    ivDice3.layoutParams = ConstraintLayout.LayoutParams(100, 100)
+                    loadUrlImageIntoImageView(dice2, mContext!!, ivDice3)
+                    ivDice3.visibility = ImageView.GONE
 
-        anim.setAnimationListener(uiHandler)
+                    diceList = listOf(ivDice1, ivDice2, ivDice3)
+                    diceList.forEach { dice ->
+                        uiHandler.setLayoutConstraintStart(dice, gameModels.cols[0])
+                        uiHandler.setLayoutConstraintTop(dice, gameModels.rows[0])
+                        mapRoot.mapLayout.addView(dice)
+                    }
 
-        mapRoot.mapLayout.setOnClickListener {
-            if (!dialogOpened)
-                cameraHandler.moveCameraToPlayer(playerInTurn)
-        }
+                    anim.setAnimationListener(uiHandler)
 
-        val initHp = when (gameModels.playerList.size) {
-            3 -> 60
-            4 -> 70
-            else -> 80
-        }
+                    mapRoot.mapLayout.setOnClickListener {
+                        if (!dialogOpened)
+                            cameraHandler.moveCameraToPlayer(playerInTurn)
+                    }
 
-        gameModels.playerList.forEach { p ->
-            p.hp = initHp
-        }
+                    val initHp = when (gameModels.playerList.size) {
+                        3 -> 60
+                        4 -> 70
+                        else -> 80
+                    }
 
-        stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.SLYTHERIN)
-        stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.RAVENCLAW)
-        stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.GRYFFINDOR)
-        stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.HUFFLEPUFF)
+                    gameModels.playerList.forEach { p ->
+                        p.hp = initHp
+                    }
 
-        playerImagePairs.forEach { pair ->
-            uiHandler.setLayoutConstraintStart(pair.second, gameModels.cols[pair.first.pos.col])
-            uiHandler.setLayoutConstraintTop(pair.second, gameModels.rows[pair.first.pos.row])
-        }
+                    stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.SLYTHERIN)
+                    stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.RAVENCLAW)
+                    stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.GRYFFINDOR)
+                    stateMachineHandler.setState(playerId, StateMachineHandler.HogwartsHouse.HUFFLEPUFF)
 
-        mapGraph = Graph()
+                    playerImagePairs.forEach { pair ->
+                        uiHandler.setLayoutConstraintStart(pair.second, gameModels.cols[pair.first.pos.col])
+                        uiHandler.setLayoutConstraintTop(pair.second, gameModels.rows[pair.first.pos.row])
+                    }
 
-        for (x in 0..COLS) {
-            for (y in 0..ROWS) {
-                val current = Position(y, x)
-                if (mapHandler.stepInRoom(current) == -1) {
-                    if (y > 0 && mapHandler.stepInRoom(Position(y - 1, x)) == -1)
-                        mapGraph.addEdge(current, Position(y - 1, x))
-                    if (y < 24 && mapHandler.stepInRoom(Position(y + 1, x)) == -1)
-                        mapGraph.addEdge(current, Position(y + 1, x))
-                    if (x > 0 && mapHandler.stepInRoom(Position(y, x - 1)) == -1)
-                        mapGraph.addEdge(current, Position(y, x - 1))
-                    if (x < 24 && mapHandler.stepInRoom(Position(y, x + 1)) == -1)
-                        mapGraph.addEdge(current, Position(y, x + 1))
+                    mapGraph = Graph()
 
+                    for (x in 0..COLS) {
+                        for (y in 0..ROWS) {
+                            val current = Position(y, x)
+                            if (mapHandler.stepInRoom(current) == -1) {
+                                if (y > 0 && mapHandler.stepInRoom(Position(y - 1, x)) == -1)
+                                    mapGraph.addEdge(current, Position(y - 1, x))
+                                if (y < 24 && mapHandler.stepInRoom(Position(y + 1, x)) == -1)
+                                    mapGraph.addEdge(current, Position(y + 1, x))
+                                if (x > 0 && mapHandler.stepInRoom(Position(y, x - 1)) == -1)
+                                    mapGraph.addEdge(current, Position(y, x - 1))
+                                if (x < 24 && mapHandler.stepInRoom(Position(y, x + 1)) == -1)
+                                    mapGraph.addEdge(current, Position(y, x + 1))
+
+                            }
+                        }
+                    }
+
+                    gameModels.doorList.forEach { door ->
+                        for (i in 0..4) {
+                            mapGraph.addEdge(Position(door.room.top, door.room.left + i), door.position)
+                            mapGraph.addEdge(door.position, Position(door.room.top, door.room.left + i))
+                        }
+                    }
+
+                    gameModels.playerList.forEach { p ->
+                        p.mysteryCards.forEach { card ->
+                            p.getConclusion(card.name, p.id)
+                        }
+                    }
                 }
             }
-        }
 
-        gameModels.doorList.forEach { door ->
-            for (i in 0..4) {
-                mapGraph.addEdge(Position(door.room.top, door.room.left + i), door.position)
-                mapGraph.addEdge(door.position, Position(door.room.top, door.room.left + i))
-            }
-        }
-
-        gameModels.playerList.forEach { p ->
-            p.mysteryCards.forEach { card ->
-                p.getConclusion(card.name, p.id)
-            }
-        }
-
-        GlobalScope.launch(Dispatchers.IO) {
             unusedMysteryCards = ArrayList()
             unusedMysteryCards.addAll(gameModels.db.getUnusedMysteryCards())
 
