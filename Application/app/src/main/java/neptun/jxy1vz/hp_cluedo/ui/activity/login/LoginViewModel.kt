@@ -10,8 +10,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.databinding.ActivityLoginBinding
-import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.model.player.PlayerRequest
+import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
+import neptun.jxy1vz.hp_cluedo.data.network.model.player.PlayerRequest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException

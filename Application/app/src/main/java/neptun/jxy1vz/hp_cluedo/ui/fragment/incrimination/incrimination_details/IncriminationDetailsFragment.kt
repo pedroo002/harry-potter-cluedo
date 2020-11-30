@@ -12,13 +12,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentIncriminationDetailsBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.domain.util.toApiModel
-import neptun.jxy1vz.hp_cluedo.network.model.message.SuspectMessage
+import neptun.jxy1vz.hp_cluedo.data.network.model.message.SuspectMessage
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull

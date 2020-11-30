@@ -13,16 +13,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
-import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
-import neptun.jxy1vz.hp_cluedo.database.model.string
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.data.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.ActivityMapBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.MapActivityListener
 import neptun.jxy1vz.hp_cluedo.domain.model.Player
 import neptun.jxy1vz.hp_cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
-import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.pusher.PusherInstance
+import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
+import neptun.jxy1vz.hp_cluedo.data.network.pusher.PusherInstance
 
 class MapActivity : AppCompatActivity(), MapActivityListener {
 

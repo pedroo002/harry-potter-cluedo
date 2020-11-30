@@ -9,8 +9,8 @@ import neptun.jxy1vz.hp_cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.hp_cluedo.domain.model.card.DarkType
 import neptun.jxy1vz.hp_cluedo.domain.model.Player
 import neptun.jxy1vz.hp_cluedo.domain.model.Position
-import neptun.jxy1vz.hp_cluedo.network.model.message.MovingData
-import neptun.jxy1vz.hp_cluedo.network.model.message.PosData
+import neptun.jxy1vz.hp_cluedo.data.network.model.message.MovingData
+import neptun.jxy1vz.hp_cluedo.data.network.model.message.PosData
 import neptun.jxy1vz.hp_cluedo.ui.fragment.cards.dark.DarkCardFragment
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.gameModels

@@ -10,8 +10,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentJoinChannelBinding
-import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.model.channel.ChannelApiModel
+import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
+import neptun.jxy1vz.hp_cluedo.data.network.model.channel.ChannelApiModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.hp_cluedo.ui.fragment.channel.num_picker.NumPickerFragment
 

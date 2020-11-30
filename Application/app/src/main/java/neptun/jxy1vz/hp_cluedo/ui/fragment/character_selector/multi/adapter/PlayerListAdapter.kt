@@ -14,7 +14,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
-import neptun.jxy1vz.hp_cluedo.network.model.player.PlayerDomainModel
+import neptun.jxy1vz.hp_cluedo.data.network.model.player.PlayerDomainModel
 
 class PlayerListAdapter(private val context: Context, private val playerList: ArrayList<PlayerDomainModel>, private val playerTokens: List<String>, private val currentPlayer: String, private val listener: AdapterListener) : RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
 

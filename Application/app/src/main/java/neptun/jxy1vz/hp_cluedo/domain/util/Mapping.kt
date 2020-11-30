@@ -1,15 +1,15 @@
 package neptun.jxy1vz.hp_cluedo.domain.util
 
 import android.content.Context
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
-import neptun.jxy1vz.hp_cluedo.database.model.*
-import neptun.jxy1vz.hp_cluedo.database.model.CardType.*
-import neptun.jxy1vz.hp_cluedo.database.model.LossType
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.model.*
+import neptun.jxy1vz.hp_cluedo.data.database.model.CardType.*
+import neptun.jxy1vz.hp_cluedo.data.database.model.LossType
 import neptun.jxy1vz.hp_cluedo.domain.model.Note
 import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
 import neptun.jxy1vz.hp_cluedo.domain.model.card.*
 import neptun.jxy1vz.hp_cluedo.domain.model.card.CardType
-import neptun.jxy1vz.hp_cluedo.network.model.message.SuspectMessage
+import neptun.jxy1vz.hp_cluedo.data.network.model.message.SuspectMessage
 
 suspend fun CardDBmodel.toDomainModel(context: Context): Card {
     val imageAsset = CluedoDatabase.getInstance(context).assetDao().getAssetByTag(imageRes)
@@ -51,7 +51,7 @@ suspend fun CardDBmodel.toDomainModel(context: Context): Card {
     }
 }
 
-fun neptun.jxy1vz.hp_cluedo.database.model.CardType.toDomainModel(): CardType {
+fun neptun.jxy1vz.hp_cluedo.data.database.model.CardType.toDomainModel(): CardType {
     return when (this) {
         HELPER_TOOL -> HelperType.TOOL
         HELPER_SPELL -> HelperType.SPELL
@@ -77,7 +77,7 @@ fun neptun.jxy1vz.hp_cluedo.database.model.CardType.toDomainModel(): CardType {
     }
 }
 
-fun CardType.toDatabaseModel(): neptun.jxy1vz.hp_cluedo.database.model.CardType {
+fun CardType.toDatabaseModel(): neptun.jxy1vz.hp_cluedo.data.database.model.CardType {
     return when (this) {
         HelperType.TOOL -> HELPER_TOOL
         HelperType.SPELL -> HELPER_SPELL

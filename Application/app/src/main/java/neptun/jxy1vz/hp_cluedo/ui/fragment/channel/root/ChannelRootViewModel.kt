@@ -5,7 +5,7 @@ import androidx.databinding.BaseObservable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentChannelRootBinding
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener

@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.hp_cluedo.R
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentGameModeBinding
 import neptun.jxy1vz.hp_cluedo.domain.util.isOnline
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView

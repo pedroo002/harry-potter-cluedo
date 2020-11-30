@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentCreateChannelBinding
-import neptun.jxy1vz.hp_cluedo.network.pusher.PusherInstance
+import neptun.jxy1vz.hp_cluedo.data.network.pusher.PusherInstance
 import neptun.jxy1vz.hp_cluedo.ui.activity.menu.MenuActivity
 import neptun.jxy1vz.hp_cluedo.ui.activity.menu.MenuListener
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener

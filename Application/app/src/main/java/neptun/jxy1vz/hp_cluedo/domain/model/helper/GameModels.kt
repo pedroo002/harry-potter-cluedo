@@ -4,8 +4,8 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
-import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
-import neptun.jxy1vz.hp_cluedo.database.model.string
+import neptun.jxy1vz.hp_cluedo.data.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.data.database.model.string
 import neptun.jxy1vz.hp_cluedo.domain.model.*
 import neptun.jxy1vz.hp_cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.hp_cluedo.domain.model.card.PlayerCard

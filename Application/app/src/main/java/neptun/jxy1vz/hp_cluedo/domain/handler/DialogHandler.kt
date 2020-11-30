@@ -7,12 +7,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.domain.model.Player
 import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
 import neptun.jxy1vz.hp_cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.hp_cluedo.domain.util.removePlayer
-import neptun.jxy1vz.hp_cluedo.network.pusher.PusherInstance
+import neptun.jxy1vz.hp_cluedo.data.network.pusher.PusherInstance
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.activityListener
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.channelName

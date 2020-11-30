@@ -15,16 +15,16 @@ import com.pusher.client.channel.User
 import kotlinx.android.synthetic.main.fragment_incrimination_details.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.hp_cluedo.R
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
-import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
-import neptun.jxy1vz.hp_cluedo.database.model.string
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.data.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentIncriminationDetailsBinding
 import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
 import neptun.jxy1vz.hp_cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
-import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.model.message.CardEventMessage
-import neptun.jxy1vz.hp_cluedo.network.pusher.PusherInstance
+import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
+import neptun.jxy1vz.hp_cluedo.data.network.model.message.CardEventMessage
+import neptun.jxy1vz.hp_cluedo.data.network.pusher.PusherInstance
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 

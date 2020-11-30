@@ -5,17 +5,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
-import neptun.jxy1vz.hp_cluedo.database.model.AssetDBmodel
-import neptun.jxy1vz.hp_cluedo.database.model.CardDBmodel
-import neptun.jxy1vz.hp_cluedo.database.model.CardType.PLAYER
-import neptun.jxy1vz.hp_cluedo.database.model.DarkHelperPairDBmodel
-import neptun.jxy1vz.hp_cluedo.database.model.string
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.model.AssetDBmodel
+import neptun.jxy1vz.hp_cluedo.data.database.model.CardDBmodel
+import neptun.jxy1vz.hp_cluedo.data.database.model.CardType.PLAYER
+import neptun.jxy1vz.hp_cluedo.data.database.model.DarkHelperPairDBmodel
+import neptun.jxy1vz.hp_cluedo.data.database.model.string
 import neptun.jxy1vz.hp_cluedo.domain.model.card.*
 import neptun.jxy1vz.hp_cluedo.domain.util.Interactor
 import neptun.jxy1vz.hp_cluedo.domain.util.toDatabaseModel
 import neptun.jxy1vz.hp_cluedo.domain.util.toDomainModel
-import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.ui.activity.login.LoginActivityListener
 
 class DatabaseAccess(private val context: Context) {

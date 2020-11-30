@@ -9,8 +9,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.databinding.ActivityMenuBinding
-import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.model.player.PlayerRequest
+import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
+import neptun.jxy1vz.hp_cluedo.data.network.model.player.PlayerRequest
 import neptun.jxy1vz.hp_cluedo.ui.fragment.channel.create.CreateChannelFragment
 import neptun.jxy1vz.hp_cluedo.ui.fragment.channel.join.JoinChannelFragment
 import neptun.jxy1vz.hp_cluedo.ui.fragment.character_selector.multi.MultiplayerCharacterSelectorFragment

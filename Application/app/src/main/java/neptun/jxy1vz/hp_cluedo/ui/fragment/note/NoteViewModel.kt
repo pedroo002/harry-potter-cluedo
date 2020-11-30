@@ -14,14 +14,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentNoteBinding
 import neptun.jxy1vz.hp_cluedo.domain.model.Note
 import neptun.jxy1vz.hp_cluedo.domain.model.Player
 import neptun.jxy1vz.hp_cluedo.domain.util.Interactor
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.domain.util.toDatabaseModel
-import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
 class NoteViewModel(private val context: Context, player: Player, private val bind: FragmentNoteBinding, private val listener: ViewModelListener) : BaseObservable() {

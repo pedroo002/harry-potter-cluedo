@@ -1,13 +1,13 @@
 package neptun.jxy1vz.hp_cluedo.domain.util
 
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
-import neptun.jxy1vz.hp_cluedo.database.model.AssetDBmodel
-import neptun.jxy1vz.hp_cluedo.database.model.CardDBmodel
-import neptun.jxy1vz.hp_cluedo.database.model.DarkHelperPairDBmodel
-import neptun.jxy1vz.hp_cluedo.database.model.NoteDBmodel
-import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.model.asset_list.AssetCount
-import neptun.jxy1vz.hp_cluedo.network.model.asset_list.AssetList
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.model.AssetDBmodel
+import neptun.jxy1vz.hp_cluedo.data.database.model.CardDBmodel
+import neptun.jxy1vz.hp_cluedo.data.database.model.DarkHelperPairDBmodel
+import neptun.jxy1vz.hp_cluedo.data.database.model.NoteDBmodel
+import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
+import neptun.jxy1vz.hp_cluedo.data.network.model.asset_list.AssetCount
+import neptun.jxy1vz.hp_cluedo.data.network.model.asset_list.AssetList
 
 class Interactor(private val db: CluedoDatabase, private val retrofit: RetrofitInstance) {
 

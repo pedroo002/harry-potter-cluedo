@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import neptun.jxy1vz.hp_cluedo.domain.model.card.HelperCard
-import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
+import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 

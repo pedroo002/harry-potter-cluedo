@@ -12,9 +12,9 @@ import androidx.core.animation.doOnEnd
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.hp_cluedo.R
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
-import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
-import neptun.jxy1vz.hp_cluedo.database.model.string
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.data.database.model.string
 import neptun.jxy1vz.hp_cluedo.domain.model.DoorState
 import neptun.jxy1vz.hp_cluedo.domain.model.Position
 import neptun.jxy1vz.hp_cluedo.domain.model.State

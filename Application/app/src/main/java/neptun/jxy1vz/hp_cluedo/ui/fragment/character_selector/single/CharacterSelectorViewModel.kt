@@ -12,9 +12,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
-import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
-import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
-import neptun.jxy1vz.hp_cluedo.database.model.string
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.database.model.AssetPrefixes
+import neptun.jxy1vz.hp_cluedo.data.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentCharacterSelectorBinding
 import neptun.jxy1vz.hp_cluedo.domain.model.card.PlayerCard
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
@@ -41,7 +41,8 @@ class CharacterSelectorViewModel(private val bind: FragmentCharacterSelectorBind
     init {
         GlobalScope.launch(Dispatchers.IO) {
             playerTokens = CluedoDatabase.getInstance(context).assetDao().getAssetsByPrefix(AssetPrefixes.PLAYER_TOKENS.string())!!.map { assetDBmodel -> assetDBmodel.url }
-            playerCards = CluedoDatabase.getInstance(context).cardDao().getCardsByType(neptun.jxy1vz.hp_cluedo.database.model.CardType.PLAYER.string())!!.map { dbModel -> dbModel.toDomainModel(context) as PlayerCard }
+            playerCards = CluedoDatabase.getInstance(context).cardDao().getCardsByType(
+                neptun.jxy1vz.hp_cluedo.data.database.model.CardType.PLAYER.string())!!.map { dbModel -> dbModel.toDomainModel(context) as PlayerCard }
             withContext(Dispatchers.Main) {
                 loadUrlImageIntoImageView(playerTokens[1], context, bind.ivGinny)
                 loadUrlImageIntoImageView(playerTokens[3], context, bind.ivHarry)
