@@ -75,14 +75,6 @@ class Interactor(private val db: CluedoDatabase, private val retrofit: RetrofitI
         db.assetDao().insertIntoTable(asset)
     }
 
-    suspend fun updateAsset(asset: AssetDBmodel) {
-        db.assetDao().updateTable(asset)
-    }
-
-    suspend fun getAssetByUrl(url: String): AssetDBmodel? {
-        return db.assetDao().getAssetByTag(url)
-    }
-
     suspend fun getAssetsByPrefix(prefix: String): List<AssetDBmodel>? {
         return db.assetDao().getAssetsByPrefix(prefix)
     }

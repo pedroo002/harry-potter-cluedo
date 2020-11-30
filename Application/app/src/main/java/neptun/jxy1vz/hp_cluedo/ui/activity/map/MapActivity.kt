@@ -2,7 +2,6 @@ package neptun.jxy1vz.hp_cluedo.ui.activity.map
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity

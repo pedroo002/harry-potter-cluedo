@@ -3,7 +3,6 @@ package neptun.jxy1vz.hp_cluedo.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
 
 @Entity(tableName = "Assets")
 data class AssetDBmodel(
