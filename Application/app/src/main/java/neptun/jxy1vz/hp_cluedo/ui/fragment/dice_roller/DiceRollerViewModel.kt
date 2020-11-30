@@ -16,7 +16,7 @@ import neptun.jxy1vz.hp_cluedo.databinding.FragmentDiceRollerBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.StateMachineHandler
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.model.message.dice.DiceDataMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.DiceDataMessage
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody

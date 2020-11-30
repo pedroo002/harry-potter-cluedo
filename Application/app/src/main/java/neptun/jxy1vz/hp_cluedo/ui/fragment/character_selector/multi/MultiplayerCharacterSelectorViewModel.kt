@@ -16,11 +16,11 @@ import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
 import neptun.jxy1vz.hp_cluedo.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentMultiplayerCharacterSelectorBinding
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.model.message.presence.PlayerPresenceMessage
-import neptun.jxy1vz.hp_cluedo.network.model.message.selection.CatchUpMessage
-import neptun.jxy1vz.hp_cluedo.network.model.message.selection.CharacterSelectionMessage
-import neptun.jxy1vz.hp_cluedo.network.model.message.selection.SelectionMessageBody
-import neptun.jxy1vz.hp_cluedo.network.model.message.submit.CharacterSubmitMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.PlayerPresenceMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.CatchUpMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.CharacterSelectionMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.SelectionMessageBody
+import neptun.jxy1vz.hp_cluedo.network.model.message.CharacterSubmitMessage
 import neptun.jxy1vz.hp_cluedo.network.model.player.PlayerDomainModel
 import neptun.jxy1vz.hp_cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener

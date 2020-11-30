@@ -23,7 +23,7 @@ import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
 import neptun.jxy1vz.hp_cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.model.message.card_event.CardEventMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.CardEventMessage
 import neptun.jxy1vz.hp_cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener

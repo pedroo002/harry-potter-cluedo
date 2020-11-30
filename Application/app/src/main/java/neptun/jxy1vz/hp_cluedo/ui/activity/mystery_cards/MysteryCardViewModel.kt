@@ -26,9 +26,9 @@ import neptun.jxy1vz.hp_cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.hp_cluedo.domain.util.toDatabaseModel
 import neptun.jxy1vz.hp_cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.model.message.mystery_card.MysteryCardMessageBody
-import neptun.jxy1vz.hp_cluedo.network.model.message.mystery_card.MysteryCardPlayerPair
-import neptun.jxy1vz.hp_cluedo.network.model.message.mystery_card.MysteryCardsMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.MysteryCardMessageBody
+import neptun.jxy1vz.hp_cluedo.network.model.message.MysteryCardPlayerPair
+import neptun.jxy1vz.hp_cluedo.network.model.message.MysteryCardsMessage
 import neptun.jxy1vz.hp_cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapActivity
 import neptun.jxy1vz.hp_cluedo.ui.fragment.card_pager.CardFragment

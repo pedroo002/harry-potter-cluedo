@@ -9,7 +9,7 @@ import neptun.jxy1vz.hp_cluedo.domain.model.Note
 import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
 import neptun.jxy1vz.hp_cluedo.domain.model.card.*
 import neptun.jxy1vz.hp_cluedo.domain.model.card.CardType
-import neptun.jxy1vz.hp_cluedo.network.model.message.suspect.SuspectMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.SuspectMessage
 
 suspend fun CardDBmodel.toDomainModel(context: Context): Card {
     val imageAsset = CluedoDatabase.getInstance(context).assetDao().getAssetByTag(imageRes)

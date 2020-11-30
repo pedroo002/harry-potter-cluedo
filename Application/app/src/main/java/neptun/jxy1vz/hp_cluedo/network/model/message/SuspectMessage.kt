@@ -1,4 +1,4 @@
-package neptun.jxy1vz.hp_cluedo.network.model.message.suspect
+package neptun.jxy1vz.hp_cluedo.network.model.message
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

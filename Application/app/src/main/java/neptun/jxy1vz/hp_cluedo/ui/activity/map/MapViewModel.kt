@@ -16,8 +16,6 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.database.CluedoDatabase
-import neptun.jxy1vz.hp_cluedo.database.model.AssetPrefixes
-import neptun.jxy1vz.hp_cluedo.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.ActivityMapBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.*
 import neptun.jxy1vz.hp_cluedo.domain.model.*
@@ -28,11 +26,11 @@ import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.domain.util.removePlayer
 import neptun.jxy1vz.hp_cluedo.domain.util.toDomainModel
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.model.message.card_event.CardEventMessage
-import neptun.jxy1vz.hp_cluedo.network.model.message.dice.DiceDataMessage
-import neptun.jxy1vz.hp_cluedo.network.model.message.move.MovingData
-import neptun.jxy1vz.hp_cluedo.network.model.message.presence.PlayerPresenceMessage
-import neptun.jxy1vz.hp_cluedo.network.model.message.suspect.SuspectMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.CardEventMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.DiceDataMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.MovingData
+import neptun.jxy1vz.hp_cluedo.network.model.message.PlayerPresenceMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.SuspectMessage
 import neptun.jxy1vz.hp_cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.hp_cluedo.ui.fragment.dice_roller.DiceRollerViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.endgame.EndOfGameFragment

@@ -34,7 +34,7 @@ import neptun.jxy1vz.hp_cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.domain.util.removePlayer
 import neptun.jxy1vz.hp_cluedo.network.api.RetrofitInstance
-import neptun.jxy1vz.hp_cluedo.network.model.message.card_event.CardEventMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.CardEventMessage
 import neptun.jxy1vz.hp_cluedo.network.pusher.PusherInstance
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
@@ -164,7 +164,8 @@ class DarkCardViewModel(
 
             bind("helper-card-thrown", object : PresenceChannelEventListener {
                 override fun onEvent(channelName: String?, eventName: String?, message: String?) {
-                    val messageJson = RetrofitInstance.getInstance(context).moshi.adapter(CardEventMessage::class.java).fromJson(message!!)!!
+                    val messageJson = RetrofitInstance.getInstance(context).moshi.adapter(
+                        CardEventMessage::class.java).fromJson(message!!)!!
                     if (messageJson.playerId == MapViewModel.mPlayerId)
                         return
                     val player = MapViewModel.playerHandler.getPlayerById(messageJson.playerId)

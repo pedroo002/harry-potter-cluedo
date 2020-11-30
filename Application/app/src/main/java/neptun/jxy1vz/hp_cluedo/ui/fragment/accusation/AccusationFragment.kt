@@ -15,7 +15,7 @@ import neptun.jxy1vz.hp_cluedo.databinding.FragmentAccusationBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.DialogDismiss
 import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
 import neptun.jxy1vz.hp_cluedo.domain.util.toApiModel
-import neptun.jxy1vz.hp_cluedo.network.model.message.suspect.SuspectMessage
+import neptun.jxy1vz.hp_cluedo.network.model.message.SuspectMessage
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
