@@ -33,6 +33,9 @@ interface CardDAO : BaseDAO<CardDBmodel> {
     @Query("SELECT * FROM Cards WHERE type LIKE 'MYSTERY_%'")
     suspend fun getAllMysteryCards(): List<CardDBmodel>?
 
+    @Query("UPDATE Cards SET owner = NULL WHERE id = (:id)")
+    suspend fun throwCard(id: Long)
+
     @Query("DELETE FROM Cards")
     suspend fun removeCards()
 }

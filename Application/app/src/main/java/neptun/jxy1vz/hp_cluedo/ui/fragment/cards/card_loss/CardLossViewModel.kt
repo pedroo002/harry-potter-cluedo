@@ -5,6 +5,8 @@ import androidx.databinding.BaseObservable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.domain.model.card.HelperCard
 import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
@@ -28,14 +30,19 @@ class CardLossViewModel(
     }
 
     fun throwCard() {
-        MapViewModel.player.helperCards!!.remove(selectedCard)
-        if (MapViewModel.isGameModeMulti())
-            sendCardThrowEvent(selectedCard.name)
-        listener.onFinish()
+        GlobalScope.launch(Dispatchers.IO) {
+            CluedoDatabase.getInstance(context).cardDao().throwCard(selectedCard.id.toLong())
+            withContext(Dispatchers.Main) {
+                MapViewModel.player.helperCards!!.remove(selectedCard)
+                if (MapViewModel.isGameModeMulti())
+                    sendCardThrowEvent(selectedCard.name)
+                listener.onFinish()
+            }
+        }
     }
 
-    private fun sendCardThrowEvent(cardName: String) {
-        GlobalScope.launch(Dispatchers.IO) {
+    private suspend fun sendCardThrowEvent(cardName: String) {
+        withContext(Dispatchers.IO) {
             RetrofitInstance.getInstance(context).cluedo.sendCardThrowEvent(MapViewModel.channelName, MapViewModel.mPlayerId!!, cardName)
         }
     }
