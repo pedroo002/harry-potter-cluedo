@@ -11,6 +11,5 @@ data class ChannelApiModel(
     @Json(name = "max_user") var maxUser: Int,
     @Json(name = "subscribed_users") var subscribedUsers: List<String>,
     @Json(name = "is_waiting") var isWaiting: Boolean,
-    @Json(name = "loaded_users") @Transient var loadedUsers: Int = 0,
     @Json(name = "__v") @Transient var version: Int = 0
 )
