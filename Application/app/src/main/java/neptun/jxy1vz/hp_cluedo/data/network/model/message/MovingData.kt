@@ -11,6 +11,7 @@ data class MovingData(
     var targetPosition: PosData
 )
 
+@JsonClass(generateAdapter = true)
 data class PosData(
     @Json(name = "row")
     var row: Int,
