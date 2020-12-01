@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.ImageView
 import android.widget.NumberPicker
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.android.synthetic.main.activity_map.view.*
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.domain.model.Player
@@ -40,7 +41,7 @@ fun removePlayer(player: Player) {
 }
 
 fun loadUrlImageIntoImageView(url: String, context: Context, iv: ImageView) {
-    Glide.with(context).load(url).placeholder(R.drawable.placeholder_image).into(iv)
+    Glide.with(context).load(url).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.placeholder_image).into(iv)
 }
 
 fun isOnline(): Boolean {
