@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.NumberPicker
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_map.view.*
+import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.domain.model.Player
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.gameModels
@@ -39,7 +40,7 @@ fun removePlayer(player: Player) {
 }
 
 fun loadUrlImageIntoImageView(url: String, context: Context, iv: ImageView) {
-    Glide.with(context).load(url).into(iv)
+    Glide.with(context).load(url).placeholder(R.drawable.placeholder_image).into(iv)
 }
 
 fun isOnline(): Boolean {
