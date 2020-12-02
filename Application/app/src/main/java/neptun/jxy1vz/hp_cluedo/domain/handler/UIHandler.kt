@@ -15,10 +15,7 @@ import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.data.database.model.AssetPrefixes
 import neptun.jxy1vz.hp_cluedo.data.database.model.string
-import neptun.jxy1vz.hp_cluedo.domain.model.DoorState
-import neptun.jxy1vz.hp_cluedo.domain.model.Position
-import neptun.jxy1vz.hp_cluedo.domain.model.State
-import neptun.jxy1vz.hp_cluedo.domain.model.boolean
+import neptun.jxy1vz.hp_cluedo.domain.model.*
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.diceList
@@ -506,14 +503,14 @@ class UIHandler(private val map: MapViewModel.Companion) : Animation.AnimationLi
         view.layoutParams = layoutParams
     }
 
-    fun setLayoutConstraintBottom(view: View, row: Int) {
+    private fun setLayoutConstraintBottom(view: View, row: Int) {
         val layoutParams: ConstraintLayout.LayoutParams =
             view.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.bottomToBottom = row
         view.layoutParams = layoutParams
     }
 
-    fun setLayoutConstraintEnd(view: View, col: Int) {
+    private fun setLayoutConstraintEnd(view: View, col: Int) {
         val layoutParams: ConstraintLayout.LayoutParams =
             view.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.endToEnd = col

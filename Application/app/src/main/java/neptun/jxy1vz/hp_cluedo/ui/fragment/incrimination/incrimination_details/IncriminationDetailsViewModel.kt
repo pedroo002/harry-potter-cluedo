@@ -25,6 +25,7 @@ import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.data.network.model.message.CardEventMessage
 import neptun.jxy1vz.hp_cluedo.data.network.pusher.PusherInstance
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
@@ -391,7 +392,7 @@ class IncriminationDetailsViewModel(
                     )
                 if (cards != null) {
                     val revealedCard =
-                        MapViewModel.gameModels.playerList[playerIdx].revealCardToPlayer(
+                        (MapViewModel.gameModels.playerList[playerIdx] as ThinkingPlayer).revealCardToPlayer(
                             suspect.playerId,
                             cards
                         )

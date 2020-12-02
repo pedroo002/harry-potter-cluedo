@@ -13,11 +13,14 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
+import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.databinding.ActivityLoginBinding
 import neptun.jxy1vz.hp_cluedo.domain.model.helper.DatabaseAccess
-import neptun.jxy1vz.hp_cluedo.domain.util.isOnline
+import neptun.jxy1vz.hp_cluedo.domain.util.isServerReachable
 import neptun.jxy1vz.hp_cluedo.ui.activity.menu.MenuActivity
+import java.net.Inet4Address
 
 class LoginActivity : AppCompatActivity(), LoginActivityListener {
 
@@ -48,27 +51,50 @@ class LoginActivity : AppCompatActivity(), LoginActivityListener {
         activityLoginBinding.loginViewModel = LoginViewModel(activityLoginBinding, applicationContext, this, lifecycleScope)
         progressBar = activityLoginBinding.loadingAssetsProgressBar
 
-        if (!isOnline()) {
-            showWarning()
-        }
+        activityLoginBinding.txtPlayerName.isEnabled = false
+        activityLoginBinding.txtPassword.isEnabled = false
 
-        activityLoginBinding.loginRefresh.setOnRefreshListener {
-            if (isOnline()) {
-                Snackbar.make(activityLoginBinding.root, applicationContext.resources.getString(R.string.connected), Snackbar.LENGTH_LONG).show()
-                activityLoginBinding.txtPlayerName.isEnabled = true
-                activityLoginBinding.txtPassword.isEnabled = true
-                checkIfFirstStart()
-                activityLoginBinding.loginRefresh.isRefreshing = false
+        activityLoginBinding.loginRefresh.isRefreshing = true
+        lifecycleScope.launch(Dispatchers.IO) {
+            val ipAddress = Inet4Address.getByName(RetrofitInstance.DOMAIN).hostAddress
+            if (!isServerReachable(ipAddress)) {
+                withContext(Dispatchers.Main) {
+                    showWarning()
+                }
             }
-            else
-                showWarning()
-        }
+            else {
+                withContext(Dispatchers.Main) {
+                    activityLoginBinding.loginRefresh.isRefreshing = false
+                    activityLoginBinding.txtPlayerName.isEnabled = true
+                    activityLoginBinding.txtPassword.isEnabled = true
+                }
+            }
+            withContext(Dispatchers.Main) {
+                activityLoginBinding.loginRefresh.setOnRefreshListener {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val online = isServerReachable(ipAddress)
+                        withContext(Dispatchers.Main) {
+                            if (online) {
+                                Snackbar.make(activityLoginBinding.root, applicationContext.resources.getString(R.string.connected), Snackbar.LENGTH_LONG).show()
+                                activityLoginBinding.txtPlayerName.isEnabled = true
+                                activityLoginBinding.txtPassword.isEnabled = true
+                                checkIfFirstStart()
+                                activityLoginBinding.loginRefresh.isRefreshing = false
+                            }
+                            else {
+                                showWarning()
+                            }
+                        }
+                    }
+                }
 
-        activityLoginBinding.root.txtPlayerName.addTextChangedListener {
-            buttonEnableValidator()
-        }
-        activityLoginBinding.root.txtPassword.addTextChangedListener {
-            buttonEnableValidator()
+                activityLoginBinding.root.txtPlayerName.addTextChangedListener {
+                    buttonEnableValidator()
+                }
+                activityLoginBinding.root.txtPassword.addTextChangedListener {
+                    buttonEnableValidator()
+                }
+            }
         }
     }
 
@@ -103,6 +129,7 @@ class LoginActivity : AppCompatActivity(), LoginActivityListener {
     }
 
     private fun showWarning() {
+        activityLoginBinding.loginRefresh.isRefreshing = false
         Snackbar.make(activityLoginBinding.root, applicationContext.resources.getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG).show()
         activityLoginBinding.txtPlayerName.isEnabled = false
         activityLoginBinding.txtPassword.isEnabled = false

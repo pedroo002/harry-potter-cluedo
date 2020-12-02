@@ -10,7 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentPlayerDiesBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.DialogDismiss
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.hp_cluedo.ui.fragment.card_pager.CardFragment
@@ -24,12 +25,12 @@ class PlayerDiesOrLeavesFragment : Fragment(), ViewModelListener {
         WRONG_SOLUTION
     }
 
-    private lateinit var player: Player
+    private lateinit var player: BasePlayer
     private lateinit var scenario: ExitScenario
     private lateinit var listener: DialogDismiss
     private lateinit var title: String
 
-    fun setArgs(p: Player, scenario: ExitScenario, l: DialogDismiss, t: String) {
+    fun setArgs(p: BasePlayer, scenario: ExitScenario, l: DialogDismiss, t: String) {
         player = p
         this.scenario = scenario
         listener = l
@@ -37,7 +38,7 @@ class PlayerDiesOrLeavesFragment : Fragment(), ViewModelListener {
     }
 
     companion object {
-        fun newInstance(player: Player, scenario: ExitScenario, listener: DialogDismiss, title: String) : PlayerDiesOrLeavesFragment {
+        fun newInstance(player: BasePlayer, scenario: ExitScenario, listener: DialogDismiss, title: String) : PlayerDiesOrLeavesFragment {
             val fragment = PlayerDiesOrLeavesFragment()
             fragment.setArgs(player, scenario, listener, title)
             return fragment

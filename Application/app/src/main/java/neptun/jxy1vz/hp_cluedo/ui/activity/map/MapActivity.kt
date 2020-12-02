@@ -18,11 +18,11 @@ import neptun.jxy1vz.hp_cluedo.data.database.model.AssetPrefixes
 import neptun.jxy1vz.hp_cluedo.data.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.ActivityMapBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.MapActivityListener
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
 import neptun.jxy1vz.hp_cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.data.network.pusher.PusherInstance
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
 
 class MapActivity : AppCompatActivity(), MapActivityListener {
 
@@ -111,7 +111,7 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
                         R.id.ivGreenPlayer
                     )
 
-                    val playerImagePairs: MutableList<Pair<Player, ImageView>> = ArrayList()
+                    val playerImagePairs: MutableList<Pair<BasePlayer, ImageView>> = ArrayList()
                     tiles.forEach { tile ->
                         var delete = true
                         val player = playerList.find { player -> player.tile == tile }
@@ -127,7 +127,6 @@ class MapActivity : AppCompatActivity(), MapActivityListener {
                     activityMapBinding.mapViewModel = MapViewModel(
                         gameModel,
                         this@MapActivity,
-                        activityMapBinding,
                         applicationContext,
                         intent.getIntExtra(
                             applicationContext.resources.getString(R.string.player_id),

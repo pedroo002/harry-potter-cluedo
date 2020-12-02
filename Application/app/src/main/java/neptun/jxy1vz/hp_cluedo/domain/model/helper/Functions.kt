@@ -1,9 +1,10 @@
 package neptun.jxy1vz.hp_cluedo.domain.model.helper
 
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.domain.model.card.DarkCard
 
-fun getHelperObjects(player: Player, darkCard: DarkCard): ArrayList<String> {
+fun getHelperObjects(player: BasePlayer, darkCard: DarkCard): ArrayList<String> {
     val helperObjects = ArrayList<String>()
     if (!player.helperCards.isNullOrEmpty()) {
         player.helperCards!!.forEach { helperCard ->

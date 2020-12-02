@@ -7,12 +7,15 @@ import kotlinx.android.synthetic.main.fragment_game_mode.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
+import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentGameModeBinding
-import neptun.jxy1vz.hp_cluedo.domain.util.isOnline
+import neptun.jxy1vz.hp_cluedo.domain.util.isServerReachable
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
+import java.net.Inet4Address
 
 class GameModeViewModel(private val bind: FragmentGameModeBinding, private val context: Context, private val listener: ViewModelListener) : BaseObservable() {
 
@@ -97,17 +100,23 @@ class GameModeViewModel(private val bind: FragmentGameModeBinding, private val c
     }
 
     fun setGameMode() {
-        if (gameMode == context.resources.getStringArray(R.array.playmodes)[1] && !isOnline()) {
-            Snackbar.make(bind.root, context.resources.getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG).show()
-            return
-        }
-        val pref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
-        val editor = pref.edit()
-        editor.putString(context.resources.getString(R.string.play_mode_key), gameMode)
-        editor.putInt(context.resources.getString(R.string.player_count_key), playerCount)
-        editor.apply()
+        GlobalScope.launch(Dispatchers.IO) {
+            val ipAddress = Inet4Address.getByName(RetrofitInstance.DOMAIN).hostAddress
+            val isOnline = isServerReachable(ipAddress)
+            withContext(Dispatchers.Main) {
+                if (gameMode == context.resources.getStringArray(R.array.playmodes)[1] && isOnline) {
+                    Snackbar.make(bind.root, context.resources.getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG).show()
+                    return@withContext
+                }
+                val pref = context.getSharedPreferences(context.resources.getString(R.string.game_params_pref), Context.MODE_PRIVATE)
+                val editor = pref.edit()
+                editor.putString(context.resources.getString(R.string.play_mode_key), gameMode)
+                editor.putInt(context.resources.getString(R.string.player_count_key), playerCount)
+                editor.apply()
 
-        listener.onFinish()
+                listener.onFinish()
+            }
+        }
     }
 
     fun cancel() {

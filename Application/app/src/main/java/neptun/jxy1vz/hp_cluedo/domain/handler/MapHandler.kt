@@ -1,8 +1,6 @@
 package neptun.jxy1vz.hp_cluedo.domain.handler
 
-import neptun.jxy1vz.hp_cluedo.domain.model.DoorState
-import neptun.jxy1vz.hp_cluedo.domain.model.Position
-import neptun.jxy1vz.hp_cluedo.domain.model.Room
+import neptun.jxy1vz.hp_cluedo.domain.model.*
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.gryffindorState
@@ -164,11 +162,11 @@ class MapHandler(private val map: MapViewModel.Companion) {
 
                 val desiredRooms = ArrayList<Room>()
                 for (room in gameModels.roomList) {
-                    if (map.playerHandler.getPlayerById(playerId).hasSolution() && room.id == 4) {
+                    if ((map.playerHandler.getPlayerById(playerId) as ThinkingPlayer).hasSolution() && room.id == 4) {
                         desiredRooms.add(room)
                         break
                     }
-                    else if (!map.playerHandler.getPlayerById(playerId).hasConclusion(room.name) && room.id != 4) {
+                    else if (!(map.playerHandler.getPlayerById(playerId) as ThinkingPlayer).hasConclusion(room.name) && room.id != 4) {
                         desiredRooms.add(room)
                     }
                     else if (!map.playerHandler.hasKnowledgeOfUnusedCards(playerId) && room.id == 4)

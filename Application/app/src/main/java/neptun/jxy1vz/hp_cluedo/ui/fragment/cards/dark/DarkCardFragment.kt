@@ -9,9 +9,10 @@ import androidx.fragment.app.Fragment
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentDarkCardBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.DialogDismiss
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
 import neptun.jxy1vz.hp_cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.hp_cluedo.domain.model.card.LossType
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
@@ -20,11 +21,11 @@ class DarkCardFragment: Fragment(),
 
     private var playerId: Int = 0
     private lateinit var card: DarkCard
-    private lateinit var playerList: List<Player>
+    private lateinit var playerList: List<BasePlayer>
     private lateinit var affectedPlayerIds: List<Int>
     private lateinit var listener: DialogDismiss
 
-    fun setArgs(id: Int, card: DarkCard, list: List<Player>, ids: List<Int>, l: DialogDismiss) {
+    fun setArgs(id: Int, card: DarkCard, list: List<BasePlayer>, ids: List<Int>, l: DialogDismiss) {
         playerId = id
         this.card = card
         playerList = list
@@ -33,7 +34,7 @@ class DarkCardFragment: Fragment(),
     }
 
     companion object {
-        fun newInstance(playerId: Int, card: DarkCard, playerList: List<Player>, affectedPlayerIds: List<Int>, listener: DialogDismiss): DarkCardFragment {
+        fun newInstance(playerId: Int, card: DarkCard, playerList: List<BasePlayer>, affectedPlayerIds: List<Int>, listener: DialogDismiss): DarkCardFragment {
             val fragment = DarkCardFragment()
             fragment.setArgs(playerId, card, playerList, affectedPlayerIds, listener)
             return fragment

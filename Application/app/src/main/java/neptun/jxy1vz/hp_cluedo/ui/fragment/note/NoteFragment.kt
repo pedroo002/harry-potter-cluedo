@@ -14,7 +14,8 @@ import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentNoteBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.DialogDismiss
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
@@ -22,16 +23,16 @@ import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 class NoteFragment : Fragment(),
     ViewModelListener {
 
-    private lateinit var player: Player
+    private lateinit var player: BasePlayer
     private lateinit var listener: DialogDismiss
 
-    fun setArgs(p: Player, l: DialogDismiss) {
+    fun setArgs(p: BasePlayer, l: DialogDismiss) {
         player = p
         listener = l
     }
 
     companion object {
-        fun newInstance(player: Player, listener: DialogDismiss) : NoteFragment {
+        fun newInstance(player: BasePlayer, listener: DialogDismiss) : NoteFragment {
             val fragment = NoteFragment()
             fragment.setArgs(player, listener)
             return fragment

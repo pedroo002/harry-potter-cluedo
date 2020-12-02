@@ -61,7 +61,7 @@ class CardLossFragment : Fragment(),
         for (card in cardList) {
             fragmentList.add(
                 CardFragment.newInstance(
-                    card.imageRes!!
+                    card.imageRes
                 )
             )
         }

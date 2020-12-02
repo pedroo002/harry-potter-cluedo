@@ -7,24 +7,48 @@ import neptun.jxy1vz.hp_cluedo.domain.model.card.MysteryType
 import neptun.jxy1vz.hp_cluedo.domain.model.card.PlayerCard
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.mContext
 
-class Player(
-    val id: Int,
-    val card: PlayerCard,
-    var pos: Position,
-    val tile: Int,
-    val gender: Gender,
-    var hp: Int = 70,
-    var mysteryCards: MutableList<MysteryCard> = ArrayList(),
-    var helperCards: MutableList<HelperCard>? = null,
+enum class Gender {
+    MAN,
+    WOMAN
+}
+
+open class BasePlayer(
+    open val id: Int,
+    open val card: PlayerCard,
+    open var pos: Position,
+    open val tile: Int,
+    open val gender: Gender,
+    open var hp: Int = 70,
+    open var mysteryCards: MutableList<MysteryCard> = ArrayList(),
+    open var helperCards: MutableList<HelperCard>? = null
+)
+
+class ThinkingPlayer(
+    override val id: Int,
+    override val card: PlayerCard,
+    override var pos: Position,
+    override val tile: Int,
+    override val gender: Gender,
+    override var hp: Int = 70,
+    override var mysteryCards: MutableList<MysteryCard> = ArrayList(),
+    override var helperCards: MutableList<HelperCard>? = null,
     private var conclusions: HashMap<String, Int>? = null,
     private var suspicions: HashMap<String, Int>? = null,
     private var revealedMysteryCards: HashMap<Int, String>? = null,
     var solution: Suspect? = null
+) : BasePlayer(
+    id,
+    card,
+    pos,
+    tile,
+    gender,
+    hp,
+    mysteryCards,
+    helperCards
 ) {
-
     fun updateConclusions(allMysteryCards: List<MysteryCard>) {
         conclusions!!.filter { con -> con.value == -1 }.forEach { conclusion ->
-            allMysteryCards.filter { c -> c.name == conclusion.key }.forEach {card ->
+            allMysteryCards.filter { c -> c.name == conclusion.key }.forEach { card ->
                 fillSolution(card.type as MysteryType, card.name)
             }
         }
@@ -77,8 +101,7 @@ class Player(
                         fillSolution(type, suspectParam)
                     } else if (conclusions!![otherTwo[0]] == playerWhoShowed || conclusions!![otherTwo[0]] == playerWhoShowed) {
                         suspicions!![suspectParam] = playerWhoShowed
-                    }
-                    else
+                    } else
                         getConclusion(suspectParam, playerWhoShowed)
                 }
             }
@@ -177,7 +200,8 @@ class Player(
 
         if (revealedMysteryCards!!.containsKey(playerId)) {
             cardOptions.forEach { card ->
-                revealedMysteryCards!!.entries.find { entry -> entry.key == playerId && entry.value == card.name
+                revealedMysteryCards!!.entries.find { entry ->
+                    entry.key == playerId && entry.value == card.name
                     return card
                 }
             }
@@ -186,25 +210,22 @@ class Player(
         revealedMysteryCards!![playerId] = cardToReveal.name
         return cardToReveal
     }
+}
 
-    fun hasAlohomora(): Boolean {
-        if (helperCards.isNullOrEmpty())
-            return false
-        if (helperCards!!.map { card -> card.name }.contains(mContext!!.resources.getStringArray(R.array.helper_cards)[26]))
-            return true
+fun BasePlayer.hasAlohomora(): Boolean {
+    if (helperCards.isNullOrEmpty())
         return false
-    }
+    if (helperCards!!.map { card -> card.name }
+            .contains(mContext!!.resources.getStringArray(R.array.helper_cards)[26]))
+        return true
+    return false
+}
 
-    fun hasFelixFelicis(): Boolean {
-        if (helperCards.isNullOrEmpty())
-            return false
-        if (helperCards!!.map { card -> card.name }.contains(mContext!!.resources.getStringArray(R.array.helper_cards)[9]))
-            return true
+fun BasePlayer.hasFelixFelicis(): Boolean {
+    if (helperCards.isNullOrEmpty())
         return false
-    }
-
-    enum class Gender {
-        MAN,
-        WOMAN
-    }
+    if (helperCards!!.map { card -> card.name }
+            .contains(mContext!!.resources.getStringArray(R.array.helper_cards)[9]))
+        return true
+    return false
 }

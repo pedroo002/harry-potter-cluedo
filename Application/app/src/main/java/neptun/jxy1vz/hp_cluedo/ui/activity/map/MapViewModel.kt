@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.*
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
-import neptun.jxy1vz.hp_cluedo.databinding.ActivityMapBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.*
 import neptun.jxy1vz.hp_cluedo.domain.model.*
 import neptun.jxy1vz.hp_cluedo.domain.model.card.HelperCard
@@ -42,10 +41,9 @@ import kotlin.math.abs
 class MapViewModel(
     gm: GameModels,
     listener: MapActivityListener,
-    private val bind: ActivityMapBinding,
     private val context: Context,
     playerId: Int,
-    pairs: List<Pair<Player, ImageView>>,
+    pairs: List<Pair<BasePlayer, ImageView>>,
     root: ZoomLayout,
     fragmentManager: FragmentManager
 ) : BaseObservable() {
@@ -81,14 +79,14 @@ class MapViewModel(
 
         lateinit var mapRoot: ZoomLayout
         lateinit var gameModels: GameModels
-        lateinit var playerImagePairs: List<Pair<Player, ImageView>>
+        lateinit var playerImagePairs: List<Pair<BasePlayer, ImageView>>
 
         lateinit var fm: FragmentManager
 
         lateinit var activityListener: MapActivityListener
 
         var otherPlayerStepsOnStar: Boolean = false
-        lateinit var player: Player
+        lateinit var player: BasePlayer
         lateinit var mapGraph: Graph<Position>
         var selectionList: ArrayList<ImageView> = ArrayList()
         lateinit var diceList: List<ImageView>
@@ -276,9 +274,9 @@ class MapViewModel(
                         }
                     }
 
-                    gameModels.playerList.forEach { p ->
+                    gameModels.playerList.filter { p -> p.id != mPlayerId }.forEach { p ->
                         p.mysteryCards.forEach { card ->
-                            p.getConclusion(card.name, p.id)
+                            (p as ThinkingPlayer).getConclusion(card.name, p.id)
                         }
                     }
                 }
@@ -454,7 +452,7 @@ class MapViewModel(
         }
     }
 
-    private fun navigateToPlayerAndDelete(player: Player) {
+    private fun navigateToPlayerAndDelete(player: BasePlayer) {
         GlobalScope.launch(Dispatchers.Main) {
             cameraHandler.moveCameraToPlayer(player.id)
             delay(1000)

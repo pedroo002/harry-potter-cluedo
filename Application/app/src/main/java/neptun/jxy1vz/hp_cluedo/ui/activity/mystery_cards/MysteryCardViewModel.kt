@@ -20,7 +20,7 @@ import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.data.database.model.CardDBmodel
 import neptun.jxy1vz.hp_cluedo.databinding.ActivityMysteryCardBinding
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.hp_cluedo.domain.model.helper.GameModels
 import neptun.jxy1vz.hp_cluedo.domain.util.toDatabaseModel
@@ -30,6 +30,7 @@ import neptun.jxy1vz.hp_cluedo.data.network.model.message.MysteryCardMessageBody
 import neptun.jxy1vz.hp_cluedo.data.network.model.message.MysteryCardPlayerPair
 import neptun.jxy1vz.hp_cluedo.data.network.model.message.MysteryCardsMessage
 import neptun.jxy1vz.hp_cluedo.data.network.pusher.PusherInstance
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapActivity
 import neptun.jxy1vz.hp_cluedo.ui.fragment.card_pager.CardFragment
 import neptun.jxy1vz.hp_cluedo.ui.fragment.card_pager.adapter.CardPagerAdapter
@@ -45,7 +46,7 @@ class MysteryCardViewModel(
     private val fm: FragmentManager
 ) : BaseObservable() {
 
-    private lateinit var player: Player
+    private lateinit var player: BasePlayer
     private lateinit var adapter: CardPagerAdapter
 
     private val gamePref = context.getSharedPreferences(
@@ -65,7 +66,7 @@ class MysteryCardViewModel(
 
     private lateinit var db: CluedoDatabase
 
-    private lateinit var playerList: List<Player>
+    private lateinit var playerList: List<BasePlayer>
 
     private lateinit var retrofit: RetrofitInstance
     private lateinit var apiChannelName: String

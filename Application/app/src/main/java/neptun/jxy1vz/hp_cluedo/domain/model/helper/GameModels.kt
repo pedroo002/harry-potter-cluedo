@@ -9,12 +9,13 @@ import neptun.jxy1vz.hp_cluedo.data.database.model.string
 import neptun.jxy1vz.hp_cluedo.domain.model.*
 import neptun.jxy1vz.hp_cluedo.domain.model.card.MysteryCard
 import neptun.jxy1vz.hp_cluedo.domain.model.card.PlayerCard
+import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 
 class GameModels(private val context: Context) {
 
     var db: DatabaseAccess = DatabaseAccess(context)
     lateinit var gameSolution: List<MysteryCard>
-    lateinit var playerList: List<Player>
+    lateinit var playerList: List<BasePlayer>
 
     private val roomNameList: Array<String> = context.resources.getStringArray(R.array.rooms)
     lateinit var roomList: List<Room>
@@ -23,7 +24,8 @@ class GameModels(private val context: Context) {
     lateinit var starSelection: String
 
     private suspend fun loadSelections() {
-        val selections = db.interactor.getAssetsByPrefix(AssetPrefixes.SELECTION.string())!!.map { assetDBmodel -> assetDBmodel.url }
+        val selections = db.interactor.getAssetsByPrefix(AssetPrefixes.SELECTION.string())!!
+            .map { assetDBmodel -> assetDBmodel.url }
         roomList = listOf(
             Room(0, roomNameList[7], 0, 6, 5, 0, selections[0]),
             Room(1, roomNameList[5], 0, 15, 6, 9, selections[1]),
@@ -76,7 +78,7 @@ class GameModels(private val context: Context) {
         db.eraseNotes()
     }
 
-    suspend fun keepCurrentPlayers(): List<Player> {
+    suspend fun keepCurrentPlayers(): List<BasePlayer> {
         loadSelections()
 
         val allPlayers = loadPlayers()
@@ -92,7 +94,7 @@ class GameModels(private val context: Context) {
         }
 
         val playerIds = mysteryCards.map { card -> card.second }.distinct()
-        val playersToDelete = ArrayList<Player>()
+        val playersToDelete = ArrayList<BasePlayer>()
         allPlayers.forEach { player ->
             if (!playerIds.contains(player.id))
                 playersToDelete.add(player)
@@ -105,72 +107,102 @@ class GameModels(private val context: Context) {
         return playerList
     }
 
-    suspend fun loadPlayers(): ArrayList<Player> {
+    suspend fun loadPlayers(): ArrayList<BasePlayer> {
         val playerCards: ArrayList<PlayerCard> = ArrayList()
         context.resources.getStringArray(R.array.characters).forEach { name ->
             playerCards.add(db.getCardByName(name) as PlayerCard)
         }
 
-        val listItems = ArrayList<Player>()
+        val listItems = ArrayList<BasePlayer>()
         withContext(Dispatchers.Main) {
             listItems.add(
-                Player(
+                ThinkingPlayer(
                     0,
                     playerCards[0],
                     Position(17, 0),
                     R.id.ivBluePlayer,
-                    Player.Gender.WOMAN
+                    Gender.WOMAN
                 )
             )
             listItems.add(
-                Player(
+                ThinkingPlayer(
                     1,
                     playerCards[1],
                     Position(17, 24),
                     R.id.ivPurplePlayer,
-                    Player.Gender.MAN
+                    Gender.MAN
                 )
             )
             listItems.add(
-                Player(
+                ThinkingPlayer(
                     2,
                     playerCards[2],
                     Position(0, 7),
                     R.id.ivRedPlayer,
-                    Player.Gender.WOMAN
+                    Gender.WOMAN
                 )
             )
             listItems.add(
-                Player(
+                ThinkingPlayer(
                     3,
                     playerCards[3],
                     Position(7, 24),
                     R.id.ivYellowPlayer,
-                    Player.Gender.MAN
+                    Gender.MAN
                 )
             )
             listItems.add(
-                Player(
+                ThinkingPlayer(
                     4,
                     playerCards[4],
                     Position(24, 17),
                     R.id.ivWhitePlayer,
-                    Player.Gender.WOMAN
+                    Gender.WOMAN
                 )
             )
             listItems.add(
-                Player(
+                ThinkingPlayer(
                     5,
                     playerCards[5],
                     Position(7, 0),
                     R.id.ivGreenPlayer,
-                    Player.Gender.MAN
+                    Gender.MAN
                 )
             )
+
+            val gamePref = context.getSharedPreferences(
+                context.resources.getString(R.string.game_params_pref),
+                Context.MODE_PRIVATE
+            )
+            val gameMode =
+                gamePref.getString(context.resources.getString(R.string.play_mode_key), "")
+            val playerId = gamePref.getInt(context.resources.getString(R.string.player_id_key), 0)
+
+            when (gameMode) {
+                context.resources.getStringArray(R.array.playmodes)[0] -> {
+                    (listItems.filter { p -> p.id != playerId } as MutableList<BasePlayer>).replaceAll { transformToBasePlayer(it as ThinkingPlayer) }
+                }
+                context.resources.getStringArray(R.array.playmodes)[1] -> {
+                    listItems.replaceAll { transformToBasePlayer(it as ThinkingPlayer) }
+                }
+            }
 
             playerList = listItems
         }
         return listItems
+    }
+
+    private fun transformToBasePlayer(thinkingPlayer: ThinkingPlayer): BasePlayer {
+        return BasePlayer(
+            thinkingPlayer.id,
+            thinkingPlayer.card,
+            thinkingPlayer.pos,
+            thinkingPlayer.tile,
+            thinkingPlayer.gender,
+            thinkingPlayer.hp,
+            thinkingPlayer.mysteryCards,
+            thinkingPlayer.helperCards
+        )
     }
 
     val starList = listOf(

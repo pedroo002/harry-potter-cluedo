@@ -16,14 +16,15 @@ import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.data.database.model.AssetPrefixes
 import neptun.jxy1vz.hp_cluedo.data.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentPlayerDiesBinding
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
 class PlayerDiesOrLeavesViewModel(
     private val bind: FragmentPlayerDiesBinding,
     context: Context,
-    player: Player,
+    player: BasePlayer,
     title: String,
     lifecycleScope: LifecycleCoroutineScope,
     private val listener: ViewModelListener

@@ -7,10 +7,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.hp_cluedo.domain.model.card.DarkType
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.domain.model.Position
 import neptun.jxy1vz.hp_cluedo.data.network.model.message.MovingData
 import neptun.jxy1vz.hp_cluedo.data.network.model.message.PosData
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
+import neptun.jxy1vz.hp_cluedo.domain.model.Gender
 import neptun.jxy1vz.hp_cluedo.ui.fragment.cards.dark.DarkCardFragment
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.gameModels
@@ -33,7 +35,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) {
         }
     }
 
-    fun getPlayerById(id: Int): Player {
+    fun getPlayerById(id: Int): BasePlayer {
         gameModels.playerList.forEach { player ->
             if (player.id == id)
                 return player
@@ -41,7 +43,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) {
         return gameModels.playerList[0]
     }
 
-    fun getPairById(id: Int): Pair<Player, ImageView> {
+    fun getPairById(id: Int): Pair<BasePlayer, ImageView> {
         playerImagePairs.forEach { pair ->
             if (pair.first.id == id)
                 return pair
@@ -54,7 +56,7 @@ class PlayerHandler(private val map: MapViewModel.Companion) {
             return true
         val p = getPlayerById(playerId)
         unusedMysteryCards.forEach { unusedCard ->
-            if (!p.hasConclusion(unusedCard.name))
+            if (!(p as ThinkingPlayer).hasConclusion(unusedCard.name))
                 return false
         }
         return true
@@ -137,12 +139,12 @@ class PlayerHandler(private val map: MapViewModel.Companion) {
                 }
             }
             DarkType.GENDER_MEN -> {
-                gameModels.playerList.filter { player ->  player.gender == Player.Gender.MAN }.forEach { player ->
+                gameModels.playerList.filter { player ->  player.gender == Gender.MAN }.forEach { player ->
                     playerIds.add(player.id)
                 }
             }
             DarkType.GENDER_WOMEN -> {
-                gameModels.playerList.filter { player ->  player.gender == Player.Gender.WOMAN }.forEach { player ->
+                gameModels.playerList.filter { player ->  player.gender == Gender.WOMAN }.forEach { player ->
                     playerIds.add(player.id)
                 }
             }

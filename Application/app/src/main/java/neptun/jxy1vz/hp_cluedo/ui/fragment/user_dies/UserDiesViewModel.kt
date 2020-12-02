@@ -17,12 +17,13 @@ import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.data.database.model.AssetPrefixes
 import neptun.jxy1vz.hp_cluedo.data.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentUserDiesBinding
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 
-class UserDiesViewModel(private val bind: FragmentUserDiesBinding, context: Context, player: Player, private val listener: ViewModelListener) : BaseObservable() {
+class UserDiesViewModel(private val bind: FragmentUserDiesBinding, context: Context, player: BasePlayer, private val listener: ViewModelListener) : BaseObservable() {
 
     init {
         GlobalScope.launch(Dispatchers.IO) {

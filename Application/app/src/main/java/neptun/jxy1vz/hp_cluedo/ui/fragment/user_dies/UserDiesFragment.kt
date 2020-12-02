@@ -9,22 +9,23 @@ import androidx.fragment.app.Fragment
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentUserDiesBinding
 import neptun.jxy1vz.hp_cluedo.domain.handler.DialogDismiss
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 
 class UserDiesFragment : Fragment(), ViewModelListener {
 
-    private lateinit var player: Player
+    private lateinit var player: BasePlayer
     private lateinit var listener: DialogDismiss
 
-    fun setArgs(p: Player, l: DialogDismiss) {
+    fun setArgs(p: BasePlayer, l: DialogDismiss) {
         player = p
         listener = l
     }
 
     companion object {
-        fun newInstance(player: Player, listener: DialogDismiss) : UserDiesFragment {
+        fun newInstance(player: BasePlayer, listener: DialogDismiss) : UserDiesFragment {
             val fragment = UserDiesFragment()
             fragment.setArgs(player, listener)
             return fragment

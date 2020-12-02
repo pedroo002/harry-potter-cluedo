@@ -28,7 +28,7 @@ import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
 import neptun.jxy1vz.hp_cluedo.data.database.model.AssetPrefixes
 import neptun.jxy1vz.hp_cluedo.data.database.model.string
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentDarkCardBinding
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.domain.model.card.*
 import neptun.jxy1vz.hp_cluedo.domain.model.helper.getHelperObjects
 import neptun.jxy1vz.hp_cluedo.domain.util.loadUrlImageIntoImageView
@@ -36,6 +36,7 @@ import neptun.jxy1vz.hp_cluedo.domain.util.removePlayer
 import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.data.network.model.message.CardEventMessage
 import neptun.jxy1vz.hp_cluedo.data.network.pusher.PusherInstance
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.hp_cluedo.ui.fragment.cards.card_loss.CardLossFragment
@@ -48,7 +49,7 @@ import kotlin.math.sin
 class DarkCardViewModel(
     private val bind: FragmentDarkCardBinding,
     private val context: Context,
-    private val playerList: List<Player>,
+    private val playerList: List<BasePlayer>,
     playerIds: List<Int>,
     card: DarkCard,
     private val listener: ViewModelListener,
@@ -203,7 +204,7 @@ class DarkCardViewModel(
         }
     }
 
-    private fun processCardThrownEvent(imgRes: String, thrownCard: ImageView, player: Player) {
+    private fun processCardThrownEvent(imgRes: String, thrownCard: ImageView, player: BasePlayer) {
         GlobalScope.launch(Dispatchers.Main) {
             val i = playerList.indexOf(player)
             drawImage(
@@ -223,7 +224,7 @@ class DarkCardViewModel(
         tranY: Double,
         lossTextView: TextView?,
         thrownCard: ImageView?,
-        player: Player
+        player: BasePlayer
     ) {
         val layoutParams = ConstraintLayout.LayoutParams(MATCH_CONSTRAINT, MATCH_CONSTRAINT)
         layoutParams.matchConstraintPercentWidth = 0.2f
@@ -369,7 +370,7 @@ class DarkCardViewModel(
         }
     }
 
-    private fun getLoss(player: Player, card: DarkCard) {
+    private fun getLoss(player: BasePlayer, card: DarkCard) {
         when (card.lossType) {
             LossType.HP -> {
                 player.hp -= card.hpLoss
@@ -399,7 +400,7 @@ class DarkCardViewModel(
         }
     }
 
-    private fun getProperHelperCards(player: Player, lossType: LossType): List<HelperCard> {
+    private fun getProperHelperCards(player: BasePlayer, lossType: LossType): List<HelperCard> {
         val properHelperCards: ArrayList<HelperCard> = ArrayList()
         player.helperCards!!.filter { (it.type as HelperType).compareTo(lossType) }.forEach { helperCard ->
             properHelperCards.add(helperCard)

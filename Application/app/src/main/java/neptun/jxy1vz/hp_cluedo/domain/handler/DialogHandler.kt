@@ -8,11 +8,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.data.database.CluedoDatabase
-import neptun.jxy1vz.hp_cluedo.domain.model.Player
+import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.domain.model.Suspect
 import neptun.jxy1vz.hp_cluedo.domain.model.card.DarkCard
 import neptun.jxy1vz.hp_cluedo.domain.util.removePlayer
 import neptun.jxy1vz.hp_cluedo.data.network.pusher.PusherInstance
+import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.activityListener
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.channelName
@@ -124,7 +125,7 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
         }
     }
 
-    override fun onPlayerDiesDismiss(player: Player?) {
+    override fun onPlayerDiesDismiss(player: BasePlayer?) {
         if (player == null)
             activityListener.exitToMenu()
         else {
