@@ -89,13 +89,11 @@ class MapHandler(private val map: MapViewModel.Companion) {
         map1.keys.forEach {pos ->
             intersection[pos] = map1[pos]!!
         }
-        if (map2 != null) {
-            map2.keys.forEach {pos ->
-                if (intersection.containsKey(pos))
-                    intersection[pos] = min(map1[pos]!!, map2[pos]!!)
-                else
-                    intersection[pos] = map2[pos]!!
-            }
+        map2?.keys?.forEach { pos ->
+            if (intersection.containsKey(pos))
+                intersection[pos] = min(map1[pos]!!, map2[pos]!!)
+            else
+                intersection[pos] = map2[pos]!!
         }
         return intersection
     }
