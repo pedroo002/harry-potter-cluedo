@@ -26,6 +26,7 @@ import neptun.jxy1vz.hp_cluedo.ui.fragment.channel.num_picker.NumPickerFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class CreateChannelViewModel(
     private val bind: FragmentCreateChannelBinding,
@@ -178,6 +179,11 @@ class CreateChannelViewModel(
                 }
                 withContext(Dispatchers.Main) {
                     Snackbar.make(bind.createChannelRoot, message, Snackbar.LENGTH_LONG).show()
+                }
+            }
+            catch (ex: SocketTimeoutException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
                 }
             }
         }

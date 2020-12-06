@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,6 +23,7 @@ import neptun.jxy1vz.hp_cluedo.ui.activity.menu.MenuListener
 import neptun.jxy1vz.hp_cluedo.ui.activity.mystery_cards.MysteryCardActivity
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class MultiplayerCharacterSelectorFragment : Fragment(),
     ViewModelListener, MultiplayerCharacterSelectorViewModel.ChannelListener {
@@ -85,7 +87,14 @@ class MultiplayerCharacterSelectorFragment : Fragment(),
                 retrofit.cluedo.deleteChannel(vm().channelId)
             }
             catch (ex: HttpException) {
-
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(fragmentMultiplayerCharacterSelectorBinding.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).show()
+                }
+            }
+            catch (ex: SocketTimeoutException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(fragmentMultiplayerCharacterSelectorBinding.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
+                }
             }
         }
         else {

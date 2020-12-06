@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BaseObservable
+import com.google.android.material.snackbar.Snackbar
 import com.pusher.client.channel.PresenceChannelEventListener
 import com.pusher.client.channel.User
 import kotlinx.android.synthetic.main.fragment_incrimination_details.view.*
@@ -28,6 +29,8 @@ import neptun.jxy1vz.hp_cluedo.data.network.pusher.PusherInstance
 import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class IncriminationDetailsViewModel(
     private val bind: FragmentIncriminationDetailsBinding,
@@ -202,7 +205,23 @@ class IncriminationDetailsViewModel(
             val nextIndex =
                 if (currentIndex - 1 < 0) MapViewModel.gameModels.playerList.lastIndex else currentIndex - 1
             if (nextIndex == MapViewModel.gameModels.playerList.indexOf(MapViewModel.player)) {
-                retrofit.cluedo.notifyNobodyCouldShow(MapViewModel.channelName)
+                try {
+                    retrofit.cluedo.notifyNobodyCouldShow(MapViewModel.channelName)
+                }
+                catch (ex: HttpException) {
+                    withContext(Dispatchers.Main) {
+                        Snackbar.make(bind.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).setAction("Újra") {
+                            sendRequestToNextPlayer(currentIndex)
+                        }.show()
+                    }
+                }
+                catch (ex: SocketTimeoutException) {
+                    withContext(Dispatchers.Main) {
+                        Snackbar.make(bind.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).setAction("Újra") {
+                            sendRequestToNextPlayer(currentIndex)
+                        }.show()
+                    }
+                }
             } else
                 askPlayerToReveal(nextIndex)
         }
@@ -212,10 +231,22 @@ class IncriminationDetailsViewModel(
         withContext(Dispatchers.Main) {
             loadUrlImageIntoImageView(MapViewModel.gameModels.playerList[currentIndex].card.imageRes, context, bind.ivPlayerWhoShows)
         }
-        retrofit.cluedo.triggerPlayerToReveal(
-            MapViewModel.channelName,
-            MapViewModel.gameModels.playerList[currentIndex].id
-        )
+        try {
+            retrofit.cluedo.triggerPlayerToReveal(
+                MapViewModel.channelName,
+                MapViewModel.gameModels.playerList[currentIndex].id
+            )
+        }
+        catch (ex: HttpException) {
+            withContext(Dispatchers.Main) {
+                Snackbar.make(bind.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).show()
+            }
+        }
+        catch (ex: SocketTimeoutException) {
+            withContext(Dispatchers.Main) {
+                Snackbar.make(bind.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun processRequest(playerId: Int) {
@@ -321,7 +352,19 @@ class IncriminationDetailsViewModel(
 
     private fun sendCardToPlayer(card: MysteryCard) {
         GlobalScope.launch(Dispatchers.IO) {
-            retrofit.cluedo.showCard(MapViewModel.channelName, MapViewModel.mPlayerId!!, card.name)
+            try {
+                retrofit.cluedo.showCard(MapViewModel.channelName, MapViewModel.mPlayerId!!, card.name)
+            }
+            catch (ex: HttpException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).show()
+                }
+            }
+            catch (ex: SocketTimeoutException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
@@ -695,11 +738,23 @@ class IncriminationDetailsViewModel(
 
     fun skip() {
         GlobalScope.launch(Dispatchers.IO) {
-            retrofit.cluedo.skipCardReveal(MapViewModel.channelName, MapViewModel.mPlayerId!!)
-            withContext(Dispatchers.Main) {
-                bind.detailsRoot.btnSkip.apply {
-                    isEnabled = false
-                    visibility = Button.GONE
+            try {
+                retrofit.cluedo.skipCardReveal(MapViewModel.channelName, MapViewModel.mPlayerId!!)
+                withContext(Dispatchers.Main) {
+                    bind.detailsRoot.btnSkip.apply {
+                        isEnabled = false
+                        visibility = Button.GONE
+                    }
+                }
+            }
+            catch (ex: HttpException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).show()
+                }
+            }
+            catch (ex: SocketTimeoutException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
                 }
             }
         }

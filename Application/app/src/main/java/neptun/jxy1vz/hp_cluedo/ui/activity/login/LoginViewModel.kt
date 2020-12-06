@@ -15,6 +15,7 @@ import neptun.jxy1vz.hp_cluedo.data.network.model.player.PlayerRequest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class LoginViewModel(
     private val bind: ActivityLoginBinding,
@@ -85,6 +86,11 @@ class LoginViewModel(
             }
             withContext(Dispatchers.Main) {
                 errorSnackbar(message)
+            }
+        }
+        catch (ex: SocketTimeoutException) {
+            withContext(Dispatchers.Main) {
+                errorSnackbar("A kapcsolat túllépte az időkorlátot!")
             }
         }
     }

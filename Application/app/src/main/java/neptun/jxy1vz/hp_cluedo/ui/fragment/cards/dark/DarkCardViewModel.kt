@@ -16,6 +16,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.marginBottom
 import androidx.databinding.BaseObservable
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.snackbar.Snackbar
 import com.pusher.client.channel.PresenceChannelEventListener
 import com.pusher.client.channel.User
 import kotlinx.android.synthetic.main.fragment_dark_card.view.*
@@ -42,6 +43,8 @@ import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.hp_cluedo.ui.fragment.cards.card_loss.CardLossFragment
 import neptun.jxy1vz.hp_cluedo.ui.fragment.player_dies.PlayerDiesOrLeavesFragment
 import neptun.jxy1vz.hp_cluedo.ui.fragment.user_dies.UserDiesFragment
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -188,13 +191,45 @@ class DarkCardViewModel(
 
     private fun sendCloseSignal() {
         GlobalScope.launch(Dispatchers.IO) {
-            RetrofitInstance.getInstance(context).cluedo.notifyDarkCardsClose(MapViewModel.channelName)
+            try {
+                RetrofitInstance.getInstance(context).cluedo.notifyDarkCardsClose(MapViewModel.channelName)
+            }
+            catch (ex: HttpException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).setAction("Újra") {
+                        sendCloseSignal()
+                    }.show()
+                }
+            }
+            catch (ex: SocketTimeoutException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).setAction("Újra") {
+                        sendCloseSignal()
+                    }.show()
+                }
+            }
         }
     }
 
     private fun sendReadySignal() {
         GlobalScope.launch(Dispatchers.IO) {
-            RetrofitInstance.getInstance(context).cluedo.notifyDarkCardsReady(MapViewModel.channelName)
+            try {
+                RetrofitInstance.getInstance(context).cluedo.notifyDarkCardsReady(MapViewModel.channelName)
+            }
+            catch (ex: HttpException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).setAction("Újra") {
+                        sendReadySignal()
+                    }.show()
+                }
+            }
+            catch (ex: SocketTimeoutException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).setAction("Újra") {
+                        sendReadySignal()
+                    }.show()
+                }
+            }
         }
     }
 

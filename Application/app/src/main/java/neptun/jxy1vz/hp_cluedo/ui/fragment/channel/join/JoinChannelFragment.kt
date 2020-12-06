@@ -28,6 +28,7 @@ import neptun.jxy1vz.hp_cluedo.ui.fragment.character_selector.multi.MultiplayerC
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
@@ -134,6 +135,11 @@ class JoinChannelFragment : Fragment(), ViewModelListener, MenuListener {
                     withContext(Dispatchers.Main) {
                         Snackbar.make(fragmentJoinChannelBinding.root.rootView, message, Snackbar.LENGTH_LONG).show()
                         fragmentJoinChannelBinding.root.btnJoin.isEnabled = true
+                    }
+                }
+                catch (ex: SocketTimeoutException) {
+                    withContext(Dispatchers.Main) {
+                        Snackbar.make(fragmentJoinChannelBinding.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
                     }
                 }
             }

@@ -29,6 +29,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class MultiplayerCharacterSelectorViewModel(
     private val bind: FragmentMultiplayerCharacterSelectorBinding,
@@ -238,7 +239,14 @@ class MultiplayerCharacterSelectorViewModel(
                 }
             }
             catch (ex: HttpException) {
-
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).show()
+                }
+            }
+            catch (ex: SocketTimeoutException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
+                }
             }
         }
     }

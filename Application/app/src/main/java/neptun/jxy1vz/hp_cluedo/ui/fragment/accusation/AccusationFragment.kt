@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -19,6 +20,8 @@ import neptun.jxy1vz.hp_cluedo.data.network.model.message.SuspectMessage
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class AccusationFragment : Fragment(),
     AccusationViewModel.FinalizationListener {
@@ -55,16 +58,28 @@ class AccusationFragment : Fragment(),
 
     override fun onFinalized(suspect: Suspect) {
         GlobalScope.launch(Dispatchers.IO) {
-            if (MapViewModel.isGameModeMulti()) {
-                val suspectMessage = suspect.toApiModel()
-                val json = MapViewModel.retrofit.moshi.adapter(SuspectMessage::class.java)
-                    .toJson(suspectMessage)
-                val body = json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-                MapViewModel.retrofit.cluedo.sendAccusation(MapViewModel.channelName, body)
+            try {
+                if (MapViewModel.isGameModeMulti()) {
+                    val suspectMessage = suspect.toApiModel()
+                    val json = MapViewModel.retrofit.moshi.adapter(SuspectMessage::class.java)
+                        .toJson(suspectMessage)
+                    val body = json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+                    MapViewModel.retrofit.cluedo.sendAccusation(MapViewModel.channelName, body)
+                }
+                withContext(Dispatchers.Main) {
+                    listener.onAccusationDismiss(suspect)
+                    MapViewModel.fm.beginTransaction().remove(this@AccusationFragment).commit()
+                }
             }
-            withContext(Dispatchers.Main) {
-                listener.onAccusationDismiss(suspect)
-                MapViewModel.fm.beginTransaction().remove(this@AccusationFragment).commit()
+            catch (ex: HttpException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(fragmentAccusationBinding.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).show()
+                }
+            }
+            catch (ex: SocketTimeoutException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(fragmentAccusationBinding.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
+                }
             }
         }
     }

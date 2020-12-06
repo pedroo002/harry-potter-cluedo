@@ -50,7 +50,7 @@ class CardLossFragment : Fragment(),
         savedInstanceState: Bundle?
     ): View? {
         fragmentCardLossBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_card_loss, container, false)
-        fragmentCardLossBinding.cardLossViewModel = CardLossViewModel(context!!, title, this)
+        fragmentCardLossBinding.cardLossViewModel = CardLossViewModel(context!!, fragmentCardLossBinding, title, this)
         return fragmentCardLossBinding.root
     }
 

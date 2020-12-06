@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -23,6 +24,8 @@ import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class IncriminationDetailsFragment : Fragment(), ViewModelListener {
 
@@ -71,11 +74,23 @@ class IncriminationDetailsFragment : Fragment(), ViewModelListener {
         if (MapViewModel.isGameModeMulti() && suspect.playerId == MapViewModel.mPlayerId) {
             GlobalScope.launch(Dispatchers.IO) {
                 MapViewModel.retrofit.apply {
-                    val suspectMessage = suspect.toApiModel()
-                    val json = moshi.adapter(SuspectMessage::class.java).toJson(suspectMessage)
-                    val body =
-                        json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-                    cluedo.sendIncrimination(MapViewModel.channelName, body)
+                    try {
+                        val suspectMessage = suspect.toApiModel()
+                        val json = moshi.adapter(SuspectMessage::class.java).toJson(suspectMessage)
+                        val body =
+                            json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+                        cluedo.sendIncrimination(MapViewModel.channelName, body)
+                    }
+                    catch (ex: HttpException) {
+                        withContext(Dispatchers.Main) {
+                            Snackbar.make(fragmentIncriminationDetailsBinding.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).show()
+                        }
+                    }
+                    catch (ex: SocketTimeoutException) {
+                        withContext(Dispatchers.Main) {
+                            Snackbar.make(fragmentIncriminationDetailsBinding.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
+                        }
+                    }
                 }
             }
         }

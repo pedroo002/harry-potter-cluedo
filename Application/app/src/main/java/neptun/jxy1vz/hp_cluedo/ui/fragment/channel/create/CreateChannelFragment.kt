@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.databinding.FragmentCreateChannelBinding
 import neptun.jxy1vz.hp_cluedo.data.network.pusher.PusherInstance
@@ -17,6 +19,8 @@ import neptun.jxy1vz.hp_cluedo.ui.activity.menu.MenuListener
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.hp_cluedo.ui.fragment.character_selector.multi.MultiplayerCharacterSelectorFragment
 import retrofit2.HttpException
+import java.net.SocketException
+import java.net.SocketTimeoutException
 
 class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
 
@@ -62,8 +66,15 @@ class CreateChannelFragment : Fragment(), ViewModelListener, MenuListener {
                 }
                 vm().deleteCreatedChannel()
             }
-            catch (ex: HttpException) {
-
+            catch (ex: SocketException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(fragmentCreateChannelBinding.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).show()
+                }
+            }
+            catch (ex: SocketTimeoutException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(fragmentCreateChannelBinding.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
+                }
             }
             finally {
                 onFragmentClose()

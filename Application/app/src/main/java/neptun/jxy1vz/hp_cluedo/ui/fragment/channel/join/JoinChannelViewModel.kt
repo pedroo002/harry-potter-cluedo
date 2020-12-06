@@ -5,6 +5,7 @@ import android.widget.ArrayAdapter
 import androidx.databinding.BaseObservable
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -14,6 +15,8 @@ import neptun.jxy1vz.hp_cluedo.data.network.api.RetrofitInstance
 import neptun.jxy1vz.hp_cluedo.data.network.model.channel.ChannelApiModel
 import neptun.jxy1vz.hp_cluedo.ui.fragment.ViewModelListener
 import neptun.jxy1vz.hp_cluedo.ui.fragment.channel.num_picker.NumPickerFragment
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class JoinChannelViewModel(
     private val bind: FragmentJoinChannelBinding,
@@ -61,19 +64,30 @@ class JoinChannelViewModel(
             context.resources.getString(R.string.game_params_pref),
             Context.MODE_PRIVATE
         ).getInt(context.resources.getString(R.string.player_count_key), 3)
+        try {
+            channels = retrofit.cluedo.getChannelsByPlayerLimit(playerCount)
+            channels?.let {
+                channelNames = ArrayList()
+                channels!!.forEach { channel ->
+                    channelNames.add(channel.channelName)
+                }
 
-        channels = retrofit.cluedo.getChannelsByPlayerLimit(playerCount)
-        channels?.let {
-            channelNames = ArrayList()
-            channels!!.forEach { channel ->
-                channelNames.add(channel.channelName)
+                withContext(Dispatchers.Main) {
+                    val spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, channelNames)
+                    bind.spinnerAllChannels.adapter = spinnerAdapter
+                    if (channelNames.isNotEmpty())
+                        bind.btnJoin.isEnabled = true
+                }
             }
-
+        }
+        catch (ex: HttpException) {
             withContext(Dispatchers.Main) {
-                val spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, channelNames)
-                bind.spinnerAllChannels.adapter = spinnerAdapter
-                if (channelNames.isNotEmpty())
-                    bind.btnJoin.isEnabled = true
+                Snackbar.make(bind.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).show()
+            }
+        }
+        catch (ex: SocketTimeoutException) {
+            withContext(Dispatchers.Main) {
+                Snackbar.make(bind.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
             }
         }
     }

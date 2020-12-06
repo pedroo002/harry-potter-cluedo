@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.databinding.BaseObservable
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -20,6 +21,8 @@ import neptun.jxy1vz.hp_cluedo.data.network.model.message.DiceDataMessage
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import kotlin.random.Random
 
 class DiceRollerViewModel(
@@ -124,8 +127,6 @@ class DiceRollerViewModel(
 
         setDice3(num3)
 
-        bind.btnSubmit.isEnabled = true
-
         if (MapViewModel.isGameModeMulti()) {
             sendDiceEvent()
         }
@@ -159,12 +160,28 @@ class DiceRollerViewModel(
 
     private fun sendDiceEvent() {
         GlobalScope.launch(Dispatchers.IO) {
-            val retrofit = RetrofitInstance.getInstance(context)
-            val diceData = DiceDataMessage(MapViewModel.mPlayerId!!, num1, num2, num3)
-            val moshiJson = retrofit.moshi.adapter(DiceDataMessage::class.java).toJson(diceData)
-            val body = moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+            try {
+                val retrofit = RetrofitInstance.getInstance(context)
+                val diceData = DiceDataMessage(MapViewModel.mPlayerId!!, num1, num2, num3)
+                val moshiJson = retrofit.moshi.adapter(DiceDataMessage::class.java).toJson(diceData)
+                val body = moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
-            retrofit.cluedo.sendDiceEvent(MapViewModel.channelName, body)
+                retrofit.cluedo.sendDiceEvent(MapViewModel.channelName, body)
+
+                withContext(Dispatchers.Main) {
+                    bind.btnSubmit.isEnabled = true
+                }
+            }
+            catch (ex: HttpException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, ex.message ?: "Hiba lépett fel a hálózatban.", Snackbar.LENGTH_LONG).show()
+                }
+            }
+            catch (ex: SocketTimeoutException) {
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(bind.root, "A kapcsolat túllépte az időkorlátot!", Snackbar.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
