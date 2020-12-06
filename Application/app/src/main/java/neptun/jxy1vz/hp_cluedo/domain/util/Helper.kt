@@ -51,9 +51,9 @@ fun loadUrlImageIntoImageView(url: String, context: Context, iv: ImageView) {
 
 fun isServerReachable(ipAddress: String): Boolean {
     return try {
-        val socketAddress = InetSocketAddress(ipAddress, 80)
+        val socketAddress = InetSocketAddress(ipAddress, 443)
         val socket = Socket()
-        socket.connect(socketAddress, 3000)
+        socket.connect(socketAddress, 5000)
         true
     } catch (e: IOException) {
         e.printStackTrace()

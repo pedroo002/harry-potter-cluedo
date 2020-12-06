@@ -104,7 +104,7 @@ class GameModeViewModel(private val bind: FragmentGameModeBinding, private val c
             val ipAddress = Inet4Address.getByName(RetrofitInstance.DOMAIN).hostAddress
             val isOnline = isServerReachable(ipAddress)
             withContext(Dispatchers.Main) {
-                if (gameMode == context.resources.getStringArray(R.array.playmodes)[1] && isOnline) {
+                if (gameMode == context.resources.getStringArray(R.array.playmodes)[1] && !isOnline) {
                     Snackbar.make(bind.root, context.resources.getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG).show()
                     return@withContext
                 }

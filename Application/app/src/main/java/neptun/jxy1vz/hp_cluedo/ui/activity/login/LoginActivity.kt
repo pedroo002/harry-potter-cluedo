@@ -67,6 +67,8 @@ class LoginActivity : AppCompatActivity(), LoginActivityListener {
                     activityLoginBinding.loginRefresh.isRefreshing = false
                     activityLoginBinding.txtPlayerName.isEnabled = true
                     activityLoginBinding.txtPassword.isEnabled = true
+
+                    checkIfFirstStart()
                 }
             }
             withContext(Dispatchers.Main) {
