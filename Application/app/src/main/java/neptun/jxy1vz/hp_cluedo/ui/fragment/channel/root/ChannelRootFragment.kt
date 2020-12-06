@@ -62,11 +62,16 @@ class ChannelRootFragment : Fragment(), ViewModelListener {
 
     override fun onFinish() {
         val action = fragmentChannelRootBinding.channelRootViewModel!!.action
-        val fragment: Fragment = when (action) {
+        val fragment: Fragment? = when (action) {
             "create" -> CreateChannelFragment()
-            else -> JoinChannelFragment()
+            "join" -> JoinChannelFragment()
+            else -> null
         }
-        parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, fragment, "FRAGMENT-$action").addToBackStack("FRAGMENT-$action").commit()
+        fragment?.let {
+            parentActivity.supportFragmentManager.beginTransaction().add(R.id.menuFrame, fragment, "FRAGMENT-$action").addToBackStack("FRAGMENT-$action").commit()
+        }
+        if (action == "cancel")
+            parentActivity.supportFragmentManager.beginTransaction().remove(this).commit()
         listener.onFragmentClose()
     }
 }

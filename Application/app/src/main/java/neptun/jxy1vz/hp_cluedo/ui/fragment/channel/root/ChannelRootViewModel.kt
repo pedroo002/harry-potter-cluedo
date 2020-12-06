@@ -53,6 +53,7 @@ class ChannelRootViewModel(private val bind: FragmentChannelRootBinding, private
     }
 
     fun cancel() {
+        action = "cancel"
         listener.onFinish()
     }
 }
