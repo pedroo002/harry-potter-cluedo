@@ -6,11 +6,8 @@ import android.widget.NumberPicker
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.android.synthetic.main.activity_map.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
 import neptun.jxy1vz.hp_cluedo.domain.model.BasePlayer
-import neptun.jxy1vz.hp_cluedo.domain.model.ThinkingPlayer
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.gameModels
 import neptun.jxy1vz.hp_cluedo.ui.activity.map.MapViewModel.Companion.playerImagePairs
@@ -56,7 +53,6 @@ fun isServerReachable(ipAddress: String): Boolean {
         socket.connect(socketAddress, 5000)
         true
     } catch (e: IOException) {
-        e.printStackTrace()
         false
     }
 }

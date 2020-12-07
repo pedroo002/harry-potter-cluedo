@@ -1,6 +1,8 @@
 package neptun.jxy1vz.hp_cluedo.domain.model.helper
 
 import android.content.Context
+import android.widget.ImageView
+import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import neptun.jxy1vz.hp_cluedo.R
