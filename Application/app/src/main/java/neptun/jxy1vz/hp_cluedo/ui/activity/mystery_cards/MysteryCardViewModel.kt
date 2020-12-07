@@ -266,8 +266,6 @@ class MysteryCardViewModel(
                     val body =
                         moshiJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
-                    println(moshiJson)
-
                     cardPairsRequestBody = body
 
                     retrofit.cluedo.notifyMysteryCardsLoaded(apiChannelName)
@@ -361,8 +359,6 @@ class MysteryCardViewModel(
                 idList.addAll(playerList.map { p -> p.id })
             }
         }
-
-        println(idList)
 
         getMysteryCards(idList)
     }
