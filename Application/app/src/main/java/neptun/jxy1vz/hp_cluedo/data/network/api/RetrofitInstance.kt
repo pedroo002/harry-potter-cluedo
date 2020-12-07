@@ -66,8 +66,8 @@ class RetrofitInstance private constructor() {
             .sslSocketFactory(certificates.sslSocketFactory(), certificates.trustManager)
             .connectionSpecs(Collections.singletonList(spec))
             .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(5, TimeUnit.SECONDS)
-            .writeTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
             .followRedirects(true)
             .followSslRedirects(true)
 
