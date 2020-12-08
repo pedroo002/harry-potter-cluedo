@@ -274,9 +274,11 @@ class MapViewModel(
                         }
                     }
 
-                    gameModels.playerList.filter { p -> p.id != mPlayerId }.forEach { p ->
-                        p.mysteryCards.forEach { card ->
-                            (p as ThinkingPlayer).getConclusion(card.name, p.id)
+                    if (!isGameModeMulti()) {
+                        gameModels.playerList.filter { p -> p.id != mPlayerId }.forEach { p ->
+                            p.mysteryCards.forEach { card ->
+                                (p as ThinkingPlayer).getConclusion(card.name, p.id)
+                            }
                         }
                     }
                 }

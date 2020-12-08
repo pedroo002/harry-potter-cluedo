@@ -79,6 +79,10 @@ class Interactor(private val db: CluedoDatabase, private val retrofit: RetrofitI
         return db.assetDao().getAssetsByPrefix(prefix)
     }
 
+    suspend fun getAssetByUrl(url: String): AssetDBmodel? {
+        return db.assetDao().getAssetByUrl(url)
+    }
+
     suspend fun getDarkCardsFromServer(): AssetList? {
         return retrofit.cluedo.getDarkCardsFromServer()
     }

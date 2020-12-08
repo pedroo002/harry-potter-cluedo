@@ -9,6 +9,9 @@ interface AssetDAO : BaseDAO<AssetDBmodel> {
     @Query("SELECT * FROM Assets WHERE tag = (:tag)")
     suspend fun getAssetByTag(tag: String): AssetDBmodel?
 
+    @Query("SELECT * FROM Assets WHERE url = (:url)")
+    suspend fun getAssetByUrl(url: String): AssetDBmodel?
+
     @Query("SELECT * FROM Assets WHERE tag LIKE (:prefix)")
     suspend fun getAssetsByPrefix(prefix: String): List<AssetDBmodel>?
 

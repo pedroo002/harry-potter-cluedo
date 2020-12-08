@@ -184,6 +184,8 @@ class InteractionHandler(private val map: MapViewModel.Companion) : Incriminatio
         playerWhoShowed: Int? = null,
         revealedMysteryCardName: String? = null
     ) {
+        if (map.isGameModeMulti())
+            return
         if (playerWhoShowed != null && revealedMysteryCardName != null) {
             gameModels.playerList.filter { p -> p.id != map.mPlayerId }.forEach { p ->
                 if (p.id != playerWhoShowed && p.id != mPlayerId) {

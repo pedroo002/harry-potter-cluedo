@@ -80,25 +80,24 @@ class CardHandler(private val map: MapViewModel.Companion) {
     suspend fun showCard(playerId: Int, card: Card, type: DiceRollerViewModel.CardType?) {
         withContext(Dispatchers.Main) {
             map.cameraHandler.moveCameraToPlayer(playerId)
-        }
-        delay(1000)
 
-        val cardImage = ImageView(mapRoot.mapLayout.context)
-        cardImage.layoutParams = ConstraintLayout.LayoutParams(
-            mContext!!.resources.displayMetrics.widthPixels / 3,
-            3 * mContext!!.resources.displayMetrics.heightPixels / 4
-        )
-        loadUrlImageIntoImageView(card.imageRes, mContext!!, cardImage)
+            delay(1000)
 
-        map.uiHandler.setLayoutConstraintTop(cardImage, gameModels.rows[0])
-        map.uiHandler.setLayoutConstraintStart(cardImage, gameModels.cols[0])
-        cardImage.translationX = abs(mapRoot.panX)
-        cardImage.translationY = abs(mapRoot.panY)
+            val cardImage = ImageView(mapRoot.mapLayout.context)
+            cardImage.layoutParams = ConstraintLayout.LayoutParams(
+                mContext!!.resources.displayMetrics.widthPixels / 3,
+                3 * mContext!!.resources.displayMetrics.heightPixels / 4
+            )
+            loadUrlImageIntoImageView(card.imageRes, mContext!!, cardImage)
 
-        cardImage.translationX -= cardImage.width.toFloat()
-        cardImage.visibility = ImageView.VISIBLE
+            map.uiHandler.setLayoutConstraintTop(cardImage, gameModels.rows[0])
+            map.uiHandler.setLayoutConstraintStart(cardImage, gameModels.cols[0])
+            cardImage.translationX = abs(mapRoot.panX)
+            cardImage.translationY = abs(mapRoot.panY)
 
-        withContext(Dispatchers.Main) {
+            cardImage.translationX -= cardImage.width.toFloat()
+            cardImage.visibility = ImageView.VISIBLE
+
             mapRoot.mapLayout.addView(cardImage)
             ObjectAnimator.ofFloat(
                 cardImage,

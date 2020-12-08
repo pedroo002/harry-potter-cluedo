@@ -44,10 +44,6 @@ class DatabaseAccess(private val context: Context) {
         interactor.eraseNotes()
     }
 
-    suspend fun updateCard(card: CardDBmodel) {
-        interactor.updateCards(card)
-    }
-
     suspend fun getUnusedMysteryCards(): List<MysteryCard> {
         return interactor.getCardBySuperType(context.getString(R.string.mystery_prefix))!!
             .map { cardDBmodel -> cardDBmodel.toDomainModel(context) as MysteryCard }

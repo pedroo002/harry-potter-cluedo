@@ -298,16 +298,18 @@ class MysteryCardViewModel(
             })
 
             cards.map { card ->
+                val cardTag = gameModel.db.interactor.getAssetByUrl(card.first.imageRes)!!.tag
+                val versoTag = gameModel.db.interactor.getAssetByUrl(card.first.verso)!!.tag
                 CardDBmodel(
                     card.first.id.toLong(),
                     card.first.name,
-                    card.first.imageRes,
-                    card.first.verso,
+                    cardTag,
+                    versoTag,
                     card.first.type.toDatabaseModel().toString(),
                     card.second
                 )
             }.forEach {
-                gameModel.db.updateCard(it)
+                gameModel.db.interactor.updateCards(it)
             }
 
             withContext(Dispatchers.Main) {
