@@ -30,7 +30,7 @@ class PlayerDiesOrLeavesViewModel(
     private val listener: ViewModelListener
 ) : BaseObservable() {
 
-    private lateinit var title: String
+    private var title = ""
 
     init {
         lifecycleScope.launch(Dispatchers.IO) {
