@@ -2,13 +2,16 @@ package neptun.jxy1vz.hp_cluedo.ui.activity.map
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.text.BoringLayout.make
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BaseObservable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.snackbar.Snackbar
 import com.otaliastudios.zoom.ZoomLayout
 import com.pusher.client.channel.PresenceChannelEventListener
 import com.pusher.client.channel.User
@@ -309,8 +312,12 @@ class MapViewModel(
     }
 
     fun onBackPressed() {
-        val fragment = OnBackPressedFragment.newInstance(dialogHandler)
-        insertFragment(fragment, true)
+        if (!isGameModeMulti() || (playerInTurn == mPlayerId && userCanStep)) {
+            val fragment = OnBackPressedFragment.newInstance(dialogHandler)
+            insertFragment(fragment, true)
+        }
+        else
+            Toast.makeText(mContext, mContext!!.resources.getString(R.string.wait_for_your_turn), Toast.LENGTH_LONG).show()
     }
 
     private fun subscribeToEvents() {
