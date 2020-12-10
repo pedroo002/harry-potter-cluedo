@@ -1,19 +1,9 @@
 <resources>
-    <string name="app_name">Harry Potter Cluedo</string>
-    <string name="game_start">Játék indítása</string>
-    <string name="rules">Szabályok</string>
-    <string name="game_rules">Játékszabályok</string>
-    <string name="exit">Kilépés</string>
-    <string name="dob">Dobás</string>
-    <string name="start">Start</string>
-    <string name="ok">OK</string>
-    <string name="go_forward">Tovább</string>
-    <string name="back_to_menu">Vissza a főmenübe</string>
-    <string name="cancel">Mégse</string>
-    <string name="yes">Igen</string>
-    <string name="wait_for_your_turn">Csak a köröd elején tudsz kilépni!</string>
-    <string name="cannot_quit_here">Most nem tudsz kilépni, várd meg a játék indulását!</string>
-
+    <string name="app_name">Cluedo</string>
+    <string name="game_start">J�t�k ind�t�sa</string>
+    <string name="rules">Szab�lyok</string>
+    <string name="exit">Kil�p�s</string>
+    <string name="map_description">The map of the game</string>
     <string name="star1">Star1</string>
     <string name="star2">Star2</string>
     <string name="star3">Star3</string>
@@ -22,134 +12,38 @@
     <string name="star6">Star6</string>
     <string name="star7">Star7</string>
     <string name="star8">Star8</string>
-
     <string name="player1">Ginny Weasley</string>
     <string name="player2">Harry Potter</string>
     <string name="player3">Hermione Granger</string>
     <string name="player4">Ron Weasley</string>
     <string name="player5">Luna Lovegood</string>
     <string name="player6">Neville Longbottom</string>
-
-    <string name="no_internet_connection">Nincs interkapcsolat</string>
-    <string name="connected">Sikeres csatlakozás</string>
-    <string name="loading_assets">Erőforrások letöltése… %1$d/%2$d</string>
-    <string name="choose_a_character">Válassz karaktert magadnak!</string>
-    <string name="dobj">Dobj a kockákkal!</string>
-    <string name="dialog_character_title">Válaszd ki a karaktered</string>
-
-    <string name="got_helper_card">Mentő kártyát kaptál</string>
-    <string name="sotet_jegy">A sötét jegy feltűnt az égen!</string>
-
-    <string name="helper_cards_tools">Eszközeid</string>
-    <string name="helper_cards_spells">Varázsigéid</string>
-    <string name="helper_cards_allys">Szövetségeseid</string>
-
-    <string name="tool_loss">El kell dobnod egy eszköz kártyát!</string>
-    <string name="spell_loss">El kell dobnod egy varázsige kártyát!</string>
-    <string name="ally_loss">El kell dobnod egy szövetséges kártyát!</string>
-    <string name="throw_card">Eldobás</string>
-
-    <string name="mystery_cards">Rejtélykártyák sorsolása</string>
-    <string name="your_mystery_cards">A te rejtély kártyáid: </string>
-    <string name="slide_for_more">Lapozz oldalra a többiért!</string>
-
-    <string name="game_mode">Válaszd ki a játék paramétereit!</string>
-    <string name="player_mode">Játékos mód: </string>
-    <string name="player_count">Játékosok száma: </string>
-    <string name="player_id">Player ID</string>
-    <string name="player_id_key">player_id</string>
-    <string name="first_start_pref">FirstStart</string>
-    <string name="game_params_pref">Game params</string>
-    <string name="player_data_pref">PLAYER DATA</string>
-    <string name="player_name_key">player_name</string>
-    <string name="password_key">password</string>
-    <string name="player_count_key">player_count</string>
-    <string name="play_mode_key">play_mode</string>
-    <string name="channel_id_key">channel_id</string>
-    <string name="is_host_key">is_host</string>
-    <string name="database_name">CluedoDatabase</string>
-
-    <string name="card_tool">Mystery card tool</string>
-    <string name="card_suspect">Mystery card suspect</string>
-    <string name="card_venue">Mystery card venue</string>
-    <string name="card_character">Character card</string>
-    <string name="card_dark">Dark card</string>
-    <string name="card_helper">Helper card</string>
-
-    <string name="dice1">Dice 1</string>
-    <string name="dice2">Dice 2</string>
-    <string name="dice3">Dice3</string>
-
-    <string name="incrimination">Gyanúsítás</string>
-    <string name="accusation">Vádemelés</string>
-    <string name="tool">Eszköz</string>
-    <string name="suspect">Gyanúsított</string>
-    <string name="mystery_card">Rejtély kártya</string>
-    <string name="card_reveal">Rejtélykártya felfedése</string>
-
-    <string name="correct_accusation">Helyes vád</string>
-    <string name="incorrect_accusation">Helytelen vád</string>
-
-    <string name="show_card">Fedd fel az egyik kártyádat!</string>
-    <string name="show">Felfed</string>
-    <string name="skip">Passz</string>
-
-    <string name="room">Helyiség</string>
-
-    <string name="lucius_malfoy">Lucius Malfoy</string>
-    <string name="peter_pettigrew">Peter Pettigrew</string>
-    <string name="draco_malfoy">Draco Malfoy</string>
-    <string name="dolores_umbridge">Dolores Umbridge</string>
-    <string name="crak_es_monstro">Crak és Monstro</string>
-    <string name="bellatrix_lestrange">Bellatrix Lestrange</string>
-
-    <string name="zsupszkulcs">Zsupszkulcs</string>
-    <string name="volt_nincs_szekreny">Volt-nincs szekrény</string>
-    <string name="petrificus_totalus">Petrificus Totalus</string>
-    <string name="obstructo">Obstructo</string>
-    <string name="mandragora">Mandragóra</string>
-    <string name="altatoital">Altatóital</string>
-
-    <string name="take_note">Jegyezd fel a történteket!</string>
-    <string name="purpose_in_room">Mi a célod Dumbledore irodájában?</string>
-    <string name="choose_option">Válassz egy lehetőséget!</string>
-    <string name="check_cards">Kártyák megtekintése</string>
-    <string name="step">Lépek</string>
-    <string name="unused_cards">Ki nem osztott rejtélykártyák</string>
-    <string name="are_you_sure">Biztosan ki akarsz lépni a játékból?</string>
-
-    <string name="you_died">Meghaltál!</string>
-    <string name="you_lost_your_hps">Elvesztetted házpontjaidat, kiestél.</string>
-    <string name="game_over">A játéknak vége.</string>
-    <string name="he_lost_his_hps">elvesztette házpontjait, kiesett</string>
-    <string name="he_lost_the_game">Kiesett a játékból.</string>
-    <string name="left_the_game">kilépett a játékból</string>
-    <string name="his_mystery_cards">Rejtély kártyái ezek voltak:</string>
-    <string name="someone_solved_the_mystery">megoldotta a rejtélyt.</string>
-    <string name="wrong_solution">rossz megoldást adott.</string>
-    <string name="wrong_solution_self_message">Rossz megoldást adtál, kiestél.</string>
-    <string name="good_solution_self_message">Megoldottad a rejtélyt!</string>
-
-    <string name="make_a_movement">Lépj!</string>
-    <string name="dice_rolling">Kockadobás</string>
-    <string name="your_options">Lehetőségek</string>
-    <string name="you_have_to_step">Muszáj lépned!</string>
-    <string name="some_one_incriminates"> gyanúsít</string>
-    <string name="in_this_room">Ebben a helyiségben: </string>
-    <string name="with_this_tool">Ezzel az eszközzel: </string>
-    <string name="suspect_person">Gyanúsított: </string>
-    <string name="you_have_to_incriminate">Muszáj gyanúsítanod!</string>
-    <string name="incrimination_params">Gyanúsítás paraméterei: </string>
-    <string name="current_room">Helyiség: </string>
-    <string name="current_tool">Eszköz: </string>
-    <string name="make_your_accusation">Add le a gyanúdat!</string>
-
-    <string name="player_arrived">Játékos érkezett! Még %1$d játékosra várunk.</string>
-    <string name="all_players_arrived">Mindenki megérkezett!</string>
-    <string name="player_left">Egy játékos kilépett</string>
-
-    <string name="single_player">Egyjátékos mód</string>
-    <string name="multi_player">Többjátékos mód</string>
+    <string name="logo_description">Logo of the game</string>
+    <string name="settings_icon">Settings icon</string>
+    <string name="dob">Dob�s</string>
+    <string name="choose_a_character">V�lassz karaktert magadnak!</string>
+    <string name="dobj">Dobj a kock�kkal!</string>
+    <string name="dialog_character_title">V�laszd ki a karaktered</string>
+    <string name="got_helper_card">Ment� k�rty�t kapt�l</string>
+    <string name="sotet_jegy">A s�t�t jegy felt�nt az �gen!</string>
+    <string name="ok">OK</string>
+    <string name="helper_cards_tools">Eszk�zeid</string>
+    <string name="helper_cards_spells">Var�zsig�id</string>
+    <string name="helper_cards_allys">Sz�vets�geseid</string>
+    <string name="hp_loss">H�zpontokat vesztett�l!</string>
+    <string name="hp_loss_amount">Vesz�tett mennyis�g:</string>
+    <string name="tool_loss">El kell dobnod egy eszk�z k�rty�t!</string>
+    <string name="spell_loss">El kell dobnod egy var�zsige k�rty�t!</string>
+    <string name="ally_loss">El kell dobnod egy sz�vets�ges k�rty�t!</string>
+    <string name="throw_card">Eldob�s</string>
+    <string name="your_card_helped_you">A ment� k�rty�d seg�ts�gedre volt a s�t�t er�kkel szemben.</string>
+    <string name="remaining_hp">Megmaradt h�zpontjaid:</string>
+    <string name="mystery_cards">Rejt�lyk�rty�k sorsol�sa</string>
+    <string name="your_mystery_cards">A te rejt�ly k�rty�id:</string>
+    <string name="go_forward">Tov�bb</string>
+    <string name="game_mode">V�laszd ki a j�t�k param�tereit!</string>
+    <string name="player_mode">J�t�kos m�d:</string>
+    <string name="player_count">J�t�kosok sz�ma:</string>
 
     <string-array name="characters">
         <item>Ginny Weasley</item>
@@ -160,170 +54,8 @@
         <item>Neville Longbottom</item>
     </string-array>
 
-    <string name="mystery_prefix">MYSTERY_%</string>
-    <string name="dark_prefix">DARK_%</string>
-    <string name="helper_prefix">HELPER_%</string>
-
-    <string name="game_solution">A rejtély megoldása ez volt:</string>
-    <string name="the_correct_solution">A helyes megoldás:</string>
-
-    <string name="choose_an_option">Válassz egy opciót!</string>
-    <string name="what_is_your_purpose">Mit szeretnél csinálni?</string>
-    <string name="check_notes">Jegyzetek megtekintése</string>
-    <string name="back">Vissza</string>
-    <string name="next">Tovább</string>
-
-    <string name="join_server">Csatlakozás szerverhez</string>
-    <string name="existing_channels">Jelenlegi csatornák</string>
-    <string name="join">Csatlakozás</string>
-    <string name="create_server">Szerver létrehozása</string>
-    <string name="channel_name">Szerver neve</string>
-    <string name="auth_key">Belépési kód</string>
-    <string name="create">Létrehozás</string>
-    <string name="wait_for_other_players">Várakozás a többi játékosra</string>
-
-    <string name="login">Bejelentkezés</string>
-    <string name="player_name">Felhasználónév</string>
-    <string name="password">Jelszó</string>
-    <string name="new_user">Új felhasználó</string>
-    <string name="existing_user">Régi felhasználó</string>
-
-    <string name="room_dumbledore">Dumbledore irodája</string>
-    <string-array name="rooms">
-        <item>Bagolyház</item>
-        <item>Bájitaltan terem</item>
-        <item>Gyengélkedő</item>
-        <item>Jóslástan terem</item>
-        <item>Könyvtár</item>
-        <item>Nagyterem</item>
-        <item>Serleg terem</item>
-        <item>Sötét varázslatok kivédése terem</item>
-        <item>Szükség szobája</item>
-    </string-array>
-
-    <string-array name="tools">
-        <item>Altatóital</item>
-        <item>Mandragóra</item>
-        <item>Impedimenta Obstructo</item>
-        <item>Petrificus Totalus (rejtély)</item>
-        <item>Volt-nincs szekrény</item>
-        <item>Zsupszkulcs (rejtély)</item>
-    </string-array>
-
-    <string-array name="suspects">
-        <item>Bellatrix Lestrange</item>
-        <item>Crak és Monstro</item>
-        <item>Draco Malfoy</item>
-        <item>Lucius Malfoy</item>
-        <item>Dolores Umbridge</item>
-        <item>Peter Pettigrew</item>
-    </string-array>
-
-    <string-array name="helper_cards">
-        <item>Bezoár</item>
-        <item>Seprű</item>
-        <item>Álságdetektor</item>
-        <item>Önoltó</item>
-        <item>Varangydudva</item>
-        <item>Láthatatlanná tévő köpeny</item>
-        <item>Mandragórás gyógyszirup</item>
-        <item>Tekergők térképe</item>
-        <item>Zsupszkulcs (mentő)</item>
-        <item>Felix Felicis</item>
-        <item>Albus Dumbledore</item>
-        <item>Dobby</item>
-        <item>Fawkes</item>
-        <item>Madam Pomfrey</item>
-        <item>McGalagony professzor</item>
-        <item>Piton professzor</item>
-        <item>Rubeus Hagrid</item>
-        <item>Weasley ikrek</item>
-        <item>Capitulatus</item>
-        <item>Immobilus</item>
-        <item>Lumos</item>
-        <item>Petrificus Totalus (mentő)</item>
-        <item>Protego</item>
-        <item>Commikulissimus</item>
-        <item>Stupor</item>
-        <item>Vingardium Leviosa</item>
-        <item>Alohomora</item>
-    </string-array>
-
-    <string-array name="dark_cards">
-        <item>Különös csomagot kapsz: a tartalmát megátkozták.</item>
-        <item>Valaki megmérgezte a Vajsörödet… nem érzed jól magad.</item>
-        <item>Kővé dermesztettek.</item>
-        <item>Miközben elhaladsz az udvari szökőkút mellett, a kiemelkedő vízoszlop foglyul ejt és nem kapsz levegőt.</item>
-        <item>Egy Mumus annak a képében közeledik, amitől a legjobban félsz…</item>
-        <item>A klubhelyiségbe nem tudsz bemenni.</item>
-        <item>Kábító átok fog sújtani hamarosan.</item>
-        <item>Egy bébi Mandragórát találsz a táskádban - és éppen felébredt. Nincs rajtad fülvédő.</item>
-        <item>Befordulsz a sarkon és egyenesen egy Ördöghurok bozótba esel.</item>
-        <item>Valaki a közelben Önoltót használt, sötétben tapogatózol.</item>
-        <item>Az édességedet Rókázó Rágcsára cserélték - és későn vetted észre.</item>
-        <item>A kviddicsmérkőzés alatt megátkozzák a seprűd.</item>
-        <item>Sürgős üzenetet kellene kézbesítened, de a baglyod eltűnt.</item>
-        <item>Valaki beletett valamit az üstödbe; a füsttől kába leszel.</item>
-        <item>A Bogoly Berti féle Drazsét megbabrálták. Nagyon lebetegedsz.</item>
-        <item>A tea levelek a Zordót mutatják. Pánikba esel.</item>
-        <item>Lépéseket hallasz, miközben a Zárolt Részben leemelsz egy könyvet.</item>
-        <item>A Párbajszakkör alatt a Mardekáros ellenfeled egy kígyót varázsol…</item>
-        <item>Felkapsz egy serleget, de későn veszed észre, hogy az egy Zsupszkulcs.</item>
-        <item>Kelta Tündérmanók egy ártalmas csoportja tart feléd.</item>
-        <item>Egy fal összeomlását hangos robaj kíséri. Valaki közeleg.</item>
-        <item>Dumbledore elhagyta a kastélyt, pedig információd van a Halálfalókról.</item>
-        <item>Egyik elvarázsolt osztálytársad egy Főbenjáró Átkot készül rád szórni.</item>
-        <item>A kastélyban elszabadult kis sárkány meglát és tüzet okád rád.</item>
-        <item>Draco Malfoy és barátai kelepcébe csalnak, hogy párbajt kezdhessetek.</item>
-        <item>Dementorok szállták meg az iskolát.</item>
-        <item>Valaki levette a csatot a Szörnyek Szörnyű Könyvéről és az megtámad.</item>
-        <item>Egy ismert vérfarkas zsákmányt keres a termekben… telihold van.</item>
-        <item>A kastélyban szabadon kószáló, kifejlett hegyi trollal találkozol.</item>
-        <item>Halálfaló Lucius Malfoy meglátogatja a fiát, Dracot.</item>
-        <item>Frics úr - a szokásosnál is gorombább hangulatban - befordul a sarkon.</item>
-        <item>A Griffendéles fiúk hálótermét kifosztották. Értékes dolgok tűntek el.</item>
-        <item>Cormac McLaggen szerelmi bájitallal átitatott édességet evett - és csak rád tud gondolni.</item>
-    </string-array>
-
     <string-array name="playmodes">
-        <item>Egyjátékos mód</item>
-        <item>Többjátékos mód</item>
+        <item>Egyj�t�kos m�d</item>
+        <item>T�bbj�t�kos m�d</item>
     </string-array>
-
-    <string name="map_description">The map of the game</string>
-    <string name="logo_description">Logo of the game</string>
-    <string name="game_logo">Game logo</string>
-
-    <string name="round_start">A kör eleje</string>
-    <string name="start_rule_description1">Köröd elején kétféle dolgot tehetsz. Hogy az opciókat előhozd, a játékosodat szimbolizáló bábu ikonra kell tappintani.</string>
-    <string name="start_rule_description2">A köröd elején lehetőséged van megnézni jegyzeteidet, illetve dobni a dobókockákkal. Természetesen a jegyzetek megtekintését választva, azt követően újra előhozva ezt a menüt lehetőséged van dobni.</string>
-
-    <string name="note_rules">Jegyzetek</string>
-    <string name="note_rules_description1">A gyanúsítások után érdemes jegyzetelni. Többféle jegyzet is készíthető egy vonatkozó rejtélykártyához. Az egyik ilyen lehetőség, hogy saját kártyáinkat megjelöljük a választott karakterünk monogramjával. Ezt a játék automatikusan megteszi. Ezen kívül lehet jelezni azt, amiről már tudjuk kinél van. Hosszú tappintással előhozhatjuk egy cella fölött a játékos társaink neveit, és kiválaszthatjuk közülük a megfelelőt.</string>
-    <string name="note_rules_description2">Mivel nem mindig tudjuk rögtön, hogy az adott kártya kinél van biztosan, több nevet is feljegyezhetünk egy sorban. Amint tudjuk a biztos választ, jelezhetjük ezt egy pipával az alábbi módon:</string>
-    <string name="note_rules_description3">Ha rájöttünk a megoldásra, arra is alkalmas a zöld pipa, üres cellákkal az adott sorban, ha pedig egy kártya nem lett kiosztva (erről lásd a 5. oldalt), azt egy piros X-szel jelölhetjük.</string>
-
-    <string name="dice_rules">Kockadobás menete</string>
-    <string name="dice_rules_description1">A \"Dobás\" gomb megnyomásával dobhatsz a három kockával. Két számot és egy szimbólumos kockát fogsz használni.</string>
-    <string name="dice_rules_description2">A számok összege a maximális lépésszámod lesz a körödben. A szimbólumok az alábbiak lehetnek:</string>
-    <string name="dice_rules_description3">A roxforti házak a térkép sarkainak egyikét módosítják (ajtót nyitnak/zárnak, vagy titkos átjárókat módosítanak), a csillag szimbólummal mentőkártyát kaphatsz, amely segít téged, a sötét jegy viszont hátráltatni fog a játékban valamilyen módon (házpontokat veszíthetsz, sőt, akár mentőkártyát is). Szerencsére a megfelelő mentőkártyák meg is tudnak védeni bizonyos ártásoktól.</string>
-    <string name="dice_rules_description4">A lehetséges lépéseket a térképen kiemelve láthatod. Ezek egyikére tapintva megteheted a lépésedet. Amennyiben szobába mész, ott gyanúsítani tudsz. A gyanúsítás helyszín paramétere automatikusan maga a szoba, a másik kettőt te választhatod ki. Erről lásd a következő oldalt.\nHa csillag mezőre lépsz, mentőkártyát kapsz.</string>
-
-    <string name="incrimination_rules">A gyanúsítás szabályai</string>
-    <string name="incrimination_rules_description1">Ha te gyanúsítasz, ki kell választanod a szoba mellé a gyanúsított személyt, és az eszközt, amivel szerinted elkövette a bűntettet. Ha ezek megvannak, a \"Gyanúsítás\" gombra tapintva leadhatod a gyanúdat. Adott esetben (ha szobából kezded a körödet) úgy is dönthetsz, hogy mégsem gyanúsítasz, hanem inkább lépsz: erre való a \"Passz\" gomb.</string>
-    <string name="incrimination_rules_description2">A három szimbólum közül a nem fekete-fehér színű ikon jelzi számodra, hogy mit mutatott a másik játékos (akinek kilétét a jobboldali kép jelzi).</string>
-    <string name="incrimination_rules_description3">Ha épp más játékosok körei vannak, azt is megfigyelheted. Ekkor csak találgatni tudsz, hogy a három közül melyik kártyát mutatta a másik fél a harmadiknak, de épp erre való a jegyzettömb.</string>
-    <string name="incrimination_rules_description4">Amikor rajtad a sor, hogy mutass valamit a kártyáid közül, felhívja erre a figyelmedet egy felirat, és a színes ikonok közül tudsz választani (ugyanis ezekkel rendelkezel), hogy melyiket mutatod meg.</string>
-    <string name="incrimination_rules_description5">Végezetül pedig az is előfordulhat, hogy senki nem tudott mutatni lapot. Ezt az alábbi kép ábrázolja. Ekkor is lehet több dologra következtetni.</string>
-
-    <string name="dumbledores_office_rules">Dumbledore irodája</string>
-    <string name="dumbledores_office_description1">Dumbledore irodájában több dolgot is lehet tenni. A lehetőségek fel vannak sorolva a képernyőn:</string>
-    <string name="dumbledores_office_description2">Le lehet adni a végső vádat. Ezt akkor tedd, ha úgy érzed, biztos vagy a megoldásodban, de vigyázz: ha rossz megoldást adsz le, kiesel a játékból.\nHa korábbi körben léptél ide, és itt kezdted a mostanit, dönthetsz úgy, hogy lépsz és folytatod az információgyűjtést.\nElőbbi lehetőség azért áll fenn, mert ebben a szobában lehet megtekinteni a ki nem osztott rejtélykártyákat is (ha nem lehet egyenlően elosztani a lapokat a játékosok között), ez illusztrálva van alább. Ezzel mindenképpen kell számolni, ha nem 3-an játszotok, mert ekkor fognak kimaradni lapok.</string>
-
-    <string name="accusation_rules">A vád leadása</string>
-    <string name="accusation_rules_description1">Ha úgy érzed, kitaláltad a megoldást alkotó hármast, le kell adnod a vádat Dumbledore irodájában. Ilyenkor természetesen mind a három paramétert ki kell választani:</string>
-    <string name="accusation_rules_description2">Ha megvan mindhárom paraméter, a \"Vádemelés\" gombbal adható le a vád.</string>
-    <string name="accusation_rules_description3">Ekkor meg fog jelenni a következő ablakban, hogy jó-e a megoldás.\nEgyjátékos mód esetén rossz megoldásnál is kiírja a jó megoldást, mert itt véget ér a játék. Ezt szemlélteti a következő kép is.\nTöbbjátékos módban még van esélyük a többieknek rájönni a megoldásra, így ilyenkor nem kerül lelövésre a poén.</string>
-
-    <string name="good_regards">Ezek lettek volna a játékszabályok. Jó szórakozást kívánok!</string>
 </resources>
