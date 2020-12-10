@@ -45,16 +45,10 @@ class GameSequenceHandler(private val map: MapViewModel.Companion) {
     }
 
     fun moveToNextPlayer() {
-        var idx = gameModels.playerList.indexOf(map.playerHandler.getPlayerById(playerInTurn))
-        idx--
-        if (idx < 0)
-            idx = gameModels.playerList.lastIndex
-        playerInTurn = gameModels.playerList[idx].id
-
         letPlayerTurn()
     }
 
-    private fun letPlayerTurn() {
+    fun letPlayerTurn() {
         if (isGameRunning) {
             map.cameraHandler.moveCameraToPlayer(playerInTurn)
 

@@ -465,7 +465,15 @@ class MapViewModel(
         GlobalScope.launch(Dispatchers.Main) {
             cameraHandler.moveCameraToPlayer(player.id)
             delay(1000)
+
+            var idx = gameModels.playerList.indexOf(playerHandler.getPlayerById(player.id))
+            idx--
+
             removePlayer(player)
+
+            if (idx < 0)
+                idx = gameModels.playerList.lastIndex
+            playerInTurn = gameModels.playerList[idx].id
 
             var title = ""
             withContext(Dispatchers.IO) {

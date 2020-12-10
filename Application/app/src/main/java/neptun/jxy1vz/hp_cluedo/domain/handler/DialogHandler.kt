@@ -63,7 +63,8 @@ class DialogHandler(private val map: MapViewModel.Companion) : DialogDismiss {
 
     private fun moveToNextPlayer() {
         GlobalScope.launch(Dispatchers.Main) {
-            map.gameSequenceHandler.moveToNextPlayer()
+            val idx = if (map.playerInTurn - 1 < 0) map.gameModels.playerList.lastIndex else map.playerInTurn - 1
+            map.gameSequenceHandler.letPlayerTurn()
         }
     }
 
