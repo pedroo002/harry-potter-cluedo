@@ -34,4 +34,13 @@ class MysteryCardActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onBackPressed() {
+        activityMysteryCardBinding.mysteryCardViewModel?.apply {
+            if (isMulti())
+                onBackPressed()
+            else
+                finish()
+        }
+    }
 }

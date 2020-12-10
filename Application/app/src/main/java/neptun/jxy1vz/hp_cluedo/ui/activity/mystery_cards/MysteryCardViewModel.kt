@@ -92,7 +92,7 @@ class MysteryCardViewModel(
             }
             player = playerList.find { p -> p.id == playerId }!!
 
-            if (gameMode == gameModeList[1]) {
+            if (isMulti()) {
                 retrofit = RetrofitInstance.getInstance(context)
                 val channelId =
                     playerPref.getString(context.resources.getString(R.string.channel_id_key), "")!!
@@ -363,5 +363,13 @@ class MysteryCardViewModel(
         }
 
         getMysteryCards(idList)
+    }
+
+    fun isMulti(): Boolean {
+        return gameMode == gameModeList[1]
+    }
+
+    fun onBackPressed() {
+        Toast.makeText(context, context.resources.getString(R.string.cannot_quit_here), Toast.LENGTH_LONG).show()
     }
 }

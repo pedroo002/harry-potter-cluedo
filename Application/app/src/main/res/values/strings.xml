@@ -12,6 +12,7 @@
     <string name="cancel">Mégse</string>
     <string name="yes">Igen</string>
     <string name="wait_for_your_turn">Csak a köröd elején tudsz kilépni!</string>
+    <string name="cannot_quit_here">Most nem tudsz kilépni, várd meg a játék indulását!</string>
 
     <string name="star1">Star1</string>
     <string name="star2">Star2</string>
